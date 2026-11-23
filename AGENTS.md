@@ -33,6 +33,10 @@ cd ui && npm ci && npm run build         # vue-tsc + vite build; also lint/test
 cd sdk/typescript && npm ci && npm run build   # MUST precede cli checks
 cd cli && npm ci && npm run test         # needs @impri/sdk dist/ to exist
 cd sdk/python && pytest                  # zero-dep Python client SDK
+npm run test:e2e                         # E2E smoke: boots the built server on :8499
+                                         # with a throwaway SQLite file and drives
+                                         # signup -> push -> decide -> report; needs
+                                         # server/dist + mcp/dist built first
 ```
 
 ### Gotchas
