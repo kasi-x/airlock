@@ -1,0 +1,119 @@
+name: CI
+
+# Mirrors the upstream .gitlab-ci.yml: three suites (server / mcp / ui), each
+# running only when its own package changed. Adds a clients job (sdk +
+# cli, upstream had none) and the P0 E2E smoke test on the server path.
+# Path filtering runs the `changes` job first; every other job is skipped
+# when nothing in its scope changed (docs-only pushes stay cheap).
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  changes:
+    runs-on: ubuntu-latest
+    outputs:
+      server: ${{ steps.filter.outputs.server }}
+      mcp: ${{ steps.filter.outputs.mcp }}
+      ui: ${{ steps.filter.outputs.ui }}
+      clients: ${{ steps.filter.outputs.clients }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dorny/paths-filter@v3
+        id: filter
+        with:
+          filters: |
+            server:
+              - 'server/**'
+              - 'scripts/e2e-smoke.mjs'
+              - 'package.json'
+              - 'package-lock.json'
+              - '.github/workflows/ci.yml'
+            mcp:
+              - 'mcp/**'
+              - '.github/workflows/ci.yml'
+            ui:
+              - 'ui/**'
+              - '.github/workflows/ci.yml'
+            clients:
+              - 'sdk/typescript/**'
+              - 'cli/**'
+              - '.github/workflows/ci.yml'
+
+  server:
+    needs: changes
+    if: ${{ needs.changes.outputs.server == 'true' }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: package-lock.json
+      # npm >= 12 blocks dependency install scripts; the allowScripts field in
+      # package.json covers better-sqlite3/argon2 there, and npm < 12 runs
+      # install scripts normally. No extra approval step needed on either.
+      - run: npm ci --no-audit --no-fund
+      # Build order matters: server imports @impri/mcp from mcp/dist.
+      - run: npm run build --workspace=mcp
+      - run: npm run typecheck --workspace=server
+      - run: npm run lint --workspace=server
+      - run: npm test --workspace=server
+      - run: npm run build --workspace=server
+      - run: npm run test:e2e
+
+  mcp:
+    needs: changes
+    if: ${{ needs.changes.outputs.mcp == 'true' }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: mcp/package-lock.json
+      - run: cd mcp && npm ci --no-audit --no-fund
+      - run: cd mcp && npm run check
+
+  ui:
+    needs: changes
+    if: ${{ needs.changes.outputs.ui == 'true' }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: ui/package-lock.json
+      - run: cd ui && npm ci --no-audit --no-fund
+      - run: cd ui && npm run typecheck
+      - run: cd ui && npm run lint
+      - run: cd ui && npm test
+      - run: cd ui && npm run build
+
+  clients:
+    needs: changes
+    if: ${{ needs.changes.outputs.clients == 'true' }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      # Build order matters: cli imports @impri/sdk from sdk/typescript/dist.
+      - run: cd sdk/typescript && npm ci --no-audit --no-fund
+      - run: cd sdk/typescript && npm run build
+      - run: cd sdk/typescript && npm test
+      - run: cd cli && npm ci --no-audit --no-fund
+      - run: cd cli && npm run typecheck
+      - run: cd cli && npm test
+      - run: cd cli && npm run build
