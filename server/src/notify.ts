@@ -7,6 +7,7 @@ import { nowSec } from './db.js';
 import { fetchGuarded, isPrivateIp } from './net-guard.js';
 import { signWebhookBody } from './webhooks.js';
 import { incCounter, noopLogger, type Logger } from './metrics.js';
+import { approvalUrlFor } from './email-approval.js';
 import { deleteEmailSend, emailDailyCap, pruneEmailSends, reserveNotifyEmail } from './email-sends.js';
 
 export interface NotifyPayload {
@@ -692,6 +693,7 @@ async function sendEmailChannel(
   title: string,
   kind: string,
   inboxUrl: string,
+  approvalUrl = '',
 ): Promise<void> {
   // Throw rather than skip: a silent no-op made the test endpoint report
   // ok:true for email that never left the server.
@@ -704,8 +706,11 @@ async function sendEmailChannel(
     // headerSafe strips CR/LF from subject line (email header injection guard).
     subject: `[Impri] ${headerSafe(title)}`,
     text:
-      `A new action requires your decision.\n\nTitle: ${title}\nKind: ${kind}\n\nReview: ${inboxUrl}\n\n` +
-      '--\n' +
+      `A new action requires your decision.\n\nTitle: ${title}\nKind: ${kind}\n\n` +
+      (approvalUrl
+        ? `Approve or reject: ${approvalUrl}\nFull details:      ${inboxUrl}\n`
+        : `Review: ${inboxUrl}\n`) +
+      '\n--\n' +
       'You get this email because this address is a confirmed email notification channel of an Impri project.\n' +
       'To stop these emails, disable or delete the channel in Impri under Settings > Notifications.\n',
   });
@@ -771,6 +776,9 @@ export async function dispatchChannelType(
   // Approval-mode telegram falls back to the plain sendTelegram message for
   // digests because inline buttons cannot encode multiple action IDs.
   isDigest = false,
+  // Token-gated approval URL for single (non-digest) email sends; empty for
+  // digests, which cover N actions and cannot carry one token.
+  approvalUrl = '',
 ): Promise<void> {
   switch (type) {
     case 'slack':
@@ -789,7 +797,7 @@ export async function dispatchChannelType(
       }
       return sendTelegram(config, title, kind, inboxUrl);
     case 'ntfy':     return sendNtfyChannel(config, title, kind, inboxUrl);
-    case 'email':    return sendEmailChannel(config, title, kind, inboxUrl);
+    case 'email':    return sendEmailChannel(config, title, kind, inboxUrl, approvalUrl);
     case 'webhook':  return sendWebhookChannel(config, title, kind, inboxUrl, actionId, escalate);
     default:         throw new Error(`Unknown channel type: ${type}`);
   }
@@ -855,6 +863,13 @@ function onChannelFailure(db: Db, channel: ChannelRow, msg: string, now: number,
 // Called once per channel on every notifyChannels() invocation.
 // ---------------------------------------------------------------------------
 
+// Single (non-digest) email sends carry a token-gated approval link; digests
+// cover N actions and keep the inbox link only.
+function emailApprovalUrl(db: Db, channelType: string, actionId: string, isDigest: boolean): string {
+  if (channelType !== 'email' || isDigest || !actionId) return '';
+  return approvalUrlFor(db, actionId) ?? '';
+}
+
 async function fireChannel(db: Db, channel: ChannelRow, payload: ChannelPayload, log: Logger = noopLogger): Promise<void> {
   const now = nowSec();
   const config = JSON.parse(channel.config) as Record<string, unknown>;
@@ -866,7 +881,7 @@ async function fireChannel(db: Db, channel: ChannelRow, payload: ChannelPayload,
   // button pair can't encode multiple action IDs), which defeats in-chat approval.
   if (config.approval_mode === true) {
     try {
-      await dispatchChannelType(channel.type, config, payload.title, payload.kind, payload.inboxUrl, payload.actionId, payload.escalate, false);
+      await dispatchChannelType(channel.type, config, payload.title, payload.kind, payload.inboxUrl, payload.actionId, payload.escalate, false, emailApprovalUrl(db, channel.type, payload.actionId, false));
       onChannelSuccess(db, channel.id, now);
       incCounter('impri_notifications_total', { channel_type: channel.type, result: 'ok' });
     } catch (err) {
@@ -914,7 +929,7 @@ async function fireChannel(db: Db, channel: ChannelRow, payload: ChannelPayload,
   }
 
   try {
-    await dispatchChannelType(channel.type, config, title, kind, inboxUrl, primaryActionId, payload.escalate, isDigest);
+    await dispatchChannelType(channel.type, config, title, kind, inboxUrl, primaryActionId, payload.escalate, isDigest, emailApprovalUrl(db, channel.type, primaryActionId, isDigest));
     onChannelSuccess(db, channel.id, now);
     incCounter('impri_notifications_total', { channel_type: channel.type, result: 'ok' });
   } catch (err) {
@@ -978,7 +993,7 @@ async function flushChannelQueue(db: Db, channel: ChannelRow, log: Logger = noop
   incCounter('impri_notification_digest_flushes_total', { channel_type: channel.type });
 
   try {
-    await dispatchChannelType(channel.type, config, title, kind, inboxUrl, primaryActionId, undefined, isDigest);
+    await dispatchChannelType(channel.type, config, title, kind, inboxUrl, primaryActionId, undefined, isDigest, emailApprovalUrl(db, channel.type, primaryActionId, isDigest));
     onChannelSuccess(db, channel.id, now);
     incCounter('impri_notifications_total', { channel_type: channel.type, result: 'ok' });
   } catch (err) {

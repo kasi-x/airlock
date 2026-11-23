@@ -14,6 +14,7 @@ import {
   EMAIL_NOT_CONFIGURED_MESSAGE,
 } from '../notify.js';
 import { fetchGuarded } from '../net-guard.js';
+import { sendHtmlPage } from '../html-page.js';
 import { deleteEmailSend, normalizeEmailAddress, reserveNotifyEmail } from '../email-sends.js';
 import {
   sendChannelVerification,
@@ -116,39 +117,9 @@ function loadChannel(db: Db, id: string): ChannelRow {
 // 32 random bytes, base64url without padding.
 const VERIFY_TOKEN_RE = /^[A-Za-z0-9_-]{43}$/;
 
-// The page carries the token, so: no caching, no referrer, no framing, no
-// script; the form may only post back to this origin.
-const VERIFY_PAGE_CSP =
-  "default-src 'none'; style-src 'unsafe-inline'; form-action 'self'; frame-ancestors 'none'; base-uri 'none'";
-
-function sendVerifyPage(reply: FastifyReply, status: number, heading: string, bodyHtml: string) {
-  const html = `<!doctype html>
-<html lang="en">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="robots" content="noindex">
-<title>${htmlEscape(heading)} · Impri</title>
-<style>
-body{margin:0;font:16px/1.5 system-ui,-apple-system,Segoe UI,sans-serif;background:#0f1115;color:#e8e8ea;display:flex;min-height:100vh;align-items:center;justify-content:center}
-main{max-width:440px;margin:24px 16px;padding:32px;background:#181b22;border-radius:12px}
-h1{font-size:22px;margin:0 0 12px}
-p{margin:0 0 16px;color:#b8bcc6}
-button{font:inherit;font-weight:600;padding:10px 18px;border:0;border-radius:8px;background:#7c5cff;color:#fff;cursor:pointer}
-a{color:#a996ff}
-</style>
-</head>
-<body><main><h1>${htmlEscape(heading)}</h1>${bodyHtml}</main></body>
-</html>`;
-  return reply
-    .status(status)
-    .header('Content-Type', 'text/html; charset=utf-8')
-    .header('Content-Security-Policy', VERIFY_PAGE_CSP)
-    .header('Cache-Control', 'no-store')
-    .header('Referrer-Policy', 'no-referrer')
-    .header('X-Content-Type-Options', 'nosniff')
-    .send(html);
-}
+// The shared page helper (html-page.ts) carries the token, so: no caching,
+// no referrer, no framing, no script; forms may only post back to this origin.
+const sendVerifyPage = sendHtmlPage;
 
 const RESEND_HINT =
   '<p>You can request a new confirmation email in Impri under Settings &gt; Notifications.</p>';

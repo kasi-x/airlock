@@ -19,6 +19,7 @@ import { registerTelegramWebhookRoutes } from './routes/telegram-webhook.js';
 import { registerSlackOAuthRoutes } from './routes/slack-oauth.js';
 import { registerSlackInteractionRoutes } from './routes/slack-interactions.js';
 import { registerDiscordInteractionRoutes } from './routes/discord-interactions.js';
+import { registerEmailApprovalRoutes } from './routes/email-approval.js';
 import { registerAuditRoutes } from './routes/audit.js';
 import { registerUsageRoutes } from './routes/usage.js';
 import { registerRecoveryRoutes } from './routes/recovery.js';
@@ -355,6 +356,9 @@ export async function createApp(db: Db, reporter: ErrorReporter = errorReporter)
 
   // Discord interactive approval webhook (public, authenticated via Ed25519 signature)
   registerDiscordInteractionRoutes(app, db);
+
+  // Public email approval pages (token-gated; GET renders a form, POST decides)
+  registerEmailApprovalRoutes(app, db);
 
   // Audit log query + export (admin scope)
   registerAuditRoutes(app, db);
