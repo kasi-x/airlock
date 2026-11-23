@@ -16,5 +16,9 @@
   "devDependencies": {
     "highlight.js": "^11.11.1",
     "marked": "^18.0.6"
+  },
+  "allowScripts": {
+    "better-sqlite3": true,
+    "argon2": true
   }
 }
