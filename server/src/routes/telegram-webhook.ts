@@ -17,6 +17,7 @@
 
 import type { FastifyInstance } from 'fastify';
 import type { Db } from '../db.js';
+import { nowSec } from '../db.js';
 import { checkRateLimit } from '../auth.js';
 import { fetchGuarded } from '../net-guard.js';
 import { deriveWebhookSecret, buildTelegramApprovalSig, safeEqual, htmlEscape } from '../notify.js';
@@ -163,23 +164,36 @@ export function registerTelegramWebhookRoutes(app: FastifyInstance, db: Db): voi
       const cbData = cq.data ?? '';
 
       // --- Step 7: Parse and shape-validate callback_data ---
+      // Format: "{verdict}:{actionId}:{ts}:{sig}" — 4 parts; ts is unix
+      // seconds inside the HMAC, giving a ±300s replay window.
       const parts = cbData.split(':');
       const actionIdRegex = /^act_[A-Za-z0-9_-]{22}$/;
+      const tsNum = parts.length === 4 ? Number(parts[2]) : NaN;
 
       if (
-        parts.length !== 3 ||
+        parts.length !== 4 ||
         !['a', 'r'].includes(parts[0]) ||
         !actionIdRegex.test(parts[1]) ||
-        parts[2].length !== 8
+        !Number.isInteger(tsNum) ||
+        tsNum <= 0 ||
+        parts[3].length !== 8
       ) {
         await answerCallbackQuery(String(config.bot_token), cbQueryId, 'Invalid request');
         return reply.status(200).send('');
       }
 
-      const [verdict, actionId, receivedSig] = parts;
+      const [verdict, actionId, , receivedSig] = parts;
 
-      // --- Step 8: Verify HMAC signature on callback_data ---
-      const expectedSig = buildTelegramApprovalSig(hmacSecret, verdict, actionId);
+      // --- Step 8: Replay window, then HMAC signature on callback_data ---
+      if (Math.abs(nowSec() - tsNum) > 300) {
+        await answerCallbackQuery(
+          String(config.bot_token), cbQueryId,
+          'This approval link has expired — ask for a new notification', true,
+        );
+        return reply.status(200).send('');
+      }
+
+      const expectedSig = buildTelegramApprovalSig(hmacSecret, verdict, actionId, tsNum);
       if (!safeEqual(receivedSig, expectedSig)) {
         await answerCallbackQuery(
           String(config.bot_token), cbQueryId,

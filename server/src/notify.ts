@@ -49,11 +49,14 @@ export function deriveWebhookSecret(hmacSecret: string): string {
 
 /**
  * Build the 8-char base64url signature for a Telegram approval button.
- *   sig = HMAC-SHA256(hmacSecret, "tg:" + v + ":" + actionId).slice(0,6).base64url
+ *   sig = HMAC-SHA256(hmacSecret, "tg:" + v + ":" + actionId + ":" + ts).slice(0,6).base64url
+ * The timestamp is inside the MAC so a captured callback_data cannot be
+ * re-signed with a fresh ts — replay protection comes from the webhook's
+ * |now - ts| <= 300s check.
  */
-export function buildTelegramApprovalSig(hmacSecret: string, v: string, actionId: string): string {
+export function buildTelegramApprovalSig(hmacSecret: string, v: string, actionId: string, ts: number): string {
   const mac = createHmac('sha256', hmacSecret)
-    .update(`tg:${v}:${actionId}`)
+    .update(`tg:${v}:${actionId}:${ts}`)
     .digest();
   return mac.subarray(0, 6).toString('base64url');
 }
@@ -519,8 +522,11 @@ async function sendTelegramApproval(
   const chatId = String(config.chat_id);
   const hmacSecret = String(config.hmac_secret);
 
-  const approveData = `a:${actionId}:${buildTelegramApprovalSig(hmacSecret, 'a', actionId)}`;
-  const rejectData  = `r:${actionId}:${buildTelegramApprovalSig(hmacSecret, 'r', actionId)}`;
+  // Timestamp inside callback_data gives the webhook a replay window
+  // (|now - ts| <= 300s); it is covered by the HMAC so it cannot be forged.
+  const ts = nowSec();
+  const approveData = `a:${actionId}:${ts}:${buildTelegramApprovalSig(hmacSecret, 'a', actionId, ts)}`;
+  const rejectData  = `r:${actionId}:${ts}:${buildTelegramApprovalSig(hmacSecret, 'r', actionId, ts)}`;
 
   const inlineKeyboard: Array<Array<{ text: string; callback_data?: string; url?: string }>> = [
     [

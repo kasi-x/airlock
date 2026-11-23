@@ -20,7 +20,7 @@
  */
 
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
-import { createDb } from '../src/db.js';
+import { createDb, nowSec } from '../src/db.js';
 import { bootstrapAdminKey } from '../src/auth.js';
 import { createApp } from '../src/index.js';
 import {
@@ -89,8 +89,9 @@ function buildUpdate(
   hmacSecret: string,
   fromUserId = APPROVER_USER_ID,
   messageText = `🔔 <b>Action Pending</b>: Test Action\nKind: <code>test.kind</code>`,
+  ts = nowSec(),
 ): Record<string, unknown> {
-  const sig = buildTelegramApprovalSig(hmacSecret, verdict, actionId);
+  const sig = buildTelegramApprovalSig(hmacSecret, verdict, actionId, ts);
   return {
     callback_query: {
       id: 'cbq_123',
@@ -100,7 +101,7 @@ function buildUpdate(
         chat: { id: Number(CHAT_ID) },
         text: messageText,
       },
-      data: `${verdict}:${actionId}:${sig}`,
+      data: `${verdict}:${actionId}:${ts}:${sig}`,
     },
   };
 }
@@ -284,20 +285,26 @@ describe('HMAC helpers', () => {
   });
 
   it('buildTelegramApprovalSig produces 8-char base64url output', () => {
-    const sig = buildTelegramApprovalSig(HMAC_SECRET, 'a', 'act_abc123');
+    const sig = buildTelegramApprovalSig(HMAC_SECRET, 'a', 'act_abc123', 1700000000);
     expect(sig).toHaveLength(8);
     expect(sig).toMatch(/^[A-Za-z0-9_-]+$/); // base64url alphabet
   });
 
   it('approve and reject produce different signatures for same actionId', () => {
-    const sigA = buildTelegramApprovalSig(HMAC_SECRET, 'a', 'act_abc123');
-    const sigR = buildTelegramApprovalSig(HMAC_SECRET, 'r', 'act_abc123');
+    const sigA = buildTelegramApprovalSig(HMAC_SECRET, 'a', 'act_abc123', 1700000000);
+    const sigR = buildTelegramApprovalSig(HMAC_SECRET, 'r', 'act_abc123', 1700000000);
     expect(sigA).not.toBe(sigR);
   });
 
   it('same verdict + actionId + different secret produce different signatures', () => {
-    const sig1 = buildTelegramApprovalSig(HMAC_SECRET, 'a', 'act_abc123');
-    const sig2 = buildTelegramApprovalSig('b'.repeat(32), 'a', 'act_abc123');
+    const sig1 = buildTelegramApprovalSig(HMAC_SECRET, 'a', 'act_abc123', 1700000000);
+    const sig2 = buildTelegramApprovalSig('b'.repeat(32), 'a', 'act_abc123', 1700000000);
+    expect(sig1).not.toBe(sig2);
+  });
+
+  it('different timestamps produce different signatures (replay binding)', () => {
+    const sig1 = buildTelegramApprovalSig(HMAC_SECRET, 'a', 'act_abc123', 1700000000);
+    const sig2 = buildTelegramApprovalSig(HMAC_SECRET, 'a', 'act_abc123', 1700000001);
     expect(sig1).not.toBe(sig2);
   });
 });
@@ -407,7 +414,7 @@ describe('POST /v1/integrations/telegram/webhook/:channelId', () => {
         id: 'cbq_forge',
         from: { id: APPROVER_USER_ID, first_name: 'Alice' },
         message: { message_id: 1, chat: { id: -1 }, text: 'msg' },
-        data: `a:${actionId}:forgedsig`,
+        data: `a:${actionId}:${nowSec()}:forged12`,
       },
     };
 
@@ -421,6 +428,40 @@ describe('POST /v1/integrations/telegram/webhook/:channelId', () => {
     expect(answerCall).toBeTruthy();
     const answerBody = JSON.parse(answerCall![1].body as string) as Record<string, unknown>;
     expect(String(answerBody.text)).toContain('Invalid');
+  });
+
+  it('STALE timestamp (>300s old) is rejected even with a valid signature', async () => {
+    const { app, adminKey, db } = await setup();
+    const ch = await createApprovalChannel(app, adminKey);
+    const channelId = (ch.json() as { id: string }).id;
+    const secretToken = deriveWebhookSecret(HMAC_SECRET);
+
+    const actionId = await createPendingAction(app, adminKey, 'Stale Button');
+    // Correctly signed, but ts is 400s in the past — outside the replay window.
+    const staleTs = nowSec() - 400;
+    const sig = buildTelegramApprovalSig(HMAC_SECRET, 'a', actionId, staleTs);
+    const update = {
+      callback_query: {
+        id: 'cbq_stale',
+        from: { id: APPROVER_USER_ID, first_name: 'Alice' },
+        message: { message_id: 1, chat: { id: -1 }, text: 'msg' },
+        data: `a:${actionId}:${staleTs}:${sig}`,
+      },
+    };
+
+    const res = await postWebhook(app, channelId, update, secretToken);
+    expect(res.statusCode).toBe(200);
+
+    const answerCall = fetchMock.mock.calls.find(
+      call => String(call[0]).includes('/answerCallbackQuery'),
+    );
+    expect(answerCall).toBeTruthy();
+    const answerBody = JSON.parse(answerCall![1].body as string) as Record<string, unknown>;
+    expect(String(answerBody.text)).toContain('expired');
+
+    // No decision was committed.
+    const decisions = db.prepare('SELECT COUNT(*) as cnt FROM decisions WHERE action_id = ?').get(actionId) as { cnt: number };
+    expect(decisions.cnt).toBe(0);
   });
 
   it('UNAUTHORIZED user (user ID not in allowed list) is rejected', async () => {
@@ -622,13 +663,14 @@ describe('POST /v1/integrations/telegram/webhook/:channelId', () => {
     const secretToken = deriveWebhookSecret(HMAC_SECRET);
 
     // Valid sig but invalid actionId format
-    const sig = buildTelegramApprovalSig(HMAC_SECRET, 'a', 'not_an_action_id');
+    const ts = nowSec();
+    const sig = buildTelegramApprovalSig(HMAC_SECRET, 'a', 'not_an_action_id', ts);
     const update = {
       callback_query: {
         id: 'cbq_bad2',
         from: { id: APPROVER_USER_ID, first_name: 'Alice' },
         message: { message_id: 1, chat: { id: -1 }, text: 'msg' },
-        data: `a:not_an_action_id:${sig}`,
+        data: `a:not_an_action_id:${ts}:${sig}`,
       },
     };
 
@@ -654,7 +696,8 @@ describe('POST /v1/integrations/telegram/webhook/:channelId', () => {
     const actionId = await createPendingAction(app, adminKey, 'Escape Test');
 
     const maliciousName = '</b><a href="https://phish.example">click</a>';
-    const sig = buildTelegramApprovalSig(HMAC_SECRET, 'a', actionId);
+    const ts = nowSec();
+    const sig = buildTelegramApprovalSig(HMAC_SECRET, 'a', actionId, ts);
     const update = {
       callback_query: {
         id: 'cbq_xss',
@@ -664,7 +707,7 @@ describe('POST /v1/integrations/telegram/webhook/:channelId', () => {
           chat: { id: Number(CHAT_ID) },
           text: `🔔 <b>Action Pending</b>: Escape Test\nKind: <code>test.kind</code>`,
         },
-        data: `a:${actionId}:${sig}`,
+        data: `a:${actionId}:${ts}:${sig}`,
       },
     };
 
