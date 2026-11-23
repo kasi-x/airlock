@@ -1,7 +1,11 @@
-# Fly.io deploy for the Impri API server (Fastify + SQLite).
+# Fly.io deploy template for the API server (Fastify + SQLite).
 # Scale-to-zero: the machine sleeps when idle (near-zero cost pre-launch) and
 # wakes on the first request — including Stripe webhooks.
-app = "impri-api"
+#
+# Template only: replace "your-app-name", the volume name, and every
+# *.example.com domain with your own values. Upstream's hosted endpoints
+# (impri.dev) are deliberately NOT referenced anywhere in this file.
+app = "your-app-name"
 primary_region = "fra"
 
 [build]
@@ -11,12 +15,12 @@ primary_region = "fra"
   DB_PATH = "/data/impri.db"
   HOST = "0.0.0.0"
   PORT = "8484"
-  BASE_URL = "https://api.impri.dev"
-  APP_URL = "https://app.impri.dev"
-  CORS_ORIGIN = "https://app.impri.dev"
+  BASE_URL = "https://api.example.com"
+  APP_URL = "https://app.example.com"
+  CORS_ORIGIN = "https://app.example.com"
   ALLOW_SIGNUP = "1"
   # SENTRY_DSN is set separately as a Fly secret (not here — see deploy docs):
-  #   fly secrets set SENTRY_DSN=https://...@....ingest.sentry.io/... -a impri-api
+  #   fly secrets set SENTRY_DSN=https://...@....ingest.sentry.io/... -a your-app-name
   # Without it the server never calls into the Sentry SDK (see server/src/sentry.ts).
   SENTRY_ENVIRONMENT = "production"
 
@@ -40,5 +44,5 @@ primary_region = "fra"
   memory = "512mb"
 
 [mounts]
-  source = "impri_data"
+  source = "your_app_data"
   destination = "/data"

@@ -82,7 +82,7 @@ export async function createApp(db: Db, reporter: ErrorReporter = errorReporter)
   });
 
   // CORS only when a hosted web inbox on another origin needs to reach this API
-  // (e.g. app.impri.dev → api.impri.dev). Restricted to the configured origins;
+  // (e.g. the app host talking to the API host). Restricted to the configured origins;
   // unset = same-origin only. Bearer auth, no cookies.
   const corsOrigins = (process.env.CORS_ORIGIN ?? '').split(',').map(s => s.trim()).filter(Boolean);
   if (corsOrigins.length > 0) {

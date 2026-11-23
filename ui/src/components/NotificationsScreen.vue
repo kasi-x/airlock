@@ -282,7 +282,7 @@
           <ol class="text-caption pl-4 mb-1">
             <li v-for="step in setupGuide.steps" :key="step">{{ step }}</li>
           </ol>
-          <a :href="setupGuide.docUrl" target="_blank" rel="noopener noreferrer" class="text-caption">
+          <a v-if="setupGuide.docUrl" :href="setupGuide.docUrl" target="_blank" rel="noopener noreferrer" class="text-caption">
             Full guide → {{ setupGuide.docUrl.replace('https://', '') }}
           </a>
         </v-alert>
@@ -1350,11 +1350,13 @@ async function confirmDelete(): Promise<void> {
 
 // ─── Create / Edit form ──────────────────────────────────────────────────────
 
-/** Per-type mini návod: kde vzít webhook URL / tokeny. Plné návody žijí v docs. */
+/** Per-type mini guide: where to get the webhook URL / tokens. docUrl is an
+ * optional external "Full guide" link — left unset in this fork until it has
+ * its own docs site (never point at upstream's). */
 interface SetupGuide {
   title: string
   steps: string[]
-  docUrl: string
+  docUrl?: string
 }
 const setupGuide = computed<SetupGuide | null>(() => {
   switch (form.type) {
@@ -1369,7 +1371,6 @@ const setupGuide = computed<SetupGuide | null>(() => {
               'Basic Information → App Credentials → copy the Signing Secret.',
               'After saving this channel, Impri shows an Interactivity Request URL — paste it into the Slack app under Interactivity & Shortcuts.',
             ],
-            docUrl: 'https://impri.dev/docs/slack-approval',
           }
         : {
             title: 'Where to get the Slack webhook URL',
@@ -1378,7 +1379,6 @@ const setupGuide = computed<SetupGuide | null>(() => {
               'Enable "Incoming Webhooks" → Add New Webhook to Workspace → pick a channel.',
               'Copy the generated URL (https://hooks.slack.com/services/…) and paste it below.',
             ],
-            docUrl: 'https://impri.dev/docs/notifications',
           }
     case 'discord':
       return form.configDiscordApprovalMode
@@ -1389,7 +1389,6 @@ const setupGuide = computed<SetupGuide | null>(() => {
               'Bot → Reset Token → copy the bot token; General Information → copy the Public Key.',
               'After saving this channel, Impri shows an Interactions Endpoint URL — paste it into General Information.',
             ],
-            docUrl: 'https://impri.dev/docs/discord-approval',
           }
         : {
             title: 'Where to get the Discord webhook URL',
@@ -1397,7 +1396,6 @@ const setupGuide = computed<SetupGuide | null>(() => {
               'In your Discord server: Server Settings → Integrations → Webhooks → New Webhook.',
               'Pick the target channel → Copy Webhook URL → paste it below.',
             ],
-            docUrl: 'https://impri.dev/docs/notifications',
           }
     case 'telegram':
       return {
@@ -1406,7 +1404,6 @@ const setupGuide = computed<SetupGuide | null>(() => {
           'Message @BotFather in Telegram → /newbot → copy the bot token.',
           'Send any message to your new bot, then open api.telegram.org/bot<TOKEN>/getUpdates and read chat.id (or ask @userinfobot).',
         ],
-        docUrl: 'https://impri.dev/docs/telegram-approval',
       }
     case 'ntfy':
       return {
@@ -1415,7 +1412,6 @@ const setupGuide = computed<SetupGuide | null>(() => {
           'Pick a hard-to-guess topic name — it acts as the password of the feed.',
           'Install the ntfy app (or open ntfy.sh) and subscribe to the same topic. Keep https://ntfy.sh as server unless self-hosting.',
         ],
-        docUrl: 'https://impri.dev/docs/notifications',
       }
     case 'webhook':
       return {
@@ -1424,7 +1420,6 @@ const setupGuide = computed<SetupGuide | null>(() => {
           'The HTTPS URL of your own endpoint that accepts POST requests (your app, a serverless function, or an automation platform).',
           'Set an HMAC secret below and verify the X-Impri-Signature header on your side.',
         ],
-        docUrl: 'https://impri.dev/docs/webhooks',
       }
     default:
       return null

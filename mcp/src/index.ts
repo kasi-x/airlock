@@ -20,7 +20,7 @@ if (!apiKey) {
   process.stderr.write(
     [
       "Warning: IMPRI_API_KEY is not set — tool calls will fail until it is.",
-      "Obtain an API key at https://impri.dev and pass it via environment variable.",
+      "Obtain an API key from your server operator (self-host: the bootstrap admin key in the first-run server logs, or POST /v1/signup when ALLOW_SIGNUP=1) and pass it via environment variable.",
       "Example: IMPRI_API_KEY=im_... npx @impri/mcp",
     ].join("\n") + "\n",
   );
@@ -56,7 +56,7 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
       content: [
         {
           type: "text" as const,
-          text: "Error: IMPRI_API_KEY is not set. Get a key at https://impri.dev and set it in your MCP client config for this server.",
+          text: "Error: IMPRI_API_KEY is not set. Get a key from your server operator (self-host: the bootstrap admin key in the first-run server logs) and set it in your MCP client config for this server.",
         },
       ],
       isError: true,

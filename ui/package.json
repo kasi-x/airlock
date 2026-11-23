@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "vite",
     "build": "vue-tsc --noEmit && vite build",
-    "deploy:cloud": "VITE_API_BASE=https://api.impri.dev/v1 VITE_SENTRY_DSN=\"${VITE_SENTRY_DSN:-}\" VITE_SENTRY_ENVIRONMENT=\"${VITE_SENTRY_ENVIRONMENT:-production}\" vite build --outDir dist-cloud && npx wrangler pages deploy dist-cloud --project-name=impri-app --branch main --commit-dirty=true",
+    "deploy:cloud": "VITE_API_BASE=\"${CLOUD_API_BASE:?set CLOUD_API_BASE (hosted API base URL, e.g. https://api.example.com/v1)}\" VITE_SENTRY_DSN=\"${VITE_SENTRY_DSN:-}\" VITE_SENTRY_ENVIRONMENT=\"${VITE_SENTRY_ENVIRONMENT:-production}\" vite build --outDir dist-cloud && npx wrangler pages deploy dist-cloud --project-name=\"${CLOUD_PAGES_PROJECT:?set CLOUD_PAGES_PROJECT}\" --branch main --commit-dirty=true",
     "typecheck": "vue-tsc --noEmit",
     "lint": "eslint src tests",
     "test": "vitest run",

@@ -269,7 +269,7 @@ import { ApiClient, ApiClientError } from '../api/client'
 const auth = useAuthStore()
 const keyInput = ref('')
 
-// Every "Get started" link on impri.dev carries ?signup=1. Those visitors have no
+// Visitors arriving from a marketing page's "Get started" link (?signup=1) have no
 // key yet, so they land on the create step instead of a key prompt they can't use.
 // Creating a workspace stays an explicit click: a project is made the moment
 // /signup is called.

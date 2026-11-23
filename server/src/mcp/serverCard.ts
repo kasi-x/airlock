@@ -18,15 +18,20 @@ export function buildServerCard(baseUrl: string) {
     serverInfo: {
       // Registry identity (matches server.json's "name"), distinct from the
       // "@impri/mcp" Implementation.name the protocol's initialize response
-      // uses — see server/src/routes/mcp.ts.
-      name: 'io.github.sekera-radim/impri',
+      // uses — see server/src/routes/mcp.ts. Overridable so a deployment can
+      // claim its own directory identity without touching code; the default
+      // is this fork's GitHub identity, not upstream's.
+      name: process.env.MCP_REGISTRY_NAME ?? 'io.github.kasi-x/impri',
       title: SERVER_TITLE,
       version: VERSION,
     },
     description: 'Impri — human-in-the-loop approval inbox for AI agents. Push an action, wait for a human to approve or reject it, then report the result.',
     instructions: INSTRUCTIONS,
-    homepage: 'https://impri.dev',
-    documentation: 'https://impri.dev/docs',
+    // Derived from the serving baseUrl by default (self-host truth), with env
+    // overrides for deployments that host the inbox/docs elsewhere. Never
+    // hardcode upstream's domains here.
+    homepage: process.env.HOMEPAGE_URL ?? baseUrl,
+    documentation: process.env.DOCS_URL ?? baseUrl,
     transport: {
       type: 'streamable-http',
       url: `${baseUrl}/mcp`,

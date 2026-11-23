@@ -106,7 +106,7 @@ export function registerBillingRoutes(app: FastifyInstance, db: Db): void {
     }
 
     // Redirect back to the web UI, which may live on a different origin than
-    // the API (e.g. app.impri.dev vs api.impri.dev). Falls back to BASE_URL
+    // the API (inbox host vs API host). Falls back to BASE_URL
     // for same-origin self-hosting.
     const appUrl = process.env.APP_URL ?? process.env.BASE_URL ?? 'http://localhost:8484';
     const createSession = (customer: string) =>

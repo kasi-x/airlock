@@ -1,18 +1,20 @@
-# Impri production Caddy configuration
+# Production Caddy configuration
 #
+# Domains come from the environment (export API_DOMAIN / APP_DOMAIN before
+# starting Caddy, e.g. in deploy/.env — the compose file passes them through).
 # Caddy obtains and auto-renews TLS certificates from Let's Encrypt.
 # Both domains must have DNS A records pointing to this server's public IP
 # with Cloudflare proxy (orange cloud) DISABLED — see deploy/README.md.
 #
-# api.impri.dev  → Fastify server (port 8484 inside Docker network)
-# app.impri.dev  → nginx/Vue SPA inbox (port 8080 inside Docker network)
+# {$API_DOMAIN}  → Fastify server (port 8484 inside Docker network)
+# {$APP_DOMAIN}  → nginx/Vue SPA inbox (port 8080 inside Docker network)
 
 # Global options — email for Let's Encrypt account registration/expiry notices.
 {
-	email {$CADDY_ACME_EMAIL:admin@impri.dev}
+	email {$CADDY_ACME_EMAIL:admin@example.com}
 }
 
-api.impri.dev {
+{$API_DOMAIN:api.example.com} {
 	# Security headers for the API
 	header {
 		Strict-Transport-Security "max-age=63072000; includeSubDomains; preload"
@@ -28,7 +30,7 @@ api.impri.dev {
 	# Caddy streams the request body to the upstream without buffering or modification —
 	# no special config is required; this comment is here to explain why none is needed.
 	#
-	# Stripe will POST to https://api.impri.dev/v1/billing/webhook
+	# Stripe will POST to https://{$API_DOMAIN}/v1/billing/webhook
 	# and the Stripe-Signature header + raw body are forwarded as-is.
 
 	reverse_proxy server:8484 {
@@ -44,7 +46,7 @@ api.impri.dev {
 	}
 }
 
-app.impri.dev {
+{$APP_DOMAIN:app.example.com} {
 	# Security headers for the SPA inbox
 	header {
 		Strict-Transport-Security "max-age=63072000; includeSubDomains; preload"
@@ -53,9 +55,11 @@ app.impri.dev {
 		Referrer-Policy "strict-origin-when-cross-origin"
 		Permissions-Policy "geolocation=(), camera=(), microphone=()"
 		# Content-Security-Policy — tighten per your actual asset sources.
-		# Setting VITE_SENTRY_DSN? Add its ingest origin to connect-src, or the
-		# browser blocks Sentry events (see docs/observability.md).
-		Content-Security-Policy "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'self' https://api.impri.dev; frame-ancestors 'none'"
+		# The SPA talks to the API same-origin (nginx proxies /v1), so no extra
+		# connect-src is needed here. Setting VITE_SENTRY_DSN? Add its ingest
+		# origin to connect-src, or the browser blocks Sentry events
+		# (see docs/observability.md).
+		Content-Security-Policy "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'self'; frame-ancestors 'none'"
 		-Server
 	}
 

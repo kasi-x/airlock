@@ -7,8 +7,9 @@
 # Build context for ui is ui/ (its own package.json + vite config).
 #
 # Caddy handles TLS termination and reverse-proxies:
-#   api.impri.dev  → server:8484
-#   app.impri.dev  → ui:8080
+#   {$API_DOMAIN}  → server:8484
+#   {$APP_DOMAIN}  → ui:8080
+# (domains come from deploy/.env — see API_DOMAIN / APP_DOMAIN there)
 #
 # Do NOT expose server or ui ports to the host — Caddy is the only ingress.
 
@@ -24,7 +25,7 @@ services:
       PORT: "8484"
       HOST: "0.0.0.0"
       # Public URL of the web inbox — used to construct inbox_url in API responses.
-      BASE_URL: "${BASE_URL:-https://app.impri.dev}"
+      BASE_URL: "${BASE_URL:-https://app.example.com}"
 
       # Security
       WEBHOOK_SECRET: "${WEBHOOK_SECRET}"
@@ -92,8 +93,11 @@ services:
       - caddy-data:/data       # TLS certificates (persisted across restarts)
       - caddy-config:/config   # Caddy runtime config
     environment:
-      # Used by Caddyfile for Let's Encrypt account registration and expiry notices.
-      CADDY_ACME_EMAIL: "${CADDY_ACME_EMAIL:-admin@impri.dev}"
+      # Used by Caddyfile for Let's Encrypt account registration, expiry
+      # notices, and the {$API_DOMAIN}/{$APP_DOMAIN} site addresses.
+      CADDY_ACME_EMAIL: "${CADDY_ACME_EMAIL:-admin@example.com}"
+      API_DOMAIN: "${API_DOMAIN:-api.example.com}"
+      APP_DOMAIN: "${APP_DOMAIN:-app.example.com}"
     depends_on:
       server:
         condition: service_healthy

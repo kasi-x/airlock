@@ -130,7 +130,7 @@ function verificationEmailText(link: string): string {
     "If you didn't set this up, ignore this email — nothing more will be sent unless you confirm.",
     '',
     '--',
-    'Impri · https://impri.dev',
+    'Impri',
     '',
   ].join('\n');
 }

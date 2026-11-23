@@ -300,8 +300,8 @@ function channelMaxFails(): number {
   return Number(process.env.IMPRI_CHANNEL_MAX_FAILS ?? 5);
 }
 
-// Inbox links must point at the web UI (APP_URL, e.g. app.impri.dev), NOT the
-// API host (BASE_URL, api.impri.dev) which has no /inbox route → 404.
+// Inbox links must point at the web UI (APP_URL, the inbox host), NOT the
+// API host (BASE_URL, the API host) which has no /inbox route → 404.
 function baseUrl(): string {
   return process.env.APP_URL ?? process.env.BASE_URL ?? 'http://localhost:5173';
 }

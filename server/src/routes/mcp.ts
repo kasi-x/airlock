@@ -185,7 +185,9 @@ export function registerMcpRoutes(app: FastifyInstance, db: Db): void {
             .send(rpcError(
               id,
               -32001,
-              'Impri API key required: pass Authorization: Bearer im_… — create a free workspace at https://app.impri.dev',
+              // No hosted signup URL here on purpose: this fork has no cloud,
+              // so point at the local endpoints that always exist instead.
+              'Impri API key required: pass Authorization: Bearer im_… — create one via POST /v1/signup (when ALLOW_SIGNUP=1) or use the bootstrap admin key from the server logs',
             ));
         }
 

@@ -1,6 +1,4 @@
-# app.impri.dev is the signed-in approval inbox: nothing here is meant for a
-# search index. Product pages and docs live on https://impri.dev/.
+# This host is the signed-in approval inbox: nothing here is meant for a
+# search index, and this self-hosted instance has no public product pages.
 User-agent: *
 Disallow: /
-
-Sitemap: https://impri.dev/sitemap.xml

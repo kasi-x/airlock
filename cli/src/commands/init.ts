@@ -90,7 +90,7 @@ function promptYN(question: string, defaultN = true): Promise<boolean> {
 // ─── Signup (cloud only) ─────────────────────────────────────────────────────
 
 async function runSignup(baseUrl: string, projectName: string): Promise<string> {
-  process.stdout.write('Creating a free project on Impri Cloud...\n')
+  process.stdout.write('Creating a project on the hosted server...\n')
   const res = await fetch(`${baseUrl}/v1/signup`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
@@ -99,11 +99,11 @@ async function runSignup(baseUrl: string, projectName: string): Promise<string> 
 
   if (!res.ok) {
     if (res.status === 404) {
-      printError('ALLOW_SIGNUP is not enabled on this server. Visit https://app.impri.dev to sign up.')
+      printError('ALLOW_SIGNUP is not enabled on this server. Ask the operator to enable it, or use an existing key.')
       process.exit(1)
     }
     if (res.status === 503 || res.status === 429) {
-      printError('Server is currently rate-limiting signups. Please try again in a moment or visit https://app.impri.dev.')
+      printError('Server is currently rate-limiting signups. Please try again in a moment.')
       process.exit(1)
     }
     const body = await res.json().catch(() => ({})) as Record<string, unknown>
@@ -166,10 +166,16 @@ async function runInit(opts: {
 }): Promise<void> {
   process.stdout.write(`${bold('Impri CLI')} — human-in-the-loop approval for AI agents\n\n`)
 
-  // Step 2: base URL
+  // Step 2: base URL. `--cloud` reads the hosted API base URL from the
+  // IMPRI_CLOUD_URL env var — this fork ships no hardcoded cloud endpoint.
   let baseUrl: string
   if (opts.cloud) {
-    baseUrl = 'https://api.impri.dev'
+    const cloudUrl = process.env['IMPRI_CLOUD_URL']
+    if (!cloudUrl) {
+      printError('--cloud requires IMPRI_CLOUD_URL (hosted API base URL). This build has no default cloud; point --base-url at your self-hosted server instead.')
+      process.exit(1)
+    }
+    baseUrl = cloudUrl.replace(/\/+$/, '')
   } else if (opts.baseUrl) {
     baseUrl = opts.baseUrl.replace(/\/+$/, '')
   } else {
@@ -275,7 +281,7 @@ export function registerInit(program: Command): void {
       'Supply the key via the interactive prompt, piped stdin, or IMPRI_API_KEY env var.',
     )
     .option('--base-url <url>', 'API base URL')
-    .option('--cloud', 'Use https://api.impri.dev as base URL')
+    .option('--cloud', 'Use the hosted cloud base URL from the IMPRI_CLOUD_URL env var')
     .option('--signup', 'Create a free project (cloud only)')
     .option('--name <name>', 'Project name for signup')
     .option('--demo', 'Seed two sample actions after connecting')
@@ -295,7 +301,7 @@ export function registerLogin(program: Command): void {
       'Supply the key via the interactive prompt, piped stdin, or IMPRI_API_KEY env var.',
     )
     .option('--base-url <url>', 'API base URL')
-    .option('--cloud', 'Use https://api.impri.dev as base URL')
+    .option('--cloud', 'Use the hosted cloud base URL from the IMPRI_CLOUD_URL env var')
     .action(async (opts: { baseUrl?: string; cloud?: boolean }) => {
       await runInit(opts)
     })

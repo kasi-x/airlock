@@ -8,7 +8,9 @@ import { approvalsLimitReached } from './billing.js';
 import { incCounter, noopLogger, type Logger } from './metrics.js';
 import { noopReporter, type ErrorReporter } from './sentry.js';
 
-const WATCHER_USER_AGENT = 'Impri-Watcher/1.0 (+https://impri.dev/bot)';
+// Outbound User-Agent for watcher fetches. Identifies the product without
+// advertising any hosted domain (there is none in this fork).
+const WATCHER_USER_AGENT = 'Impri-Watcher/1.0';
 const FETCH_TIMEOUT_MS = 15_000;
 // Cap response body to bound memory: a watcher URL serving a huge payload
 // (accidental or malicious) must not OOM the process. PLAYBOOK B1 / econ report.

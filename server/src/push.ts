@@ -18,7 +18,10 @@ function ensureConfigured(): boolean {
   if (!pushEnabled()) return false;
   if (!configured) {
     webpush.setVapidDetails(
-      process.env.VAPID_SUBJECT ?? 'mailto:admin@impri.dev',
+      // Placeholder default — push services require a contact URI, but the
+      // real operator address must come from VAPID_SUBJECT (see
+      // deploy/.env.example). No upstream domain here.
+      process.env.VAPID_SUBJECT ?? 'mailto:admin@example.com',
       process.env.VAPID_PUBLIC_KEY as string,
       process.env.VAPID_PRIVATE_KEY as string,
     );

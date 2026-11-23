@@ -68,7 +68,7 @@ export async function awaitDecision(
     const remaining = deadline - Date.now();
     if (remaining <= 0) {
       return {
-        text: `Timed out after ${timeoutS}s waiting for action ${args.action_id}. It is still pending — use impri_inbox_status to check queue depth or open the inbox at https://impri.dev/inbox.`,
+        text: `Timed out after ${timeoutS}s waiting for action ${args.action_id}. It is still pending — use impri_inbox_status to check queue depth, or open the inbox of your IMPRI_BASE_URL server (${config.baseUrl}).`,
         isError: true,
       };
     }

@@ -110,7 +110,7 @@ describe('POST /mcp — anonymous access (metadata only, same as the public serv
     const body = res.json();
     expect(body.error.code).toBe(-32001);
     expect(body.error.message).toContain('Authorization: Bearer im_');
-    expect(body.error.message).toContain('https://app.impri.dev');
+    expect(body.error.message).toContain('/v1/signup');
     // The error still carries the request's own id, unlike the old blanket
     // 401 (which couldn't — it ran before the body was even parsed).
     expect(body.id).toBe(1);
