@@ -17,14 +17,14 @@ The fix isn't picking one extreme or the other. It's gating every publish call t
 Every generated piece of content becomes its own action, with the CMS write as the gated call. In Node.js, for a catalog-import agent writing to a headless CMS:
 
 ```javascript
-const IMPRI_BASE = "https://api.impri.dev";
+const AIRLOCK_BASE = "https://api.airlock.dev";
 const headers = {
-  Authorization: `Bearer ${process.env.IMPRI_API_KEY}`,
+  Authorization: `Bearer ${process.env.AIRLOCK_API_KEY}`,
   "Content-Type": "application/json",
 };
 
 async function pushDraft(sku, title, body, cmsPreviewUrl) {
-  const res = await fetch(`${IMPRI_BASE}/v1/actions`, {
+  const res = await fetch(`${AIRLOCK_BASE}/v1/actions`, {
     method: "POST",
     headers,
     body: JSON.stringify({
@@ -45,7 +45,7 @@ async function awaitAndPublish(actionId, sku) {
   let status = "pending", decision;
   while (status === "pending") {
     await new Promise((r) => setTimeout(r, 10_000));
-    const res = await fetch(`${IMPRI_BASE}/v1/actions/${actionId}`, { headers });
+    const res = await fetch(`${AIRLOCK_BASE}/v1/actions/${actionId}`, { headers });
     ({ status, decision } = await res.json());
   }
   if (status !== "approved") {
@@ -53,7 +53,7 @@ async function awaitAndPublish(actionId, sku) {
     return;
   }
   await publishToCms(sku, decision.final_preview.body); // your CMS write
-  await fetch(`${IMPRI_BASE}/v1/actions/${actionId}/result`, {
+  await fetch(`${AIRLOCK_BASE}/v1/actions/${actionId}/result`, {
     method: "POST",
     headers,
     body: JSON.stringify({ status: "executed" }),
@@ -70,8 +70,8 @@ async function awaitAndPublish(actionId, sku) {
 For the drafts that pass a quick skim — no odd claims, no missing fields, on-brand tone — reviewing 200 individual cards is where teams actually give up on the gate. `POST /v1/actions/bulk-decision` takes up to 50 pending action IDs and a single verdict, so a reviewer can select a page of safe-looking cards in the inbox and approve them in one call instead of one hundred:
 
 ```bash
-curl -X POST https://api.impri.dev/v1/actions/bulk-decision \
-  -H "Authorization: Bearer $IMPRI_API_KEY" \
+curl -X POST https://api.airlock.dev/v1/actions/bulk-decision \
+  -H "Authorization: Bearer $AIRLOCK_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "ids": ["act_101", "act_102", "act_103"],
@@ -101,8 +101,8 @@ Same rule as any gated action: `rejected` and `expired` mean `publishToCms` neve
 
 ---
 
-## What Impri doesn't check
+## What Airlock doesn't check
 
-Impri stores the draft, notifies a reviewer, and holds the decision — it does not verify that a product claim is accurate, does not check brand style guidelines, and never writes to your CMS itself. That judgment is exactly what the human reviewing the card is there for. For the underlying three-call pattern, see [how to add human approval to an AI agent](how-to-add-human-approval-to-an-ai-agent.md); for the full bulk-decision reference including rate limits and the inbox keyboard shortcuts, see [inbox](inbox.md). Once content approval is flowing through Impri, [the audit log](audit-log.md) gives you a record of every SKU published, by whom, and what the agent's original draft said before it was edited.
+Airlock stores the draft, notifies a reviewer, and holds the decision — it does not verify that a product claim is accurate, does not check brand style guidelines, and never writes to your CMS itself. That judgment is exactly what the human reviewing the card is there for. For the underlying three-call pattern, see [how to add human approval to an AI agent](how-to-add-human-approval-to-an-ai-agent.md); for the full bulk-decision reference including rate limits and the inbox keyboard shortcuts, see [inbox](inbox.md). Once content approval is flowing through Airlock, [the audit log](audit-log.md) gives you a record of every SKU published, by whom, and what the agent's original draft said before it was edited.
 
 Next step: [quickstart](quickstart.md) to get an API key and try this against a small batch first.

@@ -16,7 +16,7 @@ Email is a notification channel like Slack or Telegram — configured once per p
 import requests
 
 resp = requests.post(
-    "https://api.impri.dev/v1/notification-channels",
+    "https://api.airlock.dev/v1/notification-channels",
     headers={"Authorization": f"Bearer {ADMIN_KEY}"},
     json={
         "name": "Ops inbox",
@@ -29,7 +29,7 @@ resp = requests.post(
 channel = resp.json()
 ```
 
-Impri then sends one confirmation email to that address. Nothing else arrives until someone opens the link and clicks **Confirm email address** — so a typo, or someone else's address, never gets your approval traffic. The channel's `verified` field turns `true` once that happens; if the email got lost, `POST /v1/notification-channels/{id}/resend-verification` (or the button next to the channel) sends a fresh link.
+Airlock then sends one confirmation email to that address. Nothing else arrives until someone opens the link and clicks **Confirm email address** — so a typo, or someone else's address, never gets your approval traffic. The channel's `verified` field turns `true` once that happens; if the email got lost, `POST /v1/notification-channels/{id}/resend-verification` (or the button next to the channel) sends a fresh link.
 
 `digest_window_sec` matters more for email than for chat channels. Set it to 300-600 seconds and a burst of actions landing within that window arrives as one email instead of ten separate ones hitting your inbox back to back.
 
@@ -43,7 +43,7 @@ Say an agent manages calendar invites for a small team — it reads a shared inb
 import requests, time
 
 action = requests.post(
-    "https://api.impri.dev/v1/actions",
+    "https://api.airlock.dev/v1/actions",
     headers={"Authorization": f"Bearer {AGENT_KEY}"},
     json={
         "kind": "calendar.event.create",
@@ -60,7 +60,7 @@ action_id = action["id"]
 
 while True:
     result = requests.get(
-        f"https://api.impri.dev/v1/actions/{action_id}",
+        f"https://api.airlock.dev/v1/actions/{action_id}",
         headers={"Authorization": f"Bearer {AGENT_KEY}"},
     ).json()
     if result["status"] != "pending":
@@ -71,7 +71,7 @@ if result["status"] == "approved":
     body = result["decision"]["final_preview"]["body"]
     create_calendar_event(body)  # your booking function
     requests.post(
-        f"https://api.impri.dev/v1/actions/{action_id}/result",
+        f"https://api.airlock.dev/v1/actions/{action_id}/result",
         headers={"Authorization": f"Bearer {AGENT_KEY}"},
         json={"status": "executed"},
     )

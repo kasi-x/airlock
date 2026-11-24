@@ -248,7 +248,7 @@ CREATE INDEX IF NOT EXISTS idx_notification_channels_digest_due
   ON notification_channels(last_fired_at)
   WHERE enabled = 1 AND digest_queue != '[]';
 
--- Every email Impri sends to a project-supplied address, kept ~2 days so the
+-- Every email Airlock sends to a project-supplied address, kept ~2 days so the
 -- per-address / per-project limits can be counted over a rolling 24 h window.
 -- Addresses are stored as sha256 only.
 CREATE TABLE IF NOT EXISTS email_sends (

@@ -3,7 +3,7 @@ from __future__ import annotations
 
 import unittest
 
-from impri import ImpriClient, ImpriNotFound, ImpriQuotaExceeded, ImpriValidationError
+from airlock import AirlockClient, AirlockNotFound, AirlockQuotaExceeded, AirlockValidationError
 from .mock_transport import MockTransport
 
 API_KEY = "im_testkey123"
@@ -11,7 +11,7 @@ API_KEY = "im_testkey123"
 
 def make_client(*responses):
     transport = MockTransport(list(responses))
-    return ImpriClient(api_key=API_KEY, _transport=transport), transport
+    return AirlockClient(api_key=API_KEY, _transport=transport), transport
 
 
 # ---------------------------------------------------------------------------
@@ -264,14 +264,14 @@ class TestCreateWatcherFromPresetResponse(unittest.TestCase):
 
     def test_raises_not_found_on_unknown_preset(self):
         client, _ = make_client((404, {"error": "preset_not_found"}))
-        with self.assertRaises(ImpriNotFound):
+        with self.assertRaises(AirlockNotFound):
             client.create_watcher_from_preset("nonexistent-preset")
 
     def test_raises_validation_error_on_missing_required_param(self):
         client, _ = make_client(
             (400, {"error": "Bad Request", "issues": [{"message": "keyword is required"}]})
         )
-        with self.assertRaises(ImpriValidationError) as ctx:
+        with self.assertRaises(AirlockValidationError) as ctx:
             client.create_watcher_from_preset("hn-keyword", params={})
         self.assertIn("keyword", ctx.exception.issues[0]["message"])
 
@@ -279,7 +279,7 @@ class TestCreateWatcherFromPresetResponse(unittest.TestCase):
         client, _ = make_client(
             (400, {"error": "Bad Request", "issues": [{"message": "Invalid channel_id format"}]})
         )
-        with self.assertRaises(ImpriValidationError):
+        with self.assertRaises(AirlockValidationError):
             client.create_watcher_from_preset(
                 "youtube-channel",
                 params={"channel_id": "invalid!"},
@@ -289,7 +289,7 @@ class TestCreateWatcherFromPresetResponse(unittest.TestCase):
         client, _ = make_client(
             (402, {"error": "Payment Required", "message": "Watcher limit", "limit": 3, "tier": "free"})
         )
-        with self.assertRaises(ImpriQuotaExceeded) as ctx:
+        with self.assertRaises(AirlockQuotaExceeded) as ctx:
             client.create_watcher_from_preset("hn-front-page")
         self.assertEqual(ctx.exception.limit, 3)
         self.assertEqual(ctx.exception.tier, "free")

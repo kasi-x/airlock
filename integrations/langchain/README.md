@@ -1,14 +1,14 @@
-# Impri — LangChain / LangGraph integration
+# Airlock — LangChain / LangGraph integration
 
 Human-in-the-loop approval gate for LangChain tools and LangGraph graphs.
-Before a gated tool runs, the proposed call is submitted to your Impri inbox
+Before a gated tool runs, the proposed call is submitted to your Airlock inbox
 as a pending action. The agent blocks (polling `GET /v1/actions/:id`) until a
 human approves or rejects in the web inbox. On approval the wrapped tool
-executes; on rejection `ImpriRejected` propagates back to the agent.
+executes; on rejection `AirlockRejected` propagates back to the agent.
 
 **No third-party dependencies for the core client** — uses Python stdlib only
 (`urllib.request`, `json`, `time`). `langchain-core` is needed only for
-`ImpriApprovalTool`.
+`AirlockApprovalTool`.
 
 ---
 
@@ -16,7 +16,7 @@ executes; on rejection `ImpriRejected` propagates back to the agent.
 
 ```bash
 # Core client only (no langchain required)
-cp -r integrations/langchain /your/project/impri_langchain
+cp -r integrations/langchain /your/project/airlock_langchain
 
 # With LangChain tool support
 pip install langchain-core
@@ -27,21 +27,21 @@ pip install langgraph langchain-anthropic
 Set your API key:
 
 ```bash
-export IMPRI_API_KEY=im_...          # get one at https://app.impri.dev
-export IMPRI_BASE_URL=https://api.impri.dev   # or leave unset for self-hosted localhost:8484
+export AIRLOCK_API_KEY=im_...          # get one at https://app.airlock.dev
+export AIRLOCK_BASE_URL=https://api.airlock.dev   # or leave unset for self-hosted localhost:8484
 ```
 
 ---
 
 ## Runnable snippet — basic approval gate
 
-This snippet works without LangChain. Run it with `IMPRI_API_KEY` set:
+This snippet works without LangChain. Run it with `AIRLOCK_API_KEY` set:
 
 ```python
 import os
-from impri_langchain import ImpriClient, ImpriRejected, ImpriTimeout
+from airlock_langchain import AirlockClient, AirlockRejected, AirlockTimeout
 
-client = ImpriClient()  # reads IMPRI_API_KEY / IMPRI_BASE_URL from env
+client = AirlockClient()  # reads AIRLOCK_API_KEY / AIRLOCK_BASE_URL from env
 
 # 1. Propose an action for human review
 action = client.create_action(
@@ -59,10 +59,10 @@ print(f"Pending: {action['inbox_url']}")   # open this to review the action
 # 2. Block until the human decides (polls every 5 s, times out after 5 min)
 try:
     approved = client.await_decision(action["id"], timeout_s=300)
-except ImpriRejected as exc:
+except AirlockRejected as exc:
     print("Rejected — stopping.")
     raise SystemExit(0)
-except ImpriTimeout:
+except AirlockTimeout:
     print("No decision yet — try again later.")
     raise SystemExit(1)
 
@@ -81,18 +81,18 @@ client.report_result(action["id"], "executed")
 
 ## LangChain tool wrapper
 
-Wrap any `BaseTool` with an Impri approval gate. The wrapped tool's `name`,
+Wrap any `BaseTool` with an Airlock approval gate. The wrapped tool's `name`,
 `description`, and `args_schema` are inherited, so the LLM sees identical
 metadata — only the execution path changes.
 
 ```python
 from langchain_community.tools.shell import ShellTool
-from impri_langchain import ImpriClient, ImpriApprovalTool, ImpriRejected
+from airlock_langchain import AirlockClient, AirlockApprovalTool, AirlockRejected
 
-client = ImpriClient()
+client = AirlockClient()
 
 # Wrap ShellTool so every shell command needs human sign-off
-safe_shell = ImpriApprovalTool.wrap(
+safe_shell = AirlockApprovalTool.wrap(
     ShellTool(),
     client=client,
     kind="shell.exec",
@@ -105,7 +105,7 @@ safe_shell = ImpriApprovalTool.wrap(
 try:
     result = safe_shell.run("ls -la /tmp")
     print(result)
-except ImpriRejected:
+except AirlockRejected:
     print("Human rejected the shell command.")
 ```
 
@@ -113,7 +113,7 @@ except ImpriRejected:
 
 ## LangGraph integration
 
-`ImpriApprovalTool` is a standard `BaseTool` subclass — register it in
+`AirlockApprovalTool` is a standard `BaseTool` subclass — register it in
 `ToolNode` exactly like any other tool. The graph pauses at the `tools` node
 until the inbox action is decided.
 
@@ -126,11 +126,11 @@ from langchain_community.tools.shell import ShellTool
 from langgraph.graph import StateGraph, MessagesState
 from langgraph.prebuilt import ToolNode
 
-from impri_langchain import ImpriClient, ImpriApprovalTool, ImpriRejected
+from airlock_langchain import AirlockClient, AirlockApprovalTool, AirlockRejected
 
 # ── Build the approval-gated tool ──────────────────────────────────────────
-client = ImpriClient()
-safe_shell = ImpriApprovalTool.wrap(
+client = AirlockClient()
+safe_shell = AirlockApprovalTool.wrap(
     ShellTool(),
     client=client,
     kind="shell.exec",
@@ -164,7 +164,7 @@ from langchain_core.messages import HumanMessage
 try:
     result = graph.invoke({"messages": [HumanMessage("List the files in /tmp")]})
     print(result["messages"][-1].content)
-except ImpriRejected:
+except AirlockRejected:
     print("The human reviewer rejected the proposed shell command.")
 ```
 
@@ -177,9 +177,9 @@ multi-step database migration — use the client primitives directly inside a
 custom graph node:
 
 ```python
-from impri_langchain import ImpriClient, ImpriRejected
+from airlock_langchain import AirlockClient, AirlockRejected
 
-client = ImpriClient()
+client = AirlockClient()
 
 
 def human_gate_node(state):
@@ -195,7 +195,7 @@ def human_gate_node(state):
 
     try:
         approved = client.await_decision(action["id"], timeout_s=600)
-    except ImpriRejected:
+    except AirlockRejected:
         return {"status": "rejected", "sql": sql}
 
     # Use the human-approved (possibly edited) SQL
@@ -215,10 +215,10 @@ def human_gate_node(state):
 
 | Parameter | Env var | Default |
 |-----------|---------|---------|
-| `api_key` | `IMPRI_API_KEY` | — (required) |
-| `base_url` | `IMPRI_BASE_URL` | `http://localhost:8484` |
+| `api_key` | `AIRLOCK_API_KEY` | — (required) |
+| `base_url` | `AIRLOCK_BASE_URL` | `http://localhost:8484` |
 
-Cloud endpoint: `https://api.impri.dev` — set `IMPRI_BASE_URL=https://api.impri.dev`.
+Cloud endpoint: `https://api.airlock.dev` — set `AIRLOCK_BASE_URL=https://api.airlock.dev`.
 
 ---
 
@@ -226,34 +226,34 @@ Cloud endpoint: `https://api.impri.dev` — set `IMPRI_BASE_URL=https://api.impr
 
 | Exception | When |
 |-----------|------|
-| `ImpriConfigError` | `api_key` missing at construction time |
-| `ImpriUnauthorized` | 401/403 — wrong key or missing scope (`actions` required) |
-| `ImpriNotFound` | 404 — unknown `action_id` or wrong project |
-| `ImpriConflict` | 409 — action already decided or idempotency race |
-| `ImpriExpired` | 410 — approval window closed |
-| `ImpriRateLimited` | 429 — per-key rate limit (60 POST/min, 300 GET/min) |
-| `ImpriQuotaExceeded` | 402 — monthly limit reached (cloud tiers) |
-| `ImpriValidationError` | 400/422 — bad request body |
-| `ImpriApiError` | Other 4xx/5xx — carries `.status_code` |
-| `ImpriRejected` | `await_decision` when human rejected — **not an error; handle as a branch** |
-| `ImpriTimeout` | `await_decision` when `timeout_s` elapsed; action still pending |
+| `AirlockConfigError` | `api_key` missing at construction time |
+| `AirlockUnauthorized` | 401/403 — wrong key or missing scope (`actions` required) |
+| `AirlockNotFound` | 404 — unknown `action_id` or wrong project |
+| `AirlockConflict` | 409 — action already decided or idempotency race |
+| `AirlockExpired` | 410 — approval window closed |
+| `AirlockRateLimited` | 429 — per-key rate limit (60 POST/min, 300 GET/min) |
+| `AirlockQuotaExceeded` | 402 — monthly limit reached (cloud tiers) |
+| `AirlockValidationError` | 400/422 — bad request body |
+| `AirlockApiError` | Other 4xx/5xx — carries `.status_code` |
+| `AirlockRejected` | `await_decision` when human rejected — **not an error; handle as a branch** |
+| `AirlockTimeout` | `await_decision` when `timeout_s` elapsed; action still pending |
 
-All exceptions inherit from `ImpriError`.
+All exceptions inherit from `AirlockError`.
 
 ```python
-from impri_langchain import ImpriError, ImpriRejected, ImpriTimeout
+from airlock_langchain import AirlockError, AirlockRejected, AirlockTimeout
 
 try:
     approved = client.await_decision(action_id)
-except ImpriRejected:
+except AirlockRejected:
     # Normal outcome — the reviewer said no. Don't log as an error.
     return stop_task()
-except ImpriTimeout:
+except AirlockTimeout:
     # Still pending — retry later or alert the operator.
     schedule_retry(action_id)
-except ImpriError as exc:
+except AirlockError as exc:
     # Unexpected API / config problem.
-    logger.error("Impri error: %s", exc)
+    logger.error("Airlock error: %s", exc)
     raise
 ```
 

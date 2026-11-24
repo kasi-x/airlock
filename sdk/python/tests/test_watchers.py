@@ -1,9 +1,9 @@
-"""Unit tests for watcher and key/project ImpriClient methods."""
+"""Unit tests for watcher and key/project AirlockClient methods."""
 from __future__ import annotations
 
 import unittest
 
-from impri import ImpriClient, ImpriNotFound, ImpriQuotaExceeded
+from airlock import AirlockClient, AirlockNotFound, AirlockQuotaExceeded
 from .mock_transport import MockTransport
 
 API_KEY = "im_testkey123"
@@ -11,7 +11,7 @@ API_KEY = "im_testkey123"
 
 def make_client(*responses):
     transport = MockTransport(list(responses))
-    return ImpriClient(api_key=API_KEY, _transport=transport), transport
+    return AirlockClient(api_key=API_KEY, _transport=transport), transport
 
 
 # ---------------------------------------------------------------------------
@@ -91,7 +91,7 @@ class TestCreateWatcher(unittest.TestCase):
 
     def test_raises_quota_exceeded_on_402(self):
         client, _ = make_client((402, {"error": "Payment Required", "message": "Watcher limit", "limit": 3, "tier": "free"}))
-        with self.assertRaises(ImpriQuotaExceeded) as ctx:
+        with self.assertRaises(AirlockQuotaExceeded) as ctx:
             client.create_watcher(
                 name="X",
                 kind="rss",
@@ -141,7 +141,7 @@ class TestGetWatcher(unittest.TestCase):
 
     def test_raises_not_found(self):
         client, _ = make_client((404, {"error": "Not Found"}))
-        with self.assertRaises(ImpriNotFound):
+        with self.assertRaises(AirlockNotFound):
             client.get_watcher("wat_missing")
 
 
@@ -245,7 +245,7 @@ class TestRevokeKey(unittest.TestCase):
 
     def test_raises_not_found_on_404(self):
         client, _ = make_client((404, {"error": "Not Found"}))
-        with self.assertRaises(ImpriNotFound):
+        with self.assertRaises(AirlockNotFound):
             client.revoke_key("key_missing")
 
 

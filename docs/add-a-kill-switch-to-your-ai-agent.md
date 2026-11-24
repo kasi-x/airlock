@@ -1,6 +1,6 @@
 # Add a Kill Switch to Your AI Agent
 
-A kill switch for your AI agent that actually holds: wrap every action tool in an Impri approval gate so reject or expiry stops the agent in its tracks.
+A kill switch for your AI agent that actually holds: wrap every action tool in an Airlock approval gate so reject or expiry stops the agent in its tracks.
 
 ---
 
@@ -10,20 +10,20 @@ Telling an agent "pause and ask me before taking action" works sometimes. It rel
 
 A prompt instruction is a soft constraint. What you need for a reliable kill switch is a *hard constraint*: code that the agent cannot route around. Every execution path to a side effect must require an external approved signal, not just a model decision.
 
-This is exactly what Impri gives you when you wire it correctly.
+This is exactly what Airlock gives you when you wire it correctly.
 
 ---
 
 ## The approval gate as a kill switch
 
-The agent's action tools are where side effects happen — sending messages, calling APIs, posting content, making changes. If you wrap those tools so they cannot execute without an approved Impri decision, the pattern looks like this:
+The agent's action tools are where side effects happen — sending messages, calling APIs, posting content, making changes. If you wrap those tools so they cannot execute without an approved Airlock decision, the pattern looks like this:
 
 ```
 agent decides to take action
     │
     ├── calls your wrapped action tool
     │       │
-    │       ├── POST /v1/actions  →  Impri stores it, you are notified
+    │       ├── POST /v1/actions  →  Airlock stores it, you are notified
     │       ├── polls for decision
     │       │
     │       ├─[approved]─  proceeds, executes with final_preview content
@@ -43,9 +43,9 @@ Here is a small wrapper that turns a bare "post Slack message" function into a g
 ```typescript
 import fetch from "node-fetch";
 
-const API_BASE = "https://api.impri.dev";
+const API_BASE = "https://api.airlock.dev";
 const HEADERS = {
-  Authorization: `Bearer ${process.env.IMPRI_API_KEY}`,
+  Authorization: `Bearer ${process.env.AIRLOCK_API_KEY}`,
   "Content-Type": "application/json",
 };
 
@@ -127,13 +127,13 @@ Short `expires_in` values (900–3600 seconds) work well for autonomous agents. 
 
 ## Limitations: what this does not cover
 
-Impri is a chokepoint you confine the agent to, not a network-level firewall. The wrapping only holds when the agent has no other path to the side effect. Specifically:
+Airlock is a chokepoint you confine the agent to, not a network-level firewall. The wrapping only holds when the agent has no other path to the side effect. Specifically:
 
 - If the agent also has the raw Slack token in its context, it can call Slack directly and bypass the wrapper.
 - If other tools in the agent's toolkit can achieve the same effect (a different messaging integration, a webhook call, etc.), those also need the same treatment.
-- Impri does not intercept egress traffic. It is a data-dependency gate: the execution code can only reach the side-effect call through a branch that requires an approved response.
+- Airlock does not intercept egress traffic. It is a data-dependency gate: the execution code can only reach the side-effect call through a branch that requires an approved response.
 
-The practical setup: give the agent API keys only for your Impri-wrapped tools, never for the underlying services directly. The wrapper holds the real credentials; the agent context does not.
+The practical setup: give the agent API keys only for your Airlock-wrapped tools, never for the underlying services directly. The wrapper holds the real credentials; the agent context does not.
 
 ---
 
@@ -150,5 +150,5 @@ A kill switch only works if you see the pending action. For autonomous agents pu
 ## Next steps
 
 - [Quickstart](quickstart.md) — issue your first API key and push a test action
-- [MCP server](mcp.md) — if your agent runs inside Claude Code or another MCP client, the `impri_push_action` and `impri_await_decision` tools wrap this same pattern without any HTTP code
+- [MCP server](mcp.md) — if your agent runs inside Claude Code or another MCP client, the `airlock_push_action` and `airlock_await_decision` tools wrap this same pattern without any HTTP code
 - [Webhooks](webhooks.md) — receive a push notification on decision instead of polling, if your infrastructure supports inbound HTTP

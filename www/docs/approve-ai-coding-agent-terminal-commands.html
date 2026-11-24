@@ -3,21 +3,21 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Approve Terminal Commands Before Your AI Coding Agent… — Impri Docs</title>
+<title>Approve Terminal Commands Before Your AI Coding Agent… — Airlock Docs</title>
 <meta name="description" content="Gate the shell commands an autonomous coding agent wants to run — rm, git push, npm publish — behind a human approval so nothing destructive executes…">
 <meta name="theme-color" content="#06070d">
-<meta property="og:title" content="Approve Terminal Commands Before Your AI Coding Agent… — Impri Docs">
+<meta property="og:title" content="Approve Terminal Commands Before Your AI Coding Agent… — Airlock Docs">
 <meta property="og:description" content="Gate the shell commands an autonomous coding agent wants to run — rm, git push, npm publish — behind a human approval so nothing destructive executes…">
 <meta property="og:type" content="article">
-<meta property="og:url" content="https://impri.dev/docs/approve-ai-coding-agent-terminal-commands">
-<meta property="og:image" content="https://impri.dev/assets/og/og-docs.png">
+<meta property="og:url" content="https://airlock.dev/docs/approve-ai-coding-agent-terminal-commands">
+<meta property="og:image" content="https://airlock.dev/assets/og/og-docs.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
-<meta property="og:image:alt" content="Impri — human-in-the-loop approval inbox for AI agents">
+<meta property="og:image:alt" content="Airlock — human-in-the-loop approval inbox for AI agents">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="https://impri.dev/assets/og/og-docs.png">
-<link rel="canonical" href="https://impri.dev/docs/approve-ai-coding-agent-terminal-commands">
-<script type="application/ld+json">{"@context":"https://schema.org","@type":"TechArticle","headline":"Approve Terminal Commands Before Your AI Coding Agent Runs Them","description":"Gate the shell commands an autonomous coding agent wants to run — rm, git push, npm publish — behind a human approval so nothing destructive executes…","url":"https://impri.dev/docs/approve-ai-coding-agent-terminal-commands","inLanguage":"en","author":{"@type":"Organization","name":"Impri","url":"https://impri.dev"},"publisher":{"@type":"Organization","name":"Impri","url":"https://impri.dev"}}</script>
+<meta name="twitter:image" content="https://airlock.dev/assets/og/og-docs.png">
+<link rel="canonical" href="https://airlock.dev/docs/approve-ai-coding-agent-terminal-commands">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"TechArticle","headline":"Approve Terminal Commands Before Your AI Coding Agent Runs Them","description":"Gate the shell commands an autonomous coding agent wants to run — rm, git push, npm publish — behind a human approval so nothing destructive executes…","url":"https://airlock.dev/docs/approve-ai-coding-agent-terminal-commands","inLanguage":"en","author":{"@type":"Organization","name":"Airlock","url":"https://airlock.dev"},"publisher":{"@type":"Organization","name":"Airlock","url":"https://airlock.dev"}}</script>
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <link rel="icon" href="/favicon.ico" sizes="32x32">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='9' fill='%236366f1'/%3E%3Cpath d='M9 16.5l4.5 4.5L23 11' stroke='white' stroke-width='3' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
@@ -132,13 +132,13 @@ pre code.hljs{display:block;overflow-x:auto}
 <div class="wrap nav-inner">
   <a class="brand" href="/">
     <span class="mark"><svg viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.5 4.5L19 7.5" stroke="white" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
-    Impri
+    Airlock
   </a>
   <div class="nav-links">
     <a class="link" href="/#how">How it works</a>
     <a class="link" href="/#pricing">Pricing</a>
     <a class="link active-nav" href="../docs">Docs</a>
-    <a class="btn btn-primary btn-sm" href="https://gitlab.com/sekera.radim/impri">GitLab</a>
+    <a class="btn btn-primary btn-sm" href="https://gitlab.com/sekera.radim/airlock">GitLab</a>
   </div>
 </div>
 </nav>
@@ -157,15 +157,15 @@ pre code.hljs{display:block;overflow-x:auto}
 <hr>
 <h2 id="the-specific-risk-with-coding-agents">The specific risk with coding agents</h2>
 <p>A coding agent that can run arbitrary shell commands is, by design, one bad plan away from <code>rm -rf</code> on the wrong directory, a force-push over a colleague&#39;s branch, or a <code>npm publish</code> that ships a half-finished package. Prompt-based safeguards (&quot;ask before doing anything destructive&quot;) are advisory — the model can talk itself past its own instructions, especially under a long context or a misleading tool result. What actually stops the command is the executor never running it without an external decision.</p>
-<p>The pattern below wraps the agent&#39;s command-execution tool so every command that isn&#39;t on a pre-approved allowlist goes through Impri first — and the wrapper, not the model, decides whether the real <code>subprocess.run</code> call ever happens.</p>
+<p>The pattern below wraps the agent&#39;s command-execution tool so every command that isn&#39;t on a pre-approved allowlist goes through Airlock first — and the wrapper, not the model, decides whether the real <code>subprocess.run</code> call ever happens.</p>
 <hr>
 <h2 id="wrapping-the-executor">Wrapping the executor</h2>
 <div class="code-block"><span class="code-lang">python</span><pre><code class="hljs"><span class="hljs-keyword">import</span> subprocess
 <span class="hljs-keyword">import</span> time
 <span class="hljs-keyword">import</span> requests
 
-IMPRI_BASE = <span class="hljs-string">&quot;https://api.impri.dev&quot;</span>
-HEADERS = {<span class="hljs-string">&quot;Authorization&quot;</span>: <span class="hljs-string">f&quot;Bearer <span class="hljs-subst">{IMPRI_API_KEY}</span>&quot;</span>}
+AIRLOCK_BASE = <span class="hljs-string">&quot;https://api.airlock.dev&quot;</span>
+HEADERS = {<span class="hljs-string">&quot;Authorization&quot;</span>: <span class="hljs-string">f&quot;Bearer <span class="hljs-subst">{AIRLOCK_API_KEY}</span>&quot;</span>}
 
 SAFE_PREFIXES = (<span class="hljs-string">&quot;ls&quot;</span>, <span class="hljs-string">&quot;cat&quot;</span>, <span class="hljs-string">&quot;git status&quot;</span>, <span class="hljs-string">&quot;git diff&quot;</span>, <span class="hljs-string">&quot;git log&quot;</span>, <span class="hljs-string">&quot;pytest&quot;</span>, <span class="hljs-string">&quot;npm test&quot;</span>)
 
@@ -173,7 +173,7 @@ SAFE_PREFIXES = (<span class="hljs-string">&quot;ls&quot;</span>, <span class="h
     <span class="hljs-keyword">if</span> cmd.strip().startswith(SAFE_PREFIXES):
         <span class="hljs-keyword">return</span> _execute(cmd)
 
-    action = requests.post(<span class="hljs-string">f&quot;<span class="hljs-subst">{IMPRI_BASE}</span>/v1/actions&quot;</span>, headers=HEADERS, json={
+    action = requests.post(<span class="hljs-string">f&quot;<span class="hljs-subst">{AIRLOCK_BASE}</span>/v1/actions&quot;</span>, headers=HEADERS, json={
         <span class="hljs-string">&quot;kind&quot;</span>: <span class="hljs-string">&quot;shell.execute&quot;</span>,
         <span class="hljs-string">&quot;title&quot;</span>: <span class="hljs-string">f&quot;Run command: <span class="hljs-subst">{cmd[:<span class="hljs-number">60</span>]}</span>&quot;</span>,
         <span class="hljs-string">&quot;preview&quot;</span>: {<span class="hljs-string">&quot;format&quot;</span>: <span class="hljs-string">&quot;plain&quot;</span>, <span class="hljs-string">&quot;body&quot;</span>: cmd},
@@ -184,7 +184,7 @@ SAFE_PREFIXES = (<span class="hljs-string">&quot;ls&quot;</span>, <span class="h
     action_id = action[<span class="hljs-string">&quot;id&quot;</span>]
     <span class="hljs-keyword">while</span> <span class="hljs-literal">True</span>:
         time.sleep(<span class="hljs-number">5</span>)
-        result = requests.get(<span class="hljs-string">f&quot;<span class="hljs-subst">{IMPRI_BASE}</span>/v1/actions/<span class="hljs-subst">{action_id}</span>&quot;</span>, headers=HEADERS).json()
+        result = requests.get(<span class="hljs-string">f&quot;<span class="hljs-subst">{AIRLOCK_BASE}</span>/v1/actions/<span class="hljs-subst">{action_id}</span>&quot;</span>, headers=HEADERS).json()
         <span class="hljs-keyword">if</span> result[<span class="hljs-string">&quot;status&quot;</span>] != <span class="hljs-string">&quot;pending&quot;</span>:
             <span class="hljs-keyword">break</span>
 
@@ -195,7 +195,7 @@ SAFE_PREFIXES = (<span class="hljs-string">&quot;ls&quot;</span>, <span class="h
     approved_cmd = result[<span class="hljs-string">&quot;decision&quot;</span>][<span class="hljs-string">&quot;final_preview&quot;</span>][<span class="hljs-string">&quot;body&quot;</span>]
     output = _execute(approved_cmd)
 
-    requests.post(<span class="hljs-string">f&quot;<span class="hljs-subst">{IMPRI_BASE}</span>/v1/actions/<span class="hljs-subst">{action_id}</span>/result&quot;</span>, headers=HEADERS,
+    requests.post(<span class="hljs-string">f&quot;<span class="hljs-subst">{AIRLOCK_BASE}</span>/v1/actions/<span class="hljs-subst">{action_id}</span>/result&quot;</span>, headers=HEADERS,
                   json={<span class="hljs-string">&quot;status&quot;</span>: <span class="hljs-string">&quot;executed&quot;</span>})
     <span class="hljs-keyword">return</span> output
 
@@ -240,8 +240,8 @@ SAFE_PREFIXES = (<span class="hljs-string">&quot;ls&quot;</span>, <span class="h
 <hr>
 <h2 id="add-undo-and-idempotent-hints-for-the-reviewer">Add <code>undo</code> and <code>idempotent</code> hints for the reviewer</h2>
 <p>Because the reviewer only sees a bare command string, give them the context that&#39;s normally in the agent&#39;s head. Set <code>idempotent: false</code> for anything with a side effect and describe the rollback in <code>undo</code> — both are optional fields on <code>POST /v1/actions</code> and show up directly on the approval card:</p>
-<div class="code-block"><span class="code-lang">bash</span><pre><code class="hljs">curl -X POST https://api.impri.dev/v1/actions \
-  -H <span class="hljs-string">&quot;Authorization: Bearer <span class="hljs-variable">$IMPRI_API_KEY</span>&quot;</span> \
+<div class="code-block"><span class="code-lang">bash</span><pre><code class="hljs">curl -X POST https://api.airlock.dev/v1/actions \
+  -H <span class="hljs-string">&quot;Authorization: Bearer <span class="hljs-variable">$AIRLOCK_API_KEY</span>&quot;</span> \
   -H <span class="hljs-string">&quot;Content-Type: application/json&quot;</span> \
   -d <span class="hljs-string">&#x27;{
     &quot;kind&quot;: &quot;shell.execute&quot;,
@@ -252,18 +252,18 @@ SAFE_PREFIXES = (<span class="hljs-string">&quot;ls&quot;</span>, <span class="h
   }&#x27;</span></code></pre></div>
 <p>A reviewer who sees &quot;not idempotent, here&#39;s the undo&quot; makes a faster and better-informed call than one staring at a bare command.</p>
 <hr>
-<h2 id="the-boundary-impri-doesn39t-understand-shell-syntax">The boundary: Impri doesn&#39;t understand shell syntax</h2>
-<p>Impri stores the command text, shows it to a human, and reports back a decision — it does not parse, sandbox, or validate the command itself. It can&#39;t tell you that <code>rm -rf $DIR</code> is dangerous if <code>$DIR</code> was empty and expanded to <code>/</code>; that&#39;s still the reviewer&#39;s job when they read the card, and your agent&#39;s job to interpolate variables into the preview text <em>before</em> submission so the reviewer sees the literal command, not a template. Impri is also only a real gate if <code>run_command</code> is the agent&#39;s only route to a shell — if the framework exposes a second raw exec tool, the wrapper above can be routed around.</p>
+<h2 id="the-boundary-airlock-doesn39t-understand-shell-syntax">The boundary: Airlock doesn&#39;t understand shell syntax</h2>
+<p>Airlock stores the command text, shows it to a human, and reports back a decision — it does not parse, sandbox, or validate the command itself. It can&#39;t tell you that <code>rm -rf $DIR</code> is dangerous if <code>$DIR</code> was empty and expanded to <code>/</code>; that&#39;s still the reviewer&#39;s job when they read the card, and your agent&#39;s job to interpolate variables into the preview text <em>before</em> submission so the reviewer sees the literal command, not a template. Airlock is also only a real gate if <code>run_command</code> is the agent&#39;s only route to a shell — if the framework exposes a second raw exec tool, the wrapper above can be routed around.</p>
 <p>For agents built specifically on the Claude Agent SDK, see <a href="human-approval-claude-agent-sdk">the Claude Agent SDK approval guide</a>, which covers the same pattern using that SDK&#39;s hook points.</p>
 <hr>
 <h2 id="next-step">Next step</h2>
 <p>Read the <a href="quickstart">quickstart</a> for getting an API key, then <a href="rules">rules</a> if you want per-project routing (e.g. staging repo commands auto-approve, production repo commands always page you).</p>
 
-    <aside class="doc-cta" aria-label="Try Impri">
+    <aside class="doc-cta" aria-label="Try Airlock">
   <p class="doc-cta-title">Add an approval step to your own agent</p>
-  <p>Start on Impri Cloud: the Free tier includes 100 approvals a month. Or self-host the MIT-licensed core with Docker Compose, with no tier limits.</p>
+  <p>Start on Airlock Cloud: the Free tier includes 100 approvals a month. Or self-host the MIT-licensed core with Docker Compose, with no tier limits.</p>
   <div class="doc-cta-actions">
-    <a class="btn btn-primary btn-sm" href="https://app.impri.dev/?signup=1">Start free on Impri Cloud</a>
+    <a class="btn btn-primary btn-sm" href="https://app.airlock.dev/?signup=1">Start free on Airlock Cloud</a>
     <a class="btn btn-ghost btn-sm" href="../docs/quickstart">Quick start</a>
     <a class="btn btn-ghost btn-sm" href="../docs/self-hosting">Self-host guide</a>
   </div>
@@ -350,7 +350,7 @@ SAFE_PREFIXES = (<span class="hljs-string">&quot;ls&quot;</span>, <span class="h
 <li class="ptoc-h2"><a href="#wrapping-the-executor">Wrapping the executor</a></li>
 <li class="ptoc-h2"><a href="#why-an-allowlist-plus-a-gate-not-just-a-gate">Why an allowlist plus a gate, not just a gate</a></li>
 <li class="ptoc-h2"><a href="#add-undo-and-idempotent-hints-for-the-reviewer">Add undo and idempotent hints for the reviewer</a></li>
-<li class="ptoc-h2"><a href="#the-boundary-impri-doesn39t-understand-shell-syntax">The boundary: Impri doesn't understand shell syntax</a></li>
+<li class="ptoc-h2"><a href="#the-boundary-airlock-doesn39t-understand-shell-syntax">The boundary: Airlock doesn't understand shell syntax</a></li>
 <li class="ptoc-h2"><a href="#next-step">Next step</a></li></ul>
 </nav>
   </aside>
@@ -359,19 +359,19 @@ SAFE_PREFIXES = (<span class="hljs-string">&quot;ls&quot;</span>, <span class="h
 <footer class="footer">
 <div class="wrap footer-inner">
   <a class="brand" href="/">
-    <span class="mark"><svg viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.5 4.5L19 7.5" stroke="white" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Impri
+    <span class="mark"><svg viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.5 4.5L19 7.5" stroke="white" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Airlock
   </a>
   <div>
-    <a href="https://gitlab.com/sekera.radim/impri">GitLab</a>
+    <a href="https://gitlab.com/sekera.radim/airlock">GitLab</a>
     <a href="/docs">Docs</a>
-    <a href="https://gitlab.com/sekera.radim/impri/-/blob/main/LICENSE">MIT License</a>
-    <a href="https://www.npmjs.com/package/@impri/mcp">@impri/mcp</a>
+    <a href="https://gitlab.com/sekera.radim/airlock/-/blob/main/LICENSE">MIT License</a>
+    <a href="https://www.npmjs.com/package/@airlock/mcp">@airlock/mcp</a>
     <a href="/docs/privacy">Privacy</a>
     <a href="/docs/terms">Terms</a>
     <a href="https://sekera.dev">Contact</a>
   </div>
 </div>
-<div class="wrap" style="margin-top:18px"><span class="muted">© 2026 Impri · The imprimatur for your AI agents · Built by <a href="https://sekera.dev" style="color:inherit">Radim Sekera</a>. Also by the same maker: <a href="https://briefgate.dev/?utm_source=impri.dev&amp;utm_medium=referral" style="color:inherit">BriefGate</a> — client intake for agencies and AI agents.</span></div>
+<div class="wrap" style="margin-top:18px"><span class="muted">© 2026 Airlock · The airlockmatur for your AI agents · Built by <a href="https://sekera.dev" style="color:inherit">Radim Sekera</a>. Also by the same maker: <a href="https://briefgate.dev/?utm_source=airlock.dev&amp;utm_medium=referral" style="color:inherit">BriefGate</a> — client intake for agencies and AI agents.</span></div>
 </footer>
 </body>
 </html>

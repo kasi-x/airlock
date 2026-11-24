@@ -1,4 +1,4 @@
-"""Light tests for ImpriClient using mocked httpx.
+"""Light tests for AirlockClient using mocked httpx.
 
 Run with:  python -m pytest tests/test_client.py -v
 """
@@ -17,20 +17,20 @@ import os
 
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
 
-from impri_openai import (
-    ImpriClient,
-    ImpriConfigError,
-    ImpriConflict,
-    ImpriExpired,
-    ImpriNotFound,
-    ImpriQuotaExceeded,
-    ImpriRateLimited,
-    ImpriRejected,
-    ImpriTimeout,
-    ImpriUnauthorized,
-    ImpriValidationError,
+from airlock_openai import (
+    AirlockClient,
+    AirlockConfigError,
+    AirlockConflict,
+    AirlockExpired,
+    AirlockNotFound,
+    AirlockQuotaExceeded,
+    AirlockRateLimited,
+    AirlockRejected,
+    AirlockTimeout,
+    AirlockUnauthorized,
+    AirlockValidationError,
     verify_webhook,
-    ImpriWebhookSignatureError,
+    AirlockWebhookSignatureError,
 )
 
 
@@ -50,12 +50,12 @@ def _make_response(status: int, body: dict | list | None = None, headers: dict |
     return resp
 
 
-def _client_with_mock(mock_response) -> tuple[ImpriClient, MagicMock]:
-    """Return an ImpriClient whose HTTP calls return mock_response."""
+def _client_with_mock(mock_response) -> tuple[AirlockClient, MagicMock]:
+    """Return an AirlockClient whose HTTP calls return mock_response."""
     mock_http = AsyncMock()
     mock_http.request = AsyncMock(return_value=mock_response)
     mock_http.aclose = AsyncMock()
-    client = ImpriClient(api_key="im_test_key", http_client=mock_http)
+    client = AirlockClient(api_key="im_test_key", http_client=mock_http)
     return client, mock_http
 
 
@@ -65,26 +65,26 @@ def _client_with_mock(mock_response) -> tuple[ImpriClient, MagicMock]:
 
 class TestClientConstruction(unittest.TestCase):
     def test_raises_config_error_without_key(self):
-        with self.assertRaises(ImpriConfigError):
-            ImpriClient()  # no api_key, no env var
+        with self.assertRaises(AirlockConfigError):
+            AirlockClient()  # no api_key, no env var
 
     def test_accepts_key_from_env(self):
-        with patch.dict(os.environ, {"IMPRI_API_KEY": "im_from_env"}):
-            c = ImpriClient()
+        with patch.dict(os.environ, {"AIRLOCK_API_KEY": "im_from_env"}):
+            c = AirlockClient()
             self.assertEqual(c._api_key, "im_from_env")
 
     def test_base_url_default(self):
-        c = ImpriClient(api_key="im_x")
+        c = AirlockClient(api_key="im_x")
         self.assertEqual(c._base_url, "http://localhost:8484")
 
     def test_base_url_trailing_slash_stripped(self):
-        c = ImpriClient(api_key="im_x", base_url="https://api.impri.dev/")
-        self.assertEqual(c._base_url, "https://api.impri.dev")
+        c = AirlockClient(api_key="im_x", base_url="https://api.airlock.dev/")
+        self.assertEqual(c._base_url, "https://api.airlock.dev")
 
     def test_base_url_from_env(self):
-        with patch.dict(os.environ, {"IMPRI_API_KEY": "im_x", "IMPRI_BASE_URL": "https://api.impri.dev"}):
-            c = ImpriClient()
-            self.assertEqual(c._base_url, "https://api.impri.dev")
+        with patch.dict(os.environ, {"AIRLOCK_API_KEY": "im_x", "AIRLOCK_BASE_URL": "https://api.airlock.dev"}):
+            c = AirlockClient()
+            self.assertEqual(c._base_url, "https://api.airlock.dev")
 
 
 # ---------------------------------------------------------------------------
@@ -96,7 +96,7 @@ class TestCreateAction(unittest.IsolatedAsyncioTestCase):
         payload = {
             "id": "act_abc",
             "status": "pending",
-            "inbox_url": "https://app.impri.dev/inbox/act_abc",
+            "inbox_url": "https://app.airlock.dev/inbox/act_abc",
             "expires_at": 9999999999,
             "created_at": 1000000000,
         }
@@ -140,13 +140,13 @@ class TestCreateAction(unittest.IsolatedAsyncioTestCase):
     async def test_unauthorized_raises(self):
         resp = _make_response(403, {"message": 'Scope "actions" required'})
         client, _ = _client_with_mock(resp)
-        with self.assertRaises(ImpriUnauthorized):
+        with self.assertRaises(AirlockUnauthorized):
             await client.create_action("k", "t", {"format": "plain", "body": "b"})
 
     async def test_quota_exceeded_raises(self):
         resp = _make_response(402, {"message": "quota", "limit": 100, "tier": "free"})
         client, _ = _client_with_mock(resp)
-        with self.assertRaises(ImpriQuotaExceeded) as ctx:
+        with self.assertRaises(AirlockQuotaExceeded) as ctx:
             await client.create_action("k", "t", {"format": "plain", "body": "b"})
         self.assertEqual(ctx.exception.limit, 100)
         self.assertEqual(ctx.exception.tier, "free")
@@ -154,7 +154,7 @@ class TestCreateAction(unittest.IsolatedAsyncioTestCase):
     async def test_rate_limited_carries_retry_after(self):
         resp = _make_response(429, {"message": "slow down"}, headers={"Retry-After": "5"})
         client, _ = _client_with_mock(resp)
-        with self.assertRaises(ImpriRateLimited) as ctx:
+        with self.assertRaises(AirlockRateLimited) as ctx:
             await client.create_action("k", "t", {"format": "plain", "body": "b"})
         self.assertEqual(ctx.exception.retry_after, 5)
 
@@ -162,7 +162,7 @@ class TestCreateAction(unittest.IsolatedAsyncioTestCase):
         issues = [{"code": "too_small", "path": ["expires_in"]}]
         resp = _make_response(422, {"message": "bad", "issues": issues})
         client, _ = _client_with_mock(resp)
-        with self.assertRaises(ImpriValidationError) as ctx:
+        with self.assertRaises(AirlockValidationError) as ctx:
             await client.create_action("k", "t", {"format": "plain", "body": "b"})
         self.assertEqual(ctx.exception.issues, issues)
 
@@ -197,7 +197,7 @@ class TestGetAction(unittest.IsolatedAsyncioTestCase):
     async def test_not_found_raises(self):
         resp = _make_response(404, {"message": "not found"})
         client, _ = _client_with_mock(resp)
-        with self.assertRaises(ImpriNotFound):
+        with self.assertRaises(AirlockNotFound):
             await client.get_action("act_missing")
 
     async def test_204_returns_none(self):
@@ -212,12 +212,12 @@ class TestGetAction(unittest.IsolatedAsyncioTestCase):
 # ---------------------------------------------------------------------------
 
 class TestAwaitDecision(unittest.IsolatedAsyncioTestCase):
-    async def _client_sequence(self, responses: list) -> ImpriClient:
+    async def _client_sequence(self, responses: list) -> AirlockClient:
         """Client whose requests return responses in sequence."""
         mock_http = AsyncMock()
         mock_http.request = AsyncMock(side_effect=responses)
         mock_http.aclose = AsyncMock()
-        return ImpriClient(api_key="im_x", http_client=mock_http)
+        return AirlockClient(api_key="im_x", http_client=mock_http)
 
     async def test_approved_returns_action(self):
         pending = _make_response(200, {
@@ -235,7 +235,7 @@ class TestAwaitDecision(unittest.IsolatedAsyncioTestCase):
         action = await client.await_decision("act_1", poll_interval_s=0.01)
         self.assertEqual(action["status"], "approved")
 
-    async def test_rejected_raises_impri_rejected(self):
+    async def test_rejected_raises_airlock_rejected(self):
         rejected = _make_response(200, {
             "id": "act_2", "status": "rejected",
             "kind": "k", "title": "t",
@@ -243,21 +243,21 @@ class TestAwaitDecision(unittest.IsolatedAsyncioTestCase):
             "decision": {"verdict": "reject", "decided_at": 999},
         })
         client = await self._client_sequence([rejected])
-        with self.assertRaises(ImpriRejected) as ctx:
+        with self.assertRaises(AirlockRejected) as ctx:
             await client.await_decision("act_2", poll_interval_s=0.01)
         self.assertEqual(ctx.exception.action_id, "act_2")
 
-    async def test_expired_raises_impri_expired(self):
+    async def test_expired_raises_airlock_expired(self):
         expired = _make_response(200, {
             "id": "act_3", "status": "expired",
             "kind": "k", "title": "t",
             "preview": {"format": "plain", "body": "b"},
         })
         client = await self._client_sequence([expired])
-        with self.assertRaises(ImpriExpired):
+        with self.assertRaises(AirlockExpired):
             await client.await_decision("act_3", poll_interval_s=0.01)
 
-    async def test_timeout_raises_impri_timeout(self):
+    async def test_timeout_raises_airlock_timeout(self):
         # Keep returning pending; timeout_s is tiny
         pending = _make_response(200, {
             "id": "act_4", "status": "pending",
@@ -267,16 +267,16 @@ class TestAwaitDecision(unittest.IsolatedAsyncioTestCase):
         mock_http = AsyncMock()
         mock_http.request = AsyncMock(return_value=pending)
         mock_http.aclose = AsyncMock()
-        client = ImpriClient(api_key="im_x", http_client=mock_http)
+        client = AirlockClient(api_key="im_x", http_client=mock_http)
 
-        with self.assertRaises(ImpriTimeout) as ctx:
+        with self.assertRaises(AirlockTimeout) as ctx:
             await client.await_decision("act_4", timeout_s=0.05, poll_interval_s=0.01)
         self.assertEqual(ctx.exception.action_id, "act_4")
 
     async def test_conflict_on_decide_raises(self):
         resp = _make_response(409, {"message": "already decided"})
         client, _ = _client_with_mock(resp)
-        with self.assertRaises(ImpriConflict):
+        with self.assertRaises(AirlockConflict):
             await client.decide("act_5", "approve")
 
     async def test_decide_sends_decision_not_verdict(self):
@@ -325,12 +325,12 @@ class TestAwaitDecision(unittest.IsolatedAsyncioTestCase):
 # ---------------------------------------------------------------------------
 
 class TestRequiresApproval(unittest.IsolatedAsyncioTestCase):
-    def _make_client(self, action_id: str, final_body: str | None = None) -> ImpriClient:
+    def _make_client(self, action_id: str, final_body: str | None = None) -> AirlockClient:
         """Client that creates an action and immediately returns approved."""
         created_resp = _make_response(201, {
             "id": action_id,
             "status": "pending",
-            "inbox_url": f"https://app.impri.dev/inbox/{action_id}",
+            "inbox_url": f"https://app.airlock.dev/inbox/{action_id}",
         })
 
         decision = {"verdict": "approve", "decided_at": 1}
@@ -348,7 +348,7 @@ class TestRequiresApproval(unittest.IsolatedAsyncioTestCase):
         mock_http = AsyncMock()
         mock_http.request = AsyncMock(side_effect=[created_resp, approved_resp])
         mock_http.aclose = AsyncMock()
-        return ImpriClient(api_key="im_x", http_client=mock_http)
+        return AirlockClient(api_key="im_x", http_client=mock_http)
 
     async def test_approved_calls_wrapped_function(self):
         client = self._make_client("act_ok")
@@ -377,7 +377,7 @@ class TestRequiresApproval(unittest.IsolatedAsyncioTestCase):
         mock_http = AsyncMock()
         mock_http.request = AsyncMock(side_effect=[created_resp, rejected_resp])
         mock_http.aclose = AsyncMock()
-        client = ImpriClient(api_key="im_x", http_client=mock_http)
+        client = AirlockClient(api_key="im_x", http_client=mock_http)
 
         fn_called = False
 
@@ -386,7 +386,7 @@ class TestRequiresApproval(unittest.IsolatedAsyncioTestCase):
             nonlocal fn_called
             fn_called = True
 
-        with self.assertRaises(ImpriRejected):
+        with self.assertRaises(AirlockRejected):
             await guarded()
         self.assertFalse(fn_called)
 
@@ -422,7 +422,7 @@ class TestRequiresApproval(unittest.IsolatedAsyncioTestCase):
         mock_http = AsyncMock()
         mock_http.request = AsyncMock(side_effect=[created_resp, approved_resp])
         mock_http.aclose = AsyncMock()
-        client = ImpriClient(api_key="im_x", http_client=mock_http)
+        client = AirlockClient(api_key="im_x", http_client=mock_http)
 
         @client.requires_approval(
             kind="email.send",
@@ -443,7 +443,7 @@ class TestRequiresApproval(unittest.IsolatedAsyncioTestCase):
 # ---------------------------------------------------------------------------
 
 class TestApprovalGate(unittest.IsolatedAsyncioTestCase):
-    def _make_client(self, action_id: str = "act_g") -> tuple[ImpriClient, AsyncMock]:
+    def _make_client(self, action_id: str = "act_g") -> tuple[AirlockClient, AsyncMock]:
         created = _make_response(201, {"id": action_id, "status": "pending", "inbox_url": ""})
         approved = _make_response(200, {
             "id": action_id, "status": "approved",
@@ -457,7 +457,7 @@ class TestApprovalGate(unittest.IsolatedAsyncioTestCase):
         mock_http = AsyncMock()
         mock_http.request = AsyncMock(side_effect=[created, approved, result_ack])
         mock_http.aclose = AsyncMock()
-        client = ImpriClient(api_key="im_x", http_client=mock_http)
+        client = AirlockClient(api_key="im_x", http_client=mock_http)
         return client, mock_http
 
     async def test_approved_yields_approved_action(self):
@@ -499,10 +499,10 @@ class TestApprovalGate(unittest.IsolatedAsyncioTestCase):
         mock_http = AsyncMock()
         mock_http.request = AsyncMock(side_effect=[created, rejected])
         mock_http.aclose = AsyncMock()
-        client = ImpriClient(api_key="im_x", http_client=mock_http)
+        client = AirlockClient(api_key="im_x", http_client=mock_http)
 
         entered = False
-        with self.assertRaises(ImpriRejected):
+        with self.assertRaises(AirlockRejected):
             async with client.approval_gate(
                 "db.exec", "DROP TABLE", {"format": "plain", "body": "sql"}
             ) as _:
@@ -540,21 +540,21 @@ class TestVerifyWebhook(unittest.TestCase):
     def test_wrong_secret_raises(self):
         ts, nonce, body = "1720000000", "abc123", b"body"
         sig = self._make_sig("correct_secret", ts, nonce, body)
-        with self.assertRaises(ImpriWebhookSignatureError):
+        with self.assertRaises(AirlockWebhookSignatureError):
             verify_webhook(body, "wrong_secret", ts, nonce, sig)
 
     def test_tampered_body_raises(self):
         secret, ts, nonce = "s3cr3t", "1720000000", "abc123"
         sig = self._make_sig(secret, ts, nonce, b"original")
-        with self.assertRaises(ImpriWebhookSignatureError):
+        with self.assertRaises(AirlockWebhookSignatureError):
             verify_webhook(b"tampered", secret, ts, nonce, sig)
 
     def test_empty_secret_raises(self):
-        with self.assertRaises(ImpriWebhookSignatureError):
+        with self.assertRaises(AirlockWebhookSignatureError):
             verify_webhook(b"body", "", "ts", "nonce", "sha256=abc")
 
     def test_bad_prefix_raises(self):
-        with self.assertRaises(ImpriWebhookSignatureError):
+        with self.assertRaises(AirlockWebhookSignatureError):
             verify_webhook(b"body", "secret", "ts", "nonce", "md5=abc")
 
 

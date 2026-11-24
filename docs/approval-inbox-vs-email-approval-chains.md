@@ -25,8 +25,8 @@ Instead of a thread, the agent pushes one action and polls one status field:
 ```python
 import os, time, requests
 
-BASE = "https://api.impri.dev"
-H = {"Authorization": f"Bearer {os.environ['IMPRI_API_KEY']}"}
+BASE = "https://api.airlock.dev"
+H = {"Authorization": f"Bearer {os.environ['AIRLOCK_API_KEY']}"}
 
 action = requests.post(f"{BASE}/v1/actions", headers=H, json={
     "kind": "email.send",
@@ -54,7 +54,7 @@ There is nothing to parse. The status is one of `pending`, `approved`, `rejected
 
 ## Email chain vs inbox, side by side
 
-| Concern | Email approval chain | Approval inbox (Impri) |
+| Concern | Email approval chain | Approval inbox (Airlock) |
 |---|---|---|
 | Where the answer lives | Somewhere in a thread | One `status` on one action |
 | Two reviewers disagree | Agent acts on first reply it reads | First decision wins; a concurrent second one gets HTTP 409 |
@@ -69,7 +69,7 @@ The first-decision-wins behaviour is enforced by a unique constraint on the deci
 
 ## Keep email, drop the chain
 
-You do not have to give up email. Impri can send an email notification (an email channel, configured server-side with SMTP and confirmed via a link before anything is delivered), alongside Slack, Discord, Telegram, ntfy or a webhook. Several actions arriving within the channel's digest window are batched into one message, so a burst does not flood an inbox. The email is a pointer: the decision itself is made on the action, not by replying to the message.
+You do not have to give up email. Airlock can send an email notification (an email channel, configured server-side with SMTP and confirmed via a link before anything is delivered), alongside Slack, Discord, Telegram, ntfy or a webhook. Several actions arriving within the channel's digest window are batched into one message, so a burst does not flood an inbox. The email is a pointer: the decision itself is made on the action, not by replying to the message.
 
 If your reviewers genuinely only live in email, see [approving agent actions by email](approve-ai-agent-actions-by-email.md) for how that maps onto the inbox.
 
@@ -77,9 +77,9 @@ If your reviewers genuinely only live in email, see [approving agent actions by 
 
 ## What this does not fix
 
-Be clear about the boundary. Impri is only the approval gate: it stores the proposed action, notifies a human and holds the decision. It does not generate the draft, interpret what the action does, or execute anything. It is a real gate only if the wrapped tool is the agent's *only* path to the side effect; an agent that also holds the raw SMTP credentials can still send around it.
+Be clear about the boundary. Airlock is only the approval gate: it stores the proposed action, notifies a human and holds the decision. It does not generate the draft, interpret what the action does, or execute anything. It is a real gate only if the wrapped tool is the agent's *only* path to the side effect; an agent that also holds the raw SMTP credentials can still send around it.
 
-It is also not a workflow engine. If your process is a genuine multi-stage chain (manager, then legal, then finance, each with conditions), model that sequence in your own orchestrator or in a tool like n8n or Temporal, and use one Impri action per approval step.
+It is also not a workflow engine. If your process is a genuine multi-stage chain (manager, then legal, then finance, each with conditions), model that sequence in your own orchestrator or in a tool like n8n or Temporal, and use one Airlock action per approval step.
 
 ---
 

@@ -1,6 +1,6 @@
 # Human-in-the-Loop for Travel Booking AI Agents
 
-A travel-booking AI agent that can search flights and hotels but not pay for them on its own — this guide wires an Impri approval gate in Python before any booking charges a card.
+A travel-booking AI agent that can search flights and hotels but not pay for them on its own — this guide wires an Airlock approval gate in Python before any booking charges a card.
 
 ---
 
@@ -8,7 +8,7 @@ A travel-booking AI agent that can search flights and hotels but not pay for the
 
 A travel agent that only searches and compares is low-risk: wrong results cost a re-query. A travel agent that also books is a different category of risk — a booked flight charges a real card, and cancellation policies vary by fare class, so "just cancel it" is not always true or free. Add ambiguity in the source request ("book the earlier one" when the itinerary has three legs) and the failure mode is a nonrefundable ticket for the wrong day.
 
-This is exactly the shape of action Impri is built for: the agent can search and shortlist freely, but the specific booking call needs a human to look at the itinerary and price once before it's confirmed.
+This is exactly the shape of action Airlock is built for: the agent can search and shortlist freely, but the specific booking call needs a human to look at the itinerary and price once before it's confirmed.
 
 ## Pushing the booking as a pending action
 
@@ -18,8 +18,8 @@ Once the agent has narrowed the search to one flight (or hotel room) it wants to
 import os
 import requests
 
-IMPRI_API_KEY = os.environ["IMPRI_API_KEY"]
-BASE = "https://api.impri.dev"
+AIRLOCK_API_KEY = os.environ["AIRLOCK_API_KEY"]
+BASE = "https://api.airlock.dev"
 
 def propose_booking(itinerary, price_usd, fare_class):
     body = {
@@ -44,7 +44,7 @@ def propose_booking(itinerary, price_usd, fare_class):
     }
     res = requests.post(
         f"{BASE}/v1/actions",
-        headers={"Authorization": f"Bearer {IMPRI_API_KEY}"},
+        headers={"Authorization": f"Bearer {AIRLOCK_API_KEY}"},
         json=body,
     )
     res.raise_for_status()
@@ -63,7 +63,7 @@ def await_decision(action_id, timeout_s=900, poll_every=15):
     while time.time() < deadline:
         res = requests.get(
             f"{BASE}/v1/actions/{action_id}",
-            headers={"Authorization": f"Bearer {IMPRI_API_KEY}"},
+            headers={"Authorization": f"Bearer {AIRLOCK_API_KEY}"},
         )
         status = res.json()["status"]
         if status != "pending":
@@ -77,7 +77,7 @@ if decision["status"] == "approved":
     confirmation = airline_api.book(itinerary)  # your real booking call
     requests.post(
         f"{BASE}/v1/actions/{action_id}/result",
-        headers={"Authorization": f"Bearer {IMPRI_API_KEY}"},
+        headers={"Authorization": f"Bearer {AIRLOCK_API_KEY}"},
         json={"status": "executed", "payload": {"confirmation_code": confirmation.code}},
     )
 else:
@@ -85,7 +85,7 @@ else:
     notify_user(f"Booking not confirmed: {decision['status']}")
 ```
 
-The 30-minute `expires_in` above matters more here than in most Impri use cases: airline fares reprice, and a booking approved against a price quoted an hour ago may no longer be bookable at that price. Treat `expired` as "re-quote and ask again," not just "give up."
+The 30-minute `expires_in` above matters more here than in most Airlock use cases: airline fares reprice, and a booking approved against a price quoted an hour ago may no longer be bookable at that price. Treat `expired` as "re-quote and ask again," not just "give up."
 
 ## Multi-leg trips: one action per leg, not one for the whole trip
 
@@ -93,6 +93,6 @@ For a multi-city itinerary, push a separate action per leg rather than one actio
 
 ## Prompt injection from booking sources
 
-If the agent reads flight or hotel data scraped from a third-party site or an email forward ("book whatever's cheapest"), treat that content as data, not instruction — a page claiming a fake "government fee due now" should not make it into `preview.body` as if it were a legitimate line item. Impri displays exactly what the agent sends; it does not verify prices or itineraries against the airline.
+If the agent reads flight or hotel data scraped from a third-party site or an email forward ("book whatever's cheapest"), treat that content as data, not instruction — a page claiming a fake "government fee due now" should not make it into `preview.body` as if it were a legitimate line item. Airlock displays exactly what the agent sends; it does not verify prices or itineraries against the airline.
 
 Next: see the [MCP integration](mcp.md) if your travel agent runs inside Claude Code or another MCP client, or start with the [quickstart](quickstart.md) to get an API key.

@@ -2,12 +2,12 @@
 
 Configure Telegram approval buttons for AI agent actions: bot token, webhook, allow-listed approvers, and the security model behind every tap.
 
-The decision is recorded in Impri with the same integrity guarantees as a web-inbox decision.
+The decision is recorded in Airlock with the same integrity guarantees as a web-inbox decision.
 
 This is an extension of the existing `telegram` notification channel
 (see [Notification channels](notifications.md)). When `approval_mode`
 is `false` (the default), the channel behaves exactly as before —
-a plain HTML notification with a "Review in Impri" link. Setting
+a plain HTML notification with a "Review in Airlock" link. Setting
 `approval_mode: true` enables the inline-keyboard approval flow
 described here.
 
@@ -15,15 +15,15 @@ described here.
 
 ## How it works
 
-1. An action lands in Impri as `pending`.
-2. Impri sends a Telegram message to the configured chat or group with
+1. An action lands in Airlock as `pending`.
+2. Airlock sends a Telegram message to the configured chat or group with
    two inline buttons: **✅ Approve** and **❌ Reject** (plus an optional
    **🔗 View in inbox** link if `BASE_URL` is set).
 3. An authorized team member taps a button. Telegram delivers a
-   `callback_query` to Impri's webhook endpoint.
-4. Impri verifies the webhook secret, the HMAC signature on the button
+   `callback_query` to Airlock's webhook endpoint.
+4. Airlock verifies the webhook secret, the HMAC signature on the button
    payload, and the tapper's Telegram user ID against the allow-list.
-5. If all checks pass, Impri records the decision (same transaction as
+5. If all checks pass, Airlock records the decision (same transaction as
    `POST /v1/actions/:id/decision`), fires any `callback_url` webhook,
    and edits the Telegram message to show the outcome and remove the
    buttons.
@@ -74,10 +74,10 @@ returns `message.from.id` for each sender — that is the same ID.
 
 Collect all IDs you want to authorize.
 
-### Step 4 — Create the approval channel via the Impri API
+### Step 4 — Create the approval channel via the Airlock API
 
 ```bash
-curl -X POST https://api.impri.dev/v1/notification-channels \
+curl -X POST https://api.airlock.dev/v1/notification-channels \
   -H "Authorization: Bearer im_..." \
   -H "Content-Type: application/json" \
   -d '{
@@ -93,7 +93,7 @@ curl -X POST https://api.impri.dev/v1/notification-channels \
   }'
 ```
 
-**Omit `hmac_secret`** — Impri generates a 64-character hex secret
+**Omit `hmac_secret`** — Airlock generates a 64-character hex secret
 automatically and stores it. The response shows it masked (`****xxxx`).
 You never need to know its value unless you want to supply your own
 (16–256 characters).
@@ -101,7 +101,7 @@ You never need to know its value unless you want to supply your own
 ### Step 5 — Webhook registration
 
 **Automatic (public HTTPS server):** If `BASE_URL` is set to a public
-`https://` URL, Impri calls Telegram's `setWebhook` automatically on
+`https://` URL, Airlock calls Telegram's `setWebhook` automatically on
 channel creation. Look for a log line:
 
 ```
@@ -198,11 +198,11 @@ curl -X PATCH .../v1/notification-channels/{channelId} \
   -d '{"config": {"approval_mode": false}}'
 ```
 
-Impri calls `deleteWebhook` for the bot automatically when
+Airlock calls `deleteWebhook` for the bot automatically when
 `approval_mode` transitions to `false` or when `enabled` is set to
 `false`.
 
-**Rotate `hmac_secret`:** Send a new value in a PATCH. Impri
+**Rotate `hmac_secret`:** Send a new value in a PATCH. Airlock
 re-derives the webhook secret, calls `setWebhook` with the updated
 `secret_token`, and saves the new value. Old inline buttons in chat
 history return "Invalid approval link" — safe and harmless.
@@ -240,14 +240,14 @@ An attacker must bypass **all four** simultaneously to forge an approval.
 **1. Webhook secret header**
 
 Every `callback_query` from Telegram carries
-`X-Telegram-Bot-Api-Secret-Token`. The value Impri registered at
+`X-Telegram-Bot-Api-Secret-Token`. The value Airlock registered at
 `setWebhook` time is derived as:
 
 ```
 HMAC-SHA256(hmac_secret, "tg-webhook-secret").slice(0, 32).hex()
 ```
 
-Impri re-derives and compares it with `crypto.timingSafeEqual()` before
+Airlock re-derives and compares it with `crypto.timingSafeEqual()` before
 parsing the request body. A missing or wrong header gets 403 immediately.
 Without `hmac_secret`, no scanner or forger can produce a valid header.
 
@@ -273,7 +273,7 @@ Comparison uses `timingSafeEqual` to prevent timing attacks.
 **3. Authorized-user check**
 
 Telegram sets `callback_query.from.id` in its own infrastructure — other
-Telegram users cannot spoof this integer. Impri checks it against
+Telegram users cannot spoof this integer. Airlock checks it against
 `allowed_approver_user_ids` before recording any decision. If the user
 ID is not in the list, the handler answers "Not authorized" with
 `show_alert: true` and returns without reading the action from the DB —
@@ -366,7 +366,7 @@ one to it. The decision is idempotent — nothing went wrong.
 **Buttons still appear after a decision.**
 
 The `editMessageReplyMarkup` call to Telegram failed (network error or
-the message was too old). The decision was still recorded in Impri.
+the message was too old). The decision was still recorded in Airlock.
 The buttons are cosmetically stale; any additional tap is answered with
 "Already decided" and is a no-op.
 

@@ -1,6 +1,6 @@
 # Approve AI Agent Salesforce Updates Before They Save
 
-Give an AI agent write access to your CRM without giving it blast radius — gate every Salesforce record update behind a human approval with Impri.
+Give an AI agent write access to your CRM without giving it blast radius — gate every Salesforce record update behind a human approval with Airlock.
 
 ---
 
@@ -12,7 +12,7 @@ The fix isn't "review changes after the fact" in a report nobody reads. It's sto
 
 ## What "approval" means for a CRM update
 
-Impri sits between the agent's decision and the Salesforce API call. The agent doesn't call `sobjects/Account/{id}` directly — it pushes the proposed field change as an action, waits for a decision, and only calls the Salesforce update if that decision is `approved`. The reviewer sees the record name, the field, the old value (if you include it in the preview), and the new value — not raw JSON.
+Airlock sits between the agent's decision and the Salesforce API call. The agent doesn't call `sobjects/Account/{id}` directly — it pushes the proposed field change as an action, waits for a decision, and only calls the Salesforce update if that decision is `approved`. The reviewer sees the record name, the field, the old value (if you include it in the preview), and the new value — not raw JSON.
 
 ```python
 import os
@@ -20,8 +20,8 @@ import time
 import requests
 from simple_salesforce import Salesforce
 
-IMPRI_KEY = os.environ["IMPRI_API_KEY"]
-HEADERS = {"Authorization": f"Bearer {IMPRI_KEY}"}
+AIRLOCK_KEY = os.environ["AIRLOCK_API_KEY"]
+HEADERS = {"Authorization": f"Bearer {AIRLOCK_KEY}"}
 
 def propose_account_update(account_id, account_name, field, old_value, new_value):
     body = (
@@ -30,7 +30,7 @@ def propose_account_update(account_id, account_name, field, old_value, new_value
         f"Current: `{old_value}`\n\nProposed: `{new_value}`"
     )
     resp = requests.post(
-        "https://api.impri.dev/v1/actions",
+        "https://api.airlock.dev/v1/actions",
         headers=HEADERS,
         json={
             "kind": "salesforce.record.update",
@@ -46,7 +46,7 @@ def propose_account_update(account_id, account_name, field, old_value, new_value
 def wait_and_apply(action_id, sf: Salesforce, account_id, field):
     while True:
         result = requests.get(
-            f"https://api.impri.dev/v1/actions/{action_id}", headers=HEADERS
+            f"https://api.airlock.dev/v1/actions/{action_id}", headers=HEADERS
         ).json()
         if result["status"] != "pending":
             break
@@ -59,7 +59,7 @@ def wait_and_apply(action_id, sf: Salesforce, account_id, field):
     sf.Account.update(account_id, {field: new_value})
 
     requests.post(
-        f"https://api.impri.dev/v1/actions/{action_id}/result",
+        f"https://api.airlock.dev/v1/actions/{action_id}/result",
         headers=HEADERS,
         json={"status": "executed"},
     )
@@ -80,8 +80,8 @@ Setting `editable: ["preview.body"]` lets the sales ops reviewer fix a value inl
 
 A single agent run against a stale contact list might propose hundreds of updates. Route them all to one inbox and use bulk decision (`POST /v1/actions/bulk-decision`) so a reviewer can approve a batch of clearly-correct updates at once and pull out the few that need individual attention, rather than clicking through each one. Pairing this with the [MCP integration](mcp.md) means the same agent code path can run from Claude Code during development and from a scheduled job in production without touching the approval logic.
 
-## What Impri does not do here
+## What Airlock does not do here
 
-Impri doesn't validate that the proposed Salesforce value is *correct* — it doesn't know your CRM schema or business rules. It also isn't a Salesforce-specific integration; there's no `salesforce.*` kind built in, `salesforce.record.update` above is just a label your code chooses for the audit log. And it doesn't stop the agent from calling the Salesforce API directly if the credential is available elsewhere in your code — the gate only holds if the write path is wrapped so `sf.Account.update(...)` is unreachable without an approved decision, as covered in [the SDK integrations guide](integrations.md).
+Airlock doesn't validate that the proposed Salesforce value is *correct* — it doesn't know your CRM schema or business rules. It also isn't a Salesforce-specific integration; there's no `salesforce.*` kind built in, `salesforce.record.update` above is just a label your code chooses for the audit log. And it doesn't stop the agent from calling the Salesforce API directly if the credential is available elsewhere in your code — the gate only holds if the write path is wrapped so `sf.Account.update(...)` is unreachable without an approved decision, as covered in [the SDK integrations guide](integrations.md).
 
 Next step: [add the polling loop from the quickstart](quickstart.md) to your existing enrichment job, then swap direct writes for the propose-and-wait pattern above.

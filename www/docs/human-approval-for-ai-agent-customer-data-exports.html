@@ -3,21 +3,21 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Human Approval for AI Agent Customer Data Exports and… — Impri Docs</title>
+<title>Human Approval for AI Agent Customer Data Exports and… — Airlock Docs</title>
 <meta name="description" content="Human approval for AI agent customer data exports and GDPR requests: a reviewer checks scope and recipient before any personal data leaves your system.">
 <meta name="theme-color" content="#06070d">
-<meta property="og:title" content="Human Approval for AI Agent Customer Data Exports and… — Impri Docs">
+<meta property="og:title" content="Human Approval for AI Agent Customer Data Exports and… — Airlock Docs">
 <meta property="og:description" content="Human approval for AI agent customer data exports and GDPR requests: a reviewer checks scope and recipient before any personal data leaves your system.">
 <meta property="og:type" content="article">
-<meta property="og:url" content="https://impri.dev/docs/human-approval-for-ai-agent-customer-data-exports">
-<meta property="og:image" content="https://impri.dev/assets/og/og-docs.png">
+<meta property="og:url" content="https://airlock.dev/docs/human-approval-for-ai-agent-customer-data-exports">
+<meta property="og:image" content="https://airlock.dev/assets/og/og-docs.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
-<meta property="og:image:alt" content="Impri — human-in-the-loop approval inbox for AI agents">
+<meta property="og:image:alt" content="Airlock — human-in-the-loop approval inbox for AI agents">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="https://impri.dev/assets/og/og-docs.png">
-<link rel="canonical" href="https://impri.dev/docs/human-approval-for-ai-agent-customer-data-exports">
-<script type="application/ld+json">{"@context":"https://schema.org","@type":"TechArticle","headline":"Human Approval for AI Agent Customer Data Exports and GDPR Requests","description":"Human approval for AI agent customer data exports and GDPR requests: a reviewer checks scope and recipient before any personal data leaves your system.","url":"https://impri.dev/docs/human-approval-for-ai-agent-customer-data-exports","inLanguage":"en","author":{"@type":"Organization","name":"Impri","url":"https://impri.dev"},"publisher":{"@type":"Organization","name":"Impri","url":"https://impri.dev"}}</script>
+<meta name="twitter:image" content="https://airlock.dev/assets/og/og-docs.png">
+<link rel="canonical" href="https://airlock.dev/docs/human-approval-for-ai-agent-customer-data-exports">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"TechArticle","headline":"Human Approval for AI Agent Customer Data Exports and GDPR Requests","description":"Human approval for AI agent customer data exports and GDPR requests: a reviewer checks scope and recipient before any personal data leaves your system.","url":"https://airlock.dev/docs/human-approval-for-ai-agent-customer-data-exports","inLanguage":"en","author":{"@type":"Organization","name":"Airlock","url":"https://airlock.dev"},"publisher":{"@type":"Organization","name":"Airlock","url":"https://airlock.dev"}}</script>
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <link rel="icon" href="/favicon.ico" sizes="32x32">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='9' fill='%236366f1'/%3E%3Cpath d='M9 16.5l4.5 4.5L23 11' stroke='white' stroke-width='3' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
@@ -132,13 +132,13 @@ pre code.hljs{display:block;overflow-x:auto}
 <div class="wrap nav-inner">
   <a class="brand" href="/">
     <span class="mark"><svg viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.5 4.5L19 7.5" stroke="white" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
-    Impri
+    Airlock
   </a>
   <div class="nav-links">
     <a class="link" href="/#how">How it works</a>
     <a class="link" href="/#pricing">Pricing</a>
     <a class="link active-nav" href="../docs">Docs</a>
-    <a class="btn btn-primary btn-sm" href="https://gitlab.com/sekera.radim/impri">GitLab</a>
+    <a class="btn btn-primary btn-sm" href="https://gitlab.com/sekera.radim/airlock">GitLab</a>
   </div>
 </div>
 </nav>
@@ -170,8 +170,8 @@ pre code.hljs{display:block;overflow-x:auto}
 <p>The agent does not export anything. It proposes the export as an action, and the card is the review surface. Put the facts a reviewer needs to verify identity and scope into the preview:</p>
 <div class="code-block"><span class="code-lang">python</span><pre><code class="hljs"><span class="hljs-keyword">import</span> os, requests
 
-API = <span class="hljs-string">&quot;https://api.impri.dev&quot;</span>
-H = {<span class="hljs-string">&quot;Authorization&quot;</span>: <span class="hljs-string">f&quot;Bearer <span class="hljs-subst">{os.environ[<span class="hljs-string">&#x27;IMPRI_API_KEY&#x27;</span>]}</span>&quot;</span>}
+API = <span class="hljs-string">&quot;https://api.airlock.dev&quot;</span>
+H = {<span class="hljs-string">&quot;Authorization&quot;</span>: <span class="hljs-string">f&quot;Bearer <span class="hljs-subst">{os.environ[<span class="hljs-string">&#x27;AIRLOCK_API_KEY&#x27;</span>]}</span>&quot;</span>}
 
 body = <span class="hljs-string">&quot;&quot;&quot;**Request:** GDPR Art. 15 access request, ticket #4821
 **Data subject:** customer_id 99 (jane@example.com)
@@ -206,7 +206,7 @@ action = r.json()  <span class="hljs-comment"># { id, status: &quot;pending&quot
 <span class="hljs-keyword">if</span> a[<span class="hljs-string">&quot;status&quot;</span>] == <span class="hljs-string">&quot;approved&quot;</span>:
     approved_scope = a[<span class="hljs-string">&quot;decision&quot;</span>][<span class="hljs-string">&quot;final_preview&quot;</span>][<span class="hljs-string">&quot;body&quot;</span>]
     <span class="hljs-keyword">try</span>:
-        run_export(approved_scope)  <span class="hljs-comment"># your code, not Impri</span>
+        run_export(approved_scope)  <span class="hljs-comment"># your code, not Airlock</span>
         status = <span class="hljs-string">&quot;executed&quot;</span>
     <span class="hljs-keyword">except</span> Exception:
         status = <span class="hljs-string">&quot;execute_failed&quot;</span>
@@ -237,7 +237,7 @@ action = r.json()  <span class="hljs-comment"># { id, status: &quot;pending&quot
 </tr>
 <tr>
 <td>Recording who approved what and when</td>
-<td>Impri (<a href="audit-log">audit log</a>)</td>
+<td>Airlock (<a href="audit-log">audit log</a>)</td>
 </tr>
 <tr>
 <td>Legal deadlines, retention, redaction rules</td>
@@ -246,18 +246,18 @@ action = r.json()  <span class="hljs-comment"># { id, status: &quot;pending&quot
 </tbody></table>
 </div>
 <hr>
-<h2 id="what-impri-does-not-do">What Impri does not do</h2>
-<p>Impri is the approval gate only. It stores the proposed action, notifies a reviewer (email, ntfy, web push, or via <a href="slack-approval">Slack</a> and other channels), and holds the decision. It does not find or redact personal data, interpret whether a request is legally valid, or perform the export. It is not a compliance product and does not make you GDPR-compliant; it gives you a human checkpoint and a record of it.</p>
+<h2 id="what-airlock-does-not-do">What Airlock does not do</h2>
+<p>Airlock is the approval gate only. It stores the proposed action, notifies a reviewer (email, ntfy, web push, or via <a href="slack-approval">Slack</a> and other channels), and holds the decision. It does not find or redact personal data, interpret whether a request is legally valid, or perform the export. It is not a compliance product and does not make you GDPR-compliant; it gives you a human checkpoint and a record of it.</p>
 <p>If you handle regulated data, consider <a href="self-hosting">self-hosting</a> so action previews stay on your own infrastructure. Keep the preview to what the reviewer needs: identifiers and scope, not the exported data itself.</p>
 <hr>
 <h2 id="next-step">Next step</h2>
 <p>Create a key and push your first action with the <a href="quickstart">quickstart</a>, then read <a href="how-to-add-human-approval-to-an-ai-agent">how to add human approval to an AI agent</a> for the full request, poll, and report-result flow.</p>
 
-    <aside class="doc-cta" aria-label="Try Impri">
+    <aside class="doc-cta" aria-label="Try Airlock">
   <p class="doc-cta-title">Add an approval step to your own agent</p>
-  <p>Start on Impri Cloud: the Free tier includes 100 approvals a month. Or self-host the MIT-licensed core with Docker Compose, with no tier limits.</p>
+  <p>Start on Airlock Cloud: the Free tier includes 100 approvals a month. Or self-host the MIT-licensed core with Docker Compose, with no tier limits.</p>
   <div class="doc-cta-actions">
-    <a class="btn btn-primary btn-sm" href="https://app.impri.dev/?signup=1">Start free on Impri Cloud</a>
+    <a class="btn btn-primary btn-sm" href="https://app.airlock.dev/?signup=1">Start free on Airlock Cloud</a>
     <a class="btn btn-ghost btn-sm" href="../docs/quickstart">Quick start</a>
     <a class="btn btn-ghost btn-sm" href="../docs/self-hosting">Self-host guide</a>
   </div>
@@ -344,7 +344,7 @@ action = r.json()  <span class="hljs-comment"># { id, status: &quot;pending&quot
 <li class="ptoc-h2"><a href="#what-the-reviewer-sees">What the reviewer sees</a></li>
 <li class="ptoc-h2"><a href="#executing-only-what-was-approved">Executing only what was approved</a></li>
 <li class="ptoc-h2"><a href="#keep-the-export-tool-behind-the-gate">Keep the export tool behind the gate</a></li>
-<li class="ptoc-h2"><a href="#what-impri-does-not-do">What Impri does not do</a></li>
+<li class="ptoc-h2"><a href="#what-airlock-does-not-do">What Airlock does not do</a></li>
 <li class="ptoc-h2"><a href="#next-step">Next step</a></li></ul>
 </nav>
   </aside>
@@ -353,19 +353,19 @@ action = r.json()  <span class="hljs-comment"># { id, status: &quot;pending&quot
 <footer class="footer">
 <div class="wrap footer-inner">
   <a class="brand" href="/">
-    <span class="mark"><svg viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.5 4.5L19 7.5" stroke="white" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Impri
+    <span class="mark"><svg viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.5 4.5L19 7.5" stroke="white" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Airlock
   </a>
   <div>
-    <a href="https://gitlab.com/sekera.radim/impri">GitLab</a>
+    <a href="https://gitlab.com/sekera.radim/airlock">GitLab</a>
     <a href="/docs">Docs</a>
-    <a href="https://gitlab.com/sekera.radim/impri/-/blob/main/LICENSE">MIT License</a>
-    <a href="https://www.npmjs.com/package/@impri/mcp">@impri/mcp</a>
+    <a href="https://gitlab.com/sekera.radim/airlock/-/blob/main/LICENSE">MIT License</a>
+    <a href="https://www.npmjs.com/package/@airlock/mcp">@airlock/mcp</a>
     <a href="/docs/privacy">Privacy</a>
     <a href="/docs/terms">Terms</a>
     <a href="https://sekera.dev">Contact</a>
   </div>
 </div>
-<div class="wrap" style="margin-top:18px"><span class="muted">© 2026 Impri · The imprimatur for your AI agents · Built by <a href="https://sekera.dev" style="color:inherit">Radim Sekera</a>. Also by the same maker: <a href="https://briefgate.dev/?utm_source=impri.dev&amp;utm_medium=referral" style="color:inherit">BriefGate</a> — client intake for agencies and AI agents.</span></div>
+<div class="wrap" style="margin-top:18px"><span class="muted">© 2026 Airlock · The airlockmatur for your AI agents · Built by <a href="https://sekera.dev" style="color:inherit">Radim Sekera</a>. Also by the same maker: <a href="https://briefgate.dev/?utm_source=airlock.dev&amp;utm_medium=referral" style="color:inherit">BriefGate</a> — client intake for agencies and AI agents.</span></div>
 </footer>
 </body>
 </html>

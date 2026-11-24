@@ -18,7 +18,7 @@ async function setup() {
 const auth = (k: string) => ({ Authorization: `Bearer ${k}` });
 
 describe('fetchGuarded SSRF / DNS-rebind protection', () => {
-  afterEach(() => { delete process.env.IMPRI_ALLOW_PRIVATE_TARGETS; });
+  afterEach(() => { delete process.env.AIRLOCK_ALLOW_PRIVATE_TARGETS; });
 
   it('rejects non-http(s) schemes', async () => {
     await expect(fetchGuarded('ftp://example.com/x')).rejects.toThrow(/http/i);

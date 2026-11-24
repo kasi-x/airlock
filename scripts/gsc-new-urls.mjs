@@ -8,7 +8,7 @@
 // v Radimově přihlášeném profilu. Workflow tenhle soubor VYŽADUJE: když chybí, indexaci webu
 // rovnou odmítne (a je to tak správně — neimprovizuje si vlastní seznam URL).
 //
-// POZOR: impri.dev je v GSC DOMÉNOVÁ property (`sc-domain:impri.dev`), ne URL-prefix. Volající
+// POZOR: airlock.dev je v GSC DOMÉNOVÁ property (`sc-domain:airlock.dev`), ne URL-prefix. Volající
 // proto workflow předává `property`, jinak by skončil na neexistující property.
 //
 // Usage:
@@ -23,7 +23,7 @@ import { fileURLToPath } from 'node:url';
 import { execFileSync } from 'node:child_process';
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..');
-const ORIGIN = 'https://impri.dev';
+const ORIGIN = 'https://airlock.dev';
 const MAX = Number(process.env.GSC_MAX || '11');
 
 // Jen docs/<slug>.md — publikované SEO/use-case stránky. Ostatní markdown v repu (README,

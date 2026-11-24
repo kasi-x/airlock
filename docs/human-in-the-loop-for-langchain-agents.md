@@ -21,7 +21,7 @@ LangChain's tool abstraction is the right integration point. A `BaseTool` subcla
 The pattern:
 
 1. The agent invokes the tool with its proposed inputs (recipient, subject, body — whatever the action needs).
-2. The tool pushes the proposal to Impri and receives an `action_id`.
+2. The tool pushes the proposal to Airlock and receives an `action_id`.
 3. The tool polls `GET /v1/actions/:id` until the human decides.
 4. On `approved`, it executes using `decision.final_preview` (which carries any edits the human made).
 5. On `rejected` or `expired`, it returns a string explaining the outcome — the agent can then decide what to do next.
@@ -38,8 +38,8 @@ import time
 import requests
 from langchain.tools import BaseTool
 
-IMPRI_API_KEY = os.environ["IMPRI_API_KEY"]
-IMPRI_BASE = "https://api.impri.dev"
+AIRLOCK_API_KEY = os.environ["AIRLOCK_API_KEY"]
+AIRLOCK_BASE = "https://api.airlock.dev"
 
 class ApprovedEmailTool(BaseTool):
     name = "send_email"
@@ -51,8 +51,8 @@ class ApprovedEmailTool(BaseTool):
     def _run(self, to: str, subject: str, body: str) -> str:
         # 1. Push the proposed action for human review
         resp = requests.post(
-            f"{IMPRI_BASE}/v1/actions",
-            headers={"Authorization": f"Bearer {IMPRI_API_KEY}"},
+            f"{AIRLOCK_BASE}/v1/actions",
+            headers={"Authorization": f"Bearer {AIRLOCK_API_KEY}"},
             json={
                 "kind": "email.send",
                 "title": f"Email to {to}: {subject}",
@@ -70,8 +70,8 @@ class ApprovedEmailTool(BaseTool):
         # 2. Poll until the human decides
         while True:
             result = requests.get(
-                f"{IMPRI_BASE}/v1/actions/{action_id}",
-                headers={"Authorization": f"Bearer {IMPRI_API_KEY}"},
+                f"{AIRLOCK_BASE}/v1/actions/{action_id}",
+                headers={"Authorization": f"Bearer {AIRLOCK_API_KEY}"},
             ).json()
 
             if result["status"] != "pending":
@@ -85,10 +85,10 @@ class ApprovedEmailTool(BaseTool):
         approved_body = result["decision"]["final_preview"]["body"]
         _send_via_smtp(to, subject, approved_body)  # your sending function
 
-        # 4. Report the outcome back to Impri
+        # 4. Report the outcome back to Airlock
         requests.post(
-            f"{IMPRI_BASE}/v1/actions/{action_id}/result",
-            headers={"Authorization": f"Bearer {IMPRI_API_KEY}"},
+            f"{AIRLOCK_BASE}/v1/actions/{action_id}/result",
+            headers={"Authorization": f"Bearer {AIRLOCK_API_KEY}"},
             json={"status": "executed"},
         )
         return f"Email sent to {to}."
@@ -135,15 +135,15 @@ Always use `final_preview.body` for execution, never the original `body` argumen
 
 ## Expiry and polling behavior
 
-The `expires_in` field sets how long Impri holds the action open (in seconds; minimum 300, maximum 30 days, default 72 hours). After expiry the status becomes `expired` and the action cannot be approved.
+The `expires_in` field sets how long Airlock holds the action open (in seconds; minimum 300, maximum 30 days, default 72 hours). After expiry the status becomes `expired` and the action cannot be approved.
 
 For a live agent loop, short expiries (an hour or less) are usually right — a draft that sat overnight has likely lost its context. Treat `expired` the same as `rejected` in the tool's return value: the agent will see the string and can decide whether to retry, escalate, or give up.
 
 ---
 
-## What Impri is not
+## What Airlock is not
 
-Impri stores the proposed action, notifies the human via inbox card (with optional Slack, Discord, or Telegram), and holds the decision. It does not generate content, interpret what the action does, or execute anything itself.
+Airlock stores the proposed action, notifies the human via inbox card (with optional Slack, Discord, or Telegram), and holds the decision. It does not generate content, interpret what the action does, or execute anything itself.
 
 It is a genuine gate only as long as `ApprovedEmailTool` is the agent's **only** path to sending email. If the agent also holds a raw SMTP credential or a direct API key with email-sending access, it can route around this wrapper. Confine the side-effect credential to the tool; give the agent no other way to reach it.
 

@@ -3,9 +3,9 @@ requires = ["hatchling"]
 build-backend = "hatchling.build"
 
 [project]
-name = "impri"
+name = "airlock"
 version = "0.1.0"
-description = "Python SDK for the Impri human-in-the-loop approval API"
+description = "Python SDK for the Airlock human-in-the-loop approval API"
 readme = "README.md"
 license = { text = "MIT" }
 requires-python = ">=3.9"
@@ -19,15 +19,15 @@ dev = [
 ]
 
 [project.urls]
-Homepage = "https://impri.dev"
-Repository = "https://github.com/sekera-radim/impri"
-Documentation = "https://impri.dev/docs"
+Homepage = "https://airlock.dev"
+Repository = "https://github.com/kasi-x/airlock"
+Documentation = "https://airlock.dev/docs"
 
 [tool.hatch.build.targets.wheel]
-packages = ["impri"]
+packages = ["airlock"]
 
 [tool.coverage.run]
-source = ["impri"]
+source = ["airlock"]
 
 [tool.coverage.report]
 show_missing = true

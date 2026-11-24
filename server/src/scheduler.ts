@@ -10,7 +10,7 @@ import { noopReporter, type ErrorReporter } from './sentry.js';
 
 // Outbound User-Agent for watcher fetches. Identifies the product without
 // advertising any hosted domain (there is none in this fork).
-const WATCHER_USER_AGENT = 'Impri-Watcher/1.0';
+const WATCHER_USER_AGENT = 'Airlock-Watcher/1.0';
 const FETCH_TIMEOUT_MS = 15_000;
 // Cap response body to bound memory: a watcher URL serving a huge payload
 // (accidental or malicious) must not OOM the process. PLAYBOOK B1 / econ report.
@@ -564,7 +564,7 @@ export async function processWatcher(db: Db, watcher: WatcherRow, log: Logger = 
       WHERE id = ?
     `).run(newFailCount, newStatus, degradedSince, lastError, now, nextRun, now, watcher.id);
 
-    incCounter('impri_watcher_runs_total', { kind: watcher.kind, result: 'error' });
+    incCounter('airlock_watcher_runs_total', { kind: watcher.kind, result: 'error' });
     log.error({ event: 'watcher.run', watcher_id: watcher.id, kind: watcher.kind, result: 'error', items_fetched: 0, items_new: 0, items_published: 0, duration_ms: Date.now() - now * 1000 });
     if (newStatus === 'degraded' && watcher.status !== 'degraded') {
       log.warn({ event: 'watcher.degraded', watcher_id: watcher.id, kind: watcher.kind, fail_count: newFailCount });
@@ -601,7 +601,7 @@ export async function processWatcher(db: Db, watcher: WatcherRow, log: Logger = 
   );
 
   // Track items fetched (after successful fetch)
-  incCounter('impri_watcher_items_fetched_total', { kind: watcher.kind });
+  incCounter('airlock_watcher_items_fetched_total', { kind: watcher.kind });
 
   // Baseline run: store all fetched items but publish nothing (PLAYBOOK B2)
   if (isBaseline) {
@@ -615,7 +615,7 @@ export async function processWatcher(db: Db, watcher: WatcherRow, log: Logger = 
     db.prepare(`
       UPDATE watchers SET first_run_done = 1, next_run_at = ?, updated_at = ? WHERE id = ?
     `).run(computeNextRunAt(schedule.every, schedule.jitter, now), now, watcher.id);
-    incCounter('impri_watcher_runs_total', { kind: watcher.kind, result: 'baseline' });
+    incCounter('airlock_watcher_runs_total', { kind: watcher.kind, result: 'baseline' });
     log.info({ event: 'watcher.run', watcher_id: watcher.id, kind: watcher.kind, result: 'baseline', items_fetched: fetchedItems.length, items_new: fetchedItems.length, items_published: 0, duration_ms: Date.now() - now * 1000 });
     return;
   }
@@ -636,7 +636,7 @@ export async function processWatcher(db: Db, watcher: WatcherRow, log: Logger = 
   const overflowCount = isBurst ? scored.length - BURST_TOP_N : 0;
 
   if (isBurst) {
-    incCounter('impri_watcher_burst_truncations_total', { kind: watcher.kind });
+    incCounter('airlock_watcher_burst_truncations_total', { kind: watcher.kind });
   }
 
   // For url_diff, look up the previously stored page size BEFORE inserting the
@@ -683,7 +683,7 @@ export async function processWatcher(db: Db, watcher: WatcherRow, log: Logger = 
   // quotaReached is true (found in the same review).
   let publishedCount = 0;
   if (quotaReached) {
-    incCounter('impri_watcher_quota_skipped_total', { kind: watcher.kind });
+    incCounter('airlock_watcher_quota_skipped_total', { kind: watcher.kind });
   } else {
     for (let i = 0; i < toPublish.length; i++) {
       const s = toPublish[i];
@@ -704,7 +704,7 @@ export async function processWatcher(db: Db, watcher: WatcherRow, log: Logger = 
         prevSizeBytes,
         watcher.color,
       );
-      incCounter('impri_watcher_hits_total', { kind: watcher.kind });
+      incCounter('airlock_watcher_hits_total', { kind: watcher.kind });
       publishedCount++;
     }
   }
@@ -752,7 +752,7 @@ export async function processWatcher(db: Db, watcher: WatcherRow, log: Logger = 
     watcher.id,
   );
 
-  incCounter('impri_watcher_runs_total', { kind: watcher.kind, result: 'ok' });
+  incCounter('airlock_watcher_runs_total', { kind: watcher.kind, result: 'ok' });
   log.info({ event: 'watcher.run', watcher_id: watcher.id, kind: watcher.kind, result: 'ok', items_fetched: fetchedItems.length, items_new: newItems.length, items_published: publishedCount, duration_ms: Date.now() - now * 1000 });
 }
 

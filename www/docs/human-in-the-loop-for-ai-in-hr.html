@@ -3,21 +3,21 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Human-in-the-Loop for AI in HR and Recruiting — Impri Docs</title>
+<title>Human-in-the-Loop for AI in HR and Recruiting — Airlock Docs</title>
 <meta name="description" content="An AI recruiter that screens résumés, drafts candidate emails, and books interviews needs a human checkpoint before anything reaches a real person — this is…">
 <meta name="theme-color" content="#06070d">
-<meta property="og:title" content="Human-in-the-Loop for AI in HR and Recruiting — Impri Docs">
+<meta property="og:title" content="Human-in-the-Loop for AI in HR and Recruiting — Airlock Docs">
 <meta property="og:description" content="An AI recruiter that screens résumés, drafts candidate emails, and books interviews needs a human checkpoint before anything reaches a real person — this is…">
 <meta property="og:type" content="article">
-<meta property="og:url" content="https://impri.dev/docs/human-in-the-loop-for-ai-in-hr">
-<meta property="og:image" content="https://impri.dev/assets/og/og-docs.png">
+<meta property="og:url" content="https://airlock.dev/docs/human-in-the-loop-for-ai-in-hr">
+<meta property="og:image" content="https://airlock.dev/assets/og/og-docs.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
-<meta property="og:image:alt" content="Impri — human-in-the-loop approval inbox for AI agents">
+<meta property="og:image:alt" content="Airlock — human-in-the-loop approval inbox for AI agents">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="https://impri.dev/assets/og/og-docs.png">
-<link rel="canonical" href="https://impri.dev/docs/human-in-the-loop-for-ai-in-hr">
-<script type="application/ld+json">{"@context":"https://schema.org","@type":"TechArticle","headline":"Human-in-the-Loop for AI in HR and Recruiting","description":"An AI recruiter that screens résumés, drafts candidate emails, and books interviews needs a human checkpoint before anything reaches a real person — this is…","url":"https://impri.dev/docs/human-in-the-loop-for-ai-in-hr","inLanguage":"en","author":{"@type":"Organization","name":"Impri","url":"https://impri.dev"},"publisher":{"@type":"Organization","name":"Impri","url":"https://impri.dev"}}</script>
+<meta name="twitter:image" content="https://airlock.dev/assets/og/og-docs.png">
+<link rel="canonical" href="https://airlock.dev/docs/human-in-the-loop-for-ai-in-hr">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"TechArticle","headline":"Human-in-the-Loop for AI in HR and Recruiting","description":"An AI recruiter that screens résumés, drafts candidate emails, and books interviews needs a human checkpoint before anything reaches a real person — this is…","url":"https://airlock.dev/docs/human-in-the-loop-for-ai-in-hr","inLanguage":"en","author":{"@type":"Organization","name":"Airlock","url":"https://airlock.dev"},"publisher":{"@type":"Organization","name":"Airlock","url":"https://airlock.dev"}}</script>
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <link rel="icon" href="/favicon.ico" sizes="32x32">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='9' fill='%236366f1'/%3E%3Cpath d='M9 16.5l4.5 4.5L23 11' stroke='white' stroke-width='3' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
@@ -132,13 +132,13 @@ pre code.hljs{display:block;overflow-x:auto}
 <div class="wrap nav-inner">
   <a class="brand" href="/">
     <span class="mark"><svg viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.5 4.5L19 7.5" stroke="white" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
-    Impri
+    Airlock
   </a>
   <div class="nav-links">
     <a class="link" href="/#how">How it works</a>
     <a class="link" href="/#pricing">Pricing</a>
     <a class="link active-nav" href="../docs">Docs</a>
-    <a class="btn btn-primary btn-sm" href="https://gitlab.com/sekera.radim/impri">GitLab</a>
+    <a class="btn btn-primary btn-sm" href="https://gitlab.com/sekera.radim/airlock">GitLab</a>
   </div>
 </div>
 </nav>
@@ -164,9 +164,9 @@ pre code.hljs{display:block;overflow-x:auto}
 <span class="hljs-keyword">import</span> time
 <span class="hljs-keyword">import</span> os
 
-IMPRI_KEY = os.environ[<span class="hljs-string">&quot;IMPRI_API_KEY&quot;</span>]
-BASE = <span class="hljs-string">&quot;https://api.impri.dev&quot;</span>
-HEADERS = {<span class="hljs-string">&quot;Authorization&quot;</span>: <span class="hljs-string">f&quot;Bearer <span class="hljs-subst">{IMPRI_KEY}</span>&quot;</span>}
+AIRLOCK_KEY = os.environ[<span class="hljs-string">&quot;AIRLOCK_API_KEY&quot;</span>]
+BASE = <span class="hljs-string">&quot;https://api.airlock.dev&quot;</span>
+HEADERS = {<span class="hljs-string">&quot;Authorization&quot;</span>: <span class="hljs-string">f&quot;Bearer <span class="hljs-subst">{AIRLOCK_KEY}</span>&quot;</span>}
 
 <span class="hljs-keyword">def</span> <span class="hljs-title function_">propose_candidate_email</span>(<span class="hljs-params">candidate_name, role, draft_body</span>):
     resp = requests.post(<span class="hljs-string">f&quot;<span class="hljs-subst">{BASE}</span>/v1/actions&quot;</span>, headers=HEADERS, json={
@@ -201,14 +201,14 @@ decision = wait_for_decision(action_id)
 <p>A recruiter — not the model — is the one who actually decides a candidate hears &quot;let&#39;s move forward&quot; or &quot;not this time.&quot; The agent only ever holds a draft.</p>
 <h2 id="what-the-reviewer-sees-and-why-editability-matters">What the reviewer sees, and why editability matters</h2>
 <p>Recruiting emails are the clearest case for the <code>editable</code> field. A hiring manager rarely wants to reject a draft outright — more often they want to soften a line, fix a role title, or add a personal note before it goes out. Setting <code>editable: [&quot;preview.body&quot;]</code> lets them do that directly on the approval card; <code>decision.final_preview.body</code> then carries their edited version, and <code>decision.diff</code> shows exactly what changed for the audit trail. Always execute with <code>final_preview</code>, never the original draft — the API guarantees the original isn&#39;t silently reused.</p>
-<h2 id="where-impri-stops">Where Impri stops</h2>
-<p>Impri does not read the résumé, decide who&#39;s a good fit, or know anything about your ATS&#39;s data model. It stores the proposed action, notifies the reviewer, and holds the decision — nothing more. Compliance-sensitive teams tend to also want a durable record of who approved what and when; that&#39;s what the <a href="audit-log">audit log</a> is for, and it&#39;s often the actual reason HR teams reach for a gate like this over &quot;just trust the agent.&quot;</p>
+<h2 id="where-airlock-stops">Where Airlock stops</h2>
+<p>Airlock does not read the résumé, decide who&#39;s a good fit, or know anything about your ATS&#39;s data model. It stores the proposed action, notifies the reviewer, and holds the decision — nothing more. Compliance-sensitive teams tend to also want a durable record of who approved what and when; that&#39;s what the <a href="audit-log">audit log</a> is for, and it&#39;s often the actual reason HR teams reach for a gate like this over &quot;just trust the agent.&quot;</p>
 <p>It&#39;s also only a real gate if the send path is the <em>only</em> path. If your agent also holds a raw SMTP credential or ATS API token it can call directly, it can route around the approval step entirely — the gate has to be the sole chokepoint to the side effect, not an optional detour.</p>
 <div class="table-wrap"><table>
 <thead>
 <tr>
 <th>Situation</th>
-<th>Use Impri</th>
+<th>Use Airlock</th>
 </tr>
 </thead>
 <tbody><tr>
@@ -225,18 +225,18 @@ decision = wait_for_decision(action_id)
 </tr>
 <tr>
 <td>You need multi-stage hiring workflow logic (scorecards, stage transitions)</td>
-<td>Use your ATS or a workflow engine; Impri is one step in it</td>
+<td>Use your ATS or a workflow engine; Airlock is one step in it</td>
 </tr>
 </tbody></table>
 </div>
 <h2 id="next-step">Next step</h2>
 <p>Start with the <a href="quickstart">quickstart</a> to get an API key, then the <a href="sdk-python">Python SDK</a> if you&#39;d rather not hand-roll the requests calls above.</p>
 
-    <aside class="doc-cta" aria-label="Try Impri">
+    <aside class="doc-cta" aria-label="Try Airlock">
   <p class="doc-cta-title">Add an approval step to your own agent</p>
-  <p>Start on Impri Cloud: the Free tier includes 100 approvals a month. Or self-host the MIT-licensed core with Docker Compose, with no tier limits.</p>
+  <p>Start on Airlock Cloud: the Free tier includes 100 approvals a month. Or self-host the MIT-licensed core with Docker Compose, with no tier limits.</p>
   <div class="doc-cta-actions">
-    <a class="btn btn-primary btn-sm" href="https://app.impri.dev/?signup=1">Start free on Impri Cloud</a>
+    <a class="btn btn-primary btn-sm" href="https://app.airlock.dev/?signup=1">Start free on Airlock Cloud</a>
     <a class="btn btn-ghost btn-sm" href="../docs/quickstart">Quick start</a>
     <a class="btn btn-ghost btn-sm" href="../docs/self-hosting">Self-host guide</a>
   </div>
@@ -322,7 +322,7 @@ decision = wait_for_decision(action_id)
 <ul><li class="ptoc-h2"><a href="#why-recruiting-agents-need-a-gate-not-just-a-prompt">Why recruiting agents need a gate, not just a prompt</a></li>
 <li class="ptoc-h2"><a href="#the-pattern-propose-wait-execute">The pattern: propose, wait, execute</a></li>
 <li class="ptoc-h2"><a href="#what-the-reviewer-sees-and-why-editability-matters">What the reviewer sees, and why editability matters</a></li>
-<li class="ptoc-h2"><a href="#where-impri-stops">Where Impri stops</a></li>
+<li class="ptoc-h2"><a href="#where-airlock-stops">Where Airlock stops</a></li>
 <li class="ptoc-h2"><a href="#next-step">Next step</a></li></ul>
 </nav>
   </aside>
@@ -331,19 +331,19 @@ decision = wait_for_decision(action_id)
 <footer class="footer">
 <div class="wrap footer-inner">
   <a class="brand" href="/">
-    <span class="mark"><svg viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.5 4.5L19 7.5" stroke="white" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Impri
+    <span class="mark"><svg viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.5 4.5L19 7.5" stroke="white" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Airlock
   </a>
   <div>
-    <a href="https://gitlab.com/sekera.radim/impri">GitLab</a>
+    <a href="https://gitlab.com/sekera.radim/airlock">GitLab</a>
     <a href="/docs">Docs</a>
-    <a href="https://gitlab.com/sekera.radim/impri/-/blob/main/LICENSE">MIT License</a>
-    <a href="https://www.npmjs.com/package/@impri/mcp">@impri/mcp</a>
+    <a href="https://gitlab.com/sekera.radim/airlock/-/blob/main/LICENSE">MIT License</a>
+    <a href="https://www.npmjs.com/package/@airlock/mcp">@airlock/mcp</a>
     <a href="/docs/privacy">Privacy</a>
     <a href="/docs/terms">Terms</a>
     <a href="https://sekera.dev">Contact</a>
   </div>
 </div>
-<div class="wrap" style="margin-top:18px"><span class="muted">© 2026 Impri · The imprimatur for your AI agents · Built by <a href="https://sekera.dev" style="color:inherit">Radim Sekera</a>. Also by the same maker: <a href="https://briefgate.dev/?utm_source=impri.dev&amp;utm_medium=referral" style="color:inherit">BriefGate</a> — client intake for agencies and AI agents.</span></div>
+<div class="wrap" style="margin-top:18px"><span class="muted">© 2026 Airlock · The airlockmatur for your AI agents · Built by <a href="https://sekera.dev" style="color:inherit">Radim Sekera</a>. Also by the same maker: <a href="https://briefgate.dev/?utm_source=airlock.dev&amp;utm_medium=referral" style="color:inherit">BriefGate</a> — client intake for agencies and AI agents.</span></div>
 </footer>
 </body>
 </html>

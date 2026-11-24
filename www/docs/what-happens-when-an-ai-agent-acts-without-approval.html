@@ -3,21 +3,21 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>What Happens When an AI Agent Acts Without Approval — Impri Docs</title>
+<title>What Happens When an AI Agent Acts Without Approval — Airlock Docs</title>
 <meta name="description" content="Without a human checkpoint, an AI agent's mistakes ship at machine speed: a bad draft is sent, a loop repeats a side effect, and the first sign of trouble is…">
 <meta name="theme-color" content="#06070d">
-<meta property="og:title" content="What Happens When an AI Agent Acts Without Approval — Impri Docs">
+<meta property="og:title" content="What Happens When an AI Agent Acts Without Approval — Airlock Docs">
 <meta property="og:description" content="Without a human checkpoint, an AI agent's mistakes ship at machine speed: a bad draft is sent, a loop repeats a side effect, and the first sign of trouble is…">
 <meta property="og:type" content="article">
-<meta property="og:url" content="https://impri.dev/docs/what-happens-when-an-ai-agent-acts-without-approval">
-<meta property="og:image" content="https://impri.dev/assets/og/og-docs.png">
+<meta property="og:url" content="https://airlock.dev/docs/what-happens-when-an-ai-agent-acts-without-approval">
+<meta property="og:image" content="https://airlock.dev/assets/og/og-docs.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
-<meta property="og:image:alt" content="Impri — human-in-the-loop approval inbox for AI agents">
+<meta property="og:image:alt" content="Airlock — human-in-the-loop approval inbox for AI agents">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="https://impri.dev/assets/og/og-docs.png">
-<link rel="canonical" href="https://impri.dev/docs/what-happens-when-an-ai-agent-acts-without-approval">
-<script type="application/ld+json">{"@context":"https://schema.org","@type":"TechArticle","headline":"What Happens When an AI Agent Acts Without Approval","description":"Without a human checkpoint, an AI agent's mistakes ship at machine speed: a bad draft is sent, a loop repeats a side effect, and the first sign of trouble is…","url":"https://impri.dev/docs/what-happens-when-an-ai-agent-acts-without-approval","inLanguage":"en","author":{"@type":"Organization","name":"Impri","url":"https://impri.dev"},"publisher":{"@type":"Organization","name":"Impri","url":"https://impri.dev"}}</script>
+<meta name="twitter:image" content="https://airlock.dev/assets/og/og-docs.png">
+<link rel="canonical" href="https://airlock.dev/docs/what-happens-when-an-ai-agent-acts-without-approval">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"TechArticle","headline":"What Happens When an AI Agent Acts Without Approval","description":"Without a human checkpoint, an AI agent's mistakes ship at machine speed: a bad draft is sent, a loop repeats a side effect, and the first sign of trouble is…","url":"https://airlock.dev/docs/what-happens-when-an-ai-agent-acts-without-approval","inLanguage":"en","author":{"@type":"Organization","name":"Airlock","url":"https://airlock.dev"},"publisher":{"@type":"Organization","name":"Airlock","url":"https://airlock.dev"}}</script>
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <link rel="icon" href="/favicon.ico" sizes="32x32">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='9' fill='%236366f1'/%3E%3Cpath d='M9 16.5l4.5 4.5L23 11' stroke='white' stroke-width='3' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
@@ -132,13 +132,13 @@ pre code.hljs{display:block;overflow-x:auto}
 <div class="wrap nav-inner">
   <a class="brand" href="/">
     <span class="mark"><svg viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.5 4.5L19 7.5" stroke="white" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
-    Impri
+    Airlock
   </a>
   <div class="nav-links">
     <a class="link" href="/#how">How it works</a>
     <a class="link" href="/#pricing">Pricing</a>
     <a class="link active-nav" href="../docs">Docs</a>
-    <a class="btn btn-primary btn-sm" href="https://gitlab.com/sekera.radim/impri">GitLab</a>
+    <a class="btn btn-primary btn-sm" href="https://gitlab.com/sekera.radim/airlock">GitLab</a>
   </div>
 </div>
 </nav>
@@ -174,15 +174,15 @@ pre code.hljs{display:block;overflow-x:auto}
 <p>There is no code path that depends on a human&#39;s answer — <code>sendEmail</code> runs whenever the model decides to call the tool, regardless of what its own prompt told it to do first. A prompt is guidance the model reads; it is not a branch in your program.</p>
 <h2 id="the-fix-make-the-tool-call-itself-impossible-without-a-stored-decision">The fix: make the tool call itself impossible without a stored decision</h2>
 <p>Human approval is a data dependency, not a suggestion — the executor function checks an external status before it&#39;s allowed to run:</p>
-<div class="code-block"><span class="code-lang">typescript</span><pre><code class="hljs"><span class="hljs-keyword">const</span> <span class="hljs-variable constant_">IMPRI</span> = process.<span class="hljs-property">env</span>.<span class="hljs-property">IMPRI_BASE_URL</span> ?? <span class="hljs-string">&quot;https://api.impri.dev&quot;</span>;
+<div class="code-block"><span class="code-lang">typescript</span><pre><code class="hljs"><span class="hljs-keyword">const</span> <span class="hljs-variable constant_">AIRLOCK</span> = process.<span class="hljs-property">env</span>.<span class="hljs-property">AIRLOCK_BASE_URL</span> ?? <span class="hljs-string">&quot;https://api.airlock.dev&quot;</span>;
 <span class="hljs-keyword">const</span> headers = {
-  <span class="hljs-title class_">Authorization</span>: <span class="hljs-string">`Bearer <span class="hljs-subst">${process.env.IMPRI_API_KEY}</span>`</span>,
+  <span class="hljs-title class_">Authorization</span>: <span class="hljs-string">`Bearer <span class="hljs-subst">${process.env.AIRLOCK_API_KEY}</span>`</span>,
   <span class="hljs-string">&quot;Content-Type&quot;</span>: <span class="hljs-string">&quot;application/json&quot;</span>,
 };
 
 <span class="hljs-keyword">async</span> <span class="hljs-keyword">function</span> <span class="hljs-title function_">runTool</span>(<span class="hljs-params"><span class="hljs-attr">call</span>: <span class="hljs-title class_">ToolCall</span></span>) {
   <span class="hljs-keyword">if</span> (call.<span class="hljs-property">name</span> === <span class="hljs-string">&quot;send_email&quot;</span>) {
-    <span class="hljs-keyword">const</span> created = <span class="hljs-keyword">await</span> <span class="hljs-title function_">fetch</span>(<span class="hljs-string">`<span class="hljs-subst">${IMPRI}</span>/v1/actions`</span>, {
+    <span class="hljs-keyword">const</span> created = <span class="hljs-keyword">await</span> <span class="hljs-title function_">fetch</span>(<span class="hljs-string">`<span class="hljs-subst">${AIRLOCK}</span>/v1/actions`</span>, {
       <span class="hljs-attr">method</span>: <span class="hljs-string">&quot;POST&quot;</span>,
       headers,
       <span class="hljs-attr">body</span>: <span class="hljs-title class_">JSON</span>.<span class="hljs-title function_">stringify</span>({
@@ -197,7 +197,7 @@ pre code.hljs{display:block;overflow-x:auto}
     <span class="hljs-keyword">let</span> decision;
     <span class="hljs-keyword">do</span> {
       <span class="hljs-keyword">await</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">Promise</span>(<span class="hljs-function">(<span class="hljs-params">r</span>) =&gt;</span> <span class="hljs-built_in">setTimeout</span>(r, <span class="hljs-number">5000</span>));
-      decision = <span class="hljs-keyword">await</span> <span class="hljs-title function_">fetch</span>(<span class="hljs-string">`<span class="hljs-subst">${IMPRI}</span>/v1/actions/<span class="hljs-subst">${created.id}</span>`</span>, { headers }).<span class="hljs-title function_">then</span>(<span class="hljs-function">(<span class="hljs-params">r</span>) =&gt;</span> r.<span class="hljs-title function_">json</span>());
+      decision = <span class="hljs-keyword">await</span> <span class="hljs-title function_">fetch</span>(<span class="hljs-string">`<span class="hljs-subst">${AIRLOCK}</span>/v1/actions/<span class="hljs-subst">${created.id}</span>`</span>, { headers }).<span class="hljs-title function_">then</span>(<span class="hljs-function">(<span class="hljs-params">r</span>) =&gt;</span> r.<span class="hljs-title function_">json</span>());
     } <span class="hljs-keyword">while</span> (decision.<span class="hljs-property">status</span> === <span class="hljs-string">&quot;pending&quot;</span>);
 
     <span class="hljs-keyword">if</span> (decision.<span class="hljs-property">status</span> !== <span class="hljs-string">&quot;approved&quot;</span>) {
@@ -206,7 +206,7 @@ pre code.hljs{display:block;overflow-x:auto}
 
     <span class="hljs-keyword">const</span> result = <span class="hljs-keyword">await</span> <span class="hljs-title function_">sendEmail</span>(call.<span class="hljs-property">args</span>.<span class="hljs-property">to</span>, decision.<span class="hljs-property">decision</span>.<span class="hljs-property">final_preview</span>.<span class="hljs-property">body</span>);
 
-    <span class="hljs-keyword">await</span> <span class="hljs-title function_">fetch</span>(<span class="hljs-string">`<span class="hljs-subst">${IMPRI}</span>/v1/actions/<span class="hljs-subst">${created.id}</span>/result`</span>, {
+    <span class="hljs-keyword">await</span> <span class="hljs-title function_">fetch</span>(<span class="hljs-string">`<span class="hljs-subst">${AIRLOCK}</span>/v1/actions/<span class="hljs-subst">${created.id}</span>/result`</span>, {
       <span class="hljs-attr">method</span>: <span class="hljs-string">&quot;POST&quot;</span>,
       headers,
       <span class="hljs-attr">body</span>: <span class="hljs-title class_">JSON</span>.<span class="hljs-title function_">stringify</span>({ <span class="hljs-attr">status</span>: <span class="hljs-string">&quot;executed&quot;</span> }),
@@ -221,7 +221,7 @@ pre code.hljs{display:block;overflow-x:auto}
 <thead>
 <tr>
 <th>Without a gate</th>
-<th>With Impri in the loop</th>
+<th>With Airlock in the loop</th>
 </tr>
 </thead>
 <tbody><tr>
@@ -243,15 +243,15 @@ pre code.hljs{display:block;overflow-x:auto}
 </tbody></table>
 </div>
 <h2 id="the-honest-limit">The honest limit</h2>
-<p>This only holds if the approved path is the agent&#39;s <em>only</em> route to the side effect. If the agent (or a library it calls) also has the raw <code>SMTP</code> credentials or API key needed to send directly, it can route around the gate entirely — Impri doesn&#39;t intercept network calls, it just stores actions and decisions for code that chooses to call it. The fix above works because <code>sendEmail</code> is only invoked from inside the gated branch; if another code path in the same agent can call <code>sendEmail</code> directly, the gate isn&#39;t actually load-bearing.</p>
+<p>This only holds if the approved path is the agent&#39;s <em>only</em> route to the side effect. If the agent (or a library it calls) also has the raw <code>SMTP</code> credentials or API key needed to send directly, it can route around the gate entirely — Airlock doesn&#39;t intercept network calls, it just stores actions and decisions for code that chooses to call it. The fix above works because <code>sendEmail</code> is only invoked from inside the gated branch; if another code path in the same agent can call <code>sendEmail</code> directly, the gate isn&#39;t actually load-bearing.</p>
 <h2 id="next-step">Next step</h2>
 <p>If you&#39;re integrating this for the first time, <a href="how-to-add-human-approval-to-an-ai-agent">how to add human approval to an AI agent</a> covers the full push/poll/execute pattern in more depth, including MCP for agents running in Claude Code or Claude Desktop. For agents built on the <a href="human-approval-claude-agent-sdk">Claude Agent SDK</a> specifically, the same gate wraps around any tool call, not just email.</p>
 
-    <aside class="doc-cta" aria-label="Try Impri">
+    <aside class="doc-cta" aria-label="Try Airlock">
   <p class="doc-cta-title">Add an approval step to your own agent</p>
-  <p>Start on Impri Cloud: the Free tier includes 100 approvals a month. Or self-host the MIT-licensed core with Docker Compose, with no tier limits.</p>
+  <p>Start on Airlock Cloud: the Free tier includes 100 approvals a month. Or self-host the MIT-licensed core with Docker Compose, with no tier limits.</p>
   <div class="doc-cta-actions">
-    <a class="btn btn-primary btn-sm" href="https://app.impri.dev/?signup=1">Start free on Impri Cloud</a>
+    <a class="btn btn-primary btn-sm" href="https://app.airlock.dev/?signup=1">Start free on Airlock Cloud</a>
     <a class="btn btn-ghost btn-sm" href="../docs/quickstart">Quick start</a>
     <a class="btn btn-ghost btn-sm" href="../docs/self-hosting">Self-host guide</a>
   </div>
@@ -347,19 +347,19 @@ pre code.hljs{display:block;overflow-x:auto}
 <footer class="footer">
 <div class="wrap footer-inner">
   <a class="brand" href="/">
-    <span class="mark"><svg viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.5 4.5L19 7.5" stroke="white" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Impri
+    <span class="mark"><svg viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.5 4.5L19 7.5" stroke="white" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Airlock
   </a>
   <div>
-    <a href="https://gitlab.com/sekera.radim/impri">GitLab</a>
+    <a href="https://gitlab.com/sekera.radim/airlock">GitLab</a>
     <a href="/docs">Docs</a>
-    <a href="https://gitlab.com/sekera.radim/impri/-/blob/main/LICENSE">MIT License</a>
-    <a href="https://www.npmjs.com/package/@impri/mcp">@impri/mcp</a>
+    <a href="https://gitlab.com/sekera.radim/airlock/-/blob/main/LICENSE">MIT License</a>
+    <a href="https://www.npmjs.com/package/@airlock/mcp">@airlock/mcp</a>
     <a href="/docs/privacy">Privacy</a>
     <a href="/docs/terms">Terms</a>
     <a href="https://sekera.dev">Contact</a>
   </div>
 </div>
-<div class="wrap" style="margin-top:18px"><span class="muted">© 2026 Impri · The imprimatur for your AI agents · Built by <a href="https://sekera.dev" style="color:inherit">Radim Sekera</a>. Also by the same maker: <a href="https://briefgate.dev/?utm_source=impri.dev&amp;utm_medium=referral" style="color:inherit">BriefGate</a> — client intake for agencies and AI agents.</span></div>
+<div class="wrap" style="margin-top:18px"><span class="muted">© 2026 Airlock · The airlockmatur for your AI agents · Built by <a href="https://sekera.dev" style="color:inherit">Radim Sekera</a>. Also by the same maker: <a href="https://briefgate.dev/?utm_source=airlock.dev&amp;utm_medium=referral" style="color:inherit">BriefGate</a> — client intake for agencies and AI agents.</span></div>
 </footer>
 </body>
 </html>

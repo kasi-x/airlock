@@ -9,7 +9,7 @@
  * - no SMTP: create/PATCH refused, sends throw
  * - PATCH with a new address resets confirmation
  * - unconfirmed channels skipped by notifyChannels and the digest tick
- * - IMPRI_EMAIL_DAILY_CAP: capped sends are retried, never count as failures
+ * - AIRLOCK_EMAIL_DAILY_CAP: capped sends are retried, never count as failures
  * - create/PATCH queue the confirmation email and respond before SMTP does;
  *   a late failure does not wipe a newer link; the SMTP transport has timeouts
  * - send failures release the limit slot; the owner retries, not the tick
@@ -50,11 +50,11 @@ function mails(): SentMail[] {
 }
 
 function verifyMails(): SentMail[] {
-  return mails().filter(m => m.subject === 'Confirm your email for Impri notifications');
+  return mails().filter(m => m.subject === 'Confirm your email for Airlock notifications');
 }
 
 function notifyMails(): SentMail[] {
-  return mails().filter(m => m.subject.startsWith('[Impri] '));
+  return mails().filter(m => m.subject.startsWith('[Airlock] '));
 }
 
 // Create/PATCH send the confirmation email after responding. The mocked
@@ -129,14 +129,14 @@ function channelRow(db: Ctx['db'], id: string) {
 
 beforeEach(() => {
   process.env.SMTP_HOST = 'smtp.test.invalid';
-  delete process.env.IMPRI_EMAIL_DAILY_CAP;
+  delete process.env.AIRLOCK_EMAIL_DAILY_CAP;
   sendMail.mockReset();
   sendMail.mockResolvedValue({ messageId: 'test' });
   transportOptions.length = 0;
 });
 
 afterEach(() => {
-  delete process.env.IMPRI_EMAIL_DAILY_CAP;
+  delete process.env.AIRLOCK_EMAIL_DAILY_CAP;
 });
 
 // ---------------------------------------------------------------------------
@@ -536,7 +536,7 @@ describe('delivery skips unconfirmed email channels', () => {
 
 // ---------------------------------------------------------------------------
 
-describe('IMPRI_EMAIL_DAILY_CAP', () => {
+describe('AIRLOCK_EMAIL_DAILY_CAP', () => {
   async function confirmedChannel() {
     const ctx = await setup();
     const res = await createEmailChannel(ctx, ctx.adminKey, 'busy@example.com', { digest_window_sec: 10 });
@@ -546,7 +546,7 @@ describe('IMPRI_EMAIL_DAILY_CAP', () => {
   }
 
   it('stops sending at the cap without counting it as a failure, then catches up', async () => {
-    process.env.IMPRI_EMAIL_DAILY_CAP = '1';
+    process.env.AIRLOCK_EMAIL_DAILY_CAP = '1';
     const ctx = await confirmedChannel();
 
     await createAction(ctx, ctx.adminKey, 'One');
@@ -566,7 +566,7 @@ describe('IMPRI_EMAIL_DAILY_CAP', () => {
     expect(notifyMails()).toHaveLength(1);
 
     // Window frees up → the tick delivers the queued action.
-    process.env.IMPRI_EMAIL_DAILY_CAP = '2';
+    process.env.AIRLOCK_EMAIL_DAILY_CAP = '2';
     await runChannelDigestTick(ctx.db);
     expect(notifyMails()).toHaveLength(2);
     expect(notifyMails()[1].subject).toContain('Two');
@@ -575,7 +575,7 @@ describe('IMPRI_EMAIL_DAILY_CAP', () => {
   });
 
   it('test sends count toward the cap', async () => {
-    process.env.IMPRI_EMAIL_DAILY_CAP = '1';
+    process.env.AIRLOCK_EMAIL_DAILY_CAP = '1';
     const ctx = await confirmedChannel();
     const t1 = await ctx.app.inject({
       method: 'POST', url: `/v1/notification-channels/${ctx.id}/test`, headers: auth(ctx.adminKey),
@@ -589,7 +589,7 @@ describe('IMPRI_EMAIL_DAILY_CAP', () => {
   });
 
   it('a failed notification send does not use up the cap', async () => {
-    process.env.IMPRI_EMAIL_DAILY_CAP = '1';
+    process.env.AIRLOCK_EMAIL_DAILY_CAP = '1';
     const ctx = await confirmedChannel();
     sendMail.mockRejectedValueOnce(new Error('connection lost'));
     await createAction(ctx, ctx.adminKey, 'Fails');
@@ -618,7 +618,7 @@ describe('email_sends housekeeping', () => {
 
 describe('migration of a pre-verification database', () => {
   let dir: string;
-  beforeEach(() => { dir = mkdtempSync(join(tmpdir(), 'impri-verify-')); });
+  beforeEach(() => { dir = mkdtempSync(join(tmpdir(), 'airlock-verify-')); });
   afterEach(() => { rmSync(dir, { recursive: true, force: true }); });
 
   it('existing email channels start unconfirmed and get one confirmation email from the tick', async () => {

@@ -3,21 +3,21 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>MCP Server — Impri Docs</title>
-<meta name="description" content="The @impri/mcp package exposes Impri's approval and watcher workflows as MCP (Model Context Protocol) tools. It works with any MCP-compatible client: Claude…">
+<title>MCP Server — Airlock Docs</title>
+<meta name="description" content="The @airlock/mcp package exposes Airlock's approval and watcher workflows as MCP (Model Context Protocol) tools. It works with any MCP-compatible client: Claude…">
 <meta name="theme-color" content="#06070d">
-<meta property="og:title" content="MCP Server — Impri Docs">
-<meta property="og:description" content="The @impri/mcp package exposes Impri's approval and watcher workflows as MCP (Model Context Protocol) tools. It works with any MCP-compatible client: Claude…">
+<meta property="og:title" content="MCP Server — Airlock Docs">
+<meta property="og:description" content="The @airlock/mcp package exposes Airlock's approval and watcher workflows as MCP (Model Context Protocol) tools. It works with any MCP-compatible client: Claude…">
 <meta property="og:type" content="article">
-<meta property="og:url" content="https://impri.dev/docs/mcp">
-<meta property="og:image" content="https://impri.dev/assets/og/og-docs.png">
+<meta property="og:url" content="https://airlock.dev/docs/mcp">
+<meta property="og:image" content="https://airlock.dev/assets/og/og-docs.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
-<meta property="og:image:alt" content="Impri — human-in-the-loop approval inbox for AI agents">
+<meta property="og:image:alt" content="Airlock — human-in-the-loop approval inbox for AI agents">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="https://impri.dev/assets/og/og-docs.png">
-<link rel="canonical" href="https://impri.dev/docs/mcp">
-<script type="application/ld+json">{"@context":"https://schema.org","@type":"TechArticle","headline":"MCP Server","description":"The @impri/mcp package exposes Impri's approval and watcher workflows as MCP (Model Context Protocol) tools. It works with any MCP-compatible client: Claude…","url":"https://impri.dev/docs/mcp","inLanguage":"en","author":{"@type":"Organization","name":"Impri","url":"https://impri.dev"},"publisher":{"@type":"Organization","name":"Impri","url":"https://impri.dev"}}</script>
+<meta name="twitter:image" content="https://airlock.dev/assets/og/og-docs.png">
+<link rel="canonical" href="https://airlock.dev/docs/mcp">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"TechArticle","headline":"MCP Server","description":"The @airlock/mcp package exposes Airlock's approval and watcher workflows as MCP (Model Context Protocol) tools. It works with any MCP-compatible client: Claude…","url":"https://airlock.dev/docs/mcp","inLanguage":"en","author":{"@type":"Organization","name":"Airlock","url":"https://airlock.dev"},"publisher":{"@type":"Organization","name":"Airlock","url":"https://airlock.dev"}}</script>
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <link rel="icon" href="/favicon.ico" sizes="32x32">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='9' fill='%236366f1'/%3E%3Cpath d='M9 16.5l4.5 4.5L23 11' stroke='white' stroke-width='3' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
@@ -132,13 +132,13 @@ pre code.hljs{display:block;overflow-x:auto}
 <div class="wrap nav-inner">
   <a class="brand" href="/">
     <span class="mark"><svg viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.5 4.5L19 7.5" stroke="white" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
-    Impri
+    Airlock
   </a>
   <div class="nav-links">
     <a class="link" href="/#how">How it works</a>
     <a class="link" href="/#pricing">Pricing</a>
     <a class="link active-nav" href="../docs">Docs</a>
-    <a class="btn btn-primary btn-sm" href="https://gitlab.com/sekera.radim/impri">GitLab</a>
+    <a class="btn btn-primary btn-sm" href="https://gitlab.com/sekera.radim/airlock">GitLab</a>
   </div>
 </div>
 </nav>
@@ -153,26 +153,26 @@ pre code.hljs{display:block;overflow-x:auto}
       <span>MCP Server</span>
     </nav>
     <h1>MCP Server</h1>
-<p>The <code>@impri/mcp</code> package exposes Impri&#39;s approval and watcher workflows as <a href="https://spec.modelcontextprotocol.io/" target="_blank" rel="noopener">MCP (Model Context Protocol)</a> tools. It works with any MCP-compatible client: Claude Code, Claude Desktop, Cursor, and other agent runtimes.</p>
+<p>The <code>@airlock/mcp</code> package exposes Airlock&#39;s approval and watcher workflows as <a href="https://spec.modelcontextprotocol.io/" target="_blank" rel="noopener">MCP (Model Context Protocol)</a> tools. It works with any MCP-compatible client: Claude Code, Claude Desktop, Cursor, and other agent runtimes.</p>
 <p>No SDK code required — the agent calls the tools directly. The MCP server handles all HTTP communication, polling, and error formatting internally.</p>
 <hr>
 <h2 id="installation">Installation</h2>
-<div class="code-block"><span class="code-lang">bash</span><pre><code class="hljs">npx @impri/mcp</code></pre></div>
+<div class="code-block"><span class="code-lang">bash</span><pre><code class="hljs">npx @airlock/mcp</code></pre></div>
 <p>Required environment variables:</p>
-<div class="code-block"><span class="code-lang">bash</span><pre><code class="hljs">IMPRI_API_KEY=im_...
+<div class="code-block"><span class="code-lang">bash</span><pre><code class="hljs">AIRLOCK_API_KEY=im_...
 <span class="hljs-comment"># Optional — defaults to http://localhost:8484 (self-hosted)</span>
-IMPRI_BASE_URL=https://api.impri.dev</code></pre></div>
+AIRLOCK_BASE_URL=https://api.airlock.dev</code></pre></div>
 <hr>
 <h2 id="hosted-remote-server-no-install">Hosted remote server (no install)</h2>
-<p><code>https://api.impri.dev/mcp</code> is a hosted Streamable HTTP MCP endpoint — the same 8 tools as <code>@impri/mcp</code>, with nothing to install or run locally. Any MCP client that supports a remote (HTTP) server can connect with just the URL and your API key as a Bearer token.</p>
-<p>Use this when your agent runs on a hosted platform that can&#39;t spawn an <code>npx</code> process, or when a directory/registry only accepts a remote URL. Use the <code>npx @impri/mcp</code> package below when you want a local process (e.g. to point <code>IMPRI_BASE_URL</code> at a self-hosted server instead of the cloud).</p>
+<p><code>https://api.airlock.dev/mcp</code> is a hosted Streamable HTTP MCP endpoint — the same 8 tools as <code>@airlock/mcp</code>, with nothing to install or run locally. Any MCP client that supports a remote (HTTP) server can connect with just the URL and your API key as a Bearer token.</p>
+<p>Use this when your agent runs on a hosted platform that can&#39;t spawn an <code>npx</code> process, or when a directory/registry only accepts a remote URL. Use the <code>npx @airlock/mcp</code> package below when you want a local process (e.g. to point <code>AIRLOCK_BASE_URL</code> at a self-hosted server instead of the cloud).</p>
 <p><strong>Claude Code:</strong></p>
-<div class="code-block"><span class="code-lang">bash</span><pre><code class="hljs">claude mcp add --transport http impri https://api.impri.dev/mcp --header <span class="hljs-string">&quot;Authorization: Bearer <span class="hljs-variable">$IMPRI_API_KEY</span>&quot;</span></code></pre></div>
+<div class="code-block"><span class="code-lang">bash</span><pre><code class="hljs">claude mcp add --transport http airlock https://api.airlock.dev/mcp --header <span class="hljs-string">&quot;Authorization: Bearer <span class="hljs-variable">$AIRLOCK_API_KEY</span>&quot;</span></code></pre></div>
 <p><strong>Cursor / Windsurf / VS Code (<code>mcp.json</code>):</strong></p>
 <div class="code-block"><span class="code-lang">json</span><pre><code class="hljs"><span class="hljs-punctuation">{</span>
   <span class="hljs-attr">&quot;mcpServers&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
-    <span class="hljs-attr">&quot;impri&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
-      <span class="hljs-attr">&quot;url&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;https://api.impri.dev/mcp&quot;</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">&quot;airlock&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+      <span class="hljs-attr">&quot;url&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;https://api.airlock.dev/mcp&quot;</span><span class="hljs-punctuation">,</span>
       <span class="hljs-attr">&quot;headers&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
         <span class="hljs-attr">&quot;Authorization&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;Bearer im_your_key&quot;</span>
       <span class="hljs-punctuation">}</span>
@@ -180,24 +180,24 @@ IMPRI_BASE_URL=https://api.impri.dev</code></pre></div>
   <span class="hljs-punctuation">}</span>
 <span class="hljs-punctuation">}</span></code></pre></div>
 <p><strong>OpenAI Codex (<code>~/.codex/config.toml</code>):</strong></p>
-<div class="code-block"><span class="code-lang">toml</span><pre><code class="hljs"><span class="hljs-section">[mcp_servers.impri]</span>
-<span class="hljs-attr">url</span> = <span class="hljs-string">&quot;https://api.impri.dev/mcp&quot;</span>
-<span class="hljs-attr">bearer_token_env_var</span> = <span class="hljs-string">&quot;IMPRI_API_KEY&quot;</span></code></pre></div>
-<p>The endpoint is stateless (no session id, no server-initiated stream) and authenticates every request independently — there&#39;s nothing to log in or out of beyond the Bearer header. A machine-readable description of it (tool list, auth scheme) is published at <a href="https://api.impri.dev/.well-known/mcp/server-card.json" target="_blank" rel="noopener">`/.well-known/mcp/server-card.json`</a>, which is what lets directories list this server without needing a live connection to scan it.</p>
+<div class="code-block"><span class="code-lang">toml</span><pre><code class="hljs"><span class="hljs-section">[mcp_servers.airlock]</span>
+<span class="hljs-attr">url</span> = <span class="hljs-string">&quot;https://api.airlock.dev/mcp&quot;</span>
+<span class="hljs-attr">bearer_token_env_var</span> = <span class="hljs-string">&quot;AIRLOCK_API_KEY&quot;</span></code></pre></div>
+<p>The endpoint is stateless (no session id, no server-initiated stream) and authenticates every request independently — there&#39;s nothing to log in or out of beyond the Bearer header. A machine-readable description of it (tool list, auth scheme) is published at <a href="https://api.airlock.dev/.well-known/mcp/server-card.json" target="_blank" rel="noopener">`/.well-known/mcp/server-card.json`</a>, which is what lets directories list this server without needing a live connection to scan it.</p>
 <p><code>Authorization: Bearer im_your_key</code> is the documented form, but <code>/mcp</code> also accepts the bare key with no <code>Bearer </code> prefix, for gateways (e.g. Smithery) that forward a pasted key straight into the header.</p>
 <p>The tool list can be browsed without a key at all (<code>initialize</code>/<code>tools/list</code>/<code>ping</code> work anonymously, same as the server card) — an API key is only required to actually call a tool.</p>
-<p>One difference from the local package: <code>impri_await_decision</code>&#39;s <code>timeout_s</code> is capped at 20 seconds server-side on the hosted endpoint (a single HTTP request can&#39;t stay open indefinitely behind a proxy). Call it again if the action is still pending — that&#39;s the intended polling pattern either way.</p>
+<p>One difference from the local package: <code>airlock_await_decision</code>&#39;s <code>timeout_s</code> is capped at 20 seconds server-side on the hosted endpoint (a single HTTP request can&#39;t stay open indefinitely behind a proxy). Call it again if the action is still pending — that&#39;s the intended polling pattern either way.</p>
 <hr>
-<h2 id="local-package-npx-imprimcp">Local package (<code>npx @impri/mcp</code>)</h2>
+<h2 id="local-package-npx-airlockmcp">Local package (<code>npx @airlock/mcp</code>)</h2>
 <h3 id="claude-code-claudemcpjson">Claude Code (<code>~/.claude/mcp.json</code>)</h3>
 <div class="code-block"><span class="code-lang">json</span><pre><code class="hljs"><span class="hljs-punctuation">{</span>
   <span class="hljs-attr">&quot;mcpServers&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
-    <span class="hljs-attr">&quot;impri&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+    <span class="hljs-attr">&quot;airlock&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
       <span class="hljs-attr">&quot;command&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;npx&quot;</span><span class="hljs-punctuation">,</span>
-      <span class="hljs-attr">&quot;args&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">[</span><span class="hljs-string">&quot;@impri/mcp&quot;</span><span class="hljs-punctuation">]</span><span class="hljs-punctuation">,</span>
+      <span class="hljs-attr">&quot;args&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">[</span><span class="hljs-string">&quot;@airlock/mcp&quot;</span><span class="hljs-punctuation">]</span><span class="hljs-punctuation">,</span>
       <span class="hljs-attr">&quot;env&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
-        <span class="hljs-attr">&quot;IMPRI_API_KEY&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;im_your_key&quot;</span><span class="hljs-punctuation">,</span>
-        <span class="hljs-attr">&quot;IMPRI_BASE_URL&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;https://api.impri.dev&quot;</span>
+        <span class="hljs-attr">&quot;AIRLOCK_API_KEY&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;im_your_key&quot;</span><span class="hljs-punctuation">,</span>
+        <span class="hljs-attr">&quot;AIRLOCK_BASE_URL&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;https://api.airlock.dev&quot;</span>
       <span class="hljs-punctuation">}</span>
     <span class="hljs-punctuation">}</span>
   <span class="hljs-punctuation">}</span>
@@ -205,12 +205,12 @@ IMPRI_BASE_URL=https://api.impri.dev</code></pre></div>
 <h3 id="claude-desktop-claudedesktopconfigjson">Claude Desktop (<code>claude_desktop_config.json</code>)</h3>
 <div class="code-block"><span class="code-lang">json</span><pre><code class="hljs"><span class="hljs-punctuation">{</span>
   <span class="hljs-attr">&quot;mcpServers&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
-    <span class="hljs-attr">&quot;impri&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+    <span class="hljs-attr">&quot;airlock&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
       <span class="hljs-attr">&quot;command&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;npx&quot;</span><span class="hljs-punctuation">,</span>
-      <span class="hljs-attr">&quot;args&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">[</span><span class="hljs-string">&quot;@impri/mcp&quot;</span><span class="hljs-punctuation">]</span><span class="hljs-punctuation">,</span>
+      <span class="hljs-attr">&quot;args&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">[</span><span class="hljs-string">&quot;@airlock/mcp&quot;</span><span class="hljs-punctuation">]</span><span class="hljs-punctuation">,</span>
       <span class="hljs-attr">&quot;env&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
-        <span class="hljs-attr">&quot;IMPRI_API_KEY&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;im_your_key&quot;</span><span class="hljs-punctuation">,</span>
-        <span class="hljs-attr">&quot;IMPRI_BASE_URL&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;https://api.impri.dev&quot;</span>
+        <span class="hljs-attr">&quot;AIRLOCK_API_KEY&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;im_your_key&quot;</span><span class="hljs-punctuation">,</span>
+        <span class="hljs-attr">&quot;AIRLOCK_BASE_URL&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;https://api.airlock.dev&quot;</span>
       <span class="hljs-punctuation">}</span>
     <span class="hljs-punctuation">}</span>
   <span class="hljs-punctuation">}</span>
@@ -219,7 +219,7 @@ IMPRI_BASE_URL=https://api.impri.dev</code></pre></div>
 <p>Same format as Claude Code above.</p>
 <hr>
 <h2 id="tools-reference">Tools reference</h2>
-<h3 id="impripushaction"><code>impri_push_action</code></h3>
+<h3 id="airlockpushaction"><code>airlock_push_action</code></h3>
 <p>Submit a proposed action for human approval. Returns the <code>action_id</code> and the inbox URL.</p>
 <p><strong>Input:</strong></p>
 <div class="table-wrap"><table>
@@ -285,10 +285,10 @@ IMPRI_BASE_URL=https://api.impri.dev</code></pre></div>
 <div class="code-block"><span class="code-lang">json</span><pre><code class="hljs"><span class="hljs-punctuation">{</span>
   <span class="hljs-attr">&quot;action_id&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;act_abc123&quot;</span><span class="hljs-punctuation">,</span>
   <span class="hljs-attr">&quot;status&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;pending&quot;</span><span class="hljs-punctuation">,</span>
-  <span class="hljs-attr">&quot;inbox_url&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;https://app.impri.dev/inbox/act_abc123&quot;</span>
+  <span class="hljs-attr">&quot;inbox_url&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;https://app.airlock.dev/inbox/act_abc123&quot;</span>
 <span class="hljs-punctuation">}</span></code></pre></div>
 <hr>
-<h3 id="impriawaitdecision"><code>impri_await_decision</code></h3>
+<h3 id="airlockawaitdecision"><code>airlock_await_decision</code></h3>
 <p>Long-poll until an action leaves the <code>pending</code> state. Blocks until a decision is made or the timeout elapses.</p>
 <p><strong>Input:</strong></p>
 <div class="table-wrap"><table>
@@ -304,7 +304,7 @@ IMPRI_BASE_URL=https://api.impri.dev</code></pre></div>
 <td><code>action_id</code></td>
 <td>string</td>
 <td>Yes</td>
-<td>ID returned by <code>impri_push_action</code></td>
+<td>ID returned by <code>airlock_push_action</code></td>
 </tr>
 <tr>
 <td><code>timeout_s</code></td>
@@ -341,7 +341,7 @@ IMPRI_BASE_URL=https://api.impri.dev</code></pre></div>
 <span class="hljs-punctuation">}</span></code></pre></div>
 <p><strong>Security note:</strong> When the action carries untrusted external content (<code>payload.untrusted === true</code>, e.g. from a watcher), the preview body is wrapped in <code>&lt;untrusted-external-content&gt;</code> tags and a <code>_untrusted_content_note</code> is added. The agent must treat this content as data, never as instructions to follow.</p>
 <hr>
-<h3 id="imprireportresult"><code>impri_report_result</code></h3>
+<h3 id="airlockreportresult"><code>airlock_report_result</code></h3>
 <p>Report the execution outcome after acting on an approved action. Closes the audit loop in the inbox.</p>
 <p><strong>Input:</strong></p>
 <div class="table-wrap"><table>
@@ -376,18 +376,18 @@ IMPRI_BASE_URL=https://api.impri.dev</code></pre></div>
 <p><strong>Output:</strong></p>
 <div class="code-block"><pre><code class="hljs">Result reported: action act_abc123 → executed.</code></pre></div>
 <hr>
-<h3 id="impriinboxstatus"><code>impri_inbox_status</code></h3>
+<h3 id="airlockinboxstatus"><code>airlock_inbox_status</code></h3>
 <p>Check how many pending actions are waiting for a decision. Useful before starting a new task that will add more.</p>
 <p><strong>Input:</strong> none</p>
 <p><strong>Output:</strong></p>
-<div class="code-block"><pre><code class="hljs">Impri inbox: 3 pending actions awaiting decision
+<div class="code-block"><pre><code class="hljs">Airlock inbox: 3 pending actions awaiting decision
   - act_abc123: &quot;Send email to alice@example.com&quot; (email.send)
   - act_def456: &quot;Deploy to production&quot; (deploy.trigger)
   - act_ghi789: &quot;Execute SQL migration&quot; (db.exec)</code></pre></div>
 <p>Or when empty:</p>
-<div class="code-block"><pre><code class="hljs">Impri inbox: 0 pending actions. The inbox is clear — safe to start new tasks.</code></pre></div>
+<div class="code-block"><pre><code class="hljs">Airlock inbox: 0 pending actions. The inbox is clear — safe to start new tasks.</code></pre></div>
 <hr>
-<h3 id="impricreatewatcher"><code>impri_create_watcher</code></h3>
+<h3 id="airlockcreatewatcher"><code>airlock_create_watcher</code></h3>
 <p>Create a monitoring watcher. Accepts the full watcher spec in <code>spec</code>.</p>
 <p><strong>Input:</strong></p>
 <div class="table-wrap"><table>
@@ -416,7 +416,7 @@ IMPRI_BASE_URL=https://api.impri.dev</code></pre></div>
   <span class="hljs-attr">&quot;next_run_at&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">1720001800</span>
 <span class="hljs-punctuation">}</span></code></pre></div>
 <hr>
-<h3 id="imprilistwatchers"><code>impri_list_watchers</code></h3>
+<h3 id="airlocklistwatchers"><code>airlock_list_watchers</code></h3>
 <p>List watchers, optionally filtered by status.</p>
 <p><strong>Input:</strong></p>
 <div class="table-wrap"><table>
@@ -442,7 +442,7 @@ IMPRI_BASE_URL=https://api.impri.dev</code></pre></div>
   - wch_def456: &quot;Product Hunt&quot; (rss) — active
   - wch_ghi789: &quot;r/selfhosted&quot; (reddit_search) — degraded</code></pre></div>
 <hr>
-<h3 id="imprilistwatcherpresets"><code>impri_list_watcher_presets</code></h3>
+<h3 id="airlocklistwatcherpresets"><code>airlock_list_watcher_presets</code></h3>
 <p>List the catalog of built-in watcher presets, grouped by category.</p>
 <p><strong>Input:</strong> none</p>
 <p><strong>Output:</strong></p>
@@ -454,7 +454,7 @@ Community:
   - reddit-keyword: &quot;Reddit Keyword Search&quot; (reddit_search) — params: query, [subreddit]
     ...</code></pre></div>
 <hr>
-<h3 id="impricreatewatcherfrompreset"><code>impri_create_watcher_from_preset</code></h3>
+<h3 id="airlockcreatewatcherfrompreset"><code>airlock_create_watcher_from_preset</code></h3>
 <p>Create a watcher from a built-in preset template.</p>
 <p><strong>Input:</strong></p>
 <div class="table-wrap"><table>
@@ -503,17 +503,17 @@ Community:
 <hr>
 <h2 id="typical-agent-workflow">Typical agent workflow</h2>
 <div class="code-block"><pre><code class="hljs">1. Agent decides it needs to do something risky.
-2. impri_push_action(kind, title, preview, ...)  → action_id
-3. impri_await_decision(action_id)               → approved / rejected
+2. airlock_push_action(kind, title, preview, ...)  → action_id
+3. airlock_await_decision(action_id)               → approved / rejected
 4. [If approved] Agent executes the action.
-5. impri_report_result(action_id, &quot;executed&quot;)    → audit closed</code></pre></div>
-<p>Before starting: optionally call <code>impri_inbox_status</code> to check if too many pending actions are already queued.</p>
+5. airlock_report_result(action_id, &quot;executed&quot;)    → audit closed</code></pre></div>
+<p>Before starting: optionally call <code>airlock_inbox_status</code> to check if too many pending actions are already queued.</p>
 <hr>
 <h2 id="mcp-webhook-receiver">MCP webhook receiver</h2>
-<p>The <code>@impri/mcp</code> package also includes a webhook receiver that you can run alongside the MCP server. It listens for <code>POST /webhook</code> calls from Impri&#39;s decision delivery system and emits MCP notifications.</p>
+<p>The <code>@airlock/mcp</code> package also includes a webhook receiver that you can run alongside the MCP server. It listens for <code>POST /webhook</code> calls from Airlock&#39;s decision delivery system and emits MCP notifications.</p>
 <p>Start with:</p>
-<div class="code-block"><span class="code-lang">bash</span><pre><code class="hljs">IMPRI_API_KEY=im_... npx @impri/mcp --with-webhook-receiver --port 3000</code></pre></div>
-<p>The receiver validates the <code>X-Impri-Signature</code> header using the <code>IMPRI_WEBHOOK_SECRET</code> environment variable before processing any payload.</p>
+<div class="code-block"><span class="code-lang">bash</span><pre><code class="hljs">AIRLOCK_API_KEY=im_... npx @airlock/mcp --with-webhook-receiver --port 3000</code></pre></div>
+<p>The receiver validates the <code>X-Airlock-Signature</code> header using the <code>AIRLOCK_WEBHOOK_SECRET</code> environment variable before processing any payload.</p>
 <hr>
 <h2 id="security-notes-on-untrusted-content">Security notes on untrusted content</h2>
 <p>Actions delivered by watchers have <code>payload.untrusted = true</code>. The MCP server wraps their preview body in <code>&lt;untrusted-external-content&gt;</code> markers and adds a <code>_untrusted_content_note</code> field so the agent model can distinguish external data from trusted instructions.</p>
@@ -592,19 +592,19 @@ Community:
 <div class="ptoc-label">On this page</div>
 <ul><li class="ptoc-h2"><a href="#installation">Installation</a></li>
 <li class="ptoc-h2"><a href="#hosted-remote-server-no-install">Hosted remote server (no install)</a></li>
-<li class="ptoc-h2"><a href="#local-package-npx-imprimcp">Local package (npx @impri/mcp)</a></li>
+<li class="ptoc-h2"><a href="#local-package-npx-airlockmcp">Local package (npx @airlock/mcp)</a></li>
 <li class="ptoc-h3"><a href="#claude-code-claudemcpjson">Claude Code (~/.claude/mcp.json)</a></li>
 <li class="ptoc-h3"><a href="#claude-desktop-claudedesktopconfigjson">Claude Desktop (claude_desktop_config.json)</a></li>
 <li class="ptoc-h3"><a href="#cursor-cursormcpjson">Cursor (~/.cursor/mcp.json)</a></li>
 <li class="ptoc-h2"><a href="#tools-reference">Tools reference</a></li>
-<li class="ptoc-h3"><a href="#impripushaction">impri_push_action</a></li>
-<li class="ptoc-h3"><a href="#impriawaitdecision">impri_await_decision</a></li>
-<li class="ptoc-h3"><a href="#imprireportresult">impri_report_result</a></li>
-<li class="ptoc-h3"><a href="#impriinboxstatus">impri_inbox_status</a></li>
-<li class="ptoc-h3"><a href="#impricreatewatcher">impri_create_watcher</a></li>
-<li class="ptoc-h3"><a href="#imprilistwatchers">impri_list_watchers</a></li>
-<li class="ptoc-h3"><a href="#imprilistwatcherpresets">impri_list_watcher_presets</a></li>
-<li class="ptoc-h3"><a href="#impricreatewatcherfrompreset">impri_create_watcher_from_preset</a></li>
+<li class="ptoc-h3"><a href="#airlockpushaction">airlock_push_action</a></li>
+<li class="ptoc-h3"><a href="#airlockawaitdecision">airlock_await_decision</a></li>
+<li class="ptoc-h3"><a href="#airlockreportresult">airlock_report_result</a></li>
+<li class="ptoc-h3"><a href="#airlockinboxstatus">airlock_inbox_status</a></li>
+<li class="ptoc-h3"><a href="#airlockcreatewatcher">airlock_create_watcher</a></li>
+<li class="ptoc-h3"><a href="#airlocklistwatchers">airlock_list_watchers</a></li>
+<li class="ptoc-h3"><a href="#airlocklistwatcherpresets">airlock_list_watcher_presets</a></li>
+<li class="ptoc-h3"><a href="#airlockcreatewatcherfrompreset">airlock_create_watcher_from_preset</a></li>
 <li class="ptoc-h2"><a href="#typical-agent-workflow">Typical agent workflow</a></li>
 <li class="ptoc-h2"><a href="#mcp-webhook-receiver">MCP webhook receiver</a></li>
 <li class="ptoc-h2"><a href="#security-notes-on-untrusted-content">Security notes on untrusted content</a></li></ul>
@@ -615,19 +615,19 @@ Community:
 <footer class="footer">
 <div class="wrap footer-inner">
   <a class="brand" href="/">
-    <span class="mark"><svg viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.5 4.5L19 7.5" stroke="white" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Impri
+    <span class="mark"><svg viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.5 4.5L19 7.5" stroke="white" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Airlock
   </a>
   <div>
-    <a href="https://gitlab.com/sekera.radim/impri">GitLab</a>
+    <a href="https://gitlab.com/sekera.radim/airlock">GitLab</a>
     <a href="/docs">Docs</a>
-    <a href="https://gitlab.com/sekera.radim/impri/-/blob/main/LICENSE">MIT License</a>
-    <a href="https://www.npmjs.com/package/@impri/mcp">@impri/mcp</a>
+    <a href="https://gitlab.com/sekera.radim/airlock/-/blob/main/LICENSE">MIT License</a>
+    <a href="https://www.npmjs.com/package/@airlock/mcp">@airlock/mcp</a>
     <a href="/docs/privacy">Privacy</a>
     <a href="/docs/terms">Terms</a>
     <a href="https://sekera.dev">Contact</a>
   </div>
 </div>
-<div class="wrap" style="margin-top:18px"><span class="muted">© 2026 Impri · The imprimatur for your AI agents · Built by <a href="https://sekera.dev" style="color:inherit">Radim Sekera</a>. Also by the same maker: <a href="https://briefgate.dev/?utm_source=impri.dev&amp;utm_medium=referral" style="color:inherit">BriefGate</a> — client intake for agencies and AI agents.</span></div>
+<div class="wrap" style="margin-top:18px"><span class="muted">© 2026 Airlock · The airlockmatur for your AI agents · Built by <a href="https://sekera.dev" style="color:inherit">Radim Sekera</a>. Also by the same maker: <a href="https://briefgate.dev/?utm_source=airlock.dev&amp;utm_medium=referral" style="color:inherit">BriefGate</a> — client intake for agencies and AI agents.</span></div>
 </footer>
 </body>
 </html>

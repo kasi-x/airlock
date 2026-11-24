@@ -27,11 +27,11 @@ None of this is exotic engineering. It's work unrelated to what you wanted to sh
 
 ## The same flow through an approval inbox
 
-Impri replaces the receiver you'd maintain with three calls your agent already needs to make:
+Airlock replaces the receiver you'd maintain with three calls your agent already needs to make:
 
 ```bash
-curl -s -X POST https://api.impri.dev/v1/actions \
-  -H "Authorization: Bearer $IMPRI_API_KEY" \
+curl -s -X POST https://api.airlock.dev/v1/actions \
+  -H "Authorization: Bearer $AIRLOCK_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "kind": "slack.message.send",
@@ -40,7 +40,7 @@ curl -s -X POST https://api.impri.dev/v1/actions \
     "expires_in": 3600,
     "editable": ["preview.body"]
   }'
-# → { "id": "act_9f2", "status": "pending", "inbox_url": "https://app.impri.dev/a/act_9f2" }
+# → { "id": "act_9f2", "status": "pending", "inbox_url": "https://app.airlock.dev/a/act_9f2" }
 ```
 
 Compare that to what the DIY route needs just to render the prompt, before any receiver logic exists:
@@ -63,7 +63,7 @@ The Slack JSON is just the button. Everything after the click — signature chec
 
 ## Slack doesn't disappear
 
-This isn't "Slack vs an inbox" as mutually exclusive options. Impri lists Slack as one of its approval channels alongside Discord and Telegram, plus email, ntfy, and web push for plain notifications — see [slack-approval](slack-approval.md). The difference is who owns the plumbing: the click in Slack still resolves against a real action record with an expiry, an audit entry, and a place to review it later, instead of a bespoke handler you're on the hook for. Teams that want the ping in Slack but the decision handling centralized keep the notification and drop the receiver.
+This isn't "Slack vs an inbox" as mutually exclusive options. Airlock lists Slack as one of its approval channels alongside Discord and Telegram, plus email, ntfy, and web push for plain notifications — see [slack-approval](slack-approval.md). The difference is who owns the plumbing: the click in Slack still resolves against a real action record with an expiry, an audit entry, and a place to review it later, instead of a bespoke handler you're on the hook for. Teams that want the ping in Slack but the decision handling centralized keep the notification and drop the receiver.
 
 ---
 
@@ -71,7 +71,7 @@ This isn't "Slack vs an inbox" as mutually exclusive options. Impri lists Slack 
 
 Be honest about this: for one approver, low volume, and no need to prove later who approved what, a button and a five-line webhook handler is a reasonable afternoon project. If nobody ever needs a diff, an edit step, mobile parity, or a second channel, the extra piece is the inbox, not the bot. The tradeoff shows up as volume grows, as more people need to approve, or the first time someone asks "who approved this and when" and the answer is a Slack search.
 
-| Situation | DIY Slack buttons | Approval inbox (Impri) |
+| Situation | DIY Slack buttons | Approval inbox (Airlock) |
 |---|---|---|
 | Single approver, a few actions/day | Fine | Also fine, more setup |
 | Need an audit log of decisions | Build it yourself | Built in |
@@ -84,6 +84,6 @@ Be honest about this: for one approver, low volume, and no need to prove later w
 
 ## What this doesn't solve
 
-Whichever side you pick, the gate is only as real as the wrapper around it. Impri stores the proposed action, notifies a human, and holds the decision — it doesn't generate the draft, doesn't interpret the action, and never executes anything itself. It's a genuine gate only when the wrapped tool is the agent's *only* path to the side effect; an agent holding the raw Slack or SMTP credential can route around either approach. See [how-to-add-human-approval-to-an-ai-agent](how-to-add-human-approval-to-an-ai-agent.md) for the wrapper pattern.
+Whichever side you pick, the gate is only as real as the wrapper around it. Airlock stores the proposed action, notifies a human, and holds the decision — it doesn't generate the draft, doesn't interpret the action, and never executes anything itself. It's a genuine gate only when the wrapped tool is the agent's *only* path to the side effect; an agent holding the raw Slack or SMTP credential can route around either approach. See [how-to-add-human-approval-to-an-ai-agent](how-to-add-human-approval-to-an-ai-agent.md) for the wrapper pattern.
 
 Next step: [quickstart](quickstart.md) to get an API key and push your first action, or [slack-approval](slack-approval.md) if Slack is where your team wants the notification to land.

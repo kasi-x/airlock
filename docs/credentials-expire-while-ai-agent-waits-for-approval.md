@@ -1,14 +1,14 @@
 # When Credentials Expire While Your AI Agent Waits for Approval
 
-An approval can sit pending for up to 30 days, but the OAuth token your agent needs to execute it might expire in an hour — here's how to keep the credential fresh without touching Impri's expiry at all.
+An approval can sit pending for up to 30 days, but the OAuth token your agent needs to execute it might expire in an hour — here's how to keep the credential fresh without touching Airlock's expiry at all.
 
 ---
 
 ## Two lifetimes that have nothing to do with each other
 
-An Impri action has one clock: `expires_in`, which defaults to 72 hours and can be set anywhere from 5 minutes to 30 days. That clock belongs entirely to Impri and governs whether a human can still approve the action.
+An Airlock action has one clock: `expires_in`, which defaults to 72 hours and can be set anywhere from 5 minutes to 30 days. That clock belongs entirely to Airlock and governs whether a human can still approve the action.
 
-The credential your agent needs to *carry out* the approved action has a completely separate clock, one Impri knows nothing about: a Gmail or Google Workspace access token typically lives for about an hour, a Salesforce session token for a few hours to a day, a Slack bot token effectively forever, a short-lived cloud provider STS token for as little as 15 minutes. If your agent fetched that token at the moment it pushed the action, and the human doesn't approve for six hours, the token is dead long before the decision comes back.
+The credential your agent needs to *carry out* the approved action has a completely separate clock, one Airlock knows nothing about: a Gmail or Google Workspace access token typically lives for about an hour, a Salesforce session token for a few hours to a day, a Slack bot token effectively forever, a short-lived cloud provider STS token for as little as 15 minutes. If your agent fetched that token at the moment it pushed the action, and the human doesn't approve for six hours, the token is dead long before the decision comes back.
 
 This is not an edge case — it's the default outcome for any action whose `expires_in` is longer than the credential's own TTL, which for most OAuth access tokens is nearly always true.
 
@@ -16,15 +16,15 @@ This is not an edge case — it's the default outcome for any action whose `expi
 
 ## The fix: fetch the credential after the decision, not before
 
-Impri never sees or stores your downstream credentials — `preview.body` is what the human reviews, and it should never contain a live token. The fix follows directly from that: treat "get a valid token" as a step that happens *after* `GET /v1/actions/:id` returns a non-pending status, not before you call `POST /v1/actions`.
+Airlock never sees or stores your downstream credentials — `preview.body` is what the human reviews, and it should never contain a live token. The fix follows directly from that: treat "get a valid token" as a step that happens *after* `GET /v1/actions/:id` returns a non-pending status, not before you call `POST /v1/actions`.
 
 ```python
 import os
 import time
 import requests
 
-BASE = "https://api.impri.dev"
-HEADERS = {"Authorization": f"Bearer {os.environ['IMPRI_API_KEY']}", "Content-Type": "application/json"}
+BASE = "https://api.airlock.dev"
+HEADERS = {"Authorization": f"Bearer {os.environ['AIRLOCK_API_KEY']}", "Content-Type": "application/json"}
 
 def push_action(subject: str, body: str) -> str:
     resp = requests.post(f"{BASE}/v1/actions", headers=HEADERS, json={
@@ -55,13 +55,13 @@ def execute_if_approved(action_id: str, decision: dict):
                   json={"status": "executed"})
 ```
 
-The refresh call itself is just the normal OAuth refresh-token grant for whichever provider you're integrating — Impri has no part in it and no opinion on how you store the refresh token, beyond "not inside the action's `preview`."
+The refresh call itself is just the normal OAuth refresh-token grant for whichever provider you're integrating — Airlock has no part in it and no opinion on how you store the refresh token, beyond "not inside the action's `preview`."
 
 ---
 
 ## Long-running workers vs. short-lived invocations
 
-The fetch-after-decision rule is easy to satisfy on a long-lived worker: hold the refresh token, not the access token, in memory or in your secret store, and mint a new access token in the branch that runs after `impri_await_decision` returns approved.
+The fetch-after-decision rule is easy to satisfy on a long-lived worker: hold the refresh token, not the access token, in memory or in your secret store, and mint a new access token in the branch that runs after `airlock_await_decision` returns approved.
 
 It's less obvious on a serverless setup that pushes the action and exits, then gets re-invoked later by a cron trigger or a webhook (see [blocking vs. polling for human approval](blocking-vs-polling-for-human-approval.md) for that split). There, the temptation is to cache the access token alongside the `action_id` so the resuming invocation doesn't have to hit the OAuth provider again. Don't — by the time a `pending` action resolves, any access token cached at push time is almost certainly stale. Cache the refresh token or the service-account key instead, and treat "mint an access token" as one of the first things the resuming invocation does, every time.
 

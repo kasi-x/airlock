@@ -1,11 +1,11 @@
 import fs from 'node:fs'
 import { Command } from 'commander'
 import {
-  ImpriRejected,
-  ImpriTimeout,
-  ImpriError,
-} from '@impri/sdk'
-import type { PreviewFormat } from '@impri/sdk'
+  AirlockRejected,
+  AirlockTimeout,
+  AirlockError,
+} from '@airlock/sdk'
+import type { PreviewFormat } from '@airlock/sdk'
 import { makeClient } from '../client-factory.js'
 import { bold, green, red, yellow, cyan, statusBadge, printError, printJson, fmtTs } from '../output.js'
 
@@ -76,11 +76,11 @@ export function registerPush(program: Command): void {
         }
         process.exit(0)
       } catch (err) {
-        if (err instanceof ImpriRejected) {
+        if (err instanceof AirlockRejected) {
           process.stdout.write(`\n${red('Rejected')} by reviewer\n`)
           process.exit(1)
         }
-        if (err instanceof ImpriTimeout) {
+        if (err instanceof AirlockTimeout) {
           process.stdout.write(`\n${yellow('Timed out')} — action is still pending.\n`)
           process.exit(1)
         }
@@ -94,7 +94,7 @@ function collect(value: string, prev: string[]): string[] {
 }
 
 function handleError(err: unknown): never {
-  if (err instanceof ImpriError) {
+  if (err instanceof AirlockError) {
     printError(err.message)
   } else {
     printError(String(err))

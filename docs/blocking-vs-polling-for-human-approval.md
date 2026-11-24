@@ -25,7 +25,7 @@ import { Client } from "@modelcontextprotocol/sdk/client/index.js";
 
 async function proposeAndWait(client: Client, prUrl: string) {
   const pushed = await client.callTool({
-    name: "impri_push_action",
+    name: "airlock_push_action",
     arguments: {
       kind: "pr.merge",
       title: `Merge PR: ${prUrl}`,
@@ -38,7 +38,7 @@ async function proposeAndWait(client: Client, prUrl: string) {
 
   // Blocks this call for up to an hour. Nothing else runs on this worker meanwhile.
   const decision = await client.callTool({
-    name: "impri_await_decision",
+    name: "airlock_await_decision",
     arguments: { action_id: actionId, timeout_s: 3600 },
   });
   const { status } = decision.structuredContent as { status: string };
@@ -47,14 +47,14 @@ async function proposeAndWait(client: Client, prUrl: string) {
 
   await mergePullRequest(prUrl); // your actual merge call
   await client.callTool({
-    name: "impri_report_result",
+    name: "airlock_report_result",
     arguments: { action_id: actionId, status: "executed" },
   });
   return { merged: true };
 }
 ```
 
-`impri_await_decision` polls the REST API every 5 seconds internally — you don't write that loop yourself. The tradeoff is that the worker's memory footprint is held for the entire wait, which is a non-issue for a background worker and a real problem for anything billed per invocation.
+`airlock_await_decision` polls the REST API every 5 seconds internally — you don't write that loop yourself. The tradeoff is that the worker's memory footprint is held for the entire wait, which is a non-issue for a background worker and a real problem for anything billed per invocation.
 
 ---
 
@@ -65,9 +65,9 @@ A serverless function (Lambda, a Vercel/Cloudflare edge function, a cron-trigger
 ```typescript
 // Invocation 1 — propose, then exit immediately. No blocking.
 export async function proposeHandler(req: Request) {
-  const res = await fetch("https://api.impri.dev/v1/actions", {
+  const res = await fetch("https://api.airlock.dev/v1/actions", {
     method: "POST",
-    headers: { Authorization: `Bearer ${process.env.IMPRI_API_KEY}`, "Content-Type": "application/json" },
+    headers: { Authorization: `Bearer ${process.env.AIRLOCK_API_KEY}`, "Content-Type": "application/json" },
     body: JSON.stringify({
       kind: "social.post",
       title: "Publish scheduled tweet",
@@ -76,24 +76,24 @@ export async function proposeHandler(req: Request) {
     }),
   });
   const { id } = await res.json();
-  await saveActionIdToQueue(id); // your own durable store, not Impri's
+  await saveActionIdToQueue(id); // your own durable store, not Airlock's
   return new Response("queued");
 }
 
 // Invocation 2..N — a cron trigger, re-run every few minutes, checks and exits again.
 export async function checkHandler() {
   for (const id of await loadPendingActionIds()) {
-    const r = await fetch(`https://api.impri.dev/v1/actions/${id}`, {
-      headers: { Authorization: `Bearer ${process.env.IMPRI_API_KEY}` },
+    const r = await fetch(`https://api.airlock.dev/v1/actions/${id}`, {
+      headers: { Authorization: `Bearer ${process.env.AIRLOCK_API_KEY}` },
     });
     const action = await r.json();
     if (action.status === "pending") continue; // still waiting, do nothing this run
 
     if (action.status === "approved") {
       await publishTweet(action.decision.final_preview.body);
-      await fetch(`https://api.impri.dev/v1/actions/${id}/result`, {
+      await fetch(`https://api.airlock.dev/v1/actions/${id}/result`, {
         method: "POST",
-        headers: { Authorization: `Bearer ${process.env.IMPRI_API_KEY}`, "Content-Type": "application/json" },
+        headers: { Authorization: `Bearer ${process.env.AIRLOCK_API_KEY}`, "Content-Type": "application/json" },
         body: JSON.stringify({ status: "executed" }),
       });
     }
@@ -108,7 +108,7 @@ Each invocation is short and stateless. The "wait" lives in the cron schedule, n
 
 ## Comparison
 
-| | Blocking (MCP `impri_await_decision`) | Polling from outside (cron/queue) |
+| | Blocking (MCP `airlock_await_decision`) | Polling from outside (cron/queue) |
 |---|---|---|
 | Best for | Long-lived workers, Claude Code / Claude Desktop agents | Serverless functions, billed-per-invocation runtimes |
 | Compute cost while waiting | Held for the full wait | Near zero between checks |

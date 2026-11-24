@@ -1,6 +1,6 @@
 # MCP Server
 
-The `@impri/mcp` package exposes Impri's approval and watcher workflows as [MCP (Model Context Protocol)](https://spec.modelcontextprotocol.io/) tools. It works with any MCP-compatible client: Claude Code, Claude Desktop, Cursor, and other agent runtimes.
+The `@airlock/mcp` package exposes Airlock's approval and watcher workflows as [MCP (Model Context Protocol)](https://spec.modelcontextprotocol.io/) tools. It works with any MCP-compatible client: Claude Code, Claude Desktop, Cursor, and other agent runtimes.
 
 No SDK code required — the agent calls the tools directly. The MCP server handles all HTTP communication, polling, and error formatting internally.
 
@@ -9,29 +9,29 @@ No SDK code required — the agent calls the tools directly. The MCP server hand
 ## Installation
 
 ```bash
-npx @impri/mcp
+npx @airlock/mcp
 ```
 
 Required environment variables:
 
 ```bash
-IMPRI_API_KEY=im_...
+AIRLOCK_API_KEY=im_...
 # Optional — defaults to http://localhost:8484 (self-hosted)
-IMPRI_BASE_URL=https://api.impri.dev
+AIRLOCK_BASE_URL=https://api.airlock.dev
 ```
 
 ---
 
 ## Hosted remote server (no install)
 
-`https://api.impri.dev/mcp` is a hosted Streamable HTTP MCP endpoint — the same 8 tools as `@impri/mcp`, with nothing to install or run locally. Any MCP client that supports a remote (HTTP) server can connect with just the URL and your API key as a Bearer token.
+`https://api.airlock.dev/mcp` is a hosted Streamable HTTP MCP endpoint — the same 8 tools as `@airlock/mcp`, with nothing to install or run locally. Any MCP client that supports a remote (HTTP) server can connect with just the URL and your API key as a Bearer token.
 
-Use this when your agent runs on a hosted platform that can't spawn an `npx` process, or when a directory/registry only accepts a remote URL. Use the `npx @impri/mcp` package below when you want a local process (e.g. to point `IMPRI_BASE_URL` at a self-hosted server instead of the cloud).
+Use this when your agent runs on a hosted platform that can't spawn an `npx` process, or when a directory/registry only accepts a remote URL. Use the `npx @airlock/mcp` package below when you want a local process (e.g. to point `AIRLOCK_BASE_URL` at a self-hosted server instead of the cloud).
 
 **Claude Code:**
 
 ```bash
-claude mcp add --transport http impri https://api.impri.dev/mcp --header "Authorization: Bearer $IMPRI_API_KEY"
+claude mcp add --transport http airlock https://api.airlock.dev/mcp --header "Authorization: Bearer $AIRLOCK_API_KEY"
 ```
 
 **Cursor / Windsurf / VS Code (`mcp.json`):**
@@ -39,8 +39,8 @@ claude mcp add --transport http impri https://api.impri.dev/mcp --header "Author
 ```json
 {
   "mcpServers": {
-    "impri": {
-      "url": "https://api.impri.dev/mcp",
+    "airlock": {
+      "url": "https://api.airlock.dev/mcp",
       "headers": {
         "Authorization": "Bearer im_your_key"
       }
@@ -52,34 +52,34 @@ claude mcp add --transport http impri https://api.impri.dev/mcp --header "Author
 **OpenAI Codex (`~/.codex/config.toml`):**
 
 ```toml
-[mcp_servers.impri]
-url = "https://api.impri.dev/mcp"
-bearer_token_env_var = "IMPRI_API_KEY"
+[mcp_servers.airlock]
+url = "https://api.airlock.dev/mcp"
+bearer_token_env_var = "AIRLOCK_API_KEY"
 ```
 
-The endpoint is stateless (no session id, no server-initiated stream) and authenticates every request independently — there's nothing to log in or out of beyond the Bearer header. A machine-readable description of it (tool list, auth scheme) is published at [`/.well-known/mcp/server-card.json`](https://api.impri.dev/.well-known/mcp/server-card.json), which is what lets directories list this server without needing a live connection to scan it.
+The endpoint is stateless (no session id, no server-initiated stream) and authenticates every request independently — there's nothing to log in or out of beyond the Bearer header. A machine-readable description of it (tool list, auth scheme) is published at [`/.well-known/mcp/server-card.json`](https://api.airlock.dev/.well-known/mcp/server-card.json), which is what lets directories list this server without needing a live connection to scan it.
 
 `Authorization: Bearer im_your_key` is the documented form, but `/mcp` also accepts the bare key with no `Bearer ` prefix, for gateways (e.g. Smithery) that forward a pasted key straight into the header.
 
 The tool list can be browsed without a key at all (`initialize`/`tools/list`/`ping` work anonymously, same as the server card) — an API key is only required to actually call a tool.
 
-One difference from the local package: `impri_await_decision`'s `timeout_s` is capped at 20 seconds server-side on the hosted endpoint (a single HTTP request can't stay open indefinitely behind a proxy). Call it again if the action is still pending — that's the intended polling pattern either way.
+One difference from the local package: `airlock_await_decision`'s `timeout_s` is capped at 20 seconds server-side on the hosted endpoint (a single HTTP request can't stay open indefinitely behind a proxy). Call it again if the action is still pending — that's the intended polling pattern either way.
 
 ---
 
-## Local package (`npx @impri/mcp`)
+## Local package (`npx @airlock/mcp`)
 
 ### Claude Code (`~/.claude/mcp.json`)
 
 ```json
 {
   "mcpServers": {
-    "impri": {
+    "airlock": {
       "command": "npx",
-      "args": ["@impri/mcp"],
+      "args": ["@airlock/mcp"],
       "env": {
-        "IMPRI_API_KEY": "im_your_key",
-        "IMPRI_BASE_URL": "https://api.impri.dev"
+        "AIRLOCK_API_KEY": "im_your_key",
+        "AIRLOCK_BASE_URL": "https://api.airlock.dev"
       }
     }
   }
@@ -91,12 +91,12 @@ One difference from the local package: `impri_await_decision`'s `timeout_s` is c
 ```json
 {
   "mcpServers": {
-    "impri": {
+    "airlock": {
       "command": "npx",
-      "args": ["@impri/mcp"],
+      "args": ["@airlock/mcp"],
       "env": {
-        "IMPRI_API_KEY": "im_your_key",
-        "IMPRI_BASE_URL": "https://api.impri.dev"
+        "AIRLOCK_API_KEY": "im_your_key",
+        "AIRLOCK_BASE_URL": "https://api.airlock.dev"
       }
     }
   }
@@ -111,7 +111,7 @@ Same format as Claude Code above.
 
 ## Tools reference
 
-### `impri_push_action`
+### `airlock_push_action`
 
 Submit a proposed action for human approval. Returns the `action_id` and the inbox URL.
 
@@ -134,13 +134,13 @@ Submit a proposed action for human approval. Returns the `action_id` and the inb
 {
   "action_id": "act_abc123",
   "status": "pending",
-  "inbox_url": "https://app.impri.dev/inbox/act_abc123"
+  "inbox_url": "https://app.airlock.dev/inbox/act_abc123"
 }
 ```
 
 ---
 
-### `impri_await_decision`
+### `airlock_await_decision`
 
 Long-poll until an action leaves the `pending` state. Blocks until a decision is made or the timeout elapses.
 
@@ -148,7 +148,7 @@ Long-poll until an action leaves the `pending` state. Blocks until a decision is
 
 | Field | Type | Required | Description |
 |-------|------|----------|-------------|
-| `action_id` | string | Yes | ID returned by `impri_push_action` |
+| `action_id` | string | Yes | ID returned by `airlock_push_action` |
 | `timeout_s` | integer | No | Maximum seconds to wait (default 300) |
 
 **Output (approved):**
@@ -193,7 +193,7 @@ When the reviewer used **edit-before-approve**, `preview` contains the modified 
 
 ---
 
-### `impri_report_result`
+### `airlock_report_result`
 
 Report the execution outcome after acting on an approved action. Closes the audit loop in the inbox.
 
@@ -213,7 +213,7 @@ Result reported: action act_abc123 → executed.
 
 ---
 
-### `impri_inbox_status`
+### `airlock_inbox_status`
 
 Check how many pending actions are waiting for a decision. Useful before starting a new task that will add more.
 
@@ -222,7 +222,7 @@ Check how many pending actions are waiting for a decision. Useful before startin
 **Output:**
 
 ```
-Impri inbox: 3 pending actions awaiting decision
+Airlock inbox: 3 pending actions awaiting decision
   - act_abc123: "Send email to alice@example.com" (email.send)
   - act_def456: "Deploy to production" (deploy.trigger)
   - act_ghi789: "Execute SQL migration" (db.exec)
@@ -231,12 +231,12 @@ Impri inbox: 3 pending actions awaiting decision
 Or when empty:
 
 ```
-Impri inbox: 0 pending actions. The inbox is clear — safe to start new tasks.
+Airlock inbox: 0 pending actions. The inbox is clear — safe to start new tasks.
 ```
 
 ---
 
-### `impri_create_watcher`
+### `airlock_create_watcher`
 
 Create a monitoring watcher. Accepts the full watcher spec in `spec`.
 
@@ -260,7 +260,7 @@ Create a monitoring watcher. Accepts the full watcher spec in `spec`.
 
 ---
 
-### `impri_list_watchers`
+### `airlock_list_watchers`
 
 List watchers, optionally filtered by status.
 
@@ -281,7 +281,7 @@ List watchers, optionally filtered by status.
 
 ---
 
-### `impri_list_watcher_presets`
+### `airlock_list_watcher_presets`
 
 List the catalog of built-in watcher presets, grouped by category.
 
@@ -301,7 +301,7 @@ Community:
 
 ---
 
-### `impri_create_watcher_from_preset`
+### `airlock_create_watcher_from_preset`
 
 Create a watcher from a built-in preset template.
 
@@ -332,27 +332,27 @@ Create a watcher from a built-in preset template.
 
 ```
 1. Agent decides it needs to do something risky.
-2. impri_push_action(kind, title, preview, ...)  → action_id
-3. impri_await_decision(action_id)               → approved / rejected
+2. airlock_push_action(kind, title, preview, ...)  → action_id
+3. airlock_await_decision(action_id)               → approved / rejected
 4. [If approved] Agent executes the action.
-5. impri_report_result(action_id, "executed")    → audit closed
+5. airlock_report_result(action_id, "executed")    → audit closed
 ```
 
-Before starting: optionally call `impri_inbox_status` to check if too many pending actions are already queued.
+Before starting: optionally call `airlock_inbox_status` to check if too many pending actions are already queued.
 
 ---
 
 ## MCP webhook receiver
 
-The `@impri/mcp` package also includes a webhook receiver that you can run alongside the MCP server. It listens for `POST /webhook` calls from Impri's decision delivery system and emits MCP notifications.
+The `@airlock/mcp` package also includes a webhook receiver that you can run alongside the MCP server. It listens for `POST /webhook` calls from Airlock's decision delivery system and emits MCP notifications.
 
 Start with:
 
 ```bash
-IMPRI_API_KEY=im_... npx @impri/mcp --with-webhook-receiver --port 3000
+AIRLOCK_API_KEY=im_... npx @airlock/mcp --with-webhook-receiver --port 3000
 ```
 
-The receiver validates the `X-Impri-Signature` header using the `IMPRI_WEBHOOK_SECRET` environment variable before processing any payload.
+The receiver validates the `X-Airlock-Signature` header using the `AIRLOCK_WEBHOOK_SECRET` environment variable before processing any payload.
 
 ---
 

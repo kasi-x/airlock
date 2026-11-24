@@ -18,9 +18,9 @@ This is the same three-call shape regardless of what the agent does: push the pr
 import requests
 import time
 
-IMPRI_KEY = "im_your_key_here"
-BASE = "https://api.impri.dev"
-headers = {"Authorization": f"Bearer {IMPRI_KEY}"}
+AIRLOCK_KEY = "im_your_key_here"
+BASE = "https://api.airlock.dev"
+headers = {"Authorization": f"Bearer {AIRLOCK_KEY}"}
 
 def propose_refund(customer_email, order_id, amount_cents, reason):
     resp = requests.post(f"{BASE}/v1/actions", headers=headers, json={
@@ -62,7 +62,7 @@ The `idempotent: false` and `undo` fields aren't decoration — they change what
 
 ## Boundaries: what this doesn't cover
 
-Impri stores the proposed action, notifies the human, and holds the decision — it does not evaluate whether $4,000 is a reasonable refund, and it does not touch your payment processor. That judgment call, and the actual API call to your billing system, stay entirely in your code. Impri is also only a real gate if the refund call has no other path to firing — an agent holding a raw payment-processor credential could route around this check entirely, so the wrapper around `issue_refund` needs to be the only place that credential is used. See [the how-to guide](how-to-add-human-approval-to-an-ai-agent.md) for the full mechanics, and the [audit log](audit-log.md) for how approved and rejected decisions get recorded over time.
+Airlock stores the proposed action, notifies the human, and holds the decision — it does not evaluate whether $4,000 is a reasonable refund, and it does not touch your payment processor. That judgment call, and the actual API call to your billing system, stay entirely in your code. Airlock is also only a real gate if the refund call has no other path to firing — an agent holding a raw payment-processor credential could route around this check entirely, so the wrapper around `issue_refund` needs to be the only place that credential is used. See [the how-to guide](how-to-add-human-approval-to-an-ai-agent.md) for the full mechanics, and the [audit log](audit-log.md) for how approved and rejected decisions get recorded over time.
 
 ## Next step
 

@@ -2,7 +2,7 @@
 
 _Last updated: 2026-07-12_
 
-Plain-language terms for the hosted Impri cloud (`app.impri.dev` / `api.impri.dev`). The self-hosted server is separate — it is licensed under the [MIT License](https://gitlab.com/sekera.radim/impri/-/blob/main/LICENSE) and these terms do not apply to it. Impri is an early-stage product; this is a starting-point agreement, not exhaustive legal boilerplate.
+Plain-language terms for the hosted Airlock cloud (`app.airlock.dev` / `api.airlock.dev`). The self-hosted server is separate — it is licensed under the [MIT License](https://gitlab.com/sekera.radim/airlock/-/blob/main/LICENSE) and these terms do not apply to it. Airlock is an early-stage product; this is a starting-point agreement, not exhaustive legal boilerplate.
 
 ## 1. Acceptance
 
@@ -10,7 +10,7 @@ By creating a project or using the hosted service, you agree to these terms. If 
 
 ## 2. The service
 
-Impri is a human-in-the-loop approval gate for AI agents: an agent proposes an action, a human approves or rejects it, and the agent executes only after approval. The hosted service provides this as a managed instance.
+Airlock is a human-in-the-loop approval gate for AI agents: an agent proposes an action, a human approves or rejects it, and the agent executes only after approval. The hosted service provides this as a managed instance.
 
 ## 3. Beta status — provided "as is"
 
@@ -28,7 +28,7 @@ Don't use the service to store or transmit illegal content, to abuse or overload
 
 ## 6. Approvals are your decision
 
-Impri holds a proposed action until a human approves it, then hands the decision back to your agent. **Once you approve an action, the action and its consequences are yours.** Impri is a tool that surfaces and gates decisions; it does not make them for you and is not responsible for what an approved action does.
+Airlock holds a proposed action until a human approves it, then hands the decision back to your agent. **Once you approve an action, the action and its consequences are yours.** Airlock is a tool that surfaces and gates decisions; it does not make them for you and is not responsible for what an approved action does.
 
 ## 7. Billing
 
@@ -36,7 +36,7 @@ Paid tiers are processed by **Stripe**. You can cancel at any time; access conti
 
 ## 8. Limitation of liability
 
-To the maximum extent permitted by law, Impri and its operator are not liable for any indirect, incidental, or consequential damages, or for loss of data, revenue, or profits. Total liability for any claim is limited to the fees you paid for the service in the three months before the claim.
+To the maximum extent permitted by law, Airlock and its operator are not liable for any indirect, incidental, or consequential damages, or for loss of data, revenue, or profits. Total liability for any claim is limited to the fees you paid for the service in the three months before the claim.
 
 ## 9. Termination
 

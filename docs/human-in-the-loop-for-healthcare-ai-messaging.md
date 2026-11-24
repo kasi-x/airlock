@@ -14,21 +14,21 @@ The fix isn't a smarter prompt. It's making the send path structurally depend on
 
 ## Minimal integration — Python
 
-The pattern is the same three calls as any Impri integration: push, poll, execute. Here it's wrapped around a patient-messaging function.
+The pattern is the same three calls as any Airlock integration: push, poll, execute. Here it's wrapped around a patient-messaging function.
 
 ```python
 import os
 import time
 import requests
 
-IMPRI_BASE = "https://api.impri.dev"
-API_KEY = os.environ["IMPRI_API_KEY"]
+AIRLOCK_BASE = "https://api.airlock.dev"
+API_KEY = os.environ["AIRLOCK_API_KEY"]
 HEADERS = {"Authorization": f"Bearer {API_KEY}", "Content-Type": "application/json"}
 
 
 def request_send(patient_name: str, draft_body: str, portal_thread_url: str) -> str:
     resp = requests.post(
-        f"{IMPRI_BASE}/v1/actions",
+        f"{AIRLOCK_BASE}/v1/actions",
         headers=HEADERS,
         json={
             "kind": "patient_message.send",
@@ -46,7 +46,7 @@ def request_send(patient_name: str, draft_body: str, portal_thread_url: str) -> 
 def wait_for_decision(action_id: str, timeout_s: int = 3600) -> dict:
     deadline = time.time() + timeout_s
     while time.time() < deadline:
-        result = requests.get(f"{IMPRI_BASE}/v1/actions/{action_id}", headers=HEADERS).json()
+        result = requests.get(f"{AIRLOCK_BASE}/v1/actions/{action_id}", headers=HEADERS).json()
         if result["status"] != "pending":
             return result
         time.sleep(10)
@@ -59,7 +59,7 @@ def send_and_report(action_id: str, result: dict, send_fn):
     final_body = result["decision"]["final_preview"]["body"]
     send_fn(final_body)
     requests.post(
-        f"{IMPRI_BASE}/v1/actions/{action_id}/result",
+        f"{AIRLOCK_BASE}/v1/actions/{action_id}/result",
         headers=HEADERS,
         json={"status": "executed"},
     )
@@ -77,9 +77,9 @@ A drafted reply about a symptom described three hours ago is a different clinica
 
 ## What this does and doesn't cover
 
-Impri stores the proposed message, notifies the clinician, and holds the decision — nothing more. It does not evaluate clinical accuracy, does not know what "normal" means for a given patient, and is not a substitute for your organization's compliance program (BAA with your hosting provider, PHI handling policy, access controls on who can see the inbox). Treat it as the mechanism that stops an unreviewed message from reaching a patient — the judgment about whether the message is clinically sound still belongs entirely to the human who approves it.
+Airlock stores the proposed message, notifies the clinician, and holds the decision — nothing more. It does not evaluate clinical accuracy, does not know what "normal" means for a given patient, and is not a substitute for your organization's compliance program (BAA with your hosting provider, PHI handling policy, access controls on who can see the inbox). Treat it as the mechanism that stops an unreviewed message from reaching a patient — the judgment about whether the message is clinically sound still belongs entirely to the human who approves it.
 
-It's also only a real gate if the agent has no side channel to the patient portal's send API. If the same credential that Impri gates is also usable directly by the agent's code, wrap the portal-sending function itself so it can only be called with an approved `decision.final_preview`, not just at the call site shown above.
+It's also only a real gate if the agent has no side channel to the patient portal's send API. If the same credential that Airlock gates is also usable directly by the agent's code, wrap the portal-sending function itself so it can only be called with an approved `decision.final_preview`, not just at the call site shown above.
 
 ---
 

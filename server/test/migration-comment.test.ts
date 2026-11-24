@@ -23,7 +23,7 @@ import { unlinkSync } from 'node:fs';
 
 describe('migration: decisions.comment column', () => {
   it('adds comment column to a legacy DB that is missing it and persists a non-null comment', () => {
-    const path = join(tmpdir(), `impri-test-migrate-comment-${Date.now()}.db`);
+    const path = join(tmpdir(), `airlock-test-migrate-comment-${Date.now()}.db`);
     try {
       // Bootstrap a pre-migration DB: decisions table without the comment column.
       // No FK on action_id so the test can insert decisions without a parent action row.

@@ -21,7 +21,7 @@ The flow is three steps from the agent's perspective:
 ```
 Agent produces draft
   │
-  ├─ POST /v1/actions  →  Impri stores draft, notifies you
+  ├─ POST /v1/actions  →  Airlock stores draft, notifies you
   │
   ├─ GET /v1/actions/:id  (poll until decided)
   │    Human opens inbox card, reads draft,
@@ -37,13 +37,13 @@ The gate is not a confirmation prompt — it is a data dependency. The send func
 
 ## Code example: Node.js email agent with approval gate
 
-This example uses TypeScript with `nodemailer` for sending. The Impri calls are plain `fetch`.
+This example uses TypeScript with `nodemailer` for sending. The Airlock calls are plain `fetch`.
 
 ```typescript
 import nodemailer from "nodemailer";
 
-const IMPRI_KEY = process.env.IMPRI_API_KEY!;
-const IMPRI_BASE = "https://api.impri.dev";
+const AIRLOCK_KEY = process.env.AIRLOCK_API_KEY!;
+const AIRLOCK_BASE = "https://api.airlock.dev";
 
 async function sendWithApproval(opts: {
   to: string;
@@ -51,11 +51,11 @@ async function sendWithApproval(opts: {
   body: string;
   expiresIn?: number; // seconds; default 3600
 }): Promise<"sent" | "rejected" | "expired"> {
-  // 1. Push the draft to Impri for human review
-  const push = await fetch(`${IMPRI_BASE}/v1/actions`, {
+  // 1. Push the draft to Airlock for human review
+  const push = await fetch(`${AIRLOCK_BASE}/v1/actions`, {
     method: "POST",
     headers: {
-      Authorization: `Bearer ${IMPRI_KEY}`,
+      Authorization: `Bearer ${AIRLOCK_KEY}`,
       "Content-Type": "application/json",
     },
     body: JSON.stringify({
@@ -70,14 +70,14 @@ async function sendWithApproval(opts: {
     }),
   });
 
-  if (!push.ok) throw new Error(`Impri push failed: ${push.status}`);
+  if (!push.ok) throw new Error(`Airlock push failed: ${push.status}`);
   const { id: actionId } = await push.json();
 
   // 2. Poll until the human decides (or the action expires)
   let result: { status: string; decision?: { final_preview?: { body: string }; diff?: string } };
   for (;;) {
-    const poll = await fetch(`${IMPRI_BASE}/v1/actions/${actionId}`, {
-      headers: { Authorization: `Bearer ${IMPRI_KEY}` },
+    const poll = await fetch(`${AIRLOCK_BASE}/v1/actions/${actionId}`, {
+      headers: { Authorization: `Bearer ${AIRLOCK_KEY}` },
     });
     result = await poll.json();
     if (result.status !== "pending") break;
@@ -104,11 +104,11 @@ async function sendWithApproval(opts: {
     text: approvedBody,
   });
 
-  // 4. Report the outcome back to Impri (populates the audit log)
-  await fetch(`${IMPRI_BASE}/v1/actions/${actionId}/result`, {
+  // 4. Report the outcome back to Airlock (populates the audit log)
+  await fetch(`${AIRLOCK_BASE}/v1/actions/${actionId}/result`, {
     method: "POST",
     headers: {
-      Authorization: `Bearer ${IMPRI_KEY}`,
+      Authorization: `Bearer ${AIRLOCK_KEY}`,
       "Content-Type": "application/json",
     },
     body: JSON.stringify({ status: "executed" }),
@@ -152,11 +152,11 @@ Treat `expired` the same as `rejected`: do not send, and surface the outcome to 
 
 ## Scope and boundaries
 
-Impri is the gate only. It stores the draft, notifies the human (via inbox, Slack, Telegram, or Discord), and holds the decision. It does not interpret the email content, check grammar, filter for spam signals, or send anything itself.
+Airlock is the gate only. It stores the draft, notifies the human (via inbox, Slack, Telegram, or Discord), and holds the decision. It does not interpret the email content, check grammar, filter for spam signals, or send anything itself.
 
 The gate is structural only as long as the agent cannot reach your email-sending credential through any other path. If the agent also has direct access to your SMTP credentials or an email API key outside this wrapper, it can route around the approval step. Keep the sending credential inside the wrapper; do not expose it to the agent.
 
-| Concern | Impri handles it |
+| Concern | Airlock handles it |
 |---------|-----------------|
 | Gate: block send until human says yes | Yes |
 | Notify reviewer via Slack / Telegram | Yes ([notifications](notifications.md)) |

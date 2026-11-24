@@ -16,17 +16,17 @@ AutoGen ships a softer control, `human_input_mode="ALWAYS"`, which pauses the ch
 
 ## Gate the executor, not the agent
 
-The fix is to stop letting AutoGen auto-execute code at all, and instead give the assistant a single function tool that proposes a command, waits for a human decision through Impri, and only then runs it.
+The fix is to stop letting AutoGen auto-execute code at all, and instead give the assistant a single function tool that proposes a command, waits for a human decision through Airlock, and only then runs it.
 
 ```python
 import os, subprocess, time, requests
 
-IMPRI = "https://api.impri.dev"
-H = {"Authorization": f"Bearer {os.environ['IMPRI_API_KEY']}", "Content-Type": "application/json"}
+AIRLOCK = "https://api.airlock.dev"
+H = {"Authorization": f"Bearer {os.environ['AIRLOCK_API_KEY']}", "Content-Type": "application/json"}
 
 def propose_and_run_shell(command: str, purpose: str) -> str:
     """Propose a shell command for human approval, then run it if approved."""
-    action = requests.post(f"{IMPRI}/v1/actions", headers=H, json={
+    action = requests.post(f"{AIRLOCK}/v1/actions", headers=H, json={
         "kind": "code.execute",
         "title": f"Run: {command[:60]}",
         "preview": {"format": "markdown", "body": f"**Purpose:** {purpose}\n\n```bash\n{command}\n```"},
@@ -36,7 +36,7 @@ def propose_and_run_shell(command: str, purpose: str) -> str:
     }).json()
 
     while True:
-        state = requests.get(f"{IMPRI}/v1/actions/{action['id']}", headers=H).json()
+        state = requests.get(f"{AIRLOCK}/v1/actions/{action['id']}", headers=H).json()
         if state["status"] != "pending":
             break
         time.sleep(10)
@@ -46,7 +46,7 @@ def propose_and_run_shell(command: str, purpose: str) -> str:
 
     result = subprocess.run(command, shell=True, capture_output=True, text=True, timeout=120)
 
-    requests.post(f"{IMPRI}/v1/actions/{action['id']}/result", headers=H, json={
+    requests.post(f"{AIRLOCK}/v1/actions/{action['id']}/result", headers=H, json={
         "status": "executed" if result.returncode == 0 else "execute_failed",
         "payload": {"exit_code": result.returncode, "stdout": result.stdout[-2000:]},
     })
@@ -90,7 +90,7 @@ register_function(
 executor.initiate_chat(assistant, message="Restart the staging worker and confirm it's healthy.")
 ```
 
-With `code_execution_config=False`, a code block the assistant writes into the chat transcript is inert text. The only executable path left is `propose_and_run_shell`, which is exactly the function that goes through Impri first.
+With `code_execution_config=False`, a code block the assistant writes into the chat transcript is inert text. The only executable path left is `propose_and_run_shell`, which is exactly the function that goes through Airlock first.
 
 ---
 
@@ -102,7 +102,7 @@ Two of the optional fields on `POST /v1/actions` exist for exactly this scenario
 
 ## How this compares to `human_input_mode`
 
-| | AutoGen's `human_input_mode` | The Impri gate |
+| | AutoGen's `human_input_mode` | The Airlock gate |
 |---|---|---|
 | Where approval happens | The terminal running the chat, synchronously | Any device — inbox, Slack, Telegram, email |
 | Works when nobody is watching | No | Yes, `expires_in` holds the proposal open |
@@ -113,9 +113,9 @@ The two are not mutually exclusive. Keep `human_input_mode="NEVER"` for unattend
 
 ---
 
-## What Impri does and doesn't do
+## What Airlock does and doesn't do
 
-Impri stores the proposed command, notifies you, and holds the decision — it does not read the command, judge whether it is safe, or run it. That last part is still `subprocess.run` in your own code, gated on `status == "approved"`. The gate only holds if `propose_and_run_shell` is genuinely the agent's only way to reach a shell; leave a second, ungated code executor configured anywhere in the same chat and this becomes decorative.
+Airlock stores the proposed command, notifies you, and holds the decision — it does not read the command, judge whether it is safe, or run it. That last part is still `subprocess.run` in your own code, gated on `status == "approved"`. The gate only holds if `propose_and_run_shell` is genuinely the agent's only way to reach a shell; leave a second, ungated code executor configured anywhere in the same chat and this becomes decorative.
 
 ---
 

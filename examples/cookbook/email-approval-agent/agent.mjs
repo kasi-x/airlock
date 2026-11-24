@@ -1,21 +1,21 @@
 #!/usr/bin/env node
-// email-approval-agent.mjs — Impri cookbook recipe #1
+// email-approval-agent.mjs — Airlock cookbook recipe #1
 // No dependencies. Node 18+.
 //
 // Pattern: agent drafts an outbound email, gates the send on human approval,
 // uses the FINAL preview (so the reviewer's edits are honored), reports result.
 //
 // Run:
-//   IMPRI_API_KEY=im_xxx node agent.mjs
-//   IMPRI_API_KEY=im_xxx IMPRI_BASE_URL=https://api.impri.dev node agent.mjs
+//   AIRLOCK_API_KEY=im_xxx node agent.mjs
+//   AIRLOCK_API_KEY=im_xxx AIRLOCK_BASE_URL=https://api.airlock.dev node agent.mjs
 //
 // Required scope: actions
 
-const API_KEY = process.env.IMPRI_API_KEY;
-const BASE = (process.env.IMPRI_BASE_URL ?? 'http://localhost:8484').replace(/\/+$/, '');
+const API_KEY = process.env.AIRLOCK_API_KEY;
+const BASE = (process.env.AIRLOCK_BASE_URL ?? 'http://localhost:8484').replace(/\/+$/, '');
 
 if (!API_KEY) {
-  console.error('Set IMPRI_API_KEY (it starts with im_).');
+  console.error('Set AIRLOCK_API_KEY (it starts with im_).');
   process.exit(1);
 }
 
@@ -69,7 +69,7 @@ async function sendEmail(to, subjectLine, bodyMarkdown) {
 // Main agent loop
 // ---------------------------------------------------------------------------
 async function main() {
-  console.log(`\nImpri email-approval-agent → ${BASE}`);
+  console.log(`\nAirlock email-approval-agent → ${BASE}`);
   console.log(`  Draft: "${subject}" to ${recipient}\n`);
 
   // 1. Submit the draft email for human approval.
@@ -121,7 +121,7 @@ async function main() {
       status: 'executed',
       detail: `Email sent; message ID: ${msgId}`,
     });
-    console.log('  OK — email sent and reported back to Impri.');
+    console.log('  OK — email sent and reported back to Airlock.');
   } catch (err) {
     await api(`/actions/${action.id}/result`, 'POST', {
       status: 'execute_failed',

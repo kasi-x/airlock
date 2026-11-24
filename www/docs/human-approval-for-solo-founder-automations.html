@@ -3,21 +3,21 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Human Approval for Solo-Founder AI Automations — Impri Docs</title>
+<title>Human Approval for Solo-Founder AI Automations — Airlock Docs</title>
 <meta name="description" content="Running support replies, invoice follow-ups, and social posts through separate AI agents only works solo if you can review all of it in one five-minute…">
 <meta name="theme-color" content="#06070d">
-<meta property="og:title" content="Human Approval for Solo-Founder AI Automations — Impri Docs">
+<meta property="og:title" content="Human Approval for Solo-Founder AI Automations — Airlock Docs">
 <meta property="og:description" content="Running support replies, invoice follow-ups, and social posts through separate AI agents only works solo if you can review all of it in one five-minute…">
 <meta property="og:type" content="article">
-<meta property="og:url" content="https://impri.dev/docs/human-approval-for-solo-founder-automations">
-<meta property="og:image" content="https://impri.dev/assets/og/og-docs.png">
+<meta property="og:url" content="https://airlock.dev/docs/human-approval-for-solo-founder-automations">
+<meta property="og:image" content="https://airlock.dev/assets/og/og-docs.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
-<meta property="og:image:alt" content="Impri — human-in-the-loop approval inbox for AI agents">
+<meta property="og:image:alt" content="Airlock — human-in-the-loop approval inbox for AI agents">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="https://impri.dev/assets/og/og-docs.png">
-<link rel="canonical" href="https://impri.dev/docs/human-approval-for-solo-founder-automations">
-<script type="application/ld+json">{"@context":"https://schema.org","@type":"TechArticle","headline":"Human Approval for Solo-Founder AI Automations","description":"Running support replies, invoice follow-ups, and social posts through separate AI agents only works solo if you can review all of it in one five-minute…","url":"https://impri.dev/docs/human-approval-for-solo-founder-automations","inLanguage":"en","author":{"@type":"Organization","name":"Impri","url":"https://impri.dev"},"publisher":{"@type":"Organization","name":"Impri","url":"https://impri.dev"}}</script>
+<meta name="twitter:image" content="https://airlock.dev/assets/og/og-docs.png">
+<link rel="canonical" href="https://airlock.dev/docs/human-approval-for-solo-founder-automations">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"TechArticle","headline":"Human Approval for Solo-Founder AI Automations","description":"Running support replies, invoice follow-ups, and social posts through separate AI agents only works solo if you can review all of it in one five-minute…","url":"https://airlock.dev/docs/human-approval-for-solo-founder-automations","inLanguage":"en","author":{"@type":"Organization","name":"Airlock","url":"https://airlock.dev"},"publisher":{"@type":"Organization","name":"Airlock","url":"https://airlock.dev"}}</script>
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <link rel="icon" href="/favicon.ico" sizes="32x32">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='9' fill='%236366f1'/%3E%3Cpath d='M9 16.5l4.5 4.5L23 11' stroke='white' stroke-width='3' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
@@ -132,13 +132,13 @@ pre code.hljs{display:block;overflow-x:auto}
 <div class="wrap nav-inner">
   <a class="brand" href="/">
     <span class="mark"><svg viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.5 4.5L19 7.5" stroke="white" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
-    Impri
+    Airlock
   </a>
   <div class="nav-links">
     <a class="link" href="/#how">How it works</a>
     <a class="link" href="/#pricing">Pricing</a>
     <a class="link active-nav" href="../docs">Docs</a>
-    <a class="btn btn-primary btn-sm" href="https://gitlab.com/sekera.radim/impri">GitLab</a>
+    <a class="btn btn-primary btn-sm" href="https://gitlab.com/sekera.radim/airlock">GitLab</a>
   </div>
 </div>
 </nav>
@@ -158,11 +158,11 @@ pre code.hljs{display:block;overflow-x:auto}
 <h2 id="the-problem-is-review-time-not-automation">The problem is review time, not automation</h2>
 <p>A solo founder running three or four small agents — a support-ticket responder, an invoice-chasing bot, a social post drafter — doesn&#39;t have the bandwidth to sit and watch each one work. But &quot;fully unsupervised&quot; isn&#39;t the answer either: one hallucinated refund promise in a support reply, one invoice sent to the wrong customer, one tone-deaf tweet, and you&#39;re doing damage control instead of building. What actually scales for one person is a single queue you clear in a batch, not three separate places to check.</p>
 <h2 id="one-inbox-one-pass-every-action-gated-the-same-way">One inbox, one pass, every action gated the same way</h2>
-<p>Every agent pushes its proposed action to Impri instead of executing directly, regardless of which agent produced it. You get one inbox — web, mobile, or wherever notifications land — and one decision loop instead of three integrations to babysit. Because the gate is identical across agents (<code>kind</code> differs, the shape doesn&#39;t), you write the wrapper once and reuse it.</p>
+<p>Every agent pushes its proposed action to Airlock instead of executing directly, regardless of which agent produced it. You get one inbox — web, mobile, or wherever notifications land — and one decision loop instead of three integrations to babysit. Because the gate is identical across agents (<code>kind</code> differs, the shape doesn&#39;t), you write the wrapper once and reuse it.</p>
 <div class="code-block"><span class="code-lang">python</span><pre><code class="hljs"><span class="hljs-keyword">import</span> os
-<span class="hljs-keyword">from</span> impri <span class="hljs-keyword">import</span> ImpriClient
+<span class="hljs-keyword">from</span> airlock <span class="hljs-keyword">import</span> AirlockClient
 
-client = ImpriClient(api_key=os.environ[<span class="hljs-string">&quot;IMPRI_API_KEY&quot;</span>])
+client = AirlockClient(api_key=os.environ[<span class="hljs-string">&quot;AIRLOCK_API_KEY&quot;</span>])
 
 <span class="hljs-keyword">async</span> <span class="hljs-keyword">def</span> <span class="hljs-title function_">propose_support_reply</span>(<span class="hljs-params">ticket_id: <span class="hljs-built_in">str</span>, customer_email: <span class="hljs-built_in">str</span>, draft_body: <span class="hljs-built_in">str</span></span>):
     action = <span class="hljs-keyword">await</span> client.create_action(
@@ -196,7 +196,7 @@ client = ImpriClient(api_key=os.environ[<span class="hljs-string">&quot;IMPRI_AP
     <span class="hljs-keyword">return</span> action.<span class="hljs-built_in">id</span></code></pre></div>
 <p>Three agents, three <code>kind</code> values, one <code>create_action</code> call shape. Nothing executes until the corresponding decision comes back approved.</p>
 <h2 id="clearing-the-queue-in-one-pass-not-three">Clearing the queue in one pass, not three</h2>
-<p>This is where a solo founder&#39;s workflow diverges from a team&#39;s: nobody else is going to triage the inbox for you, so the morning routine has to be a single batch clear, not a card-by-card review across separate tools. Impri&#39;s bulk-decision endpoint approves or rejects several actions at once from a script, which is the shape a &quot;review everything with coffee&quot; habit actually needs:</p>
+<p>This is where a solo founder&#39;s workflow diverges from a team&#39;s: nobody else is going to triage the inbox for you, so the morning routine has to be a single batch clear, not a card-by-card review across separate tools. Airlock&#39;s bulk-decision endpoint approves or rejects several actions at once from a script, which is the shape a &quot;review everything with coffee&quot; habit actually needs:</p>
 <div class="code-block"><span class="code-lang">python</span><pre><code class="hljs">pending = <span class="hljs-keyword">await</span> client.list_actions(status=<span class="hljs-string">&quot;pending&quot;</span>, kind=<span class="hljs-string">&quot;support.reply&quot;</span>)
 approve_ids = [a.<span class="hljs-built_in">id</span> <span class="hljs-keyword">for</span> a <span class="hljs-keyword">in</span> pending.items <span class="hljs-keyword">if</span> looks_routine(a.preview.body)]
 
@@ -207,7 +207,7 @@ approve_ids = [a.<span class="hljs-built_in">id</span> <span class="hljs-keyword
 <h2 id="why-quotjust-trust-the-agentquot-doesn39t-hold-at-this-scale">Why &quot;just trust the agent&quot; doesn&#39;t hold at this scale</h2>
 <p>The instinct to skip a gate entirely is strongest for a solo founder — every extra step feels like it&#39;s eating the time automation was supposed to save. But the actions with the most damage per mistake (a wrong refund commitment, a duplicate invoice chase, a post that goes out with the wrong numbers) are exactly the ones a solo operator has the least slack to walk back publicly and alone. A five-minute batch review is cheap insurance against the one incident that costs a weekend.</p>
 <h2 id="what-this-isn39t">What this isn&#39;t</h2>
-<p>Impri doesn&#39;t decide which replies are routine, doesn&#39;t write the invoice-chase copy, and doesn&#39;t know your Twitter voice — your agents own all of that. It stores the proposed action, notifies you, and holds the decision until you clear the queue. And the gate only holds if the agent&#39;s actual send/post credentials live behind the approved-decision check, not in the agent&#39;s own reach — see <a href="integrations">integrations</a> for wrapping the executor so there&#39;s no side door around it.</p>
+<p>Airlock doesn&#39;t decide which replies are routine, doesn&#39;t write the invoice-chase copy, and doesn&#39;t know your Twitter voice — your agents own all of that. It stores the proposed action, notifies you, and holds the decision until you clear the queue. And the gate only holds if the agent&#39;s actual send/post credentials live behind the approved-decision check, not in the agent&#39;s own reach — see <a href="integrations">integrations</a> for wrapping the executor so there&#39;s no side door around it.</p>
 <div class="table-wrap"><table>
 <thead>
 <tr>
@@ -236,11 +236,11 @@ approve_ids = [a.<span class="hljs-built_in">id</span> <span class="hljs-keyword
 <hr>
 <p>Next: <a href="quickstart">quickstart</a> to get an API key, <a href="sdk-python">the Python SDK</a> for the full client including <code>bulk_decide</code>, and <a href="notifications">notifications</a> to route the whole queue to one phone.</p>
 
-    <aside class="doc-cta" aria-label="Try Impri">
+    <aside class="doc-cta" aria-label="Try Airlock">
   <p class="doc-cta-title">Add an approval step to your own agent</p>
-  <p>Start on Impri Cloud: the Free tier includes 100 approvals a month. Or self-host the MIT-licensed core with Docker Compose, with no tier limits.</p>
+  <p>Start on Airlock Cloud: the Free tier includes 100 approvals a month. Or self-host the MIT-licensed core with Docker Compose, with no tier limits.</p>
   <div class="doc-cta-actions">
-    <a class="btn btn-primary btn-sm" href="https://app.impri.dev/?signup=1">Start free on Impri Cloud</a>
+    <a class="btn btn-primary btn-sm" href="https://app.airlock.dev/?signup=1">Start free on Airlock Cloud</a>
     <a class="btn btn-ghost btn-sm" href="../docs/quickstart">Quick start</a>
     <a class="btn btn-ghost btn-sm" href="../docs/self-hosting">Self-host guide</a>
   </div>
@@ -335,19 +335,19 @@ approve_ids = [a.<span class="hljs-built_in">id</span> <span class="hljs-keyword
 <footer class="footer">
 <div class="wrap footer-inner">
   <a class="brand" href="/">
-    <span class="mark"><svg viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.5 4.5L19 7.5" stroke="white" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Impri
+    <span class="mark"><svg viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.5 4.5L19 7.5" stroke="white" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Airlock
   </a>
   <div>
-    <a href="https://gitlab.com/sekera.radim/impri">GitLab</a>
+    <a href="https://gitlab.com/sekera.radim/airlock">GitLab</a>
     <a href="/docs">Docs</a>
-    <a href="https://gitlab.com/sekera.radim/impri/-/blob/main/LICENSE">MIT License</a>
-    <a href="https://www.npmjs.com/package/@impri/mcp">@impri/mcp</a>
+    <a href="https://gitlab.com/sekera.radim/airlock/-/blob/main/LICENSE">MIT License</a>
+    <a href="https://www.npmjs.com/package/@airlock/mcp">@airlock/mcp</a>
     <a href="/docs/privacy">Privacy</a>
     <a href="/docs/terms">Terms</a>
     <a href="https://sekera.dev">Contact</a>
   </div>
 </div>
-<div class="wrap" style="margin-top:18px"><span class="muted">© 2026 Impri · The imprimatur for your AI agents · Built by <a href="https://sekera.dev" style="color:inherit">Radim Sekera</a>. Also by the same maker: <a href="https://briefgate.dev/?utm_source=impri.dev&amp;utm_medium=referral" style="color:inherit">BriefGate</a> — client intake for agencies and AI agents.</span></div>
+<div class="wrap" style="margin-top:18px"><span class="muted">© 2026 Airlock · The airlockmatur for your AI agents · Built by <a href="https://sekera.dev" style="color:inherit">Radim Sekera</a>. Also by the same maker: <a href="https://briefgate.dev/?utm_source=airlock.dev&amp;utm_medium=referral" style="color:inherit">BriefGate</a> — client intake for agencies and AI agents.</span></div>
 </footer>
 </body>
 </html>

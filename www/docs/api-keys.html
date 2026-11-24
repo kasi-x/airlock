@@ -3,21 +3,21 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>API Keys — Impri Docs</title>
-<meta name="description" content="Every request to the Impri API is authenticated with a Bearer token that looks like im_&lt;base64url&gt;. Keys are project-scoped, have one or more scopes…">
+<title>API Keys — Airlock Docs</title>
+<meta name="description" content="Every request to the Airlock API is authenticated with a Bearer token that looks like im_&lt;base64url&gt;. Keys are project-scoped, have one or more scopes…">
 <meta name="theme-color" content="#06070d">
-<meta property="og:title" content="API Keys — Impri Docs">
-<meta property="og:description" content="Every request to the Impri API is authenticated with a Bearer token that looks like im_&lt;base64url&gt;. Keys are project-scoped, have one or more scopes…">
+<meta property="og:title" content="API Keys — Airlock Docs">
+<meta property="og:description" content="Every request to the Airlock API is authenticated with a Bearer token that looks like im_&lt;base64url&gt;. Keys are project-scoped, have one or more scopes…">
 <meta property="og:type" content="article">
-<meta property="og:url" content="https://impri.dev/docs/api-keys">
-<meta property="og:image" content="https://impri.dev/assets/og/og-docs.png">
+<meta property="og:url" content="https://airlock.dev/docs/api-keys">
+<meta property="og:image" content="https://airlock.dev/assets/og/og-docs.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
-<meta property="og:image:alt" content="Impri — human-in-the-loop approval inbox for AI agents">
+<meta property="og:image:alt" content="Airlock — human-in-the-loop approval inbox for AI agents">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="https://impri.dev/assets/og/og-docs.png">
-<link rel="canonical" href="https://impri.dev/docs/api-keys">
-<script type="application/ld+json">{"@context":"https://schema.org","@type":"TechArticle","headline":"API Keys","description":"Every request to the Impri API is authenticated with a Bearer token that looks like im_<base64url>. Keys are project-scoped, have one or more scopes, and are…","url":"https://impri.dev/docs/api-keys","inLanguage":"en","author":{"@type":"Organization","name":"Impri","url":"https://impri.dev"},"publisher":{"@type":"Organization","name":"Impri","url":"https://impri.dev"}}</script>
+<meta name="twitter:image" content="https://airlock.dev/assets/og/og-docs.png">
+<link rel="canonical" href="https://airlock.dev/docs/api-keys">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"TechArticle","headline":"API Keys","description":"Every request to the Airlock API is authenticated with a Bearer token that looks like im_<base64url>. Keys are project-scoped, have one or more scopes, and are…","url":"https://airlock.dev/docs/api-keys","inLanguage":"en","author":{"@type":"Organization","name":"Airlock","url":"https://airlock.dev"},"publisher":{"@type":"Organization","name":"Airlock","url":"https://airlock.dev"}}</script>
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <link rel="icon" href="/favicon.ico" sizes="32x32">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='9' fill='%236366f1'/%3E%3Cpath d='M9 16.5l4.5 4.5L23 11' stroke='white' stroke-width='3' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
@@ -132,13 +132,13 @@ pre code.hljs{display:block;overflow-x:auto}
 <div class="wrap nav-inner">
   <a class="brand" href="/">
     <span class="mark"><svg viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.5 4.5L19 7.5" stroke="white" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
-    Impri
+    Airlock
   </a>
   <div class="nav-links">
     <a class="link" href="/#how">How it works</a>
     <a class="link" href="/#pricing">Pricing</a>
     <a class="link active-nav" href="../docs">Docs</a>
-    <a class="btn btn-primary btn-sm" href="https://gitlab.com/sekera.radim/impri">GitLab</a>
+    <a class="btn btn-primary btn-sm" href="https://gitlab.com/sekera.radim/airlock">GitLab</a>
   </div>
 </div>
 </nav>
@@ -153,7 +153,7 @@ pre code.hljs{display:block;overflow-x:auto}
       <span>API Keys</span>
     </nav>
     <h1>API Keys</h1>
-<p>Every request to the Impri API is authenticated with a Bearer token that looks like <code>im_&lt;base64url&gt;</code>. Keys are project-scoped, have one or more scopes, and are stored as argon2 hashes — the raw value is shown <strong>exactly once</strong> at creation and never stored in plain text.</p>
+<p>Every request to the Airlock API is authenticated with a Bearer token that looks like <code>im_&lt;base64url&gt;</code>. Keys are project-scoped, have one or more scopes, and are stored as argon2 hashes — the raw value is shown <strong>exactly once</strong> at creation and never stored in plain text.</p>
 <hr>
 <h2 id="scopes">Scopes</h2>
 <div class="table-wrap"><table>
@@ -185,8 +185,8 @@ pre code.hljs{display:block;overflow-x:auto}
 </ul>
 <hr>
 <h2 id="bootstrap-key">Bootstrap key</h2>
-<p>On the very first server start, Impri prints a bootstrap admin key and project ID to stdout:</p>
-<div class="code-block"><pre><code class="hljs">[impri] Bootstrap complete.
+<p>On the very first server start, Airlock prints a bootstrap admin key and project ID to stdout:</p>
+<div class="code-block"><pre><code class="hljs">[airlock] Bootstrap complete.
   project: prj_...
   admin key: im_...   ← copy this now; it is printed once</code></pre></div>
 <p>The raw key value is shown once and never again. Store it immediately. If you lose it, create a new key via the web inbox settings or the CLI.</p>
@@ -259,9 +259,9 @@ pre code.hljs{display:block;overflow-x:auto}
 </ul>
 <hr>
 <h2 id="cli">CLI</h2>
-<div class="code-block"><span class="code-lang">bash</span><pre><code class="hljs">impri keys list                            <span class="hljs-comment"># list all keys</span>
-impri keys create --name <span class="hljs-string">&quot;bot&quot;</span> --scopes actions
-impri keys revoke key_abc123 [--<span class="hljs-built_in">yes</span>]      <span class="hljs-comment"># skip confirmation prompt with --yes</span></code></pre></div>
+<div class="code-block"><span class="code-lang">bash</span><pre><code class="hljs">airlock keys list                            <span class="hljs-comment"># list all keys</span>
+airlock keys create --name <span class="hljs-string">&quot;bot&quot;</span> --scopes actions
+airlock keys revoke key_abc123 [--<span class="hljs-built_in">yes</span>]      <span class="hljs-comment"># skip confirmation prompt with --yes</span></code></pre></div>
 <p>See <a href="cli">CLI reference</a> for full options.</p>
 
     
@@ -351,19 +351,19 @@ impri keys revoke key_abc123 [--<span class="hljs-built_in">yes</span>]      <sp
 <footer class="footer">
 <div class="wrap footer-inner">
   <a class="brand" href="/">
-    <span class="mark"><svg viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.5 4.5L19 7.5" stroke="white" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Impri
+    <span class="mark"><svg viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.5 4.5L19 7.5" stroke="white" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Airlock
   </a>
   <div>
-    <a href="https://gitlab.com/sekera.radim/impri">GitLab</a>
+    <a href="https://gitlab.com/sekera.radim/airlock">GitLab</a>
     <a href="/docs">Docs</a>
-    <a href="https://gitlab.com/sekera.radim/impri/-/blob/main/LICENSE">MIT License</a>
-    <a href="https://www.npmjs.com/package/@impri/mcp">@impri/mcp</a>
+    <a href="https://gitlab.com/sekera.radim/airlock/-/blob/main/LICENSE">MIT License</a>
+    <a href="https://www.npmjs.com/package/@airlock/mcp">@airlock/mcp</a>
     <a href="/docs/privacy">Privacy</a>
     <a href="/docs/terms">Terms</a>
     <a href="https://sekera.dev">Contact</a>
   </div>
 </div>
-<div class="wrap" style="margin-top:18px"><span class="muted">© 2026 Impri · The imprimatur for your AI agents · Built by <a href="https://sekera.dev" style="color:inherit">Radim Sekera</a>. Also by the same maker: <a href="https://briefgate.dev/?utm_source=impri.dev&amp;utm_medium=referral" style="color:inherit">BriefGate</a> — client intake for agencies and AI agents.</span></div>
+<div class="wrap" style="margin-top:18px"><span class="muted">© 2026 Airlock · The airlockmatur for your AI agents · Built by <a href="https://sekera.dev" style="color:inherit">Radim Sekera</a>. Also by the same maker: <a href="https://briefgate.dev/?utm_source=airlock.dev&amp;utm_medium=referral" style="color:inherit">BriefGate</a> — client intake for agencies and AI agents.</span></div>
 </footer>
 </body>
 </html>

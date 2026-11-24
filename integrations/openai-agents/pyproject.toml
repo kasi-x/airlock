@@ -3,13 +3,13 @@ requires = ["hatchling"]
 build-backend = "hatchling.build"
 
 [project]
-name = "impri-openai"
+name = "airlock-openai"
 version = "0.1.0"
-description = "Impri human-approval integration for the OpenAI Agents SDK"
+description = "Airlock human-approval integration for the OpenAI Agents SDK"
 readme = "README.md"
 license = { text = "MIT" }
 requires-python = ">=3.11"
-keywords = ["impri", "openai-agents", "human-in-the-loop", "approval", "ai-safety"]
+keywords = ["airlock", "openai-agents", "human-in-the-loop", "approval", "ai-safety"]
 classifiers = [
     "Development Status :: 3 - Alpha",
     "Intended Audience :: Developers",
@@ -37,12 +37,12 @@ dev = [
 ]
 
 [project.urls]
-Homepage = "https://impri.dev"
-Repository = "https://gitlab.com/sekera.radim/impri"
-Documentation = "https://impri.dev/docs"
+Homepage = "https://airlock.dev"
+Repository = "https://gitlab.com/sekera.radim/airlock"
+Documentation = "https://airlock.dev/docs"
 
 [tool.hatch.build.targets.wheel]
-packages = ["impri_openai"]
+packages = ["airlock_openai"]
 
 [tool.pytest.ini_options]
 asyncio_mode = "auto"

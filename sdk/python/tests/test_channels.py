@@ -1,9 +1,9 @@
-"""Unit tests for notification channel ImpriClient methods."""
+"""Unit tests for notification channel AirlockClient methods."""
 from __future__ import annotations
 
 import unittest
 
-from impri import ImpriClient, ImpriNotFound, ImpriUnauthorized, ImpriValidationError
+from airlock import AirlockClient, AirlockNotFound, AirlockUnauthorized, AirlockValidationError
 from .mock_transport import MockTransport
 
 API_KEY = "im_testkey123"
@@ -11,7 +11,7 @@ API_KEY = "im_testkey123"
 
 def make_client(*responses):
     transport = MockTransport(list(responses))
-    return ImpriClient(api_key=API_KEY, _transport=transport), transport
+    return AirlockClient(api_key=API_KEY, _transport=transport), transport
 
 
 # ---------------------------------------------------------------------------
@@ -126,7 +126,7 @@ class TestListNotificationChannels(unittest.TestCase):
 
     def test_raises_unauthorized_on_403(self):
         client, _ = make_client((403, {"error": "Forbidden"}))
-        with self.assertRaises(ImpriUnauthorized):
+        with self.assertRaises(AirlockUnauthorized):
             client.list_notification_channels()
 
 
@@ -203,7 +203,7 @@ class TestCreateNotificationChannel(unittest.TestCase):
         client, t = make_client((201, WEBHOOK_CHANNEL))
         client.create_notification_channel(
             "Generic webhook", "webhook",
-            {"url": "https://myapp.example.com/impri-hook", "hmac_secret": "my-secret-1234567890"},
+            {"url": "https://myapp.example.com/airlock-hook", "hmac_secret": "my-secret-1234567890"},
         )
         body = t.calls[0]["body"]
         self.assertEqual(body["type"], "webhook")
@@ -221,7 +221,7 @@ class TestCreateNotificationChannel(unittest.TestCase):
 
     def test_raises_validation_error_on_400(self):
         client, _ = make_client((400, {"error": "Validation error", "message": "config.url is required"}))
-        with self.assertRaises(ImpriValidationError):
+        with self.assertRaises(AirlockValidationError):
             client.create_notification_channel("Bad", "slack", {})
 
 
@@ -262,7 +262,7 @@ class TestGetNotificationChannel(unittest.TestCase):
 
     def test_raises_not_found_on_404(self):
         client, _ = make_client((404, {"error": "Not Found"}))
-        with self.assertRaises(ImpriNotFound):
+        with self.assertRaises(AirlockNotFound):
             client.get_notification_channel("ch_missing")
 
 
@@ -324,7 +324,7 @@ class TestUpdateNotificationChannel(unittest.TestCase):
 
     def test_raises_not_found_on_404(self):
         client, _ = make_client((404, {"error": "Not Found"}))
-        with self.assertRaises(ImpriNotFound):
+        with self.assertRaises(AirlockNotFound):
             client.update_notification_channel("ch_missing", name="X")
 
     def test_no_fields_sends_empty_body(self):
@@ -352,7 +352,7 @@ class TestDeleteNotificationChannel(unittest.TestCase):
 
     def test_raises_not_found_on_404(self):
         client, _ = make_client((404, {"error": "Not Found"}))
-        with self.assertRaises(ImpriNotFound):
+        with self.assertRaises(AirlockNotFound):
             client.delete_notification_channel("ch_missing")
 
 
@@ -388,12 +388,12 @@ class TestTestNotificationChannel(unittest.TestCase):
 
     def test_raises_not_found_on_404(self):
         client, _ = make_client((404, {"error": "Not Found"}))
-        with self.assertRaises(ImpriNotFound):
+        with self.assertRaises(AirlockNotFound):
             client.test_notification_channel("ch_missing")
 
     def test_raises_unauthorized_on_403(self):
         client, _ = make_client((403, {"error": "Forbidden"}))
-        with self.assertRaises(ImpriUnauthorized):
+        with self.assertRaises(AirlockUnauthorized):
             client.test_notification_channel("ch_slack1")
 
 

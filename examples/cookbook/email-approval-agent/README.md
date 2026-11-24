@@ -27,20 +27,20 @@ corrected version and `decision.diff` is set.
 ## Requirements
 
 - Node 18+ (no npm install — uses global `fetch`)
-- An Impri API key with `actions` scope
-- A running Impri (self-hosted or cloud)
+- An Airlock API key with `actions` scope
+- A running Airlock (self-hosted or cloud)
 
 ## Quick start
 
 ```bash
 # Self-hosted
-IMPRI_API_KEY=im_your_key node agent.mjs
+AIRLOCK_API_KEY=im_your_key node agent.mjs
 
 # Cloud
-IMPRI_API_KEY=im_your_key IMPRI_BASE_URL=https://api.impri.dev node agent.mjs
+AIRLOCK_API_KEY=im_your_key AIRLOCK_BASE_URL=https://api.airlock.dev node agent.mjs
 ```
 
-Open your Impri inbox, approve the card (optionally edit the draft), and
+Open your Airlock inbox, approve the card (optionally edit the draft), and
 watch the agent send.
 
 ## Adapting to your use case

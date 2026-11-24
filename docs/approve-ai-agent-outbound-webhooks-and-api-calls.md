@@ -34,8 +34,8 @@ The agent pushes the request as an action instead of sending it. `expires_in` is
 ```python
 import os, time, requests
 
-BASE = "https://api.impri.dev"
-H = {"Authorization": f"Bearer {os.environ['IMPRI_API_KEY']}"}
+BASE = "https://api.airlock.dev"
+H = {"Authorization": f"Bearer {os.environ['AIRLOCK_API_KEY']}"}
 
 def propose_webhook(url: str, payload: dict, reason: str) -> str:
     body = (
@@ -92,13 +92,13 @@ Marking the action `idempotent: false` puts a warning badge on the card, so the 
 
 ---
 
-## What Impri does and doesn't do here
+## What Airlock does and doesn't do here
 
-Impri is the approval gate only. It stores the proposed request, notifies a human and holds the decision. It does not send the HTTP call, inspect the target, validate the payload or know what the endpoint does. Your code performs the request.
+Airlock is the approval gate only. It stores the proposed request, notifies a human and holds the decision. It does not send the HTTP call, inspect the target, validate the payload or know what the endpoint does. Your code performs the request.
 
 It is a real gate only if the wrapped function is the agent's **only** path to that endpoint. If the agent also holds the raw API token and can run `curl` or an unrestricted HTTP tool, it can route around the approval. Keep the credential inside the wrapper, not in the agent's reach.
 
-Impri is not a workflow engine and not a webhook delivery service: there is no retry queue, signing or delivery log for the outbound call. Those stay in your stack.
+Airlock is not a workflow engine and not a webhook delivery service: there is no retry queue, signing or delivery log for the outbound call. Those stay in your stack.
 
 ---
 

@@ -1,14 +1,14 @@
 # Discord Approval Bot
 
-Impri can send pending-action notifications to a Discord channel with
+Airlock can send pending-action notifications to a Discord channel with
 **Approve** and **Reject** buttons that let your team decide without
-ever opening a browser. The decision is recorded in Impri with the same
+ever opening a browser. The decision is recorded in Airlock with the same
 integrity guarantees as a web-inbox decision.
 
 This is an extension of the existing `discord` notification channel
 (see [Notification channels](notifications.md)). When `approval_mode`
 is `false` (the default), the channel behaves exactly as before —
-a rich embed notification with a "Review in Impri" link. Setting
+a rich embed notification with a "Review in Airlock" link. Setting
 `approval_mode: true` enables the interactive-button approval flow
 described here.
 
@@ -16,16 +16,16 @@ described here.
 
 ## How it works
 
-1. An action lands in Impri as `pending`.
-2. Impri posts a Discord message embed to the configured channel with
+1. An action lands in Airlock as `pending`.
+2. Airlock posts a Discord message embed to the configured channel with
    two component buttons: **✅ Approve** and **❌ Reject**.
 3. An authorized team member clicks a button. Discord delivers an
-   interaction (type 3, MESSAGE_COMPONENT) to Impri's interaction
+   interaction (type 3, MESSAGE_COMPONENT) to Airlock's interaction
    endpoint via HTTP POST.
-4. Impri verifies the Ed25519 signature from Discord's servers, the
+4. Airlock verifies the Ed25519 signature from Discord's servers, the
    HMAC on the button `custom_id`, and the clicker's Discord user ID
    against the allow-list.
-5. If all checks pass, Impri records the decision (same transaction as
+5. If all checks pass, Airlock records the decision (same transaction as
    `POST /v1/actions/:id/decision`), fires any `callback_url` webhook,
    and responds with an interaction response (type 7, UPDATE_MESSAGE)
    that replaces the original message to show the outcome and remove the
@@ -58,7 +58,7 @@ On the **General Information** tab, copy:
   — this is `application_id`.
 - **Public Key** (64-char hex string) — this is `public_key`. Discord
   uses the corresponding private key to sign every interaction it sends
-  to your endpoint; Impri uses `public_key` to verify those signatures.
+  to your endpoint; Airlock uses `public_key` to verify those signatures.
 
 ### Step 3 — Invite the bot to your server
 
@@ -76,10 +76,10 @@ Enable Discord Developer Mode: **User Settings → Advanced → Developer Mode**
   → **Copy User ID** (numeric snowflake). These go in
   `allowed_approver_discord_user_ids`.
 
-### Step 5 — Create the approval channel via the Impri API
+### Step 5 — Create the approval channel via the Airlock API
 
 ```bash
-curl -X POST https://api.impri.dev/v1/notification-channels \
+curl -X POST https://api.airlock.dev/v1/notification-channels \
   -H "Authorization: Bearer im_..." \
   -H "Content-Type: application/json" \
   -d '{
@@ -97,7 +97,7 @@ curl -X POST https://api.impri.dev/v1/notification-channels \
   }'
 ```
 
-**Omit `hmac_secret`** — Impri generates 32 random bytes (64-char hex)
+**Omit `hmac_secret`** — Airlock generates 32 random bytes (64-char hex)
 automatically and stores it masked (`****xxxx`). This secret signs the
 button `custom_id` values so they cannot be forged.
 
@@ -109,21 +109,21 @@ In the Discord Developer Portal → **General Information**, find the
 **Interactions Endpoint URL** field and enter:
 
 ```
-https://your-impri-host/v1/integrations/discord/interactions/nchan_...
+https://your-airlock-host/v1/integrations/discord/interactions/nchan_...
 ```
 
-Replace `your-impri-host` with your Impri server's public hostname and
+Replace `your-airlock-host` with your Airlock server's public hostname and
 `nchan_...` with the channel ID from Step 5. Click **Save Changes**.
 
 Discord immediately sends a PING (interaction type 1) signed with its
-Ed25519 private key. Impri verifies the signature and responds
+Ed25519 private key. Airlock verifies the signature and responds
 `{"type":1}` (PONG). If the endpoint is unreachable or the signature
 verification fails, Discord rejects the URL — this is a live security
 check during setup.
 
 **Local dev:** Discord requires a publicly reachable HTTPS URL. Use
 `ngrok http 8484` or `cloudflared tunnel --url http://localhost:8484`,
-set `BASE_URL=https://your-tunnel-url`, restart Impri, then enter the
+set `BASE_URL=https://your-tunnel-url`, restart Airlock, then enter the
 tunnel URL in the Developer Portal.
 
 ### Step 7 — Verify
@@ -221,7 +221,7 @@ via Ed25519 signature verification before the request body is parsed.
 Operators do not call this endpoint directly — Discord does.
 
 **Signature verification:** Discord attaches `X-Signature-Ed25519` and
-`X-Signature-Timestamp` headers. Impri:
+`X-Signature-Timestamp` headers. Airlock:
 
 1. Reads both headers. If either is absent, returns **401**.
 2. Constructs the signed message: `Buffer.concat([timestamp_bytes, rawBody_bytes])`.
@@ -234,8 +234,8 @@ This check runs on **every** request including PING (type 1) — skipping
 it for PINGs would create an unauthenticated code path.
 
 Discord uses an asymmetric scheme: Discord holds the Ed25519 private
-key and signs every interaction; Impri holds only `public_key` and
-verifies. This means Impri cannot forge Discord interactions, and
+key and signs every interaction; Airlock holds only `public_key` and
+verifies. This means Airlock cannot forge Discord interactions, and
 `public_key` is not strictly a secret (though it is masked for
 defense-in-depth).
 
@@ -254,12 +254,12 @@ An attacker must bypass **all five** simultaneously to forge an approval.
 **1. Discord Ed25519 signature (asymmetric)**
 
 Every interaction from Discord carries `X-Signature-Ed25519` and
-`X-Signature-Timestamp`. Impri verifies using the application's
+`X-Signature-Timestamp`. Airlock verifies using the application's
 `public_key` via `webcrypto.subtle.verify('Ed25519', ...)`. Discord's
 servers hold the private key; without it, no one outside Discord can
 produce a valid signature. Invalid signature → **401** immediately.
 
-Unlike Slack's HMAC approach, Ed25519 is asymmetric: Impri cannot
+Unlike Slack's HMAC approach, Ed25519 is asymmetric: Airlock cannot
 forge Discord signatures even if you have the `public_key`.
 
 **2. Button `custom_id` HMAC (unforgeable action binding)**
@@ -285,7 +285,7 @@ fabricate a valid `custom_id` for any action ID. Comparison uses
 Discord sets `interaction.member.user.id` (guild/server interactions)
 or `interaction.user.id` (DM interactions) in its own infrastructure.
 After the Ed25519 signature passes (Layer 1), this field is
-authoritative. Impri checks it against
+authoritative. Airlock checks it against
 `allowed_approver_discord_user_ids`. On failure, an ephemeral "Not
 authorized" message is returned (type 4, flags 64 — visible only to the
 clicker); HTTP 200 is returned so Discord does not retry. No action data
@@ -310,7 +310,7 @@ button click is a safe no-op.
 ### Response timing
 
 Discord requires a response to an interaction within 3 seconds. Because
-Impri's decision is a synchronous SQLite transaction, there is no async
+Airlock's decision is a synchronous SQLite transaction, there is no async
 latency risk — the response is type 7 (UPDATE_MESSAGE), which replaces
 the original message with the decision outcome and removes the buttons
 in a single round-trip. No deferred response (`type: 5`) is needed.
@@ -343,19 +343,19 @@ stored in logs or `audit_log`. All outbound Discord API calls go through
 Discord sends a PING signed with the application's Ed25519 private key.
 Make sure:
 - The URL is publicly reachable over HTTPS.
-- The `channelId` in the URL matches the channel Impri created.
+- The `channelId` in the URL matches the channel Airlock created.
 - The `public_key` in the channel config matches **exactly** the Public
   Key shown in the Discord Developer Portal → General Information.
-- Impri is running and returning `{"type":1}` for the PING.
+- Airlock is running and returning `{"type":1}` for the PING.
 
-Check Impri logs for a 401 or signature mismatch error.
+Check Airlock logs for a 401 or signature mismatch error.
 
 **The bot posts a message but buttons do nothing.**
 
 The Interactions Endpoint URL in the Developer Portal is not set, is
 pointing to an unreachable URL, or the `channelId` in the URL does not
 match the channel. Verify the URL matches
-`https://your-impri-host/v1/integrations/discord/interactions/{channelId}`.
+`https://your-airlock-host/v1/integrations/discord/interactions/{channelId}`.
 
 **"Not authorized to approve in this project" when clicking a button.**
 
@@ -384,8 +384,8 @@ one to it. The decision is idempotent — nothing went wrong.
 **The Discord message still shows buttons after a decision.**
 
 The interaction response (type 7) was not delivered within Discord's
-3-second window (rare — Impri uses synchronous SQLite). The decision
-was still recorded in Impri. The buttons are cosmetically stale; any
+3-second window (rare — Airlock uses synchronous SQLite). The decision
+was still recorded in Airlock. The buttons are cosmetically stale; any
 additional click is answered with an ephemeral "Already decided" and is
 a no-op.
 

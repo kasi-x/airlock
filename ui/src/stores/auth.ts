@@ -2,7 +2,7 @@ import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
 import { ApiClient, ApiClientError } from '../api/client'
 
-const STORAGE_KEY = 'impri_api_key'
+const STORAGE_KEY = 'airlock_api_key'
 
 /**
  * Device pairing via QR: the key rides in the URL FRAGMENT (#k=…), never the
@@ -59,8 +59,8 @@ export const useAuthStore = defineStore('auth', () => {
         const rawBase = (import.meta.env.VITE_API_BASE as string | undefined) ?? '/v1'
         const isRemote = rawBase.startsWith('http')
         loginError.value = isRemote
-          ? 'Could not reach the Impri server.'
-          : 'Could not reach the Impri server. Make sure it is running on port 8484.'
+          ? 'Could not reach the Airlock server.'
+          : 'Could not reach the Airlock server. Make sure it is running on port 8484.'
       }
       return false
     } finally {

@@ -19,9 +19,9 @@ The agent still writes the draft however it wants. What changes is where the dra
 ```php
 <?php
 
-$base = 'https://api.impri.dev';
+$base = 'https://api.airlock.dev';
 $headers = [
-    'Authorization: Bearer ' . getenv('IMPRI_API_KEY'),
+    'Authorization: Bearer ' . getenv('AIRLOCK_API_KEY'),
     'Content-Type: application/json',
 ];
 
@@ -113,10 +113,10 @@ A `rejected` or `expired` status means `sendCampaign` never runs — the polling
 
 ---
 
-## What Impri does and doesn't check
+## What Airlock does and doesn't check
 
-Impri stores the draft, notifies the reviewer, and holds the decision — it does not check facts, does not enforce brand voice, and never calls your ESP or CMS itself. All of that judgment stays with the human reading the card. It's also only a real gate if `sendCampaign` has no other path to firing — if the agent also holds a raw API key for your ESP, it can route around the review entirely, so that credential belongs only inside the wrapper that runs after approval.
+Airlock stores the draft, notifies the reviewer, and holds the decision — it does not check facts, does not enforce brand voice, and never calls your ESP or CMS itself. All of that judgment stays with the human reading the card. It's also only a real gate if `sendCampaign` has no other path to firing — if the agent also holds a raw API key for your ESP, it can route around the review entirely, so that credential belongs only inside the wrapper that runs after approval.
 
-For the underlying three-call pattern this builds on, see [how to add human approval to an AI agent](how-to-add-human-approval-to-an-ai-agent.md). For approving from Slack instead of the web inbox, see [Slack approval](slack-approval.md). Once reviews are flowing through Impri, [the audit log](audit-log.md) gives you a record of every campaign sent, by whom it was approved, and what changed before it went out.
+For the underlying three-call pattern this builds on, see [how to add human approval to an AI agent](how-to-add-human-approval-to-an-ai-agent.md). For approving from Slack instead of the web inbox, see [Slack approval](slack-approval.md). Once reviews are flowing through Airlock, [the audit log](audit-log.md) gives you a record of every campaign sent, by whom it was approved, and what changed before it went out.
 
 Next step: [quickstart](quickstart.md) to get an API key and try this against a single draft first.

@@ -1,14 +1,14 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import { ImpriClient } from "../src/client.js";
+import { AirlockClient } from "../src/client.js";
 import {
-  ImpriConflict,
-  ImpriExpired,
-  ImpriNotFound,
-  ImpriRateLimited,
-  ImpriRejected,
-  ImpriTimeout,
-  ImpriUnauthorized,
-  ImpriValidationError,
+  AirlockConflict,
+  AirlockExpired,
+  AirlockNotFound,
+  AirlockRateLimited,
+  AirlockRejected,
+  AirlockTimeout,
+  AirlockUnauthorized,
+  AirlockValidationError,
 } from "../src/errors.js";
 
 // ─── Fetch mock helpers ───────────────────────────────────────────────────────
@@ -48,15 +48,15 @@ afterEach(() => {
 
 // ─── Client construction ──────────────────────────────────────────────────────
 
-describe("ImpriClient constructor", () => {
+describe("AirlockClient constructor", () => {
   it("uses apiKey from constructor arg", () => {
-    const client = new ImpriClient({ apiKey: "im_test" });
+    const client = new AirlockClient({ apiKey: "im_test" });
     expect(client).toBeDefined();
   });
 
-  it("falls back to IMPRI_API_KEY env var", () => {
-    vi.stubEnv("IMPRI_API_KEY", "im_from_env");
-    const client = new ImpriClient();
+  it("falls back to AIRLOCK_API_KEY env var", () => {
+    vi.stubEnv("AIRLOCK_API_KEY", "im_from_env");
+    const client = new AirlockClient();
     expect(client).toBeDefined();
     vi.unstubAllEnvs();
   });
@@ -65,7 +65,7 @@ describe("ImpriClient constructor", () => {
     mockFetch.mockResolvedValueOnce(
       mockOk({ id: "act_x", status: "pending", inbox_url: "", expires_at: 0, created_at: 0 }, 201),
     );
-    const client = new ImpriClient({ apiKey: "im_test", baseUrl: "http://localhost:8484/" });
+    const client = new AirlockClient({ apiKey: "im_test", baseUrl: "http://localhost:8484/" });
     await client.createAction({
       kind: "test",
       title: "T",
@@ -76,9 +76,9 @@ describe("ImpriClient constructor", () => {
     expect(url as string).toBe("http://localhost:8484/v1/actions");
   });
 
-  it("throws ImpriConfigError when no API key is available", () => {
-    vi.stubEnv("IMPRI_API_KEY", "");
-    expect(() => new ImpriClient()).toThrow("IMPRI_API_KEY is not set");
+  it("throws AirlockConfigError when no API key is available", () => {
+    vi.stubEnv("AIRLOCK_API_KEY", "");
+    expect(() => new AirlockClient()).toThrow("AIRLOCK_API_KEY is not set");
     vi.unstubAllEnvs();
   });
 });
@@ -90,13 +90,13 @@ describe("createAction", () => {
     const created = {
       id: "act_001",
       status: "pending" as const,
-      inbox_url: "https://impri.dev/inbox/act_001",
+      inbox_url: "https://airlock.dev/inbox/act_001",
       expires_at: 1720086400,
       created_at: 1720000000,
     };
     mockFetch.mockResolvedValueOnce(mockOk(created, 201));
 
-    const client = new ImpriClient({ apiKey: "im_abc", baseUrl: "http://localhost:8484" });
+    const client = new AirlockClient({ apiKey: "im_abc", baseUrl: "http://localhost:8484" });
     const result = await client.createAction({
       kind: "email.send",
       title: "Send welcome email to Alice",
@@ -118,36 +118,36 @@ describe("createAction", () => {
     });
   });
 
-  it("surfaces ImpriUnauthorized on 401", async () => {
+  it("surfaces AirlockUnauthorized on 401", async () => {
     mockFetch.mockResolvedValueOnce(mockErr(401, { message: "Invalid API key" }));
-    const client = new ImpriClient({ apiKey: "im_bad" });
+    const client = new AirlockClient({ apiKey: "im_bad" });
     await expect(
       client.createAction({ kind: "x", title: "x", preview: { format: "plain", body: "x" } }),
-    ).rejects.toBeInstanceOf(ImpriUnauthorized);
+    ).rejects.toBeInstanceOf(AirlockUnauthorized);
   });
 
-  it("surfaces ImpriValidationError on 422", async () => {
+  it("surfaces AirlockValidationError on 422", async () => {
     mockFetch.mockResolvedValueOnce(
       mockErr(422, { message: "Validation error", issues: [{ path: ["kind"], message: "Required" }] }),
     );
-    const client = new ImpriClient({ apiKey: "im_test" });
+    const client = new AirlockClient({ apiKey: "im_test" });
     await expect(
       client.createAction({ kind: "", title: "T", preview: { format: "plain", body: "b" } }),
-    ).rejects.toBeInstanceOf(ImpriValidationError);
+    ).rejects.toBeInstanceOf(AirlockValidationError);
   });
 
-  it("surfaces ImpriRateLimited on 429 and carries retryAfter", async () => {
+  it("surfaces AirlockRateLimited on 429 and carries retryAfter", async () => {
     const headers = new Headers({ "Retry-After": "30" });
     mockFetch.mockResolvedValueOnce(mockErr(429, { message: "Too many requests" }, headers));
-    const client = new ImpriClient({ apiKey: "im_test" });
+    const client = new AirlockClient({ apiKey: "im_test" });
     let err: unknown;
     try {
       await client.createAction({ kind: "x", title: "x", preview: { format: "plain", body: "x" } });
     } catch (e) {
       err = e;
     }
-    expect(err).toBeInstanceOf(ImpriRateLimited);
-    expect((err as ImpriRateLimited).retryAfter).toBe(30);
+    expect(err).toBeInstanceOf(AirlockRateLimited);
+    expect((err as AirlockRateLimited).retryAfter).toBe(30);
   });
 });
 
@@ -168,7 +168,7 @@ describe("getAction", () => {
     };
     mockFetch.mockResolvedValueOnce(mockOk(action));
 
-    const client = new ImpriClient({ apiKey: "im_test" });
+    const client = new AirlockClient({ apiKey: "im_test" });
     const result = await client.getAction("act_002");
 
     expect(result.id).toBe("act_002");
@@ -176,10 +176,10 @@ describe("getAction", () => {
     expect(url as string).toContain("/v1/actions/act_002");
   });
 
-  it("surfaces ImpriNotFound on 404", async () => {
+  it("surfaces AirlockNotFound on 404", async () => {
     mockFetch.mockResolvedValueOnce(mockErr(404, { message: "Not found" }));
-    const client = new ImpriClient({ apiKey: "im_test" });
-    await expect(client.getAction("act_nonexistent")).rejects.toBeInstanceOf(ImpriNotFound);
+    const client = new AirlockClient({ apiKey: "im_test" });
+    await expect(client.getAction("act_nonexistent")).rejects.toBeInstanceOf(AirlockNotFound);
   });
 });
 
@@ -203,7 +203,7 @@ describe("decide", () => {
     };
     mockFetch.mockResolvedValueOnce(mockOk(decisionResult));
 
-    const client = new ImpriClient({ apiKey: "im_test" });
+    const client = new AirlockClient({ apiKey: "im_test" });
     const result = await client.decide("act_dec1", { verdict: "approve" });
 
     expect(result.id).toBe("act_dec1");
@@ -223,7 +223,7 @@ describe("decide", () => {
       final_preview: { format: "plain", body: "edited" },
     }));
 
-    const client = new ImpriClient({ apiKey: "im_test" });
+    const client = new AirlockClient({ apiKey: "im_test" });
     await client.decide("act_dec2", {
       verdict: "approve",
       edited: { "preview.body": "edited" },
@@ -246,7 +246,7 @@ describe("decide", () => {
       final_preview: { format: "plain", body: "x" },
     }));
 
-    const client = new ImpriClient({ apiKey: "im_test" });
+    const client = new AirlockClient({ apiKey: "im_test" });
     await client.decide("act_dec3", { verdict: "reject" });
 
     const [, init] = mockFetch.mock.calls[0]!;
@@ -278,7 +278,7 @@ describe("awaitDecision", () => {
     };
     mockFetch.mockResolvedValueOnce(mockOk(action));
 
-    const client = new ImpriClient({ apiKey: "im_test" });
+    const client = new AirlockClient({ apiKey: "im_test" });
     const result = await client.awaitDecision("act_003", { pollIntervalMs: 0 });
 
     expect(result.actionId).toBe("act_003");
@@ -308,7 +308,7 @@ describe("awaitDecision", () => {
     };
     mockFetch.mockResolvedValueOnce(mockOk(action));
 
-    const client = new ImpriClient({ apiKey: "im_test" });
+    const client = new AirlockClient({ apiKey: "im_test" });
     const result = await client.awaitDecision("act_004", { pollIntervalMs: 0 });
 
     // CRITICAL: must carry the human-edited text, not the original draft.
@@ -342,14 +342,14 @@ describe("awaitDecision", () => {
       .mockResolvedValueOnce(mockOk(pending))
       .mockResolvedValueOnce(mockOk(approved));
 
-    const client = new ImpriClient({ apiKey: "im_test" });
+    const client = new AirlockClient({ apiKey: "im_test" });
     const result = await client.awaitDecision("act_005", { pollIntervalMs: 0, timeoutS: 60 });
 
     expect(result.actionId).toBe("act_005");
     expect(mockFetch).toHaveBeenCalledTimes(2);
   });
 
-  it("throws ImpriTimeout when deadline expires with action still pending", async () => {
+  it("throws AirlockTimeout when deadline expires with action still pending", async () => {
     const pending = {
       id: "act_006",
       status: "pending",
@@ -359,13 +359,13 @@ describe("awaitDecision", () => {
     };
     mockFetch.mockResolvedValue(mockOk(pending));
 
-    const client = new ImpriClient({ apiKey: "im_test" });
+    const client = new AirlockClient({ apiKey: "im_test" });
     await expect(
       client.awaitDecision("act_006", { timeoutS: 0, pollIntervalMs: 0 }),
-    ).rejects.toBeInstanceOf(ImpriTimeout);
+    ).rejects.toBeInstanceOf(AirlockTimeout);
   });
 
-  it("throws ImpriRejected when human rejects", async () => {
+  it("throws AirlockRejected when human rejects", async () => {
     const action = {
       id: "act_007",
       status: "rejected",
@@ -378,13 +378,13 @@ describe("awaitDecision", () => {
     };
     mockFetch.mockResolvedValueOnce(mockOk(action));
 
-    const client = new ImpriClient({ apiKey: "im_test" });
+    const client = new AirlockClient({ apiKey: "im_test" });
     const err = await client.awaitDecision("act_007", { pollIntervalMs: 0 }).catch((e) => e);
-    expect(err).toBeInstanceOf(ImpriRejected);
-    expect((err as ImpriRejected).actionId).toBe("act_007");
+    expect(err).toBeInstanceOf(AirlockRejected);
+    expect((err as AirlockRejected).actionId).toBe("act_007");
   });
 
-  it("throws ImpriExpired when status is expired", async () => {
+  it("throws AirlockExpired when status is expired", async () => {
     const action = {
       id: "act_008",
       status: "expired",
@@ -396,10 +396,10 @@ describe("awaitDecision", () => {
     };
     mockFetch.mockResolvedValueOnce(mockOk(action));
 
-    const client = new ImpriClient({ apiKey: "im_test" });
+    const client = new AirlockClient({ apiKey: "im_test" });
     await expect(
       client.awaitDecision("act_008", { pollIntervalMs: 0 }),
-    ).rejects.toBeInstanceOf(ImpriExpired);
+    ).rejects.toBeInstanceOf(AirlockExpired);
   });
 
   it("flags isUntrusted when payload.untrusted is true", async () => {
@@ -422,7 +422,7 @@ describe("awaitDecision", () => {
     };
     mockFetch.mockResolvedValueOnce(mockOk(action));
 
-    const client = new ImpriClient({ apiKey: "im_test" });
+    const client = new AirlockClient({ apiKey: "im_test" });
     const result = await client.awaitDecision("act_009", { pollIntervalMs: 0 });
     expect(result.isUntrusted).toBe(true);
   });
@@ -435,7 +435,7 @@ describe("reportResult", () => {
     const ack = { id: "act_010", status: "executed", updated_at: 1720010000 };
     mockFetch.mockResolvedValueOnce(mockOk(ack));
 
-    const client = new ImpriClient({ apiKey: "im_test" });
+    const client = new AirlockClient({ apiKey: "im_test" });
     const result = await client.reportResult("act_010", {
       status: "executed",
       detail: "Sent successfully",
@@ -454,12 +454,12 @@ describe("reportResult", () => {
     expect(body.detail).toBe("Sent successfully");
   });
 
-  it("surfaces ImpriConflict on 409", async () => {
+  it("surfaces AirlockConflict on 409", async () => {
     mockFetch.mockResolvedValueOnce(mockErr(409, { message: "Action not in approved state" }));
-    const client = new ImpriClient({ apiKey: "im_test" });
+    const client = new AirlockClient({ apiKey: "im_test" });
     await expect(
       client.reportResult("act_011", { status: "executed" }),
-    ).rejects.toBeInstanceOf(ImpriConflict);
+    ).rejects.toBeInstanceOf(AirlockConflict);
   });
 });
 
@@ -470,7 +470,7 @@ describe("requiresApproval", () => {
     const createdAction = {
       id: "act_hof_1",
       status: "pending",
-      inbox_url: "https://impri.dev/inbox/act_hof_1",
+      inbox_url: "https://airlock.dev/inbox/act_hof_1",
       expires_at: 9999999999,
       created_at: 1720000000,
     };
@@ -504,7 +504,7 @@ describe("requiresApproval", () => {
       return `sent to ${to}`;
     };
 
-    const client = new ImpriClient({ apiKey: "im_test" });
+    const client = new AirlockClient({ apiKey: "im_test" });
     const wrapped = client.requiresApproval(fn, {
       kind: "email.send",
       title: (to: string) => `Send email to ${to}`,
@@ -558,7 +558,7 @@ describe("requiresApproval", () => {
       receivedBodies.push(body);
     };
 
-    const client = new ImpriClient({ apiKey: "im_test" });
+    const client = new AirlockClient({ apiKey: "im_test" });
     const wrapped = client.requiresApproval(fn, {
       kind: "email.send",
       title: "T",
@@ -572,7 +572,7 @@ describe("requiresApproval", () => {
     expect(receivedBodies[0]).toBe("Human-edited body");
   });
 
-  it("throws ImpriRejected when human rejects, does NOT call fn", async () => {
+  it("throws AirlockRejected when human rejects, does NOT call fn", async () => {
     const created = {
       id: "act_hof_3",
       status: "pending",
@@ -602,10 +602,10 @@ describe("requiresApproval", () => {
       fnCalled();
     };
 
-    const client = new ImpriClient({ apiKey: "im_test" });
+    const client = new AirlockClient({ apiKey: "im_test" });
     const wrapped = client.requiresApproval(fn, { kind: "x", title: "T" });
 
-    await expect(wrapped()).rejects.toBeInstanceOf(ImpriRejected);
+    await expect(wrapped()).rejects.toBeInstanceOf(AirlockRejected);
     expect(fnCalled).not.toHaveBeenCalled();
   });
 
@@ -631,7 +631,7 @@ describe("requiresApproval", () => {
       .mockResolvedValueOnce(mockOk(approved))
       .mockResolvedValueOnce(mockOk(ack));
 
-    const client = new ImpriClient({ apiKey: "im_test" });
+    const client = new AirlockClient({ apiKey: "im_test" });
     const wrapped = client.requiresApproval(
       async () => { throw new Error("downstream failure"); },
       { kind: "x", title: "T" },
@@ -677,7 +677,7 @@ describe("approvalGate", () => {
       .mockResolvedValueOnce(mockOk(created, 201))
       .mockResolvedValueOnce(mockOk(approved));
 
-    const client = new ImpriClient({ apiKey: "im_test" });
+    const client = new AirlockClient({ apiKey: "im_test" });
     const result = await client.approvalGate({
       kind: "db.exec",
       title: "DROP TABLE users",

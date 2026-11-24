@@ -61,7 +61,7 @@ jobs:
       # package.json covers better-sqlite3/argon2 there, and npm < 12 runs
       # install scripts normally. No extra approval step needed on either.
       - run: npm ci --no-audit --no-fund
-      # Build order matters: server imports @impri/mcp from mcp/dist.
+      # Build order matters: server imports @airlock/mcp from mcp/dist.
       - run: npm run build --workspace=mcp
       - run: npm run typecheck --workspace=server
       - run: npm run lint --workspace=server
@@ -109,7 +109,7 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 22
-      # Build order matters: cli imports @impri/sdk from sdk/typescript/dist.
+      # Build order matters: cli imports @airlock/sdk from sdk/typescript/dist.
       - run: cd sdk/typescript && npm ci --no-audit --no-fund
       - run: cd sdk/typescript && npm run build
       - run: cd sdk/typescript && npm test

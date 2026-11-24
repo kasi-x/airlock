@@ -3,21 +3,21 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>How to Test an AI Agent's Approval Flow — Impri Docs</title>
-<meta name="description" content="How to test an AI agent's approval flow: drive the approve, reject, edit and conflict paths against a local Impri instance with plain HTTP calls in pytest.">
+<title>How to Test an AI Agent's Approval Flow — Airlock Docs</title>
+<meta name="description" content="How to test an AI agent's approval flow: drive the approve, reject, edit and conflict paths against a local Airlock instance with plain HTTP calls in pytest.">
 <meta name="theme-color" content="#06070d">
-<meta property="og:title" content="How to Test an AI Agent's Approval Flow — Impri Docs">
-<meta property="og:description" content="How to test an AI agent's approval flow: drive the approve, reject, edit and conflict paths against a local Impri instance with plain HTTP calls in pytest.">
+<meta property="og:title" content="How to Test an AI Agent's Approval Flow — Airlock Docs">
+<meta property="og:description" content="How to test an AI agent's approval flow: drive the approve, reject, edit and conflict paths against a local Airlock instance with plain HTTP calls in pytest.">
 <meta property="og:type" content="article">
-<meta property="og:url" content="https://impri.dev/docs/how-to-test-an-ai-agent-approval-flow">
-<meta property="og:image" content="https://impri.dev/assets/og/og-docs.png">
+<meta property="og:url" content="https://airlock.dev/docs/how-to-test-an-ai-agent-approval-flow">
+<meta property="og:image" content="https://airlock.dev/assets/og/og-docs.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
-<meta property="og:image:alt" content="Impri — human-in-the-loop approval inbox for AI agents">
+<meta property="og:image:alt" content="Airlock — human-in-the-loop approval inbox for AI agents">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="https://impri.dev/assets/og/og-docs.png">
-<link rel="canonical" href="https://impri.dev/docs/how-to-test-an-ai-agent-approval-flow">
-<script type="application/ld+json">{"@context":"https://schema.org","@type":"TechArticle","headline":"How to Test an AI Agent's Approval Flow","description":"How to test an AI agent's approval flow: drive the approve, reject, edit and conflict paths against a local Impri instance with plain HTTP calls in pytest.","url":"https://impri.dev/docs/how-to-test-an-ai-agent-approval-flow","inLanguage":"en","author":{"@type":"Organization","name":"Impri","url":"https://impri.dev"},"publisher":{"@type":"Organization","name":"Impri","url":"https://impri.dev"}}</script>
+<meta name="twitter:image" content="https://airlock.dev/assets/og/og-docs.png">
+<link rel="canonical" href="https://airlock.dev/docs/how-to-test-an-ai-agent-approval-flow">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"TechArticle","headline":"How to Test an AI Agent's Approval Flow","description":"How to test an AI agent's approval flow: drive the approve, reject, edit and conflict paths against a local Airlock instance with plain HTTP calls in pytest.","url":"https://airlock.dev/docs/how-to-test-an-ai-agent-approval-flow","inLanguage":"en","author":{"@type":"Organization","name":"Airlock","url":"https://airlock.dev"},"publisher":{"@type":"Organization","name":"Airlock","url":"https://airlock.dev"}}</script>
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <link rel="icon" href="/favicon.ico" sizes="32x32">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='9' fill='%236366f1'/%3E%3Cpath d='M9 16.5l4.5 4.5L23 11' stroke='white' stroke-width='3' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
@@ -132,13 +132,13 @@ pre code.hljs{display:block;overflow-x:auto}
 <div class="wrap nav-inner">
   <a class="brand" href="/">
     <span class="mark"><svg viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.5 4.5L19 7.5" stroke="white" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
-    Impri
+    Airlock
   </a>
   <div class="nav-links">
     <a class="link" href="/#how">How it works</a>
     <a class="link" href="/#pricing">Pricing</a>
     <a class="link active-nav" href="../docs">Docs</a>
-    <a class="btn btn-primary btn-sm" href="https://gitlab.com/sekera.radim/impri">GitLab</a>
+    <a class="btn btn-primary btn-sm" href="https://gitlab.com/sekera.radim/airlock">GitLab</a>
   </div>
 </div>
 </nav>
@@ -153,7 +153,7 @@ pre code.hljs{display:block;overflow-x:auto}
       <span>How to Test an AI Agent's Approval Flow</span>
     </nav>
     <h1>How to Test an AI Agent&#39;s Approval Flow</h1>
-<p>How to test an AI agent&#39;s approval flow: drive the approve, reject, edit and conflict paths against a local Impri instance with plain HTTP calls in pytest.</p>
+<p>How to test an AI agent&#39;s approval flow: drive the approve, reject, edit and conflict paths against a local Airlock instance with plain HTTP calls in pytest.</p>
 <hr>
 <h2 id="what-you-are-actually-testing">What you are actually testing</h2>
 <p>An approval gate has one job: the side effect must not run unless a human said yes. So the tests worth writing are not &quot;does the API return 200&quot; but &quot;what does my agent do in each outcome&quot;. There are four outcomes to cover:</p>
@@ -182,7 +182,7 @@ pre code.hljs{display:block;overflow-x:auto}
 </tr>
 </tbody></table>
 </div>
-<p>Everything below tests <em>your</em> agent code. Impri only holds the decision; it does not interpret the action, so there is nothing about the content to test on its side.</p>
+<p>Everything below tests <em>your</em> agent code. Airlock only holds the decision; it does not interpret the action, so there is nothing about the content to test on its side.</p>
 <hr>
 <h2 id="test-against-a-throwaway-local-instance">Test against a throwaway local instance</h2>
 <p>Do not point tests at your production project. Start a self-hosted instance (see <a href="self-hosting">self-hosting</a>) with <code>docker compose up -d</code>; the API listens on <code>http://localhost:8484</code>. Create a separate key with the <code>actions</code> scope for the test run (<a href="api-keys">API keys</a>).</p>
@@ -191,8 +191,8 @@ pre code.hljs{display:block;overflow-x:auto}
 <h2 id="a-pytest-harness-that-plays-both-sides">A pytest harness that plays both sides</h2>
 <div class="code-block"><span class="code-lang">python</span><pre><code class="hljs"><span class="hljs-keyword">import</span> os, time, requests
 
-BASE = os.environ.get(<span class="hljs-string">&quot;IMPRI_BASE_URL&quot;</span>, <span class="hljs-string">&quot;http://localhost:8484&quot;</span>)
-H = {<span class="hljs-string">&quot;Authorization&quot;</span>: <span class="hljs-string">f&quot;Bearer <span class="hljs-subst">{os.environ[<span class="hljs-string">&#x27;IMPRI_API_KEY&#x27;</span>]}</span>&quot;</span>}
+BASE = os.environ.get(<span class="hljs-string">&quot;AIRLOCK_BASE_URL&quot;</span>, <span class="hljs-string">&quot;http://localhost:8484&quot;</span>)
+H = {<span class="hljs-string">&quot;Authorization&quot;</span>: <span class="hljs-string">f&quot;Bearer <span class="hljs-subst">{os.environ[<span class="hljs-string">&#x27;AIRLOCK_API_KEY&#x27;</span>]}</span>&quot;</span>}
 
 <span class="hljs-keyword">def</span> <span class="hljs-title function_">propose</span>(<span class="hljs-params">body=<span class="hljs-string">&quot;Hi Sarah, draft v1&quot;</span>, **extra</span>):
     r = requests.post(<span class="hljs-string">f&quot;<span class="hljs-subst">{BASE}</span>/v1/actions&quot;</span>, headers=H, json={
@@ -262,14 +262,14 @@ H = {<span class="hljs-string">&quot;Authorization&quot;</span>: <span class="hl
 <p>If your project has a rule with the <code>auto_approve</code> outcome (<a href="rules">rules</a>), a matching action comes back already <code>approved</code> and never reaches a human. Run the suite in a project with no rules for the gate tests, and add separate tests for each rule you rely on, asserting both the matching and the non-matching case.</p>
 <hr>
 <h2 id="what-this-does-not-prove">What this does not prove</h2>
-<p>A passing suite shows your agent honours the decision. It does not show the gate cannot be bypassed: if the agent also holds the raw credential for the target service, it can route around Impri. Add one test that the executor function is unreachable without an approved decision, and keep the real credential out of the agent&#39;s reach. Impri is only the approval gate; it never executes anything itself.</p>
-<p>Next: <a href="quickstart">Quickstart</a> to get a key, or the <a href="cli">CLI</a> to approve test actions by hand with <code>impri approve</code>.</p>
+<p>A passing suite shows your agent honours the decision. It does not show the gate cannot be bypassed: if the agent also holds the raw credential for the target service, it can route around Airlock. Add one test that the executor function is unreachable without an approved decision, and keep the real credential out of the agent&#39;s reach. Airlock is only the approval gate; it never executes anything itself.</p>
+<p>Next: <a href="quickstart">Quickstart</a> to get a key, or the <a href="cli">CLI</a> to approve test actions by hand with <code>airlock approve</code>.</p>
 
-    <aside class="doc-cta" aria-label="Try Impri">
+    <aside class="doc-cta" aria-label="Try Airlock">
   <p class="doc-cta-title">Add an approval step to your own agent</p>
-  <p>Start on Impri Cloud: the Free tier includes 100 approvals a month. Or self-host the MIT-licensed core with Docker Compose, with no tier limits.</p>
+  <p>Start on Airlock Cloud: the Free tier includes 100 approvals a month. Or self-host the MIT-licensed core with Docker Compose, with no tier limits.</p>
   <div class="doc-cta-actions">
-    <a class="btn btn-primary btn-sm" href="https://app.impri.dev/?signup=1">Start free on Impri Cloud</a>
+    <a class="btn btn-primary btn-sm" href="https://app.airlock.dev/?signup=1">Start free on Airlock Cloud</a>
     <a class="btn btn-ghost btn-sm" href="../docs/quickstart">Quick start</a>
     <a class="btn btn-ghost btn-sm" href="../docs/self-hosting">Self-host guide</a>
   </div>
@@ -365,19 +365,19 @@ H = {<span class="hljs-string">&quot;Authorization&quot;</span>: <span class="hl
 <footer class="footer">
 <div class="wrap footer-inner">
   <a class="brand" href="/">
-    <span class="mark"><svg viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.5 4.5L19 7.5" stroke="white" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Impri
+    <span class="mark"><svg viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.5 4.5L19 7.5" stroke="white" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Airlock
   </a>
   <div>
-    <a href="https://gitlab.com/sekera.radim/impri">GitLab</a>
+    <a href="https://gitlab.com/sekera.radim/airlock">GitLab</a>
     <a href="/docs">Docs</a>
-    <a href="https://gitlab.com/sekera.radim/impri/-/blob/main/LICENSE">MIT License</a>
-    <a href="https://www.npmjs.com/package/@impri/mcp">@impri/mcp</a>
+    <a href="https://gitlab.com/sekera.radim/airlock/-/blob/main/LICENSE">MIT License</a>
+    <a href="https://www.npmjs.com/package/@airlock/mcp">@airlock/mcp</a>
     <a href="/docs/privacy">Privacy</a>
     <a href="/docs/terms">Terms</a>
     <a href="https://sekera.dev">Contact</a>
   </div>
 </div>
-<div class="wrap" style="margin-top:18px"><span class="muted">© 2026 Impri · The imprimatur for your AI agents · Built by <a href="https://sekera.dev" style="color:inherit">Radim Sekera</a>. Also by the same maker: <a href="https://briefgate.dev/?utm_source=impri.dev&amp;utm_medium=referral" style="color:inherit">BriefGate</a> — client intake for agencies and AI agents.</span></div>
+<div class="wrap" style="margin-top:18px"><span class="muted">© 2026 Airlock · The airlockmatur for your AI agents · Built by <a href="https://sekera.dev" style="color:inherit">Radim Sekera</a>. Also by the same maker: <a href="https://briefgate.dev/?utm_source=airlock.dev&amp;utm_medium=referral" style="color:inherit">BriefGate</a> — client intake for agencies and AI agents.</span></div>
 </footer>
 </body>
 </html>

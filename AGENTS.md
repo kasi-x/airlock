@@ -1,4 +1,4 @@
-# Agent Guide for `impri` (fork)
+# Agent Guide for `airlock` (fork)
 
 This fork grows [sekera-radim/impri](https://github.com/sekera-radim/impri)
 (MIT) — a human-in-the-loop approval inbox for AI agents — into the
@@ -9,7 +9,7 @@ rebrandable.
 
 ## Remotes and upstream sync
 
-- `origin` — `kasi-x/impri` (push here)
+- `origin` — `kasi-x/airlock` (push here)
 - `upstream` — `sekera-radim/impri` (fetch fixes from here)
 - Sync: `git fetch upstream && git merge upstream/main` (keep history; do not
   rebase fork-only commits onto upstream).
@@ -31,7 +31,7 @@ npm test --workspace=server              # vitest, ~730 tests, ~60s
 cd mcp && npm ci && npm run check        # typecheck + lint + test + build
 cd ui && npm ci && npm run build         # vue-tsc + vite build; also lint/test
 cd sdk/typescript && npm ci && npm run build   # MUST precede cli checks
-cd cli && npm ci && npm run test         # needs @impri/sdk dist/ to exist
+cd cli && npm ci && npm run test         # needs @airlock/sdk dist/ to exist
 cd sdk/python && pytest                  # zero-dep Python client SDK
 npm run test:e2e                         # E2E smoke: boots the built server on :8499
                                          # with a throwaway SQLite file and drives
@@ -46,8 +46,8 @@ npm run test:e2e                         # E2E smoke: boots the built server on 
   root `package.json` exists. `esbuild` / `fsevents` also print "blocked"
   warnings on every install — expected and harmless (their platform binaries
   come from optionalDependencies; builds and tests pass without the scripts).
-- **Build order matters:** server imports `@impri/mcp/*` from the mcp
-  package's `dist/`, and cli imports `@impri/sdk` from the sdk's `dist/`.
+- **Build order matters:** server imports `@airlock/mcp/*` from the mcp
+  package's `dist/`, and cli imports `@airlock/sdk` from the sdk's `dist/`.
   A fresh clone fails ~29/33 server test files until `mcp` is built, and cli
   fails until `sdk/typescript` is built.
 - Root `npm run test` / `lint` / `typecheck` delegate to **server only**. Run
@@ -60,9 +60,9 @@ npm run test:e2e                         # E2E smoke: boots the built server on 
 | --- | --- |
 | `server/src/` | Fastify REST API, SQLite (`better-sqlite3`) schema in `db.ts`, routes in `routes/`, auth, notifications, scheduler, billing |
 | `server/src/routes/mcp.ts` + `mcp/serverCard.ts` | Streamable-HTTP MCP endpoint served by the same process via `app.inject` |
-| `mcp/src/` | Published `@impri/mcp` stdio MCP server (tools: push_action, await_decision, report_result, inbox_status, watchers) |
+| `mcp/src/` | Published `@airlock/mcp` stdio MCP server (tools: push_action, await_decision, report_result, inbox_status, watchers) |
 | `ui/src/` | Vue 3 + Vuetify inbox SPA (not a workspace; own `npm ci`) |
-| `cli/src/` | `impri` CLI (`commander`), uses `sdk/typescript` |
+| `cli/src/` | `airlock` CLI (`commander`), uses `sdk/typescript` |
 | `sdk/typescript/`, `sdk/python/` | Client SDKs over the REST API |
 | `integrations/` | Claude Agent SDK / CrewAI / LangChain / OpenAI Agents adapters |
 | `docs/` | Public product docs (Markdown, built to www by `scripts/build-docs.mjs`) |
@@ -74,10 +74,9 @@ npm run test:e2e                         # E2E smoke: boots the built server on 
 
 - **License:** MIT, `(c) 2026 Radim Sekera`. Keep `LICENSE` verbatim; preserve
   attribution in `NOTICE` when rebranding.
-- **Rebrand boundary (must replace before any release):** name "Impri",
-  `impri.dev` / `api.impri.dev` / `app.impri.dev` URLs, `@impri/*` npm scopes,
-  `io.github.sekera-radim/impri` identifiers, demo assets, Terms/Privacy text.
-  New code must not hardcode any of these — read them from env/config.
+- **Rebrand status:** rebrand to "Airlock" is DONE except demo assets. Keep MIT
+  attribution rule (LICENSE + NOTICE verbatim). Keep upstream-sync section.
+  New code must not hardcode product domains — read from env/config.
 - **Secrets are env-driven, never hardcoded:** `SENTRY_DSN`, `STRIPE_*`,
   `SMTP_*`, `SLACK_*`, VAPID keys all arrive via environment (see
   `deploy/.env.example`). Keep it that way; never commit real keys.

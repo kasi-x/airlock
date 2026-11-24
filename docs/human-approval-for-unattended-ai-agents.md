@@ -14,13 +14,13 @@ That doesn't mean you skip the approval step — it means the approval has to be
 
 ## Where the gate lives in an unattended pipeline
 
-The shape is the same three calls as any Impri integration, but the framing changes: instead of a human hovering over a chat window, the notification channel (Telegram, Slack, email, push) *is* the interface. The agent pushes the action, then either exits (if it's a fire-and-forget batch job) or blocks on a long poll if it's a long-running process.
+The shape is the same three calls as any Airlock integration, but the framing changes: instead of a human hovering over a chat window, the notification channel (Telegram, Slack, email, push) *is* the interface. The agent pushes the action, then either exits (if it's a fire-and-forget batch job) or blocks on a long poll if it's a long-running process.
 
 ```python
 import os, time, requests
 
-API = "https://api.impri.dev"
-HEADERS = {"Authorization": f"Bearer {os.environ['IMPRI_API_KEY']}"}
+API = "https://api.airlock.dev"
+HEADERS = {"Authorization": f"Bearer {os.environ['AIRLOCK_API_KEY']}"}
 
 def propose_invoice_run(invoice_summary: str, total_amount: str):
     resp = requests.post(f"{API}/v1/actions", headers=HEADERS, json={
@@ -66,14 +66,14 @@ If the window closes before anyone looks, the action expires and is never execut
 Two honest patterns, pick based on how your unattended agent is deployed:
 
 - **Stateless cron job**: push the action and exit immediately. On the *next* scheduled run, check any actions pushed by the previous run before doing new work. This avoids holding a process open for hours. [Adding human approval to a cron job](gate-a-cron-job-with-human-approval.md) shows it end to end: each run finds its slot's card by `idempotency_key`, so no state file is needed.
-- **Long-running daemon**: use `impri_await_decision` (MCP) or a polling loop with backoff (REST) and just block, since the process is already resident.
+- **Long-running daemon**: use `airlock_await_decision` (MCP) or a polling loop with backoff (REST) and just block, since the process is already resident.
 
 Either way, the agent's actual side effect — sending the invoices, posting the summary — must live behind the `status == "approved"` check, not before it. An unattended agent is exactly the case where "the model will remember to check" isn't good enough; the code path has to make the unapproved branch unreachable.
 
 ---
 
-## What Impri does not solve here
+## What Airlock does not solve here
 
-Impri stores the action, notifies you, and holds the decision — it does not decide *when* your unattended pipeline should run, retry, or fan out; that's still your scheduler's job (cron, a workflow engine, whatever triggers the agent). And it's only a real gate if the unattended process doesn't also hold a standing credential it could use to bypass the wrapper and act directly. See [how to add human approval to an AI agent](how-to-add-human-approval-to-an-ai-agent.md) for the underlying three-call pattern this builds on, and [gate a cron job with human approval](gate-a-cron-job-with-human-approval.md) for the scheduler-specific version of this problem.
+Airlock stores the action, notifies you, and holds the decision — it does not decide *when* your unattended pipeline should run, retry, or fan out; that's still your scheduler's job (cron, a workflow engine, whatever triggers the agent). And it's only a real gate if the unattended process doesn't also hold a standing credential it could use to bypass the wrapper and act directly. See [how to add human approval to an AI agent](how-to-add-human-approval-to-an-ai-agent.md) for the underlying three-call pattern this builds on, and [gate a cron job with human approval](gate-a-cron-job-with-human-approval.md) for the scheduler-specific version of this problem.
 
 Next: if your unattended agent needs a hard stop rather than a per-action gate, see [add a kill switch to your AI agent](add-a-kill-switch-to-your-ai-agent.md).

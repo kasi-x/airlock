@@ -21,7 +21,7 @@ const UpdateProjectBody = z.object({
 
 export function registerProjectRoutes(app: FastifyInstance, db: Db): void {
   // GET /v1/project — includes the webhook signing secret so an integration
-  // can verify X-Impri-Signature. Admin scope only (it's a credential).
+  // can verify X-Airlock-Signature. Admin scope only (it's a credential).
   app.get('/v1/project', async (request, reply) => {
     const key = request.apiKey;
     if (!key || !hasScope(key.scopes, 'admin')) {

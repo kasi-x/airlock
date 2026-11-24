@@ -1,6 +1,6 @@
 import { Command } from 'commander'
-import type { ActionStatus } from '@impri/sdk'
-import { ImpriError } from '@impri/sdk'
+import type { ActionStatus } from '@airlock/sdk'
+import { AirlockError } from '@airlock/sdk'
 import { makeClient } from '../client-factory.js'
 import { renderTable, statusBadge, age, printError, printJsonLine, dim, Column } from '../output.js'
 
@@ -61,7 +61,7 @@ export function registerList(program: Command): void {
 export function registerInbox(program: Command): void {
   program
     .command('inbox')
-    .description("Shorthand for 'impri list --status pending'")
+    .description("Shorthand for 'airlock list --status pending'")
     .option('--kind <kind>', 'Filter by kind')
     .option('--limit <n>', 'Max results', parseInt)
     .option('--json', 'Emit newline-delimited JSON')
@@ -89,7 +89,7 @@ export function registerInbox(program: Command): void {
 }
 
 function handleError(err: unknown): never {
-  if (err instanceof ImpriError) {
+  if (err instanceof AirlockError) {
     printError(err.message)
   } else {
     printError(String(err))

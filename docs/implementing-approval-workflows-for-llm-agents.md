@@ -10,20 +10,20 @@ Most LLM agent frameworks (LangChain, a custom ReAct loop, whatever you rolled y
 
 This is different from asking the LLM to "confirm before acting" in its system prompt. A prompt instruction is advisory — the model can be talked past it by a bad context, a prompt injection in tool output, or just a wrong turn in reasoning. A workflow needs an actual data dependency: the execute code path must be unreachable without an external `approved` status.
 
-## Building the workflow with Impri
+## Building the workflow with Airlock
 
-Impri gives you three calls that form this workflow: push the action, wait for a decision, execute and report. Here's a Python agent function that wraps a "create a support ticket refund" tool:
+Airlock gives you three calls that form this workflow: push the action, wait for a decision, execute and report. Here's a Python agent function that wraps a "create a support ticket refund" tool:
 
 ```python
 import requests
 import time
 
-IMPRI_BASE = "https://api.impri.dev"
+AIRLOCK_BASE = "https://api.airlock.dev"
 API_KEY = "im_your_key_here"
 HEADERS = {"Authorization": f"Bearer {API_KEY}"}
 
 def request_approval(kind, title, body, editable=None, expires_in=3600):
-    resp = requests.post(f"{IMPRI_BASE}/v1/actions", headers=HEADERS, json={
+    resp = requests.post(f"{AIRLOCK_BASE}/v1/actions", headers=HEADERS, json={
         "kind": kind,
         "title": title,
         "preview": {"format": "markdown", "body": body},
@@ -34,7 +34,7 @@ def request_approval(kind, title, body, editable=None, expires_in=3600):
 
 def wait_for_decision(action_id, poll_every=5):
     while True:
-        resp = requests.get(f"{IMPRI_BASE}/v1/actions/{action_id}", headers=HEADERS)
+        resp = requests.get(f"{AIRLOCK_BASE}/v1/actions/{action_id}", headers=HEADERS)
         data = resp.json()
         if data["status"] != "pending":
             return data
@@ -55,7 +55,7 @@ def issue_refund_with_approval(order_id, amount, reason):
     # Real side effect only happens here, after approval
     payment_api.refund(order_id, amount)
 
-    requests.post(f"{IMPRI_BASE}/v1/actions/{action_id}/result",
+    requests.post(f"{AIRLOCK_BASE}/v1/actions/{action_id}/result",
                    headers=HEADERS, json={"status": "executed"})
     return {"executed": True}
 ```
@@ -79,7 +79,7 @@ One workflow mistake worth naming explicitly: gating the *call* but leaving the 
 
 ## Multi-step agents and workflow ordering
 
-If your agent runs several actions in sequence — draft a refund, then email the customer about it — decide whether each step needs its own approval or whether one approval covers the batch. Impri doesn't orchestrate multi-step sequencing itself; it holds individual decisions. For agents that need branching logic across many gated steps, treat Impri as the approval primitive inside a larger orchestration layer (an n8n workflow, a Temporal workflow, or your own state machine) rather than trying to make the approval API do the sequencing.
+If your agent runs several actions in sequence — draft a refund, then email the customer about it — decide whether each step needs its own approval or whether one approval covers the batch. Airlock doesn't orchestrate multi-step sequencing itself; it holds individual decisions. For agents that need branching logic across many gated steps, treat Airlock as the approval primitive inside a larger orchestration layer (an n8n workflow, a Temporal workflow, or your own state machine) rather than trying to make the approval API do the sequencing.
 
 ---
 

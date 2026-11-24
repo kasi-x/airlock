@@ -53,11 +53,11 @@ Some teams point agent actions at a system already in place for other approvals 
 
 ## Option 4: a dedicated approval-gate service
 
-The fourth option is a service built specifically for this loop: agent proposes, human decides, agent executes only on approval — nothing else. Impri is this option. It exists so you don't build the table, the Slack bot, the diff view, and the audit log yourself:
+The fourth option is a service built specifically for this loop: agent proposes, human decides, agent executes only on approval — nothing else. Airlock is this option. It exists so you don't build the table, the Slack bot, the diff view, and the audit log yourself:
 
 ```bash
-curl -X POST https://api.impri.dev/v1/actions \
-  -H "Authorization: Bearer $IMPRI_API_KEY" \
+curl -X POST https://api.airlock.dev/v1/actions \
+  -H "Authorization: Bearer $AIRLOCK_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "kind": "email.send",
@@ -68,7 +68,7 @@ curl -X POST https://api.impri.dev/v1/actions \
   }'
 ```
 
-Three calls — push, poll, report — and you get a mobile-friendly inbox, human edits with a diff, notification channels (Slack, Telegram, Discord, email, push), and an audit trail, without owning that surface yourself. It's honestly narrow, though: Impri is only the gate. It does not generate the draft or orchestrate multi-step workflows — pair it with n8n or your own agent code for that, the same way you would with a DIY table.
+Three calls — push, poll, report — and you get a mobile-friendly inbox, human edits with a diff, notification channels (Slack, Telegram, Discord, email, push), and an audit trail, without owning that surface yourself. It's honestly narrow, though: Airlock is only the gate. It does not generate the draft or orchestrate multi-step workflows — pair it with n8n or your own agent code for that, the same way you would with a DIY table.
 
 ---
 

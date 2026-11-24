@@ -1,6 +1,6 @@
 # Human-in-the-Loop for LangChain Deep Agents
 
-Deep Agents pause a tool call with `interruptOn` and resume on approve, edit or reject decisions. Impri turns each pause into an inbox card a person decides on.
+Deep Agents pause a tool call with `interruptOn` and resume on approve, edit or reject decisions. Airlock turns each pause into an inbox card a person decides on.
 
 ---
 
@@ -46,27 +46,27 @@ const agent = createDeepAgent({
 });
 ```
 
-## The bridge: one Impri card per paused call
+## The bridge: one Airlock card per paused call
 
 ```typescript
 import type { ActionRequest, Decision } from "langchain";
 
-const IMPRI = `${process.env.IMPRI_BASE_URL ?? "https://api.impri.dev"}/v1`;
+const AIRLOCK = `${process.env.AIRLOCK_BASE_URL ?? "https://api.airlock.dev"}/v1`;
 
-async function impri(path: string, body?: unknown) {
-  const res = await fetch(`${IMPRI}${path}`, {
+async function airlock(path: string, body?: unknown) {
+  const res = await fetch(`${AIRLOCK}${path}`, {
     method: body ? "POST" : "GET",
-    headers: { "Content-Type": "application/json", Authorization: `Bearer ${process.env.IMPRI_API_KEY}` },
+    headers: { "Content-Type": "application/json", Authorization: `Bearer ${process.env.AIRLOCK_API_KEY}` },
     body: body ? JSON.stringify(body) : undefined,
   });
-  if (!res.ok) throw new Error(`Impri ${res.status}: ${await res.text()}`);
+  if (!res.ok) throw new Error(`Airlock ${res.status}: ${await res.text()}`);
   return res.json();
 }
 
 const fence = (args: unknown) => "```json\n" + JSON.stringify(args, null, 2) + "\n```";
 
 async function askHuman(req: ActionRequest, key: string): Promise<Decision> {
-  const card = await impri("/actions", {
+  const card = await airlock("/actions", {
     kind: `deepagent.${req.name}`,
     title: `Agent wants to run ${req.name}`,
     preview: { format: "markdown", body: fence(req.args) },
@@ -76,10 +76,10 @@ async function askHuman(req: ActionRequest, key: string): Promise<Decision> {
   });
 
   // The verdict lives on GET /v1/actions/:id, under `decision`.
-  let action = await impri(`/actions/${card.id}`);
+  let action = await airlock(`/actions/${card.id}`);
   while (action.status === "pending") {
     await new Promise((r) => setTimeout(r, 10_000));
-    action = await impri(`/actions/${card.id}`);
+    action = await airlock(`/actions/${card.id}`);
   }
   if (action.status !== "approved") {
     return { type: "reject", message: `A reviewer did not approve this call (${action.status}). Do not retry it.` };
@@ -123,17 +123,17 @@ while (result.__interrupt__?.length) {
 Three details carry the weight:
 
 - **The resume is keyed by interrupt id.** One invoke can come back with more than one interrupt (subagents that run in parallel, for example), and a map of interrupt id → decisions answers each of them.
-- **The idempotency key is the thread, the pause and the position.** If the driver restarts while a card is pending, Impri returns the existing action for that key instead of creating a second card.
+- **The idempotency key is the thread, the pause and the position.** If the driver restarts while a card is pending, Airlock returns the existing action for that key instead of creating a second card.
 - **The edit is read back from what the reviewer approved.** `GET /v1/actions/:id` returns the verdict under `decision`, and `decision.final_preview.body` is the text the person approved. The tool runs with those arguments.
 
 ## What we ran
 
-With deepagents 1.17.0, langchain 1.6.6 and @langchain/langgraph 1.7.5, a scripted model and a local Impri server, we ran this code end to end. An approval with an edited amount ran the tool once, with the edited value. A rejection never ran the tool, and the model received the rejection message. Pushing the same pause twice returned the same card.
+With deepagents 1.17.0, langchain 1.6.6 and @langchain/langgraph 1.7.5, a scripted model and a local Airlock server, we ran this code end to end. An approval with an edited amount ran the tool once, with the edited value. A rejection never ran the tool, and the model received the rejection message. Pushing the same pause twice returned the same card.
 
-## What Impri doesn't do here
+## What Airlock doesn't do here
 
-Impri doesn't resume the graph or hold its state. The checkpointer holds the paused thread, and your driver resumes it. With `MemorySaver`, a restart loses the paused thread while its Impri card stays decidable, so production needs a persistent checkpointer. Polling every 10 seconds is the simple version; an Impri [webhook](webhooks.md) can wake the driver instead. After the tool runs, `POST /v1/actions/:id/result` with `executed` or `execute_failed` puts the outcome next to the decision in the audit log.
+Airlock doesn't resume the graph or hold its state. The checkpointer holds the paused thread, and your driver resumes it. With `MemorySaver`, a restart loses the paused thread while its Airlock card stays decidable, so production needs a persistent checkpointer. Polling every 10 seconds is the simple version; an Airlock [webhook](webhooks.md) can wake the driver instead. After the tool runs, `POST /v1/actions/:id/result` with `executed` or `execute_failed` puts the outcome next to the decision in the audit log.
 
 ## Next step
 
-[Create a free Impri Cloud account](https://app.impri.dev/?signup=1), put its API key in `IMPRI_API_KEY` and run the driver: the first paused call shows up as a card in the inbox and on your phone. Prefer your own infrastructure? [Self-host Impri](self-hosting.md) and point `IMPRI_BASE_URL` at it. For the same pause in a hand-built graph, see [human-in-the-loop for LangGraph](human-in-the-loop-langgraph.md).
+[Create a free Airlock Cloud account](https://app.airlock.dev/?signup=1), put its API key in `AIRLOCK_API_KEY` and run the driver: the first paused call shows up as a card in the inbox and on your phone. Prefer your own infrastructure? [Self-host Airlock](self-hosting.md) and point `AIRLOCK_BASE_URL` at it. For the same pause in a hand-built graph, see [human-in-the-loop for LangGraph](human-in-the-loop-langgraph.md).

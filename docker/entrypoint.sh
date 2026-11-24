@@ -4,14 +4,14 @@
 # bez object storage funguje beze změny.
 set -e
 
-DB="${DB_PATH:-/data/impri.db}"
+DB="${DB_PATH:-/data/airlock.db}"
 
 if [ -n "$BUCKET_NAME" ] && [ -n "$AWS_ACCESS_KEY_ID" ]; then
   if [ ! -f "$DB" ]; then
     echo "[litestream] DB not found at $DB — attempting restore from replica"
     litestream restore -if-replica-exists -config /app/docker/litestream.yml "$DB" || echo "[litestream] no replica yet — starting fresh"
   fi
-  echo "[litestream] replicating $DB → s3://$BUCKET_NAME/impri-db"
+  echo "[litestream] replicating $DB → s3://$BUCKET_NAME/airlock-db"
   exec litestream replicate -config /app/docker/litestream.yml -exec "node server/dist/index.js"
 fi
 

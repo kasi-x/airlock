@@ -10,13 +10,13 @@ A solo founder running three or four small agents — a support-ticket responder
 
 ## One inbox, one pass, every action gated the same way
 
-Every agent pushes its proposed action to Impri instead of executing directly, regardless of which agent produced it. You get one inbox — web, mobile, or wherever notifications land — and one decision loop instead of three integrations to babysit. Because the gate is identical across agents (`kind` differs, the shape doesn't), you write the wrapper once and reuse it.
+Every agent pushes its proposed action to Airlock instead of executing directly, regardless of which agent produced it. You get one inbox — web, mobile, or wherever notifications land — and one decision loop instead of three integrations to babysit. Because the gate is identical across agents (`kind` differs, the shape doesn't), you write the wrapper once and reuse it.
 
 ```python
 import os
-from impri import ImpriClient
+from airlock import AirlockClient
 
-client = ImpriClient(api_key=os.environ["IMPRI_API_KEY"])
+client = AirlockClient(api_key=os.environ["AIRLOCK_API_KEY"])
 
 async def propose_support_reply(ticket_id: str, customer_email: str, draft_body: str):
     action = await client.create_action(
@@ -54,7 +54,7 @@ Three agents, three `kind` values, one `create_action` call shape. Nothing execu
 
 ## Clearing the queue in one pass, not three
 
-This is where a solo founder's workflow diverges from a team's: nobody else is going to triage the inbox for you, so the morning routine has to be a single batch clear, not a card-by-card review across separate tools. Impri's bulk-decision endpoint approves or rejects several actions at once from a script, which is the shape a "review everything with coffee" habit actually needs:
+This is where a solo founder's workflow diverges from a team's: nobody else is going to triage the inbox for you, so the morning routine has to be a single batch clear, not a card-by-card review across separate tools. Airlock's bulk-decision endpoint approves or rejects several actions at once from a script, which is the shape a "review everything with coffee" habit actually needs:
 
 ```python
 pending = await client.list_actions(status="pending", kind="support.reply")
@@ -73,7 +73,7 @@ The instinct to skip a gate entirely is strongest for a solo founder — every e
 
 ## What this isn't
 
-Impri doesn't decide which replies are routine, doesn't write the invoice-chase copy, and doesn't know your Twitter voice — your agents own all of that. It stores the proposed action, notifies you, and holds the decision until you clear the queue. And the gate only holds if the agent's actual send/post credentials live behind the approved-decision check, not in the agent's own reach — see [integrations](integrations.md) for wrapping the executor so there's no side door around it.
+Airlock doesn't decide which replies are routine, doesn't write the invoice-chase copy, and doesn't know your Twitter voice — your agents own all of that. It stores the proposed action, notifies you, and holds the decision until you clear the queue. And the gate only holds if the agent's actual send/post credentials live behind the approved-decision check, not in the agent's own reach — see [integrations](integrations.md) for wrapping the executor so there's no side door around it.
 
 | Agent | `kind` | Typical review |
 |---|---|---|

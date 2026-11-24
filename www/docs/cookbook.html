@@ -3,21 +3,21 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Cookbook — Impri Docs</title>
+<title>Cookbook — Airlock Docs</title>
 <meta name="description" content="Concrete patterns for common approval scenarios. Each recipe shows the full loop: create → await → execute → report. The Python examples use asyncio; drop the…">
 <meta name="theme-color" content="#06070d">
-<meta property="og:title" content="Cookbook — Impri Docs">
+<meta property="og:title" content="Cookbook — Airlock Docs">
 <meta property="og:description" content="Concrete patterns for common approval scenarios. Each recipe shows the full loop: create → await → execute → report. The Python examples use asyncio; drop the…">
 <meta property="og:type" content="article">
-<meta property="og:url" content="https://impri.dev/docs/cookbook">
-<meta property="og:image" content="https://impri.dev/assets/og/og-docs.png">
+<meta property="og:url" content="https://airlock.dev/docs/cookbook">
+<meta property="og:image" content="https://airlock.dev/assets/og/og-docs.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
-<meta property="og:image:alt" content="Impri — human-in-the-loop approval inbox for AI agents">
+<meta property="og:image:alt" content="Airlock — human-in-the-loop approval inbox for AI agents">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="https://impri.dev/assets/og/og-docs.png">
-<link rel="canonical" href="https://impri.dev/docs/cookbook">
-<script type="application/ld+json">{"@context":"https://schema.org","@type":"TechArticle","headline":"Cookbook","description":"Concrete patterns for common approval scenarios. Each recipe shows the full loop: create → await → execute → report. The Python examples use asyncio; drop the…","url":"https://impri.dev/docs/cookbook","inLanguage":"en","author":{"@type":"Organization","name":"Impri","url":"https://impri.dev"},"publisher":{"@type":"Organization","name":"Impri","url":"https://impri.dev"}}</script>
+<meta name="twitter:image" content="https://airlock.dev/assets/og/og-docs.png">
+<link rel="canonical" href="https://airlock.dev/docs/cookbook">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"TechArticle","headline":"Cookbook","description":"Concrete patterns for common approval scenarios. Each recipe shows the full loop: create → await → execute → report. The Python examples use asyncio; drop the…","url":"https://airlock.dev/docs/cookbook","inLanguage":"en","author":{"@type":"Organization","name":"Airlock","url":"https://airlock.dev"},"publisher":{"@type":"Organization","name":"Airlock","url":"https://airlock.dev"}}</script>
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <link rel="icon" href="/favicon.ico" sizes="32x32">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='9' fill='%236366f1'/%3E%3Cpath d='M9 16.5l4.5 4.5L23 11' stroke='white' stroke-width='3' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
@@ -132,13 +132,13 @@ pre code.hljs{display:block;overflow-x:auto}
 <div class="wrap nav-inner">
   <a class="brand" href="/">
     <span class="mark"><svg viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.5 4.5L19 7.5" stroke="white" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
-    Impri
+    Airlock
   </a>
   <div class="nav-links">
     <a class="link" href="/#how">How it works</a>
     <a class="link" href="/#pricing">Pricing</a>
     <a class="link active-nav" href="../docs">Docs</a>
-    <a class="btn btn-primary btn-sm" href="https://gitlab.com/sekera.radim/impri">GitLab</a>
+    <a class="btn btn-primary btn-sm" href="https://gitlab.com/sekera.radim/airlock">GitLab</a>
   </div>
 </div>
 </nav>
@@ -155,14 +155,14 @@ pre code.hljs{display:block;overflow-x:auto}
     <h1>Cookbook</h1>
 <p>Concrete patterns for common approval scenarios. Each recipe shows the full loop: create → await → execute → report. The Python examples use <code>asyncio</code>; drop the <code>await</code> and use the sync variants when the SDK ships a synchronous client.</p>
 <blockquote>
-<p>Examples assume the SDK is installed from <code>sdk/python/</code> or <code>sdk/typescript/</code>. Set <code>IMPRI_API_KEY</code> and optionally <code>IMPRI_BASE_URL</code> in the environment before running.</p>
+<p>Examples assume the SDK is installed from <code>sdk/python/</code> or <code>sdk/typescript/</code>. Set <code>AIRLOCK_API_KEY</code> and optionally <code>AIRLOCK_BASE_URL</code> in the environment before running.</p>
 </blockquote>
 <hr>
 <h2 id="1-gate-an-outgoing-email">1. Gate an outgoing email</h2>
 <p>The most common use case. The agent drafts an email and waits for a human to approve (and optionally edit) the copy before it is sent.</p>
-<div class="code-block"><span class="code-lang">python</span><pre><code class="hljs"><span class="hljs-keyword">from</span> impri <span class="hljs-keyword">import</span> ImpriClient, ImpriRejected
+<div class="code-block"><span class="code-lang">python</span><pre><code class="hljs"><span class="hljs-keyword">from</span> airlock <span class="hljs-keyword">import</span> AirlockClient, AirlockRejected
 
-client = ImpriClient()  <span class="hljs-comment"># reads IMPRI_API_KEY from env</span>
+client = AirlockClient()  <span class="hljs-comment"># reads AIRLOCK_API_KEY from env</span>
 
 <span class="hljs-keyword">async</span> <span class="hljs-keyword">def</span> <span class="hljs-title function_">send_approved_email</span>(<span class="hljs-params">to: <span class="hljs-built_in">str</span>, subject: <span class="hljs-built_in">str</span>, body: <span class="hljs-built_in">str</span></span>) -&gt; <span class="hljs-literal">None</span>:
     action = <span class="hljs-keyword">await</span> client.create_action(
@@ -176,7 +176,7 @@ client = ImpriClient()  <span class="hljs-comment"># reads IMPRI_API_KEY from en
 
     <span class="hljs-keyword">try</span>:
         decided = <span class="hljs-keyword">await</span> client.await_decision(action.<span class="hljs-built_in">id</span>, timeout_s=<span class="hljs-number">600</span>)
-    <span class="hljs-keyword">except</span> ImpriRejected:
+    <span class="hljs-keyword">except</span> AirlockRejected:
         <span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;Human rejected — no email sent.&quot;</span>)
         <span class="hljs-keyword">return</span>
 
@@ -222,7 +222,7 @@ client = ImpriClient()  <span class="hljs-comment"># reads IMPRI_API_KEY from en
 
     <span class="hljs-keyword">try</span>:
         decided = <span class="hljs-keyword">await</span> client.await_decision(action.<span class="hljs-built_in">id</span>, timeout_s=<span class="hljs-number">3600</span>)
-    <span class="hljs-keyword">except</span> ImpriRejected <span class="hljs-keyword">as</span> e:
+    <span class="hljs-keyword">except</span> AirlockRejected <span class="hljs-keyword">as</span> e:
         <span class="hljs-keyword">return</span>  <span class="hljs-comment"># human vetoed; do not post</span>
 
     <span class="hljs-comment"># Parse title and body back out of the approved preview</span>
@@ -232,12 +232,12 @@ client = ImpriClient()  <span class="hljs-comment"># reads IMPRI_API_KEY from en
 <hr>
 <h2 id="4-human-in-the-loop-code-execution">4. Human-in-the-loop code execution</h2>
 <p>An agent proposes a shell command or Python snippet. A human reviews and optionally rewrites it before it runs.</p>
-<div class="code-block"><span class="code-lang">typescript</span><pre><code class="hljs"><span class="hljs-keyword">import</span> { <span class="hljs-title class_">ImpriClient</span>, <span class="hljs-title class_">ImpriRejected</span> } <span class="hljs-keyword">from</span> <span class="hljs-string">&#x27;@impri/sdk&#x27;</span>
+<div class="code-block"><span class="code-lang">typescript</span><pre><code class="hljs"><span class="hljs-keyword">import</span> { <span class="hljs-title class_">AirlockClient</span>, <span class="hljs-title class_">AirlockRejected</span> } <span class="hljs-keyword">from</span> <span class="hljs-string">&#x27;@airlock/sdk&#x27;</span>
 <span class="hljs-keyword">import</span> { exec } <span class="hljs-keyword">from</span> <span class="hljs-string">&#x27;node:child_process&#x27;</span>
 <span class="hljs-keyword">import</span> { promisify } <span class="hljs-keyword">from</span> <span class="hljs-string">&#x27;node:util&#x27;</span>
 
 <span class="hljs-keyword">const</span> run = <span class="hljs-title function_">promisify</span>(exec)
-<span class="hljs-keyword">const</span> client = <span class="hljs-keyword">new</span> <span class="hljs-title class_">ImpriClient</span>()
+<span class="hljs-keyword">const</span> client = <span class="hljs-keyword">new</span> <span class="hljs-title class_">AirlockClient</span>()
 
 <span class="hljs-keyword">async</span> <span class="hljs-keyword">function</span> <span class="hljs-title function_">runApprovedCommand</span>(<span class="hljs-params"><span class="hljs-attr">command</span>: <span class="hljs-built_in">string</span></span>): <span class="hljs-title class_">Promise</span>&lt;<span class="hljs-built_in">string</span>&gt; {
   <span class="hljs-keyword">const</span> { actionId, decision, finalPreview } = <span class="hljs-keyword">await</span> client.<span class="hljs-title function_">approvalGate</span>({
@@ -248,7 +248,7 @@ client = ImpriClient()  <span class="hljs-comment"># reads IMPRI_API_KEY from en
     <span class="hljs-attr">timeoutS</span>: <span class="hljs-number">300</span>,
   })
 
-  <span class="hljs-comment">// ImpriRejected is thrown above if human rejected; this line is reached only on approve</span>
+  <span class="hljs-comment">// AirlockRejected is thrown above if human rejected; this line is reached only on approve</span>
   <span class="hljs-keyword">try</span> {
     <span class="hljs-keyword">const</span> { stdout } = <span class="hljs-keyword">await</span> <span class="hljs-title function_">run</span>(finalPreview.<span class="hljs-property">body</span>)
     <span class="hljs-keyword">await</span> client.<span class="hljs-title function_">reportResult</span>(actionId, <span class="hljs-string">&#x27;executed&#x27;</span>, { <span class="hljs-attr">detail</span>: stdout.<span class="hljs-title function_">slice</span>(<span class="hljs-number">0</span>, <span class="hljs-number">200</span>) })
@@ -288,10 +288,10 @@ client = ImpriClient()  <span class="hljs-comment"># reads IMPRI_API_KEY from en
     watcher = <span class="hljs-keyword">await</span> client.create_watcher(
         name=<span class="hljs-string">&quot;Brand mentions — r/selfhosted&quot;</span>,
         kind=<span class="hljs-string">&quot;reddit_search&quot;</span>,
-        config={<span class="hljs-string">&quot;query&quot;</span>: <span class="hljs-string">&quot;impri OR impri.dev&quot;</span>, <span class="hljs-string">&quot;subreddit&quot;</span>: <span class="hljs-string">&quot;selfhosted&quot;</span>},
+        config={<span class="hljs-string">&quot;query&quot;</span>: <span class="hljs-string">&quot;airlock OR airlock.dev&quot;</span>, <span class="hljs-string">&quot;subreddit&quot;</span>: <span class="hljs-string">&quot;selfhosted&quot;</span>},
         schedule={<span class="hljs-string">&quot;every&quot;</span>: <span class="hljs-string">&quot;1h&quot;</span>, <span class="hljs-string">&quot;window&quot;</span>: <span class="hljs-string">&quot;08:00-22:00&quot;</span>},
         keywords=[
-            {<span class="hljs-string">&quot;pattern&quot;</span>: <span class="hljs-string">&quot;impri&quot;</span>, <span class="hljs-string">&quot;points&quot;</span>: <span class="hljs-number">10</span>},
+            {<span class="hljs-string">&quot;pattern&quot;</span>: <span class="hljs-string">&quot;airlock&quot;</span>, <span class="hljs-string">&quot;points&quot;</span>: <span class="hljs-number">10</span>},
             {<span class="hljs-string">&quot;pattern&quot;</span>: <span class="hljs-string">&quot;self-host&quot;</span>, <span class="hljs-string">&quot;points&quot;</span>: <span class="hljs-number">3</span>},
         ],
         keywords_none=[<span class="hljs-string">&quot;[deleted]&quot;</span>],
@@ -334,7 +334,7 @@ client = ImpriClient()  <span class="hljs-comment"># reads IMPRI_API_KEY from en
 
         <span class="hljs-keyword">try</span>:
             decided = <span class="hljs-keyword">await</span> client.await_decision(action_id, timeout_s=<span class="hljs-number">900</span>)
-        <span class="hljs-keyword">except</span> ImpriRejected:
+        <span class="hljs-keyword">except</span> AirlockRejected:
             <span class="hljs-built_in">print</span>(<span class="hljs-string">f&quot;Step <span class="hljs-subst">{i+<span class="hljs-number">1</span>}</span> rejected — pipeline halted.&quot;</span>)
             <span class="hljs-keyword">return</span>
 
@@ -348,24 +348,24 @@ client = ImpriClient()  <span class="hljs-comment"># reads IMPRI_API_KEY from en
 <h2 id="8-webhook-receiver-with-signature-verification">8. Webhook receiver with signature verification</h2>
 <p>A minimal Express receiver that verifies signatures and enqueues approved actions for processing:</p>
 <div class="code-block"><span class="code-lang">typescript</span><pre><code class="hljs"><span class="hljs-keyword">import</span> express <span class="hljs-keyword">from</span> <span class="hljs-string">&#x27;express&#x27;</span>
-<span class="hljs-keyword">import</span> { verifyWebhook, <span class="hljs-title class_">ImpriWebhookSignatureError</span> } <span class="hljs-keyword">from</span> <span class="hljs-string">&#x27;@impri/sdk&#x27;</span>
+<span class="hljs-keyword">import</span> { verifyWebhook, <span class="hljs-title class_">AirlockWebhookSignatureError</span> } <span class="hljs-keyword">from</span> <span class="hljs-string">&#x27;@airlock/sdk&#x27;</span>
 
 <span class="hljs-keyword">const</span> app = <span class="hljs-title function_">express</span>()
 
 app.<span class="hljs-title function_">post</span>(
-  <span class="hljs-string">&#x27;/impri/webhook&#x27;</span>,
+  <span class="hljs-string">&#x27;/airlock/webhook&#x27;</span>,
   express.<span class="hljs-title function_">raw</span>({ <span class="hljs-attr">type</span>: <span class="hljs-string">&#x27;application/json&#x27;</span> }),
   <span class="hljs-title function_">async</span> (req, res) =&gt; {
     <span class="hljs-keyword">try</span> {
       <span class="hljs-title function_">verifyWebhook</span>(
         req.<span class="hljs-property">body</span>,
-        process.<span class="hljs-property">env</span>.<span class="hljs-property">IMPRI_WEBHOOK_SECRET</span>!,
-        req.<span class="hljs-property">headers</span>[<span class="hljs-string">&#x27;x-impri-timestamp&#x27;</span>] <span class="hljs-keyword">as</span> <span class="hljs-built_in">string</span>,
-        req.<span class="hljs-property">headers</span>[<span class="hljs-string">&#x27;x-impri-nonce&#x27;</span>] <span class="hljs-keyword">as</span> <span class="hljs-built_in">string</span>,
-        req.<span class="hljs-property">headers</span>[<span class="hljs-string">&#x27;x-impri-signature&#x27;</span>] <span class="hljs-keyword">as</span> <span class="hljs-built_in">string</span>,
+        process.<span class="hljs-property">env</span>.<span class="hljs-property">AIRLOCK_WEBHOOK_SECRET</span>!,
+        req.<span class="hljs-property">headers</span>[<span class="hljs-string">&#x27;x-airlock-timestamp&#x27;</span>] <span class="hljs-keyword">as</span> <span class="hljs-built_in">string</span>,
+        req.<span class="hljs-property">headers</span>[<span class="hljs-string">&#x27;x-airlock-nonce&#x27;</span>] <span class="hljs-keyword">as</span> <span class="hljs-built_in">string</span>,
+        req.<span class="hljs-property">headers</span>[<span class="hljs-string">&#x27;x-airlock-signature&#x27;</span>] <span class="hljs-keyword">as</span> <span class="hljs-built_in">string</span>,
       )
     } <span class="hljs-keyword">catch</span> (e) {
-      <span class="hljs-keyword">if</span> (e <span class="hljs-keyword">instanceof</span> <span class="hljs-title class_">ImpriWebhookSignatureError</span>) {
+      <span class="hljs-keyword">if</span> (e <span class="hljs-keyword">instanceof</span> <span class="hljs-title class_">AirlockWebhookSignatureError</span>) {
         <span class="hljs-keyword">return</span> res.<span class="hljs-title function_">status</span>(<span class="hljs-number">400</span>).<span class="hljs-title function_">json</span>({ <span class="hljs-attr">error</span>: <span class="hljs-string">&#x27;bad signature&#x27;</span> })
       }
       <span class="hljs-keyword">throw</span> e
@@ -379,7 +379,7 @@ app.<span class="hljs-title function_">post</span>(
         <span class="hljs-attr">body</span>: event.<span class="hljs-property">final_preview</span>?.<span class="hljs-property">body</span>,
       })
     }
-    <span class="hljs-comment">// Anything except 2xx will trigger a retry from Impri.</span>
+    <span class="hljs-comment">// Anything except 2xx will trigger a retry from Airlock.</span>
     <span class="hljs-comment">// Return 410 Gone to permanently deregister this callback URL.</span>
     res.<span class="hljs-title function_">status</span>(<span class="hljs-number">200</span>).<span class="hljs-title function_">end</span>()
   }
@@ -401,19 +401,19 @@ app.<span class="hljs-title function_">post</span>(
 <hr>
 <h2 id="10-key-rotation-without-downtime">10. Key rotation without downtime</h2>
 <p>Create the new key, update your agent&#39;s environment, then revoke the old one:</p>
-<div class="code-block"><span class="code-lang">python</span><pre><code class="hljs">admin = ImpriClient(api_key=old_admin_key)
+<div class="code-block"><span class="code-lang">python</span><pre><code class="hljs">admin = AirlockClient(api_key=old_admin_key)
 
 <span class="hljs-comment"># 1. Create the replacement</span>
 new = <span class="hljs-keyword">await</span> admin.create_key(name=<span class="hljs-string">&quot;agent-v2&quot;</span>, scopes=[<span class="hljs-string">&quot;actions&quot;</span>])
 <span class="hljs-built_in">print</span>(new.key)  <span class="hljs-comment"># store this immediately — returned once</span>
 
-<span class="hljs-comment"># 2. Rotate in your deployment (set IMPRI_API_KEY=new.key), then revoke old</span>
+<span class="hljs-comment"># 2. Rotate in your deployment (set AIRLOCK_API_KEY=new.key), then revoke old</span>
 keys = <span class="hljs-keyword">await</span> admin.list_keys()
 <span class="hljs-keyword">for</span> k <span class="hljs-keyword">in</span> keys:
     <span class="hljs-keyword">if</span> k.name == <span class="hljs-string">&quot;agent-v1&quot;</span> <span class="hljs-keyword">and</span> <span class="hljs-keyword">not</span> k.revoked:
         <span class="hljs-keyword">await</span> admin.revoke_key(k.<span class="hljs-built_in">id</span>)
         <span class="hljs-built_in">print</span>(<span class="hljs-string">f&quot;Revoked <span class="hljs-subst">{k.prefix}</span>&quot;</span>)</code></pre></div>
-<p>Never commit the key value to version control. Store it in a secrets manager (Vault, AWS Secrets Manager, Doppler, etc.) and read it at runtime from <code>IMPRI_API_KEY</code>.</p>
+<p>Never commit the key value to version control. Store it in a secrets manager (Vault, AWS Secrets Manager, Doppler, etc.) and read it at runtime from <code>AIRLOCK_API_KEY</code>.</p>
 <hr>
 <h2 id="patterns-to-avoid">Patterns to avoid</h2>
 <p><strong>Do not log the final preview body as a structured field.</strong> Reviewer-edited content may contain PII. Log <code>action.id</code> and the decision timestamp; fetch the body when needed.</p>
@@ -510,19 +510,19 @@ keys = <span class="hljs-keyword">await</span> admin.list_keys()
 <footer class="footer">
 <div class="wrap footer-inner">
   <a class="brand" href="/">
-    <span class="mark"><svg viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.5 4.5L19 7.5" stroke="white" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Impri
+    <span class="mark"><svg viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.5 4.5L19 7.5" stroke="white" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Airlock
   </a>
   <div>
-    <a href="https://gitlab.com/sekera.radim/impri">GitLab</a>
+    <a href="https://gitlab.com/sekera.radim/airlock">GitLab</a>
     <a href="/docs">Docs</a>
-    <a href="https://gitlab.com/sekera.radim/impri/-/blob/main/LICENSE">MIT License</a>
-    <a href="https://www.npmjs.com/package/@impri/mcp">@impri/mcp</a>
+    <a href="https://gitlab.com/sekera.radim/airlock/-/blob/main/LICENSE">MIT License</a>
+    <a href="https://www.npmjs.com/package/@airlock/mcp">@airlock/mcp</a>
     <a href="/docs/privacy">Privacy</a>
     <a href="/docs/terms">Terms</a>
     <a href="https://sekera.dev">Contact</a>
   </div>
 </div>
-<div class="wrap" style="margin-top:18px"><span class="muted">© 2026 Impri · The imprimatur for your AI agents · Built by <a href="https://sekera.dev" style="color:inherit">Radim Sekera</a>. Also by the same maker: <a href="https://briefgate.dev/?utm_source=impri.dev&amp;utm_medium=referral" style="color:inherit">BriefGate</a> — client intake for agencies and AI agents.</span></div>
+<div class="wrap" style="margin-top:18px"><span class="muted">© 2026 Airlock · The airlockmatur for your AI agents · Built by <a href="https://sekera.dev" style="color:inherit">Radim Sekera</a>. Also by the same maker: <a href="https://briefgate.dev/?utm_source=airlock.dev&amp;utm_medium=referral" style="color:inherit">BriefGate</a> — client intake for agencies and AI agents.</span></div>
 </footer>
 </body>
 </html>

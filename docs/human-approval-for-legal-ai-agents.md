@@ -8,7 +8,7 @@ Give an AI agent that drafts contract clauses or client correspondence a real st
 
 A legal-drafting agent that redlines a contract clause, or drafts a reply to opposing counsel, is producing text that carries legal weight the moment it goes out. Unlike most SaaS automation, there's no cheap undo: a sent email is discoverable, a filed clause is binding once countersigned. Firms that let an agent draft this kind of content almost always want a named attorney to sign off before anything leaves the building — not a confirmation checkbox inside the agent's own reasoning, which can be talked past by the same model that wrote the draft.
 
-Impri's job here is narrow: hold the draft, notify the attorney, and only release `approved` once a human decided. It has no opinion on whether the clause is enforceable.
+Airlock's job here is narrow: hold the draft, notify the attorney, and only release `approved` once a human decided. It has no opinion on whether the clause is enforceable.
 
 ---
 
@@ -17,8 +17,8 @@ Impri's job here is narrow: hold the draft, notify the attorney, and only releas
 ```typescript
 import { setTimeout as sleep } from "node:timers/promises";
 
-const BASE = "https://api.impri.dev";
-const KEY = process.env.IMPRI_API_KEY!;
+const BASE = "https://api.airlock.dev";
+const KEY = process.env.AIRLOCK_API_KEY!;
 
 type Decision = {
   status: "pending" | "approved" | "rejected" | "expired";
@@ -67,7 +67,7 @@ async function applyIfApproved(actionId: string, decision: Decision, apply: (tex
 }
 ```
 
-Note the `undo` field: it's descriptive text shown on the approval card, not a real rollback mechanism Impri executes. For contract clauses that's the honest answer anyway — the safe "undo" is that nothing was ever merged until a human said yes.
+Note the `undo` field: it's descriptive text shown on the approval card, not a real rollback mechanism Airlock executes. For contract clauses that's the honest answer anyway — the safe "undo" is that nothing was ever merged until a human said yes.
 
 ---
 
@@ -86,7 +86,7 @@ Because `editable: ["preview.body"]` is set, the attorney's markup happens direc
 
 ## Where this fits, and where it doesn't
 
-Impri is the approval gate only — it doesn't understand contract law, doesn't flag risky clauses, and doesn't replace your document management or e-signature system. Use it for the specific moment where an agent-generated draft needs a named human's yes/no before it moves to the next step (sending, merging, filing). It is not a workflow engine: if a clause needs review by two different attorneys in sequence, chain two Impri actions or run it as a step inside something like n8n or Temporal that owns that sequencing.
+Airlock is the approval gate only — it doesn't understand contract law, doesn't flag risky clauses, and doesn't replace your document management or e-signature system. Use it for the specific moment where an agent-generated draft needs a named human's yes/no before it moves to the next step (sending, merging, filing). It is not a workflow engine: if a clause needs review by two different attorneys in sequence, chain two Airlock actions or run it as a step inside something like n8n or Temporal that owns that sequencing.
 
 The gate is only as strong as the wrapper around it, too. If the agent retains direct API access to your document system or email client, wrap that access so the "send" or "merge" function can only be called with an `approved` decision object — not just at the point shown in the example above.
 
@@ -94,4 +94,4 @@ The gate is only as strong as the wrapper around it, too. If the agent retains d
 
 ## Next step
 
-Read [how to add human approval to an AI agent](how-to-add-human-approval-to-an-ai-agent.md) for the underlying pattern, [the TypeScript SDK](sdk-typescript.md) if you'd rather not hand-roll the fetch calls, and [integrations](integrations.md) for wrapping the actual send/merge tool so Impri is the only path to it.
+Read [how to add human approval to an AI agent](how-to-add-human-approval-to-an-ai-agent.md) for the underlying pattern, [the TypeScript SDK](sdk-typescript.md) if you'd rather not hand-roll the fetch calls, and [integrations](integrations.md) for wrapping the actual send/merge tool so Airlock is the only path to it.

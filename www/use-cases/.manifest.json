@@ -24,7 +24,7 @@
     {
       "slug": "overnight-coding-agent",
       "title": "Let a coding agent run overnight, approve from your phone",
-      "description": "Kick off a long coding agent run before bed, gate every risky step behind Impri, and approve or reject each one from your phone in the morning."
+      "description": "Kick off a long coding agent run before bed, gate every risky step behind Airlock, and approve or reject each one from your phone in the morning."
     },
     {
       "slug": "refunds-and-payments",
@@ -33,6 +33,6 @@
     }
   ],
   "agents": {
-    "title": "Impri for AI agents — human approval over MCP"
+    "title": "Airlock for AI agents — human approval over MCP"
   }
 }

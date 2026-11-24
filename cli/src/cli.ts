@@ -13,7 +13,7 @@ import { registerStatus } from './commands/status.js'
 const program = new Command()
 
 program
-  .name('impri')
+  .name('airlock')
   .description('Human-in-the-loop approval for AI agents')
   .version('0.1.0')
 
@@ -31,8 +31,8 @@ registerWatchers(program)
 registerKeys(program)
 registerStatus(program)
 
-// 'impri watch add' — alias to the preset-based add under a 'watch' command
-const watchCmd = program.command('watch').description("Manage watchers (alias; see also 'impri watchers')")
+// 'airlock watch add' — alias to the preset-based add under a 'watch' command
+const watchCmd = program.command('watch').description("Manage watchers (alias; see also 'airlock watchers')")
 registerWatchAdd(watchCmd)
 
 program.parse(process.argv)

@@ -1,14 +1,14 @@
 # Webhooks
 
-When a human approves or rejects an action in the Impri inbox, you can receive the decision in two ways: a webhook pushed to your server, or polling from your agent. Both are always available — they are not mutually exclusive.
+When a human approves or rejects an action in the Airlock inbox, you can receive the decision in two ways: a webhook pushed to your server, or polling from your agent. Both are always available — they are not mutually exclusive.
 
 ---
 
 ## Overview
 
-**Webhook**: Impri makes a POST request to your `callback_url` after the action is created and again when it is decided or expires. Useful when your agent has a public URL and you want near-instant notification.
+**Webhook**: Airlock makes a POST request to your `callback_url` after the action is created and again when it is decided or expires. Useful when your agent has a public URL and you want near-instant notification.
 
-**Polling**: Your agent calls `GET /v1/actions/:id` in a loop until `status` changes from `pending`. Always works — no public URL required. The MCP tool `impri_await_decision` implements this automatically.
+**Polling**: Your agent calls `GET /v1/actions/:id` in a loop until `status` changes from `pending`. Always works — no public URL required. The MCP tool `airlock_await_decision` implements this automatically.
 
 The source of truth is always the database. If a webhook delivery fails, polling still returns the correct state.
 
@@ -19,29 +19,29 @@ The source of truth is always the database. If a webhook delivery fails, polling
 Pass `callback_url` when creating an action:
 
 ```bash
-curl -X POST https://api.impri.dev/v1/actions \
-  -H "Authorization: Bearer $IMPRI_API_KEY" \
+curl -X POST https://api.airlock.dev/v1/actions \
+  -H "Authorization: Bearer $AIRLOCK_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "kind": "email.send",
     "title": "Outreach: partnership proposal",
     "preview": { "format": "markdown", "body": "..." },
-    "callback_url": "https://your-agent.example.com/impri/webhook",
+    "callback_url": "https://your-agent.example.com/airlock/webhook",
     "expires_in": 86400
   }'
 ```
 
-Impri POSTs to `https://your-agent.example.com/impri/webhook` once after the action is created and again when a human decides it or it expires. An action that a [rule](rules.md) decides on creation gets only the first delivery, which already carries the verdict.
+Airlock POSTs to `https://your-agent.example.com/airlock/webhook` once after the action is created and again when a human decides it or it expires. An action that a [rule](rules.md) decides on creation gets only the first delivery, which already carries the verdict.
 
 ### Restrictions on callback URLs
 
-For security, `callback_url` must be an `http://` or `https://` URL. `javascript:` and `data:` schemes are rejected. By default the SSRF guard also blocks URLs that resolve to private IP ranges (RFC 1918, loopback, link-local) — this protects against an agent being manipulated into sending secrets to an internal service. On an isolated intranet deployment you can opt out by setting `IMPRI_ALLOW_PRIVATE_TARGETS=1` in the server environment.
+For security, `callback_url` must be an `http://` or `https://` URL. `javascript:` and `data:` schemes are rejected. By default the SSRF guard also blocks URLs that resolve to private IP ranges (RFC 1918, loopback, link-local) — this protects against an agent being manipulated into sending secrets to an internal service. On an isolated intranet deployment you can opt out by setting `AIRLOCK_ALLOW_PRIVATE_TARGETS=1` in the server environment.
 
 ---
 
 ## Webhook payload
 
-Impri sends a POST with `Content-Type: application/json`. The body is always a JSON object:
+Airlock sends a POST with `Content-Type: application/json`. The body is always a JSON object:
 
 ```json
 {
@@ -70,7 +70,7 @@ Impri sends a POST with `Content-Type: application/json`. The body is always a J
 
 ### The body carries the status at send time
 
-Deliveries go out on the server's 60-second tick, and Impri builds the body when it sends it, not when the event happened. An action decided before its creation delivery goes out therefore arrives twice with the decided status, and a retry carries the status at the time of the retry. Make the receiver safe to run twice:
+Deliveries go out on the server's 60-second tick, and Airlock builds the body when it sends it, not when the event happened. An action decided before its creation delivery goes out therefore arrives twice with the decided status, and a retry carries the status at the time of the retry. Make the receiver safe to run twice:
 
 - act on `approved` only while `GET /v1/actions/:id` still returns `approved`, and report the outcome with `POST /v1/actions/:id/result`, so a repeat finds `executed`;
 - remember which `rejected` or `expired` actions you already handled;
@@ -88,9 +88,9 @@ Every webhook request carries three headers you should verify before processing:
 
 | Header | Example | Description |
 |--------|---------|-------------|
-| `X-Impri-Signature` | `sha256=a3f...9c1` | HMAC-SHA256 of the raw request body |
-| `X-Impri-Timestamp` | `1720000000` | Unix timestamp when the request was sent |
-| `X-Impri-Nonce` | `a1b2c3d4e5f6a7b8` | Random hex string, unique per request |
+| `X-Airlock-Signature` | `sha256=a3f...9c1` | HMAC-SHA256 of the raw request body |
+| `X-Airlock-Timestamp` | `1720000000` | Unix timestamp when the request was sent |
+| `X-Airlock-Nonce` | `a1b2c3d4e5f6a7b8` | Random hex string, unique per request |
 
 The signature is computed over the concatenation `${timestamp}.${nonce}.${body}` using your project's webhook signing secret (where to get it is explained below the examples).
 
@@ -101,17 +101,17 @@ expected = HMAC-SHA256(secret, "${timestamp}.${nonce}.${rawBody}")
 signature = "sha256=" + hex(expected)
 ```
 
-Compare `signature` to `X-Impri-Signature` using a constant-time comparison to avoid timing attacks.
+Compare `signature` to `X-Airlock-Signature` using a constant-time comparison to avoid timing attacks.
 
 **Python example:**
 
 ```python
 import hashlib, hmac, time
 
-def verify_impri_webhook(body: bytes, headers: dict, secret: str) -> bool:
-    timestamp = headers.get("X-Impri-Timestamp", "")
-    nonce = headers.get("X-Impri-Nonce", "")
-    received_sig = headers.get("X-Impri-Signature", "")
+def verify_airlock_webhook(body: bytes, headers: dict, secret: str) -> bool:
+    timestamp = headers.get("X-Airlock-Timestamp", "")
+    nonce = headers.get("X-Airlock-Nonce", "")
+    received_sig = headers.get("X-Airlock-Signature", "")
 
     # Reject requests with a timestamp more than 5 minutes old
     if abs(time.time() - int(timestamp)) > 300:
@@ -130,10 +130,10 @@ def verify_impri_webhook(body: bytes, headers: dict, secret: str) -> bool:
 ```javascript
 import crypto from 'node:crypto';
 
-function verifyImpriWebhook(rawBody, headers, secret) {
-  const timestamp = headers['x-impri-timestamp'];
-  const nonce = headers['x-impri-nonce'];
-  const receivedSig = headers['x-impri-signature'];
+function verifyAirlockWebhook(rawBody, headers, secret) {
+  const timestamp = headers['x-airlock-timestamp'];
+  const nonce = headers['x-airlock-nonce'];
+  const receivedSig = headers['x-airlock-signature'];
 
   // Reject stale requests (>5 minutes clock skew)
   if (Math.abs(Date.now() / 1000 - Number(timestamp)) > 300) return false;
@@ -155,13 +155,13 @@ verifier with the new value afterward. The server-level `WEBHOOK_SECRET` env var
 is only a fallback for a project that has no secret of its own (one created
 before per-project secrets existed); every new project gets one.
 
-The `@impri/mcp` package ships a ready-made verifier — `import { verifyWebhookSignature } from '@impri/mcp/webhook'` — so you don't have to hand-roll the HMAC check.
+The `@airlock/mcp` package ships a ready-made verifier — `import { verifyWebhookSignature } from '@airlock/mcp/webhook'` — so you don't have to hand-roll the HMAC check.
 
 ---
 
 ## Retry schedule
 
-If your endpoint does not return a 2xx response, Impri retries up to 5 times:
+If your endpoint does not return a 2xx response, Airlock retries up to 5 times:
 
 | Attempt | Delay after previous attempt |
 |---------|------------------------------|
@@ -180,13 +180,13 @@ The retry scheduler runs every 60 seconds inside the server process.
 
 ## Special response codes
 
-Your webhook endpoint can return specific status codes to signal intent to Impri:
+Your webhook endpoint can return specific status codes to signal intent to Airlock:
 
-**`410 Gone`**: tells Impri the endpoint has been deregistered. Impri removes the `callback_url` from the action and stops all further delivery attempts. Use this to cleanly deregister a webhook when tearing down an agent.
+**`410 Gone`**: tells Airlock the endpoint has been deregistered. Airlock removes the `callback_url` from the action and stops all further delivery attempts. Use this to cleanly deregister a webhook when tearing down an agent.
 
-**Any 2xx**: delivery confirmed. Impri marks the delivery as `delivered`.
+**Any 2xx**: delivery confirmed. Airlock marks the delivery as `delivered`.
 
-**Anything else** (3xx, 4xx, 5xx, connection errors): delivery failed — Impri schedules a retry.
+**Anything else** (3xx, 4xx, 5xx, connection errors): delivery failed — Airlock schedules a retry.
 
 ---
 
@@ -197,20 +197,20 @@ Polling does not require a public URL and is always available regardless of whet
 ```bash
 # Poll until status is no longer "pending"
 while true; do
-  STATUS=$(curl -s https://api.impri.dev/v1/actions/$ACTION_ID \
-    -H "Authorization: Bearer $IMPRI_API_KEY" | jq -r .status)
+  STATUS=$(curl -s https://api.airlock.dev/v1/actions/$ACTION_ID \
+    -H "Authorization: Bearer $AIRLOCK_API_KEY" | jq -r .status)
   [ "$STATUS" = "pending" ] || break
   sleep 10
 done
 ```
 
-The MCP tool `impri_await_decision` does this internally, polling every 5 seconds with a configurable timeout (default 300 seconds).
+The MCP tool `airlock_await_decision` does this internally, polling every 5 seconds with a configurable timeout (default 300 seconds).
 
 For list-based polling (e.g. an agent that processes all newly-approved actions on a schedule):
 
 ```bash
-curl "https://api.impri.dev/v1/actions?status=approved&since=1719990000" \
-  -H "Authorization: Bearer $IMPRI_API_KEY"
+curl "https://api.airlock.dev/v1/actions?status=approved&since=1719990000" \
+  -H "Authorization: Bearer $AIRLOCK_API_KEY"
 ```
 
 `since` is a Unix timestamp. The response is paginated with `has_more` and `next_cursor` for large result sets.

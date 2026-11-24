@@ -2,7 +2,7 @@
 
 The `integrations/claude-agent-sdk/` package provides a TypeScript integration for adding human-approval gates to Claude-powered agents built with the Anthropic SDK (`@anthropic-ai/sdk`).
 
-It works by intercepting `tool_use` content blocks before they are executed — the agent proposes a tool call, a human approves or rejects it in the Impri inbox, and only then is the tool executor called.
+It works by intercepting `tool_use` content blocks before they are executed — the agent proposes a tool call, a human approves or rejects it in the Airlock inbox, and only then is the tool executor called.
 
 > **Building on Anthropic's Claude Agent SDK** (`@anthropic-ai/claude-agent-sdk`, `query()` with built-in tools)? This package isn't for it: it works on the `tool_use` blocks of a Messages API loop you run yourself, while the Agent SDK runs its own tool loop. Gate Agent SDK tool calls with its `canUseTool` callback or a `PreToolUse` hook: see [Claude Agent SDK human approval](human-approval-claude-agent-sdk.md).
 
@@ -11,10 +11,10 @@ It works by intercepting `tool_use` content blocks before they are executed — 
 ## How it works
 
 1. You define a tool normally with an Anthropic-compatible schema (`AnthropicTool`).
-2. You wrap it with `withImpriApproval(...)` to get a `GatedTool`.
+2. You wrap it with `withAirlockApproval(...)` to get a `GatedTool`.
 3. Pass `gatedTool.toolDef` to Claude — it is identical to the original, so Claude behaves normally.
 4. In your agent loop, when Claude returns a `tool_use` block for this tool, call `gatedTool.handle(block)` instead of executing directly.
-5. `handle()` submits the proposed call to Impri, blocks until a human decides, then either executes or returns a rejection message.
+5. `handle()` submits the proposed call to Airlock, blocks until a human decides, then either executes or returns a rejection message.
 6. The return value of `handle()` is the `tool_result` content to feed back to Claude.
 
 ---
@@ -32,14 +32,14 @@ npm install ./integrations/claude-agent-sdk
 
 ```typescript
 import Anthropic from '@anthropic-ai/sdk'
-import { ImpriClient } from '@impri/sdk'
-import { withImpriApproval } from '@impri/claude-agent-sdk'
+import { AirlockClient } from '@airlock/sdk'
+import { withAirlockApproval } from '@airlock/claude-agent-sdk'
 
 const anthropic = new Anthropic()
-const impri = new ImpriClient({ apiKey: process.env.IMPRI_API_KEY! })
+const airlock = new AirlockClient({ apiKey: process.env.AIRLOCK_API_KEY! })
 
 // Define the gated tool
-const sendEmailGated = withImpriApproval({
+const sendEmailGated = withAirlockApproval({
   // Tool definition — passed to Claude unchanged
   toolDef: {
     name: 'send_email',
@@ -60,8 +60,8 @@ const sendEmailGated = withImpriApproval({
     return `Email sent to ${to}.`
   },
 
-  // Impri configuration
-  impriClient: impri,
+  // Airlock configuration
+  airlockClient: airlock,
   kind: 'email.send',
 
   // What the human sees in the approval inbox
@@ -98,7 +98,7 @@ async function runAgent(userMessage: string) {
     const toolResults: Anthropic.ToolResultBlockParam[] = []
     for (const block of response.content) {
       if (block.type === 'tool_use' && block.name === 'send_email') {
-        // handle() submits to Impri, waits for human approval, then executes
+        // handle() submits to Airlock, waits for human approval, then executes
         const result = await sendEmailGated.handle(block)
         toolResults.push({ type: 'tool_result', tool_use_id: block.id, content: result })
       }
@@ -115,7 +115,7 @@ async function runAgent(userMessage: string) {
 
 ## API reference
 
-### `withImpriApproval(options)` → `GatedTool`
+### `withAirlockApproval(options)` → `GatedTool`
 
 Creates a gated tool wrapper.
 
@@ -125,13 +125,13 @@ Creates a gated tool wrapper.
 |-------|------|----------|-------------|
 | `toolDef` | `AnthropicTool` | Yes | Standard Anthropic tool definition — passed to Claude unchanged |
 | `execute` | `(input) => Promise<T>` | Yes | Executor called after approval; receives the (possibly human-edited) input |
-| `impriClient` | `ImpriClient` | Yes | Initialized Impri client |
+| `airlockClient` | `AirlockClient` | Yes | Initialized Airlock client |
 | `kind` | string | Yes | Action kind for the inbox (e.g. `"email.send"`, `"db.exec"`) |
 | `title` | string or `(input) => string` | Yes | Title shown in the approval inbox; may be a static string or a function of the tool input |
 | `preview` | `Preview` or `(input) => Preview` | No | Preview content shown to the reviewer; defaults to a plain-text JSON dump of the full input |
 | `editable` | string[] | No | Dot-path fields the reviewer may modify before approving (e.g. `["preview.body"]`) |
 | `timeoutS` | number | No | Approval timeout in seconds (default 300) |
-| `onRejected` | `(err: ImpriRejected) => string` | No | Called when the human rejects; return value is sent back to Claude as the tool result |
+| `onRejected` | `(err: AirlockRejected) => string` | No | Called when the human rejects; return value is sent back to Claude as the tool result |
 
 #### Returns: `GatedTool`
 
@@ -146,14 +146,14 @@ Creates a gated tool wrapper.
 `handle()` performs these steps in order:
 
 1. Resolves `title` and `preview` (calling them as functions if needed).
-2. Calls `impriClient.createAction(...)` with the resolved title, preview, and the full tool input as `payload`.
-3. Waits for a human decision via `impriClient.awaitDecision(...)`.
+2. Calls `airlockClient.createAction(...)` with the resolved title, preview, and the full tool input as `payload`.
+3. Waits for a human decision via `airlockClient.awaitDecision(...)`.
 4. If **approved**: calls `execute()` with the (possibly human-edited) input. If the reviewer changed `preview.body` and the tool input has a `body` field, the edited body replaces the original.
-5. Reports the result to Impri (`reportResult("executed")` or `reportResult("execute_failed", { detail })`).
+5. Reports the result to Airlock (`reportResult("executed")` or `reportResult("execute_failed", { detail })`).
 6. Returns the execution output as a string.
 7. If **rejected**: calls `onRejected()` and returns its output without calling `execute()`.
 
-Errors from `ImpriTimeout` or `ImpriExpired` propagate to the caller.
+Errors from `AirlockTimeout` or `AirlockExpired` propagate to the caller.
 
 ---
 
@@ -162,7 +162,7 @@ Errors from `ImpriTimeout` or `ImpriExpired` propagate to the caller.
 Convenience function to construct an Anthropic `tool_result` message param:
 
 ```typescript
-import { makeToolResult } from '@impri/claude-agent-sdk'
+import { makeToolResult } from '@airlock/claude-agent-sdk'
 
 const toolResult = makeToolResult(block.id, 'Email sent successfully.')
 // { type: 'tool_result', tool_use_id: 'toolu_...', content: 'Email sent successfully.' }
@@ -205,6 +205,6 @@ Specifically: if `input.body` exists and the reviewer changed `preview.body`, th
 
 ## Security notes on untrusted content
 
-If an action's `payload.untrusted` is `true` (e.g. from a watcher-triage flow), do not forward the preview body as an instruction to Claude. The `withImpriApproval` wrapper does not apply the `<untrusted-external-content>` tag that the MCP server uses — in the Claude Agent SDK integration, you are responsible for wrapping untrusted content before forwarding it in the `tool_result`.
+If an action's `payload.untrusted` is `true` (e.g. from a watcher-triage flow), do not forward the preview body as an instruction to Claude. The `withAirlockApproval` wrapper does not apply the `<untrusted-external-content>` tag that the MCP server uses — in the Claude Agent SDK integration, you are responsible for wrapping untrusted content before forwarding it in the `tool_result`.
 
 Check `action.is_untrusted` (from `awaitDecision`) before treating the preview body as trusted data.

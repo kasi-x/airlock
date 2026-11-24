@@ -17,7 +17,7 @@ Oversight has two components that do different jobs:
 - **Point checks** — a synchronous gate before a specific call executes. This is what stops a bad purchase order from being submitted.
 - **Audit trail** — a durable record of what was proposed, who decided, and when. This is what lets you answer "why did this happen" three weeks later, when the point check is long past.
 
-Impri provides both from the same underlying data: every `POST /v1/actions` call is both the point check (the agent blocks on the decision) and an `audit_log` row (`action.created`, later `action.approved` or `action.rejected`, with the deciding key or channel user recorded). You don't instrument these separately.
+Airlock provides both from the same underlying data: every `POST /v1/actions` call is both the point check (the agent blocks on the decision) and an `audit_log` row (`action.created`, later `action.approved` or `action.rejected`, with the deciding key or channel user recorded). You don't instrument these separately.
 
 ## Wiring a point check into an agentic pipeline
 
@@ -27,8 +27,8 @@ Here the procurement agent has already searched vendors and drafted a purchase o
 # Step the agent already ran: vendor search + price comparison (no gate needed, read-only)
 
 # Point check before the PO is submitted to the ERP
-ACTION=$(curl -s -X POST https://api.impri.dev/v1/actions \
-  -H "Authorization: Bearer $IMPRI_API_KEY" \
+ACTION=$(curl -s -X POST https://api.airlock.dev/v1/actions \
+  -H "Authorization: Bearer $AIRLOCK_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "kind": "erp.purchase_order.submit",
@@ -46,7 +46,7 @@ ACTION=$(curl -s -X POST https://api.impri.dev/v1/actions \
 
 ACTION_ID=$(echo $ACTION | jq -r .id)
 
-# Agent blocks here until a human decides — poll or use impri_await_decision over MCP
+# Agent blocks here until a human decides — poll or use airlock_await_decision over MCP
 ```
 
 `idempotent: false` and `undo` don't change whether the gate fires — they add context so the reviewer knows a duplicate submission would double the order, and how to unwind it if approved by mistake. That's oversight information, not just a yes/no gate.
@@ -66,9 +66,9 @@ The auto-approved tier still writes an `action.rule_applied` audit event — low
 
 ## Where oversight stops being real
 
-A gate is only oversight if the agent has no other way to reach the ERP. If the procurement agent holds ERP credentials directly and only *chooses* to call Impri first, a bad plan, a prompt injection from a scraped vendor page, or a future code change can route around the check entirely. The point check above only means something if `erp.purchase_order.submit` is a wrapped function and the raw ERP client is not reachable from the agent's tool surface — see [the SDK integrations guide](integrations.md) for how to build that wrapper.
+A gate is only oversight if the agent has no other way to reach the ERP. If the procurement agent holds ERP credentials directly and only *chooses* to call Airlock first, a bad plan, a prompt injection from a scraped vendor page, or a future code change can route around the check entirely. The point check above only means something if `erp.purchase_order.submit` is a wrapped function and the raw ERP client is not reachable from the agent's tool surface — see [the SDK integrations guide](integrations.md) for how to build that wrapper.
 
-Impri also does not decide *which* steps need oversight, does not interpret whether a given PO is a good deal, and is not a workflow engine — if your agentic pipeline needs branching logic across many systems beyond approve/reject, that belongs in something like n8n or Temporal, with Impri as one node in it. What Impri owns is narrower and more mechanical: hold the proposed action, notify the right human or channel, record the decision, and refuse to let the agent past that data dependency.
+Airlock also does not decide *which* steps need oversight, does not interpret whether a given PO is a good deal, and is not a workflow engine — if your agentic pipeline needs branching logic across many systems beyond approve/reject, that belongs in something like n8n or Temporal, with Airlock as one node in it. What Airlock owns is narrower and more mechanical: hold the proposed action, notify the right human or channel, record the decision, and refuse to let the agent past that data dependency.
 
 ## Next step
 

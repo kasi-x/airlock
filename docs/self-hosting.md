@@ -1,6 +1,6 @@
-# Self-Hosting Impri
+# Self-Hosting Airlock
 
-Impri is fully self-hostable. `docker compose up` gives you the complete stack: API server, web inbox, SQLite database, and the watcher scheduler. No licence required, no external services needed to get started.
+Airlock is fully self-hostable. `docker compose up` gives you the complete stack: API server, web inbox, SQLite database, and the watcher scheduler. No licence required, no external services needed to get started.
 
 ---
 
@@ -15,8 +15,8 @@ Impri is fully self-hostable. `docker compose up` gives you the complete stack: 
 ## Quick start
 
 ```bash
-git clone https://gitlab.com/sekera.radim/impri.git
-cd impri
+git clone https://gitlab.com/sekera.radim/airlock.git
+cd airlock
 
 # Generate a strong webhook secret (required — do not leave it as "change-me-in-production")
 echo "WEBHOOK_SECRET=$(openssl rand -hex 32)" > .env
@@ -55,15 +55,15 @@ All configuration is passed via environment variables. The easiest way to manage
 
 | Variable | Default | Description |
 |----------|---------|-------------|
-| `DB_PATH` | `/app/data/impri.db` | Path to the SQLite database file. The Docker volume `impri-data` is mounted at `/app/data`. |
+| `DB_PATH` | `/app/data/airlock.db` | Path to the SQLite database file. The Docker volume `airlock-data` is mounted at `/app/data`. |
 | `PORT` | `8484` | Port the API server listens on inside the container. |
 | `HOST` | `0.0.0.0` | Bind address for the API server. |
-| `BASE_URL` | `http://localhost:8080` | Public base URL used to construct `inbox_url` values in API responses. Set this to your public domain when deploying with a reverse proxy (e.g. `https://impri.yourdomain.com`). |
+| `BASE_URL` | `http://localhost:8080` | Public base URL used to construct `inbox_url` values in API responses. Set this to your public domain when deploying with a reverse proxy (e.g. `https://airlock.yourdomain.com`). |
 | `DISABLE_WATCHER_SCHEDULER` | unset | Set to `1` to disable the watcher scheduler (useful if you only use the approval inbox and do not need watchers). |
 
 ### Notifications
 
-Impri can notify you via email (SMTP) and/or ntfy. Both are optional; the server starts without them and falls back to logging the notification.
+Airlock can notify you via email (SMTP) and/or ntfy. Both are optional; the server starts without them and falls back to logging the notification.
 
 **Email (SMTP):**
 
@@ -74,11 +74,11 @@ Impri can notify you via email (SMTP) and/or ntfy. Both are optional; the server
 | `SMTP_SECURE` | `false` | Set to `true` for TLS on connect (port 465 style). Port 587 with STARTTLS works with the default `false`. |
 | `SMTP_USER` | unset | SMTP username for authentication. |
 | `SMTP_PASS` | unset | SMTP password. |
-| `SMTP_FROM` | `impri@localhost` | From address for outgoing notification emails. |
+| `SMTP_FROM` | `airlock@localhost` | From address for outgoing notification emails. |
 | `NOTIFY_EMAIL` | unset | Instance-wide recipient address for approval notifications (operator-configured, no confirmation). Without this, the instance-wide email is not sent even if SMTP is configured. |
-| `IMPRI_EMAIL_DAILY_CAP` | `100` | Notification emails each project may send through its email channels per rolling 24 h. |
+| `AIRLOCK_EMAIL_DAILY_CAP` | `100` | Notification emails each project may send through its email channels per rolling 24 h. |
 
-Per-project **email notification channels** (Settings → Notifications) use the same SMTP settings. Without `SMTP_HOST` they cannot be created. Each channel's address must be confirmed through a link Impri emails to it before notifications are delivered; the link points at `BASE_URL`, so set `BASE_URL` to the public URL of your API. Email channels created before this check existed are sent one confirmation email after the upgrade. Impri gives up on the SMTP server after 10 s without a connection or greeting and after 20 s of silence on an open connection. See [Notification channels → Email address confirmation](notifications.md#email-address-confirmation).
+Per-project **email notification channels** (Settings → Notifications) use the same SMTP settings. Without `SMTP_HOST` they cannot be created. Each channel's address must be confirmed through a link Airlock emails to it before notifications are delivered; the link points at `BASE_URL`, so set `BASE_URL` to the public URL of your API. Email channels created before this check existed are sent one confirmation email after the upgrade. Airlock gives up on the SMTP server after 10 s without a connection or greeting and after 20 s of silence on an open connection. See [Notification channels → Email address confirmation](notifications.md#email-address-confirmation).
 
 **ntfy (recommended for self-hosters):**
 
@@ -112,7 +112,7 @@ npx web-push generate-vapid-keys   # prints a public + private key
 |----------|---------|-------------|
 | `VAPID_PUBLIC_KEY` | unset | VAPID public key. Also served at `GET /v1/push/vapid-public-key` for the browser to subscribe. |
 | `VAPID_PRIVATE_KEY` | unset | VAPID private key. Keep secret. |
-| `VAPID_SUBJECT` | `mailto:admin@impri.dev` | Contact `mailto:` or URL, per the web-push spec. |
+| `VAPID_SUBJECT` | `mailto:admin@airlock.dev` | Contact `mailto:` or URL, per the web-push spec. |
 
 Once enabled, open the web inbox and use **Enable push notifications** in the
 Notifications section — the browser subscribes and you get a push for every new
@@ -128,7 +128,7 @@ pending action.
 
 | Variable | Default | Description |
 |----------|---------|-------------|
-| `IMPRI_ALLOW_PRIVATE_TARGETS` | unset | Set to `1` to allow `callback_url` and watcher `config.url` to target private/intranet addresses (RFC 1918, loopback). **Only set this on an isolated intranet deployment.** By default, the SSRF guard blocks any URL that resolves to a private IP. |
+| `AIRLOCK_ALLOW_PRIVATE_TARGETS` | unset | Set to `1` to allow `callback_url` and watcher `config.url` to target private/intranet addresses (RFC 1918, loopback). **Only set this on an isolated intranet deployment.** By default, the SSRF guard blocks any URL that resolves to a private IP. |
 
 ---
 
@@ -136,7 +136,7 @@ pending action.
 
 ```bash
 WEBHOOK_SECRET=a6f3b2c1d0e9f8a7b6c5d4e3f2a1b0c9d8e7f6a5b4c3d2e1f0a9b8c7d6e5f4
-BASE_URL=https://impri.yourdomain.com
+BASE_URL=https://airlock.yourdomain.com
 
 # Notifications via ntfy
 NTFY_URL=https://ntfy.sh
@@ -147,7 +147,7 @@ SMTP_HOST=smtp.mailgun.org
 SMTP_PORT=587
 SMTP_USER=postmaster@mg.yourdomain.com
 SMTP_PASS=your-smtp-password
-SMTP_FROM=impri@yourdomain.com
+SMTP_FROM=airlock@yourdomain.com
 NOTIFY_EMAIL=you@yourdomain.com
 ```
 
@@ -157,15 +157,15 @@ NOTIFY_EMAIL=you@yourdomain.com
 
 For production use, put a reverse proxy in front that handles TLS. The UI container serves on port 8080 and the API server on 8484. A typical setup proxies both through a single domain:
 
-- `https://impri.yourdomain.com` → UI (port 8080)
-- `https://impri.yourdomain.com/v1` → API (port 8484/v1)
+- `https://airlock.yourdomain.com` → UI (port 8080)
+- `https://airlock.yourdomain.com/v1` → API (port 8484/v1)
 
 Or run them on separate subdomains. The important variable is `BASE_URL`, which must match the public URL the UI and API are reachable at.
 
 **Example Caddy config:**
 
 ```caddyfile
-impri.yourdomain.com {
+airlock.yourdomain.com {
   reverse_proxy /v1/* localhost:8484
   reverse_proxy /* localhost:8080
 }
@@ -175,26 +175,26 @@ impri.yourdomain.com {
 
 ## Backups
 
-Impri uses SQLite. The database file is stored in the `impri-data` Docker volume, mounted at `/app/data/impri.db` inside the container.
+Airlock uses SQLite. The database file is stored in the `airlock-data` Docker volume, mounted at `/app/data/airlock.db` inside the container.
 
 **Manual backup:**
 
 ```bash
 # Hot backup using SQLite's built-in online backup
-docker compose exec server sqlite3 /app/data/impri.db ".backup /app/data/impri-backup-$(date +%Y%m%d).db"
+docker compose exec server sqlite3 /app/data/airlock.db ".backup /app/data/airlock-backup-$(date +%Y%m%d).db"
 ```
 
 **Automated daily backup (cron example):**
 
 ```bash
-# /etc/cron.daily/impri-backup
+# /etc/cron.daily/airlock-backup
 #!/bin/bash
-BACKUP_DIR=/var/backups/impri
+BACKUP_DIR=/var/backups/airlock
 mkdir -p "$BACKUP_DIR"
-docker compose -f /home/impri/docker-compose.yml exec -T server \
-  sqlite3 /app/data/impri.db ".backup /tmp/impri-$(date +%Y%m%d).db"
-docker compose -f /home/impri/docker-compose.yml cp \
-  server:/tmp/impri-$(date +%Y%m%d).db "$BACKUP_DIR/"
+docker compose -f /home/airlock/docker-compose.yml exec -T server \
+  sqlite3 /app/data/airlock.db ".backup /tmp/airlock-$(date +%Y%m%d).db"
+docker compose -f /home/airlock/docker-compose.yml cp \
+  server:/tmp/airlock-$(date +%Y%m%d).db "$BACKUP_DIR/"
 # Optionally: rsync to offsite storage
 ```
 

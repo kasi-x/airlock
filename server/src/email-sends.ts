@@ -62,9 +62,9 @@ export function pruneEmailSends(db: Db, now: number): number {
 }
 
 // Notification emails a project may send per rolling 24 h. Read on each call
-// so tests (and operators) can change IMPRI_EMAIL_DAILY_CAP without a restart.
+// so tests (and operators) can change AIRLOCK_EMAIL_DAILY_CAP without a restart.
 export function emailDailyCap(): number {
-  const raw = Number(process.env.IMPRI_EMAIL_DAILY_CAP ?? 100);
+  const raw = Number(process.env.AIRLOCK_EMAIL_DAILY_CAP ?? 100);
   return Number.isFinite(raw) && raw >= 0 ? Math.floor(raw) : 100;
 }
 

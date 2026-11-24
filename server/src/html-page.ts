@@ -14,7 +14,7 @@ export function sendHtmlPage(reply: FastifyReply, status: number, heading: strin
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex">
-<title>${htmlEscape(heading)} · Impri</title>
+<title>${htmlEscape(heading)} · Airlock</title>
 <style>
 body{margin:0;font:16px/1.5 system-ui,-apple-system,Segoe UI,sans-serif;background:#0f1115;color:#e8e8ea;display:flex;min-height:100vh;align-items:center;justify-content:center}
 main{max-width:440px;margin:24px 16px;padding:32px;background:#181b22;border-radius:12px}

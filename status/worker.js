@@ -1,5 +1,5 @@
 /**
- * Impri status page — samostatný Cloudflare Worker (žádná externí služba).
+ * Airlock status page — samostatný Cloudflare Worker (žádná externí služba).
  *
  * scheduled (cron každých 15 min): změří všechny targety a zapíše do KV
  *   - "latest"   → aktuální stav + "pending" (nezapsané čítače od poslední
@@ -11,7 +11,7 @@
  * Vedlejší efekt cron pingů: drží scale-to-zero API stroj teplý (žádné cold starty).
  */
 
-/** Brand ikonka: Impri checkmark na indigo dlaždici + zelená status tečka. */
+/** Brand ikonka: Airlock checkmark na indigo dlaždici + zelená status tečka. */
 const FAVICON_SVG = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
   <rect x="2" y="2" width="60" height="60" rx="14" fill="#6366f1"/>
   <path d="M17 33.5l10.5 10.5L47 22" stroke="#fff" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
@@ -19,9 +19,9 @@ const FAVICON_SVG = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"
 </svg>`;
 
 const TARGETS = [
-  { id: 'api', name: 'API (api.impri.dev)', url: 'https://api.impri.dev/healthz', expect: 200 },
-  { id: 'app', name: 'App (app.impri.dev)', url: 'https://app.impri.dev/', expect: 200 },
-  { id: 'web', name: 'Web + Docs (impri.dev)', url: 'https://impri.dev/', expect: 200 },
+  { id: 'api', name: 'API (api.airlock.dev)', url: 'https://api.airlock.dev/healthz', expect: 200 },
+  { id: 'app', name: 'App (app.airlock.dev)', url: 'https://app.airlock.dev/', expect: 200 },
+  { id: 'web', name: 'Web + Docs (airlock.dev)', url: 'https://airlock.dev/', expect: 200 },
 ];
 
 const DAYS_SHOWN = 60;
@@ -38,7 +38,7 @@ async function checkTarget(t) {
     const res = await fetch(t.url, {
       redirect: 'follow',
       signal: AbortSignal.timeout(10_000),
-      headers: { 'User-Agent': 'impri-status/1.0 (+https://status.impri.dev)' },
+      headers: { 'User-Agent': 'airlock-status/1.0 (+https://status.airlock.dev)' },
       cf: { cacheTtl: 0, cacheEverything: false },
     });
     return { ok: res.status === t.expect, status: res.status, ms: Date.now() - started };
@@ -220,7 +220,7 @@ function renderHtml(latest, history) {
   return `<!doctype html>
 <html lang="en"><head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Impri Status</title>
+<title>Airlock Status</title>
 <link rel="icon" type="image/svg+xml" href="/favicon.svg">
 <meta http-equiv="refresh" content="120">
 <style>
@@ -240,8 +240,8 @@ function renderHtml(latest, history) {
   a{color:#8ea2ff}
   footer{margin-top:28px;font-size:13px;color:#8b8fa3}
 </style></head><body><div class="wrap">
-  <h1>Impri Status</h1>
-  <div class="muted">Human-in-the-loop approval API — <a href="https://impri.dev">impri.dev</a></div>
+  <h1>Airlock Status</h1>
+  <div class="muted">Human-in-the-loop approval API — <a href="https://airlock.dev">airlock.dev</a></div>
   <div class="overall"><span class="dot" style="background:${overall.color}"></span>
     <strong>${overall.label}</strong><span class="spacer"></span>
     <span class="muted">Updated ${updated}</span>

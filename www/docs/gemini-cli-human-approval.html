@@ -3,21 +3,21 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Add Human Approval to Gemini CLI with Impri — Impri Docs</title>
-<meta name="description" content="Add human approval to Gemini CLI: connect the Impri MCP server so risky actions wait for your one-tap approve or reject before anything runs on your machine.">
+<title>Add Human Approval to Gemini CLI with Airlock — Airlock Docs</title>
+<meta name="description" content="Add human approval to Gemini CLI: connect the Airlock MCP server so risky actions wait for your one-tap approve or reject before anything runs on your machine.">
 <meta name="theme-color" content="#06070d">
-<meta property="og:title" content="Add Human Approval to Gemini CLI with Impri — Impri Docs">
-<meta property="og:description" content="Add human approval to Gemini CLI: connect the Impri MCP server so risky actions wait for your one-tap approve or reject before anything runs on your machine.">
+<meta property="og:title" content="Add Human Approval to Gemini CLI with Airlock — Airlock Docs">
+<meta property="og:description" content="Add human approval to Gemini CLI: connect the Airlock MCP server so risky actions wait for your one-tap approve or reject before anything runs on your machine.">
 <meta property="og:type" content="article">
-<meta property="og:url" content="https://impri.dev/docs/gemini-cli-human-approval">
-<meta property="og:image" content="https://impri.dev/assets/og/og-docs.png">
+<meta property="og:url" content="https://airlock.dev/docs/gemini-cli-human-approval">
+<meta property="og:image" content="https://airlock.dev/assets/og/og-docs.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
-<meta property="og:image:alt" content="Impri — human-in-the-loop approval inbox for AI agents">
+<meta property="og:image:alt" content="Airlock — human-in-the-loop approval inbox for AI agents">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="https://impri.dev/assets/og/og-docs.png">
-<link rel="canonical" href="https://impri.dev/docs/gemini-cli-human-approval">
-<script type="application/ld+json">{"@context":"https://schema.org","@type":"TechArticle","headline":"Add Human Approval to Gemini CLI with Impri","description":"Add human approval to Gemini CLI: connect the Impri MCP server so risky actions wait for your one-tap approve or reject before anything runs on your machine.","url":"https://impri.dev/docs/gemini-cli-human-approval","inLanguage":"en","author":{"@type":"Organization","name":"Impri","url":"https://impri.dev"},"publisher":{"@type":"Organization","name":"Impri","url":"https://impri.dev"}}</script>
+<meta name="twitter:image" content="https://airlock.dev/assets/og/og-docs.png">
+<link rel="canonical" href="https://airlock.dev/docs/gemini-cli-human-approval">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"TechArticle","headline":"Add Human Approval to Gemini CLI with Airlock","description":"Add human approval to Gemini CLI: connect the Airlock MCP server so risky actions wait for your one-tap approve or reject before anything runs on your machine.","url":"https://airlock.dev/docs/gemini-cli-human-approval","inLanguage":"en","author":{"@type":"Organization","name":"Airlock","url":"https://airlock.dev"},"publisher":{"@type":"Organization","name":"Airlock","url":"https://airlock.dev"}}</script>
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <link rel="icon" href="/favicon.ico" sizes="32x32">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='9' fill='%236366f1'/%3E%3Cpath d='M9 16.5l4.5 4.5L23 11' stroke='white' stroke-width='3' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
@@ -132,13 +132,13 @@ pre code.hljs{display:block;overflow-x:auto}
 <div class="wrap nav-inner">
   <a class="brand" href="/">
     <span class="mark"><svg viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.5 4.5L19 7.5" stroke="white" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
-    Impri
+    Airlock
   </a>
   <div class="nav-links">
     <a class="link" href="/#how">How it works</a>
     <a class="link" href="/#pricing">Pricing</a>
     <a class="link active-nav" href="../docs">Docs</a>
-    <a class="btn btn-primary btn-sm" href="https://gitlab.com/sekera.radim/impri">GitLab</a>
+    <a class="btn btn-primary btn-sm" href="https://gitlab.com/sekera.radim/airlock">GitLab</a>
   </div>
 </div>
 </nav>
@@ -150,32 +150,32 @@ pre code.hljs{display:block;overflow-x:auto}
       <span class="bc-sep">/</span>
       <span>Reference</span>
       <span class="bc-sep">/</span>
-      <span>Add Human Approval to Gemini CLI with Impri</span>
+      <span>Add Human Approval to Gemini CLI with Airlock</span>
     </nav>
-    <h1>Add Human Approval to Gemini CLI with Impri</h1>
-<p>Add human approval to Gemini CLI: connect the Impri MCP server so risky actions wait for your one-tap approve or reject before anything runs on your machine.</p>
+    <h1>Add Human Approval to Gemini CLI with Airlock</h1>
+<p>Add human approval to Gemini CLI: connect the Airlock MCP server so risky actions wait for your one-tap approve or reject before anything runs on your machine.</p>
 <hr>
 <h2 id="why-a-terminal-prompt-is-not-enough">Why a terminal prompt is not enough</h2>
 <p>Gemini CLI can read files, run shell commands and call tools on your behalf. The built-in confirmation prompts are useful, but they only work while you are sitting at that terminal. Start a long task, walk away, and the session either stalls or — if you pre-approved tools to keep it moving — runs unattended.</p>
-<p>Impri adds a second kind of gate: the agent <em>proposes</em> an action, you get a card on your phone or in the inbox, and the agent only continues once the API reports <code>approved</code>. You can also edit the proposal before approving it, and every decision is kept in the audit log.</p>
+<p>Airlock adds a second kind of gate: the agent <em>proposes</em> an action, you get a card on your phone or in the inbox, and the agent only continues once the API reports <code>approved</code>. You can also edit the proposal before approving it, and every decision is kept in the audit log.</p>
 <p>This page covers the practical setup. For the general pattern see <a href="how-to-add-human-approval-to-an-ai-agent">how to add human approval to an AI agent</a>.</p>
 <hr>
-<h2 id="step-1-register-the-impri-mcp-server">Step 1 — register the Impri MCP server</h2>
-<p>Gemini CLI reads MCP servers from the <code>mcpServers</code> section of its <code>settings.json</code>. Add Impri there:</p>
+<h2 id="step-1-register-the-airlock-mcp-server">Step 1 — register the Airlock MCP server</h2>
+<p>Gemini CLI reads MCP servers from the <code>mcpServers</code> section of its <code>settings.json</code>. Add Airlock there:</p>
 <div class="code-block"><span class="code-lang">json</span><pre><code class="hljs"><span class="hljs-punctuation">{</span>
   <span class="hljs-attr">&quot;mcpServers&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
-    <span class="hljs-attr">&quot;impri&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+    <span class="hljs-attr">&quot;airlock&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
       <span class="hljs-attr">&quot;command&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;npx&quot;</span><span class="hljs-punctuation">,</span>
-      <span class="hljs-attr">&quot;args&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">[</span><span class="hljs-string">&quot;@impri/mcp&quot;</span><span class="hljs-punctuation">]</span><span class="hljs-punctuation">,</span>
+      <span class="hljs-attr">&quot;args&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">[</span><span class="hljs-string">&quot;@airlock/mcp&quot;</span><span class="hljs-punctuation">]</span><span class="hljs-punctuation">,</span>
       <span class="hljs-attr">&quot;env&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
-        <span class="hljs-attr">&quot;IMPRI_API_KEY&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;im_your_key_here&quot;</span><span class="hljs-punctuation">,</span>
-        <span class="hljs-attr">&quot;IMPRI_BASE_URL&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;https://api.impri.dev&quot;</span>
+        <span class="hljs-attr">&quot;AIRLOCK_API_KEY&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;im_your_key_here&quot;</span><span class="hljs-punctuation">,</span>
+        <span class="hljs-attr">&quot;AIRLOCK_BASE_URL&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;https://api.airlock.dev&quot;</span>
       <span class="hljs-punctuation">}</span>
     <span class="hljs-punctuation">}</span>
   <span class="hljs-punctuation">}</span>
 <span class="hljs-punctuation">}</span></code></pre></div>
-<p>Create the key with the <code>actions</code> scope only — see <a href="api-keys">API keys</a>. Self-hosting? Leave <code>IMPRI_BASE_URL</code> at its default of <code>http://localhost:8484</code> or point it at your own instance.</p>
-<p>This workflow uses three of the server&#39;s tools: <code>impri_push_action</code>, <code>impri_await_decision</code> and <code>impri_report_result</code>. The others check inbox status and manage watchers.</p>
+<p>Create the key with the <code>actions</code> scope only — see <a href="api-keys">API keys</a>. Self-hosting? Leave <code>AIRLOCK_BASE_URL</code> at its default of <code>http://localhost:8484</code> or point it at your own instance.</p>
+<p>This workflow uses three of the server&#39;s tools: <code>airlock_push_action</code>, <code>airlock_await_decision</code> and <code>airlock_report_result</code>. The others check inbox status and manage watchers.</p>
 <hr>
 <h2 id="step-2-tell-the-agent-when-it-must-ask">Step 2 — tell the agent when it must ask</h2>
 <p>The tools are only called if the agent knows to call them. Put the rule in the project context file Gemini CLI loads (<code>GEMINI.md</code>):</p>
@@ -184,27 +184,27 @@ pre code.hljs{display:block;overflow-x:auto}
 Before you run any command that deletes files, pushes to a remote,
 touches infrastructure, or sends anything outside this machine:
 
-<span class="hljs-bullet">1.</span> Call impri<span class="hljs-emphasis">_push_</span>action with kind &quot;shell.exec&quot;, a short title, and a
+<span class="hljs-bullet">1.</span> Call airlock<span class="hljs-emphasis">_push_</span>action with kind &quot;shell.exec&quot;, a short title, and a
    markdown preview containing the exact command and working directory.
-<span class="hljs-bullet">2.</span> Call impri<span class="hljs-emphasis">_await_</span>decision with the returned action<span class="hljs-emphasis">_id.
+<span class="hljs-bullet">2.</span> Call airlock<span class="hljs-emphasis">_await_</span>decision with the returned action<span class="hljs-emphasis">_id.
 3. Run the command only if status is &quot;approved&quot;, and use the command
    from the returned preview — the reviewer may have edited it.
-4. Call impri_</span>report<span class="hljs-emphasis">_result with &quot;executed&quot; or &quot;execute_</span>failed&quot;.
+4. Call airlock_</span>report<span class="hljs-emphasis">_result with &quot;executed&quot; or &quot;execute_</span>failed&quot;.
 
 If the status is &quot;rejected&quot; or &quot;expired&quot;, stop and report what happened.</code></pre></div>
 <p>A typical call from the agent then looks like this:</p>
-<div class="code-block"><pre><code class="hljs">impri_push_action(
+<div class="code-block"><pre><code class="hljs">airlock_push_action(
   kind=&quot;shell.exec&quot;,
   title=&quot;git push --force-with-lease origin release/2.4&quot;,
   preview={ format=&quot;markdown&quot;, body=&quot;```\ncd ~/work/api\ngit push --force-with-lease origin release/2.4\n```&quot; },
   expires_in=1800,
   editable=[&quot;preview.body&quot;]
 )
-impri_await_decision(action_id=&quot;act_...&quot;, timeout_s=900)</code></pre></div>
+airlock_await_decision(action_id=&quot;act_...&quot;, timeout_s=900)</code></pre></div>
 <p>A short <code>expires_in</code> (the minimum is 300 seconds) suits commands: a push you approve an hour late may no longer be the push you meant.</p>
 <hr>
 <h2 id="what-this-does-and-does-not-guarantee">What this does and does not guarantee</h2>
-<p>This is the part worth reading twice. A line in <code>GEMINI.md</code> is an <em>instruction</em>, and a model can ignore an instruction. Impri on its own is not a sandbox: it stores the proposed action, notifies you and holds the decision. It does not run, interpret or intercept anything.</p>
+<p>This is the part worth reading twice. A line in <code>GEMINI.md</code> is an <em>instruction</em>, and a model can ignore an instruction. Airlock on its own is not a sandbox: it stores the proposed action, notifies you and holds the decision. It does not run, interpret or intercept anything.</p>
 <p>It becomes a real gate only when the approved path is the agent&#39;s <strong>only</strong> path to the side effect:</p>
 <div class="table-wrap"><table>
 <thead>
@@ -218,7 +218,7 @@ impri_await_decision(action_id=&quot;act_...&quot;, timeout_s=900)</code></pre><
 <td>No — a convention the model can skip</td>
 </tr>
 <tr>
-<td>Dangerous credentials (cloud keys, deploy tokens) are not in the agent&#39;s environment; only a wrapper that checks Impri holds them</td>
+<td>Dangerous credentials (cloud keys, deploy tokens) are not in the agent&#39;s environment; only a wrapper that checks Airlock holds them</td>
 <td>Yes</td>
 </tr>
 <tr>
@@ -227,20 +227,20 @@ impri_await_decision(action_id=&quot;act_...&quot;, timeout_s=900)</code></pre><
 </tr>
 </tbody></table>
 </div>
-<p>So treat the policy file as the ergonomic layer and pair it with credential hygiene. Keep Gemini CLI&#39;s own sandbox and tool-confirmation settings on as well; Impri complements them rather than replacing them. Impri is also not a workflow engine and does not moderate content — it asks a human you trust.</p>
+<p>So treat the policy file as the ergonomic layer and pair it with credential hygiene. Keep Gemini CLI&#39;s own sandbox and tool-confirmation settings on as well; Airlock complements them rather than replacing them. Airlock is also not a workflow engine and does not moderate content — it asks a human you trust.</p>
 <hr>
 <h2 id="notifications-for-away-from-keyboard-sessions">Notifications for away-from-keyboard sessions</h2>
 <p>The point of an out-of-band gate is that you do not have to watch the terminal. Configure <a href="notifications">notifications</a> (email, ntfy or web push), or approve straight from chat via <a href="slack-approval">Slack</a> or <a href="telegram-approval">Telegram</a>. Pending cards are also listed in the <a href="inbox">inbox</a>, where you can approve, reject or edit.</p>
-<p>Remember that <code>impri_await_decision</code> blocks while it waits, so keep <code>timeout_s</code> modest and let the agent report a timeout instead of hanging for hours.</p>
+<p>Remember that <code>airlock_await_decision</code> blocks while it waits, so keep <code>timeout_s</code> modest and let the agent report a timeout instead of hanging for hours.</p>
 <hr>
 <h2 id="next-step">Next step</h2>
 <p>Get a key and push your first test action with the <a href="quickstart">quickstart</a>, then read the <a href="mcp">MCP guide</a> for the full tool reference.</p>
 
-    <aside class="doc-cta" aria-label="Try Impri">
+    <aside class="doc-cta" aria-label="Try Airlock">
   <p class="doc-cta-title">Add an approval step to your own agent</p>
-  <p>Start on Impri Cloud: the Free tier includes 100 approvals a month. Or self-host the MIT-licensed core with Docker Compose, with no tier limits.</p>
+  <p>Start on Airlock Cloud: the Free tier includes 100 approvals a month. Or self-host the MIT-licensed core with Docker Compose, with no tier limits.</p>
   <div class="doc-cta-actions">
-    <a class="btn btn-primary btn-sm" href="https://app.impri.dev/?signup=1">Start free on Impri Cloud</a>
+    <a class="btn btn-primary btn-sm" href="https://app.airlock.dev/?signup=1">Start free on Airlock Cloud</a>
     <a class="btn btn-ghost btn-sm" href="../docs/quickstart">Quick start</a>
     <a class="btn btn-ghost btn-sm" href="../docs/self-hosting">Self-host guide</a>
   </div>
@@ -324,7 +324,7 @@ impri_await_decision(action_id=&quot;act_...&quot;, timeout_s=900)</code></pre><
     <nav class="ptoc" aria-label="On this page">
 <div class="ptoc-label">On this page</div>
 <ul><li class="ptoc-h2"><a href="#why-a-terminal-prompt-is-not-enough">Why a terminal prompt is not enough</a></li>
-<li class="ptoc-h2"><a href="#step-1-register-the-impri-mcp-server">Step 1 — register the Impri MCP server</a></li>
+<li class="ptoc-h2"><a href="#step-1-register-the-airlock-mcp-server">Step 1 — register the Airlock MCP server</a></li>
 <li class="ptoc-h2"><a href="#step-2-tell-the-agent-when-it-must-ask">Step 2 — tell the agent when it must ask</a></li>
 <li class="ptoc-h2"><a href="#what-this-does-and-does-not-guarantee">What this does and does not guarantee</a></li>
 <li class="ptoc-h2"><a href="#notifications-for-away-from-keyboard-sessions">Notifications for away-from-keyboard sessions</a></li>
@@ -336,19 +336,19 @@ impri_await_decision(action_id=&quot;act_...&quot;, timeout_s=900)</code></pre><
 <footer class="footer">
 <div class="wrap footer-inner">
   <a class="brand" href="/">
-    <span class="mark"><svg viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.5 4.5L19 7.5" stroke="white" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Impri
+    <span class="mark"><svg viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.5 4.5L19 7.5" stroke="white" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Airlock
   </a>
   <div>
-    <a href="https://gitlab.com/sekera.radim/impri">GitLab</a>
+    <a href="https://gitlab.com/sekera.radim/airlock">GitLab</a>
     <a href="/docs">Docs</a>
-    <a href="https://gitlab.com/sekera.radim/impri/-/blob/main/LICENSE">MIT License</a>
-    <a href="https://www.npmjs.com/package/@impri/mcp">@impri/mcp</a>
+    <a href="https://gitlab.com/sekera.radim/airlock/-/blob/main/LICENSE">MIT License</a>
+    <a href="https://www.npmjs.com/package/@airlock/mcp">@airlock/mcp</a>
     <a href="/docs/privacy">Privacy</a>
     <a href="/docs/terms">Terms</a>
     <a href="https://sekera.dev">Contact</a>
   </div>
 </div>
-<div class="wrap" style="margin-top:18px"><span class="muted">© 2026 Impri · The imprimatur for your AI agents · Built by <a href="https://sekera.dev" style="color:inherit">Radim Sekera</a>. Also by the same maker: <a href="https://briefgate.dev/?utm_source=impri.dev&amp;utm_medium=referral" style="color:inherit">BriefGate</a> — client intake for agencies and AI agents.</span></div>
+<div class="wrap" style="margin-top:18px"><span class="muted">© 2026 Airlock · The airlockmatur for your AI agents · Built by <a href="https://sekera.dev" style="color:inherit">Radim Sekera</a>. Also by the same maker: <a href="https://briefgate.dev/?utm_source=airlock.dev&amp;utm_medium=referral" style="color:inherit">BriefGate</a> — client intake for agencies and AI agents.</span></div>
 </footer>
 </body>
 </html>

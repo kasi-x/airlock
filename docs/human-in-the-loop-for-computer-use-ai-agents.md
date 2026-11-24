@@ -18,7 +18,7 @@ The pattern is to keep the agent's screenshot-act loop exactly as it is, and add
 import time
 import requests
 
-IMPRI_KEY = "im_your_key_here"
+AIRLOCK_KEY = "im_your_key_here"
 SENSITIVE_LABELS = {"confirm payment", "send", "delete", "place order"}
 
 def execute_click(action: dict, screenshot_b64: str) -> dict:
@@ -27,8 +27,8 @@ def execute_click(action: dict, screenshot_b64: str) -> dict:
         return perform_click(action["x"], action["y"])  # runs immediately, no gate
 
     resp = requests.post(
-        "https://api.impri.dev/v1/actions",
-        headers={"Authorization": f"Bearer {IMPRI_KEY}"},
+        "https://api.airlock.dev/v1/actions",
+        headers={"Authorization": f"Bearer {AIRLOCK_KEY}"},
         json={
             "kind": "computer_use.click",
             "title": f"Click '{action['target_label']}' at ({action['x']}, {action['y']})",
@@ -45,8 +45,8 @@ def execute_click(action: dict, screenshot_b64: str) -> dict:
     while status == "pending":
         time.sleep(3)
         check = requests.get(
-            f"https://api.impri.dev/v1/actions/{action_id}",
-            headers={"Authorization": f"Bearer {IMPRI_KEY}"},
+            f"https://api.airlock.dev/v1/actions/{action_id}",
+            headers={"Authorization": f"Bearer {AIRLOCK_KEY}"},
         ).json()
         status = check["status"]
 

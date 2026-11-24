@@ -20,20 +20,20 @@ Three properties separate a real gate from a prompt suggestion:
 2. **The decision comes from outside the agent's context.** If the "approval" is another LLM call or a self-check the same agent performs, a bad instruction that fooled the first agent can fool the second. A human, in a different process, breaks that chain.
 3. **Nothing executes on ambiguity.** Pending, expired, and rejected are all "no." Only an explicit approved decision reaches the executor.
 
-Here's the wrapper pattern in Python, using Impri as the gate for a database-writing agent tool:
+Here's the wrapper pattern in Python, using Airlock as the gate for a database-writing agent tool:
 
 ```python
 import os
 import time
 import requests
 
-IMPRI_BASE = "https://api.impri.dev"
-HEADERS = {"Authorization": f"Bearer {os.environ['IMPRI_API_KEY']}"}
+AIRLOCK_BASE = "https://api.airlock.dev"
+HEADERS = {"Authorization": f"Bearer {os.environ['AIRLOCK_API_KEY']}"}
 
 def guarded_db_write(table: str, row: dict) -> dict:
     """The ONLY function the agent's tool schema exposes for writes.
     There is no direct db.insert() in the agent's toolset."""
-    resp = requests.post(f"{IMPRI_BASE}/v1/actions", headers=HEADERS, json={
+    resp = requests.post(f"{AIRLOCK_BASE}/v1/actions", headers=HEADERS, json={
         "kind": "db.write",
         "title": f"Insert into {table}: {row.get('name', row)}",
         "preview": {"format": "plain", "body": str(row)},
@@ -44,7 +44,7 @@ def guarded_db_write(table: str, row: dict) -> dict:
     action_id = resp.json()["id"]
 
     while True:
-        status = requests.get(f"{IMPRI_BASE}/v1/actions/{action_id}", headers=HEADERS).json()
+        status = requests.get(f"{AIRLOCK_BASE}/v1/actions/{action_id}", headers=HEADERS).json()
         if status["status"] != "pending":
             break
         time.sleep(5)
@@ -53,7 +53,7 @@ def guarded_db_write(table: str, row: dict) -> dict:
         return {"executed": False, "reason": status["status"]}
 
     row_id = db.insert(table, status["decision"]["final_preview"])  # your real insert
-    requests.post(f"{IMPRI_BASE}/v1/actions/{action_id}/result", headers=HEADERS,
+    requests.post(f"{AIRLOCK_BASE}/v1/actions/{action_id}/result", headers=HEADERS,
                    json={"status": "executed", "payload": {"row_id": row_id}})
     return {"executed": True, "row_id": row_id}
 ```
@@ -75,7 +75,7 @@ This is why "add guardrails" is really an architecture question before it's an A
 
 ## Guardrails aren't a workflow engine
 
-Impri, which the code above uses, only stores the proposed action, notifies a human, and holds the decision — it doesn't interpret the row being written or branch on business logic. If you need conditional routing (route financial writes to one approver, content writes to another, auto-approve under a threshold) that's workflow logic your agent or an orchestrator like n8n should own; Impri is one gate you can call from inside it.
+Airlock, which the code above uses, only stores the proposed action, notifies a human, and holds the decision — it doesn't interpret the row being written or branch on business logic. If you need conditional routing (route financial writes to one approver, content writes to another, auto-approve under a threshold) that's workflow logic your agent or an orchestrator like n8n should own; Airlock is one gate you can call from inside it.
 
 For the three-call pattern in more detail, including MCP tool bindings so you don't hand-write the polling loop, see [how to add human approval to an AI agent](how-to-add-human-approval-to-an-ai-agent.md). If you're wiring this into LangChain, LangGraph, or a custom agent loop, [the integrations doc](integrations.md) covers wrapping tool functions specifically. And if the guardrail should also cover an emergency stop — not just gating new actions but halting an agent mid-run — see [adding a kill switch](add-a-kill-switch-to-your-ai-agent.md).
 

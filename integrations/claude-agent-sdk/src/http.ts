@@ -1,17 +1,17 @@
 /**
  * Low-level HTTP client using the global fetch API (Node 18+).
- * Translates API error status codes into typed ImpriError subclasses.
+ * Translates API error status codes into typed AirlockError subclasses.
  */
 
 import {
-  ImpriApiError,
-  ImpriConflict,
-  ImpriExpired,
-  ImpriNotFound,
-  ImpriQuotaExceeded,
-  ImpriRateLimited,
-  ImpriUnauthorized,
-  ImpriValidationError,
+  AirlockApiError,
+  AirlockConflict,
+  AirlockExpired,
+  AirlockNotFound,
+  AirlockQuotaExceeded,
+  AirlockRateLimited,
+  AirlockUnauthorized,
+  AirlockValidationError,
 } from "./errors.js";
 
 export interface HttpConfig {
@@ -20,7 +20,7 @@ export interface HttpConfig {
 }
 
 /**
- * Execute an authenticated request against the Impri API.
+ * Execute an authenticated request against the Airlock API.
  * The base URL must not include /v1; it is prepended automatically.
  */
 export async function apiRequest<T>(
@@ -72,34 +72,34 @@ async function throwApiError(res: Response): Promise<never> {
   switch (res.status) {
     case 401:
     case 403:
-      throw new ImpriUnauthorized(
+      throw new AirlockUnauthorized(
         `Authentication failed (${res.status}): ${message}`,
         res.status,
         body,
       );
 
     case 404:
-      throw new ImpriNotFound(`Not found: ${message}`, body);
+      throw new AirlockNotFound(`Not found: ${message}`, body);
 
     case 409:
-      throw new ImpriConflict(`Conflict: ${message}`, body);
+      throw new AirlockConflict(`Conflict: ${message}`, body);
 
     case 410:
-      throw new ImpriExpired(`Expired: ${message}`, body);
+      throw new AirlockExpired(`Expired: ${message}`, body);
 
     case 429: {
       const retryAfterRaw = res.headers.get("Retry-After");
       const retryAfter = retryAfterRaw ? parseInt(retryAfterRaw, 10) : undefined;
-      throw new ImpriRateLimited(`Rate limited: ${message}`, body, retryAfter);
+      throw new AirlockRateLimited(`Rate limited: ${message}`, body, retryAfter);
     }
 
     case 402:
-      throw new ImpriQuotaExceeded(`Quota exceeded: ${message}`, body);
+      throw new AirlockQuotaExceeded(`Quota exceeded: ${message}`, body);
 
     case 400:
     case 422: {
       const issues = Array.isArray(body["issues"]) ? (body["issues"] as unknown[]) : [];
-      throw new ImpriValidationError(
+      throw new AirlockValidationError(
         `Validation error (${res.status}): ${message}`,
         res.status,
         body,
@@ -108,8 +108,8 @@ async function throwApiError(res: Response): Promise<never> {
     }
 
     default:
-      throw new ImpriApiError(
-        `Impri API error ${res.status}: ${message}`,
+      throw new AirlockApiError(
+        `Airlock API error ${res.status}: ${message}`,
         res.status,
         body,
       );

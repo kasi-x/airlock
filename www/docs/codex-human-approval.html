@@ -3,21 +3,21 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Add human approval to OpenAI Codex with Impri — Impri Docs</title>
+<title>Add human approval to OpenAI Codex with Airlock — Airlock Docs</title>
 <meta name="description" content="Wrap Codex's risky tool calls — deploys, database writes, outbound messages, refunds — behind an explicit human decision before any of them are allowed to run.">
 <meta name="theme-color" content="#06070d">
-<meta property="og:title" content="Add human approval to OpenAI Codex with Impri — Impri Docs">
+<meta property="og:title" content="Add human approval to OpenAI Codex with Airlock — Airlock Docs">
 <meta property="og:description" content="Wrap Codex's risky tool calls — deploys, database writes, outbound messages, refunds — behind an explicit human decision before any of them are allowed to run.">
 <meta property="og:type" content="article">
-<meta property="og:url" content="https://impri.dev/docs/codex-human-approval">
-<meta property="og:image" content="https://impri.dev/assets/og/og-docs.png">
+<meta property="og:url" content="https://airlock.dev/docs/codex-human-approval">
+<meta property="og:image" content="https://airlock.dev/assets/og/og-docs.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
-<meta property="og:image:alt" content="Impri — human-in-the-loop approval inbox for AI agents">
+<meta property="og:image:alt" content="Airlock — human-in-the-loop approval inbox for AI agents">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="https://impri.dev/assets/og/og-docs.png">
-<link rel="canonical" href="https://impri.dev/docs/codex-human-approval">
-<script type="application/ld+json">{"@context":"https://schema.org","@type":"TechArticle","headline":"Add human approval to OpenAI Codex with Impri","description":"Wrap Codex's risky tool calls — deploys, database writes, outbound messages, refunds — behind an explicit human decision before any of them are allowed to run.","url":"https://impri.dev/docs/codex-human-approval","inLanguage":"en","author":{"@type":"Organization","name":"Impri","url":"https://impri.dev"},"publisher":{"@type":"Organization","name":"Impri","url":"https://impri.dev"}}</script>
+<meta name="twitter:image" content="https://airlock.dev/assets/og/og-docs.png">
+<link rel="canonical" href="https://airlock.dev/docs/codex-human-approval">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"TechArticle","headline":"Add human approval to OpenAI Codex with Airlock","description":"Wrap Codex's risky tool calls — deploys, database writes, outbound messages, refunds — behind an explicit human decision before any of them are allowed to run.","url":"https://airlock.dev/docs/codex-human-approval","inLanguage":"en","author":{"@type":"Organization","name":"Airlock","url":"https://airlock.dev"},"publisher":{"@type":"Organization","name":"Airlock","url":"https://airlock.dev"}}</script>
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <link rel="icon" href="/favicon.ico" sizes="32x32">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='9' fill='%236366f1'/%3E%3Cpath d='M9 16.5l4.5 4.5L23 11' stroke='white' stroke-width='3' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
@@ -132,13 +132,13 @@ pre code.hljs{display:block;overflow-x:auto}
 <div class="wrap nav-inner">
   <a class="brand" href="/">
     <span class="mark"><svg viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.5 4.5L19 7.5" stroke="white" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
-    Impri
+    Airlock
   </a>
   <div class="nav-links">
     <a class="link" href="/#how">How it works</a>
     <a class="link" href="/#pricing">Pricing</a>
     <a class="link active-nav" href="../docs">Docs</a>
-    <a class="btn btn-primary btn-sm" href="https://gitlab.com/sekera.radim/impri">GitLab</a>
+    <a class="btn btn-primary btn-sm" href="https://gitlab.com/sekera.radim/airlock">GitLab</a>
   </div>
 </div>
 </nav>
@@ -150,27 +150,27 @@ pre code.hljs{display:block;overflow-x:auto}
       <span class="bc-sep">/</span>
       <span>Install</span>
       <span class="bc-sep">/</span>
-      <span>Add human approval to OpenAI Codex with Impri</span>
+      <span>Add human approval to OpenAI Codex with Airlock</span>
     </nav>
-    <h1>Add human approval to OpenAI Codex with Impri</h1>
+    <h1>Add human approval to OpenAI Codex with Airlock</h1>
 <p>Wrap Codex&#39;s risky tool calls — deploys, database writes, outbound messages, refunds — behind an explicit human decision before any of them are allowed to run.</p>
 <h2 id="60-second-install">60-second install</h2>
-<div class="code-block"><span class="code-lang">bash</span><pre><code class="hljs">codex mcp add impri \
-  --<span class="hljs-built_in">env</span> IMPRI_API_KEY=im_your_key_here \
-  --<span class="hljs-built_in">env</span> IMPRI_BASE_URL=https://api.impri.dev \
-  -- npx -y @impri/mcp</code></pre></div>
-<p><code>IMPRI_BASE_URL</code> defaults to <code>http://localhost:8484</code> (self-hosted) — set it explicitly for the cloud API as above, or drop it entirely if you&#39;re actually running <code>docker compose up -d</code> locally.</p>
-<p>Get a key at <a href="https://impri.dev" target="_blank" rel="noopener">impri.dev</a> or self-host per <a href="self-hosting">self-hosting</a>. List configured servers with <code>codex mcp list</code> to confirm <code>impri</code> shows up with its 8 tools.</p>
+<div class="code-block"><span class="code-lang">bash</span><pre><code class="hljs">codex mcp add airlock \
+  --<span class="hljs-built_in">env</span> AIRLOCK_API_KEY=im_your_key_here \
+  --<span class="hljs-built_in">env</span> AIRLOCK_BASE_URL=https://api.airlock.dev \
+  -- npx -y @airlock/mcp</code></pre></div>
+<p><code>AIRLOCK_BASE_URL</code> defaults to <code>http://localhost:8484</code> (self-hosted) — set it explicitly for the cloud API as above, or drop it entirely if you&#39;re actually running <code>docker compose up -d</code> locally.</p>
+<p>Get a key at <a href="https://airlock.dev" target="_blank" rel="noopener">airlock.dev</a> or self-host per <a href="self-hosting">self-hosting</a>. List configured servers with <code>codex mcp list</code> to confirm <code>airlock</code> shows up with its 8 tools.</p>
 <h2 id="tell-codex-to-use-it">Tell Codex to use it</h2>
 <p>Add to your <code>AGENTS.md</code> or system prompt:</p>
 <div class="code-block"><span class="code-lang">markdown</span><pre><code class="hljs"><span class="hljs-section">## Human approval</span>
 Before any action with a real side effect (send, deploy, delete, pay, publish), call
-impri<span class="hljs-emphasis">_push_</span>action with a clear preview and impri<span class="hljs-emphasis">_await_</span>decision before proceeding.
+airlock<span class="hljs-emphasis">_push_</span>action with a clear preview and airlock<span class="hljs-emphasis">_await_</span>decision before proceeding.
 Do not execute on rejection or timeout — report it and stop that step.</code></pre></div>
 <h2 id="what-you-see">What you see</h2>
-<p>The action appears in the Impri inbox with its title, preview, and a Approve/Reject/Edit control. If a <a href="notifications">notification channel</a> is configured, you also get pushed a card in Slack, Discord, Telegram, or as a web push — so you don&#39;t have to keep a browser tab open while Codex runs.</p>
+<p>The action appears in the Airlock inbox with its title, preview, and a Approve/Reject/Edit control. If a <a href="notifications">notification channel</a> is configured, you also get pushed a card in Slack, Discord, Telegram, or as a web push — so you don&#39;t have to keep a browser tab open while Codex runs.</p>
 <h2 id="real-example-call">Real example call</h2>
-<div class="code-block"><pre><code class="hljs">impri_push_action({
+<div class="code-block"><pre><code class="hljs">airlock_push_action({
   kind: &quot;payment.refund&quot;,
   title: &quot;Refund $84.00 to order #10432 — damaged item&quot;,
   preview: { format: &quot;plain&quot;, body: &quot;Order #10432, $84.00 full refund. Customer provided photos.&quot; },
@@ -181,13 +181,13 @@ Do not execute on rejection or timeout — report it and stop that step.</code><
 <div class="code-block"><span class="code-lang">json</span><pre><code class="hljs"><span class="hljs-punctuation">{</span>
   <span class="hljs-attr">&quot;action_id&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;act_5jf8...&quot;</span><span class="hljs-punctuation">,</span>
   <span class="hljs-attr">&quot;status&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;pending&quot;</span><span class="hljs-punctuation">,</span>
-  <span class="hljs-attr">&quot;inbox_url&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;https://app.impri.dev/inbox/act_5jf8...&quot;</span>
+  <span class="hljs-attr">&quot;inbox_url&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;https://app.airlock.dev/inbox/act_5jf8...&quot;</span>
 <span class="hljs-punctuation">}</span></code></pre></div>
 <h2 id="troubleshooting">Troubleshooting</h2>
 <ul>
-<li><strong><code>codex mcp add</code> accepted but tools never show up</strong> — check the server started at all with <code>codex mcp list</code>; a missing <code>-- npx -y @impri/mcp</code> (note the <code>--</code> separator) is the most common typo.</li>
-<li><strong><code>IMPRI_API_KEY is not set</code> at call time</strong> — env vars passed with <code>--env</code> are per-server; confirm you didn&#39;t fat-finger the flag on a re-run and end up with two <code>impri</code> entries, one without the key.</li>
-<li><strong>Codex times out waiting on <code>impri_await_decision</code></strong> — that&#39;s expected if nobody has decided yet; the default is 5 minutes, pass a longer <code>timeout_s</code> for anything that should survive an overnight run.</li>
+<li><strong><code>codex mcp add</code> accepted but tools never show up</strong> — check the server started at all with <code>codex mcp list</code>; a missing <code>-- npx -y @airlock/mcp</code> (note the <code>--</code> separator) is the most common typo.</li>
+<li><strong><code>AIRLOCK_API_KEY is not set</code> at call time</strong> — env vars passed with <code>--env</code> are per-server; confirm you didn&#39;t fat-finger the flag on a re-run and end up with two <code>airlock</code> entries, one without the key.</li>
+<li><strong>Codex times out waiting on <code>airlock_await_decision</code></strong> — that&#39;s expected if nobody has decided yet; the default is 5 minutes, pass a longer <code>timeout_s</code> for anything that should survive an overnight run.</li>
 </ul>
 <h2 id="next">Next</h2>
 <p><a href="how-to-add-human-approval-to-an-ai-agent">Read the full human approval pattern</a>, or see <a href="/use-cases/refunds-and-payments">gating refunds and payments</a> end to end.</p>
@@ -276,19 +276,19 @@ Do not execute on rejection or timeout — report it and stop that step.</code><
 <footer class="footer">
 <div class="wrap footer-inner">
   <a class="brand" href="/">
-    <span class="mark"><svg viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.5 4.5L19 7.5" stroke="white" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Impri
+    <span class="mark"><svg viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.5 4.5L19 7.5" stroke="white" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Airlock
   </a>
   <div>
-    <a href="https://gitlab.com/sekera.radim/impri">GitLab</a>
+    <a href="https://gitlab.com/sekera.radim/airlock">GitLab</a>
     <a href="/docs">Docs</a>
-    <a href="https://gitlab.com/sekera.radim/impri/-/blob/main/LICENSE">MIT License</a>
-    <a href="https://www.npmjs.com/package/@impri/mcp">@impri/mcp</a>
+    <a href="https://gitlab.com/sekera.radim/airlock/-/blob/main/LICENSE">MIT License</a>
+    <a href="https://www.npmjs.com/package/@airlock/mcp">@airlock/mcp</a>
     <a href="/docs/privacy">Privacy</a>
     <a href="/docs/terms">Terms</a>
     <a href="https://sekera.dev">Contact</a>
   </div>
 </div>
-<div class="wrap" style="margin-top:18px"><span class="muted">© 2026 Impri · The imprimatur for your AI agents · Built by <a href="https://sekera.dev" style="color:inherit">Radim Sekera</a>. Also by the same maker: <a href="https://briefgate.dev/?utm_source=impri.dev&amp;utm_medium=referral" style="color:inherit">BriefGate</a> — client intake for agencies and AI agents.</span></div>
+<div class="wrap" style="margin-top:18px"><span class="muted">© 2026 Airlock · The airlockmatur for your AI agents · Built by <a href="https://sekera.dev" style="color:inherit">Radim Sekera</a>. Also by the same maker: <a href="https://briefgate.dev/?utm_source=airlock.dev&amp;utm_medium=referral" style="color:inherit">BriefGate</a> — client intake for agencies and AI agents.</span></div>
 </footer>
 </body>
 </html>

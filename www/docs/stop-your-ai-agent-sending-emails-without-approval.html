@@ -3,21 +3,21 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Stop Your AI Agent From Sending Emails Without Approval — Impri Docs</title>
+<title>Stop Your AI Agent From Sending Emails Without Approval — Airlock Docs</title>
 <meta name="description" content="Stop your AI agent from sending emails without approval by gating the send call behind a human decision, so a bad draft never reaches a real inbox.">
 <meta name="theme-color" content="#06070d">
-<meta property="og:title" content="Stop Your AI Agent From Sending Emails Without Approval — Impri Docs">
+<meta property="og:title" content="Stop Your AI Agent From Sending Emails Without Approval — Airlock Docs">
 <meta property="og:description" content="Stop your AI agent from sending emails without approval by gating the send call behind a human decision, so a bad draft never reaches a real inbox.">
 <meta property="og:type" content="article">
-<meta property="og:url" content="https://impri.dev/docs/stop-your-ai-agent-sending-emails-without-approval">
-<meta property="og:image" content="https://impri.dev/assets/og/og-docs.png">
+<meta property="og:url" content="https://airlock.dev/docs/stop-your-ai-agent-sending-emails-without-approval">
+<meta property="og:image" content="https://airlock.dev/assets/og/og-docs.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
-<meta property="og:image:alt" content="Impri — human-in-the-loop approval inbox for AI agents">
+<meta property="og:image:alt" content="Airlock — human-in-the-loop approval inbox for AI agents">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="https://impri.dev/assets/og/og-docs.png">
-<link rel="canonical" href="https://impri.dev/docs/stop-your-ai-agent-sending-emails-without-approval">
-<script type="application/ld+json">{"@context":"https://schema.org","@type":"TechArticle","headline":"Stop Your AI Agent From Sending Emails Without Approval","description":"Stop your AI agent from sending emails without approval by gating the send call behind a human decision, so a bad draft never reaches a real inbox.","url":"https://impri.dev/docs/stop-your-ai-agent-sending-emails-without-approval","inLanguage":"en","author":{"@type":"Organization","name":"Impri","url":"https://impri.dev"},"publisher":{"@type":"Organization","name":"Impri","url":"https://impri.dev"}}</script>
+<meta name="twitter:image" content="https://airlock.dev/assets/og/og-docs.png">
+<link rel="canonical" href="https://airlock.dev/docs/stop-your-ai-agent-sending-emails-without-approval">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"TechArticle","headline":"Stop Your AI Agent From Sending Emails Without Approval","description":"Stop your AI agent from sending emails without approval by gating the send call behind a human decision, so a bad draft never reaches a real inbox.","url":"https://airlock.dev/docs/stop-your-ai-agent-sending-emails-without-approval","inLanguage":"en","author":{"@type":"Organization","name":"Airlock","url":"https://airlock.dev"},"publisher":{"@type":"Organization","name":"Airlock","url":"https://airlock.dev"}}</script>
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <link rel="icon" href="/favicon.ico" sizes="32x32">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='9' fill='%236366f1'/%3E%3Cpath d='M9 16.5l4.5 4.5L23 11' stroke='white' stroke-width='3' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
@@ -132,13 +132,13 @@ pre code.hljs{display:block;overflow-x:auto}
 <div class="wrap nav-inner">
   <a class="brand" href="/">
     <span class="mark"><svg viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.5 4.5L19 7.5" stroke="white" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
-    Impri
+    Airlock
   </a>
   <div class="nav-links">
     <a class="link" href="/#how">How it works</a>
     <a class="link" href="/#pricing">Pricing</a>
     <a class="link active-nav" href="../docs">Docs</a>
-    <a class="btn btn-primary btn-sm" href="https://gitlab.com/sekera.radim/impri">GitLab</a>
+    <a class="btn btn-primary btn-sm" href="https://gitlab.com/sekera.radim/airlock">GitLab</a>
   </div>
 </div>
 </nav>
@@ -159,14 +159,14 @@ pre code.hljs{display:block;overflow-x:auto}
 <p>An outreach agent, a support-ticket responder, a newsletter drafter — the pattern repeats: someone wires an LLM to <code>sendEmail()</code>, tests it on three good examples, ships it, and a week later it sends something embarrassing, wrong, or to the wrong person. Emails are close to the worst case for &quot;let the agent just do it&quot; — there&#39;s no undo, the recipient sees exactly what the model produced, and by the time you notice, it&#39;s already delivered.</p>
 <p>Telling the agent &quot;always ask before sending&quot; in the system prompt doesn&#39;t hold up. It&#39;s a suggestion the model can talk itself out of under the right (or adversarial) context, and it leaves no record of what was approved. What actually works is making the send function itself unreachable until an external system says &quot;approved.&quot;</p>
 <h2 id="wrapping-the-send-call">Wrapping the send call</h2>
-<p>The agent keeps drafting exactly as before. The only change is what happens after the draft is ready: instead of calling your mail API, it calls Impri, then blocks until a human decides, then calls your mail API — but only in the approved branch.</p>
-<div class="code-block"><span class="code-lang">typescript</span><pre><code class="hljs"><span class="hljs-keyword">import</span> { <span class="hljs-title class_">ImpriClient</span>, <span class="hljs-title class_">ImpriRejected</span>, <span class="hljs-title class_">ImpriExpired</span>, <span class="hljs-title class_">ImpriTimeout</span> } <span class="hljs-keyword">from</span> <span class="hljs-string">&quot;@impri/sdk&quot;</span>;
+<p>The agent keeps drafting exactly as before. The only change is what happens after the draft is ready: instead of calling your mail API, it calls Airlock, then blocks until a human decides, then calls your mail API — but only in the approved branch.</p>
+<div class="code-block"><span class="code-lang">typescript</span><pre><code class="hljs"><span class="hljs-keyword">import</span> { <span class="hljs-title class_">AirlockClient</span>, <span class="hljs-title class_">AirlockRejected</span>, <span class="hljs-title class_">AirlockExpired</span>, <span class="hljs-title class_">AirlockTimeout</span> } <span class="hljs-keyword">from</span> <span class="hljs-string">&quot;@airlock/sdk&quot;</span>;
 <span class="hljs-keyword">import</span> { sendEmail } <span class="hljs-keyword">from</span> <span class="hljs-string">&quot;./mailer&quot;</span>;
 
-<span class="hljs-keyword">const</span> impri = <span class="hljs-keyword">new</span> <span class="hljs-title class_">ImpriClient</span>({ <span class="hljs-attr">apiKey</span>: process.<span class="hljs-property">env</span>.<span class="hljs-property">IMPRI_API_KEY</span>! });
+<span class="hljs-keyword">const</span> airlock = <span class="hljs-keyword">new</span> <span class="hljs-title class_">AirlockClient</span>({ <span class="hljs-attr">apiKey</span>: process.<span class="hljs-property">env</span>.<span class="hljs-property">AIRLOCK_API_KEY</span>! });
 
 <span class="hljs-keyword">async</span> <span class="hljs-keyword">function</span> <span class="hljs-title function_">proposeAndSendEmail</span>(<span class="hljs-params"><span class="hljs-attr">to</span>: <span class="hljs-built_in">string</span>, <span class="hljs-attr">subject</span>: <span class="hljs-built_in">string</span>, <span class="hljs-attr">body</span>: <span class="hljs-built_in">string</span></span>) {
-  <span class="hljs-keyword">const</span> action = <span class="hljs-keyword">await</span> impri.<span class="hljs-title function_">createAction</span>({
+  <span class="hljs-keyword">const</span> action = <span class="hljs-keyword">await</span> airlock.<span class="hljs-title function_">createAction</span>({
     <span class="hljs-attr">kind</span>: <span class="hljs-string">&quot;email.send&quot;</span>,
     <span class="hljs-attr">title</span>: <span class="hljs-string">`Send to <span class="hljs-subst">${to}</span>: <span class="hljs-subst">${subject}</span>`</span>,
     <span class="hljs-attr">preview</span>: { <span class="hljs-attr">format</span>: <span class="hljs-string">&quot;markdown&quot;</span>, body },
@@ -178,9 +178,9 @@ pre code.hljs{display:block;overflow-x:auto}
 
   <span class="hljs-keyword">let</span> decided;
   <span class="hljs-keyword">try</span> {
-    decided = <span class="hljs-keyword">await</span> impri.<span class="hljs-title function_">awaitDecision</span>(action.<span class="hljs-property">id</span>, { <span class="hljs-attr">timeoutS</span>: <span class="hljs-number">21600</span> });
+    decided = <span class="hljs-keyword">await</span> airlock.<span class="hljs-title function_">awaitDecision</span>(action.<span class="hljs-property">id</span>, { <span class="hljs-attr">timeoutS</span>: <span class="hljs-number">21600</span> });
   } <span class="hljs-keyword">catch</span> (err) {
-    <span class="hljs-keyword">if</span> (err <span class="hljs-keyword">instanceof</span> <span class="hljs-title class_">ImpriRejected</span> || err <span class="hljs-keyword">instanceof</span> <span class="hljs-title class_">ImpriExpired</span> || err <span class="hljs-keyword">instanceof</span> <span class="hljs-title class_">ImpriTimeout</span>) {
+    <span class="hljs-keyword">if</span> (err <span class="hljs-keyword">instanceof</span> <span class="hljs-title class_">AirlockRejected</span> || err <span class="hljs-keyword">instanceof</span> <span class="hljs-title class_">AirlockExpired</span> || err <span class="hljs-keyword">instanceof</span> <span class="hljs-title class_">AirlockTimeout</span>) {
       <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-string">`Not sending — <span class="hljs-subst">${err.message}</span>`</span>);
       <span class="hljs-keyword">return</span>;
     }
@@ -191,7 +191,7 @@ pre code.hljs{display:block;overflow-x:auto}
   <span class="hljs-keyword">const</span> finalBody = decided.<span class="hljs-property">decision</span>?.<span class="hljs-property">final_preview</span>?.<span class="hljs-property">body</span> ?? decided.<span class="hljs-property">preview</span>.<span class="hljs-property">body</span>;
   <span class="hljs-keyword">await</span> <span class="hljs-title function_">sendEmail</span>(to, subject, finalBody);
 
-  <span class="hljs-keyword">await</span> impri.<span class="hljs-title function_">reportResult</span>(decided.<span class="hljs-property">id</span>, <span class="hljs-string">&quot;executed&quot;</span>);
+  <span class="hljs-keyword">await</span> airlock.<span class="hljs-title function_">reportResult</span>(decided.<span class="hljs-property">id</span>, <span class="hljs-string">&quot;executed&quot;</span>);
 }</code></pre></div>
 <p>The <code>sendEmail</code> call only exists after <code>awaitDecision</code> resolves without throwing — a rejection or expiry throws before that line is ever reached, so there is no code path where the agent&#39;s own reasoning decides to send. That&#39;s the difference between a gate and a suggestion.</p>
 <h2 id="letting-the-reviewer-fix-the-draft-not-just-reject-it">Letting the reviewer fix the draft, not just reject it</h2>
@@ -225,16 +225,16 @@ pre code.hljs{display:block;overflow-x:auto}
 </div>
 <p>A useful rule of thumb: gate anything where the recipient is external and the content was authored by the model, not a fixed template.</p>
 <h2 id="what-this-does-and-doesn39t-guarantee">What this does and doesn&#39;t guarantee</h2>
-<p>Impri stores the drafted email, notifies you (email, Slack, Telegram, whatever channel you&#39;ve set up — see <a href="slack-approval">Slack approval</a> and <a href="telegram-approval">Telegram approval</a>), and holds the decision. It does not read the email for tone or accuracy, and it does not send anything itself — your code still owns the actual <code>sendEmail</code> call.</p>
+<p>Airlock stores the drafted email, notifies you (email, Slack, Telegram, whatever channel you&#39;ve set up — see <a href="slack-approval">Slack approval</a> and <a href="telegram-approval">Telegram approval</a>), and holds the decision. It does not read the email for tone or accuracy, and it does not send anything itself — your code still owns the actual <code>sendEmail</code> call.</p>
 <p>The gate is only as strong as the wiring: if the agent process also holds direct SMTP or API credentials it could call instead of going through this flow, nothing stops it from bypassing the gate under the wrong conditions. Keep the send credentials reachable only from the code path shown above, ideally in a separate wrapper the agent&#39;s own reasoning can&#39;t touch directly.</p>
 <h2 id="next-step">Next step</h2>
 <p>If you&#39;re integrating inside Claude Code or another MCP client rather than raw TypeScript, see <a href="mcp">MCP</a> for the tool-call version of this same flow, or start from the <a href="quickstart">quickstart</a> to get an API key first.</p>
 
-    <aside class="doc-cta" aria-label="Try Impri">
+    <aside class="doc-cta" aria-label="Try Airlock">
   <p class="doc-cta-title">Add an approval step to your own agent</p>
-  <p>Start on Impri Cloud: the Free tier includes 100 approvals a month. Or self-host the MIT-licensed core with Docker Compose, with no tier limits.</p>
+  <p>Start on Airlock Cloud: the Free tier includes 100 approvals a month. Or self-host the MIT-licensed core with Docker Compose, with no tier limits.</p>
   <div class="doc-cta-actions">
-    <a class="btn btn-primary btn-sm" href="https://app.impri.dev/?signup=1">Start free on Impri Cloud</a>
+    <a class="btn btn-primary btn-sm" href="https://app.airlock.dev/?signup=1">Start free on Airlock Cloud</a>
     <a class="btn btn-ghost btn-sm" href="../docs/quickstart">Quick start</a>
     <a class="btn btn-ghost btn-sm" href="../docs/self-hosting">Self-host guide</a>
   </div>
@@ -330,19 +330,19 @@ pre code.hljs{display:block;overflow-x:auto}
 <footer class="footer">
 <div class="wrap footer-inner">
   <a class="brand" href="/">
-    <span class="mark"><svg viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.5 4.5L19 7.5" stroke="white" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Impri
+    <span class="mark"><svg viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.5 4.5L19 7.5" stroke="white" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Airlock
   </a>
   <div>
-    <a href="https://gitlab.com/sekera.radim/impri">GitLab</a>
+    <a href="https://gitlab.com/sekera.radim/airlock">GitLab</a>
     <a href="/docs">Docs</a>
-    <a href="https://gitlab.com/sekera.radim/impri/-/blob/main/LICENSE">MIT License</a>
-    <a href="https://www.npmjs.com/package/@impri/mcp">@impri/mcp</a>
+    <a href="https://gitlab.com/sekera.radim/airlock/-/blob/main/LICENSE">MIT License</a>
+    <a href="https://www.npmjs.com/package/@airlock/mcp">@airlock/mcp</a>
     <a href="/docs/privacy">Privacy</a>
     <a href="/docs/terms">Terms</a>
     <a href="https://sekera.dev">Contact</a>
   </div>
 </div>
-<div class="wrap" style="margin-top:18px"><span class="muted">© 2026 Impri · The imprimatur for your AI agents · Built by <a href="https://sekera.dev" style="color:inherit">Radim Sekera</a>. Also by the same maker: <a href="https://briefgate.dev/?utm_source=impri.dev&amp;utm_medium=referral" style="color:inherit">BriefGate</a> — client intake for agencies and AI agents.</span></div>
+<div class="wrap" style="margin-top:18px"><span class="muted">© 2026 Airlock · The airlockmatur for your AI agents · Built by <a href="https://sekera.dev" style="color:inherit">Radim Sekera</a>. Also by the same maker: <a href="https://briefgate.dev/?utm_source=airlock.dev&amp;utm_medium=referral" style="color:inherit">BriefGate</a> — client intake for agencies and AI agents.</span></div>
 </footer>
 </body>
 </html>

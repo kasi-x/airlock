@@ -3,21 +3,21 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Add human approval to Claude Code with Impri — Impri Docs</title>
+<title>Add human approval to Claude Code with Airlock — Airlock Docs</title>
 <meta name="description" content="Give Claude Code a way to pause on risky actions — a deploy, an email, a database write, a payment — and wait for your yes before it proceeds with any of them.">
 <meta name="theme-color" content="#06070d">
-<meta property="og:title" content="Add human approval to Claude Code with Impri — Impri Docs">
+<meta property="og:title" content="Add human approval to Claude Code with Airlock — Airlock Docs">
 <meta property="og:description" content="Give Claude Code a way to pause on risky actions — a deploy, an email, a database write, a payment — and wait for your yes before it proceeds with any of them.">
 <meta property="og:type" content="article">
-<meta property="og:url" content="https://impri.dev/docs/claude-code-human-approval">
-<meta property="og:image" content="https://impri.dev/assets/og/og-docs.png">
+<meta property="og:url" content="https://airlock.dev/docs/claude-code-human-approval">
+<meta property="og:image" content="https://airlock.dev/assets/og/og-docs.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
-<meta property="og:image:alt" content="Impri — human-in-the-loop approval inbox for AI agents">
+<meta property="og:image:alt" content="Airlock — human-in-the-loop approval inbox for AI agents">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="https://impri.dev/assets/og/og-docs.png">
-<link rel="canonical" href="https://impri.dev/docs/claude-code-human-approval">
-<script type="application/ld+json">{"@context":"https://schema.org","@type":"TechArticle","headline":"Add human approval to Claude Code with Impri","description":"Give Claude Code a way to pause on risky actions — a deploy, an email, a database write, a payment — and wait for your yes before it proceeds with any of them.","url":"https://impri.dev/docs/claude-code-human-approval","inLanguage":"en","author":{"@type":"Organization","name":"Impri","url":"https://impri.dev"},"publisher":{"@type":"Organization","name":"Impri","url":"https://impri.dev"}}</script>
+<meta name="twitter:image" content="https://airlock.dev/assets/og/og-docs.png">
+<link rel="canonical" href="https://airlock.dev/docs/claude-code-human-approval">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"TechArticle","headline":"Add human approval to Claude Code with Airlock","description":"Give Claude Code a way to pause on risky actions — a deploy, an email, a database write, a payment — and wait for your yes before it proceeds with any of them.","url":"https://airlock.dev/docs/claude-code-human-approval","inLanguage":"en","author":{"@type":"Organization","name":"Airlock","url":"https://airlock.dev"},"publisher":{"@type":"Organization","name":"Airlock","url":"https://airlock.dev"}}</script>
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <link rel="icon" href="/favicon.ico" sizes="32x32">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='9' fill='%236366f1'/%3E%3Cpath d='M9 16.5l4.5 4.5L23 11' stroke='white' stroke-width='3' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
@@ -132,13 +132,13 @@ pre code.hljs{display:block;overflow-x:auto}
 <div class="wrap nav-inner">
   <a class="brand" href="/">
     <span class="mark"><svg viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.5 4.5L19 7.5" stroke="white" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
-    Impri
+    Airlock
   </a>
   <div class="nav-links">
     <a class="link" href="/#how">How it works</a>
     <a class="link" href="/#pricing">Pricing</a>
     <a class="link active-nav" href="../docs">Docs</a>
-    <a class="btn btn-primary btn-sm" href="https://gitlab.com/sekera.radim/impri">GitLab</a>
+    <a class="btn btn-primary btn-sm" href="https://gitlab.com/sekera.radim/airlock">GitLab</a>
   </div>
 </div>
 </nav>
@@ -150,30 +150,30 @@ pre code.hljs{display:block;overflow-x:auto}
       <span class="bc-sep">/</span>
       <span>Install</span>
       <span class="bc-sep">/</span>
-      <span>Add human approval to Claude Code with Impri</span>
+      <span>Add human approval to Claude Code with Airlock</span>
     </nav>
-    <h1>Add human approval to Claude Code with Impri</h1>
+    <h1>Add human approval to Claude Code with Airlock</h1>
 <p>Give Claude Code a way to pause on risky actions — a deploy, an email, a database write, a payment — and wait for your yes before it proceeds with any of them.</p>
 <h2 id="60-second-install">60-second install</h2>
-<div class="code-block"><span class="code-lang">bash</span><pre><code class="hljs">claude mcp add impri \
-  -e IMPRI_API_KEY=im_your_key_here \
-  -e IMPRI_BASE_URL=https://api.impri.dev \
-  -- npx @impri/mcp</code></pre></div>
-<p><code>IMPRI_BASE_URL</code> defaults to <code>http://localhost:8484</code> (self-hosted), so it must be set explicitly for the cloud API — leave it out only if you&#39;re actually running <code>docker compose up -d</code> locally.</p>
-<p>Get an API key at <a href="https://impri.dev" target="_blank" rel="noopener">impri.dev</a>, or self-host with <code>docker compose up -d</code> (see <a href="self-hosting">self-hosting</a>). Verify it loaded:</p>
+<div class="code-block"><span class="code-lang">bash</span><pre><code class="hljs">claude mcp add airlock \
+  -e AIRLOCK_API_KEY=im_your_key_here \
+  -e AIRLOCK_BASE_URL=https://api.airlock.dev \
+  -- npx @airlock/mcp</code></pre></div>
+<p><code>AIRLOCK_BASE_URL</code> defaults to <code>http://localhost:8484</code> (self-hosted), so it must be set explicitly for the cloud API — leave it out only if you&#39;re actually running <code>docker compose up -d</code> locally.</p>
+<p>Get an API key at <a href="https://airlock.dev" target="_blank" rel="noopener">airlock.dev</a>, or self-host with <code>docker compose up -d</code> (see <a href="self-hosting">self-hosting</a>). Verify it loaded:</p>
 <div class="code-block"><pre><code class="hljs">/mcp</code></pre></div>
-<p>You should see <code>impri</code> listed with 8 tools.</p>
+<p>You should see <code>airlock</code> listed with 8 tools.</p>
 <h2 id="tell-claude-code-to-use-it">Tell Claude Code to use it</h2>
 <p>Add three lines to your project&#39;s <code>CLAUDE.md</code> (or a global <code>~/.claude/CLAUDE.md</code>):</p>
 <div class="code-block"><span class="code-lang">markdown</span><pre><code class="hljs"><span class="hljs-section">## Human approval</span>
 Before running any command with a real side effect — sending an email, pushing to a
-remote branch, running a database write, calling a paid API — call impri<span class="hljs-emphasis">_push_</span>action
-with a clear preview, then impri<span class="hljs-emphasis">_await_</span>decision before proceeding. Never skip this.</code></pre></div>
+remote branch, running a database write, calling a paid API — call airlock<span class="hljs-emphasis">_push_</span>action
+with a clear preview, then airlock<span class="hljs-emphasis">_await_</span>decision before proceeding. Never skip this.</code></pre></div>
 <h2 id="what-you-see">What you see</h2>
-<p>A card lands in your Impri inbox (web, or pushed to Telegram/Slack/ntfy if you&#39;ve set up a <a href="notifications">notification channel</a>) with the action&#39;s title and preview, and Approve / Reject buttons. Approving a diff-style preview lets you edit the text before it goes back to the agent.</p>
+<p>A card lands in your Airlock inbox (web, or pushed to Telegram/Slack/ntfy if you&#39;ve set up a <a href="notifications">notification channel</a>) with the action&#39;s title and preview, and Approve / Reject buttons. Approving a diff-style preview lets you edit the text before it goes back to the agent.</p>
 <h2 id="real-example-call">Real example call</h2>
 <p>Claude Code calls the tool directly — no code required on your side:</p>
-<div class="code-block"><pre><code class="hljs">impri_push_action({
+<div class="code-block"><pre><code class="hljs">airlock_push_action({
   kind: &quot;git.push&quot;,
   title: &quot;Push branch fix/retry-backoff to origin&quot;,
   preview: { format: &quot;diff&quot;, body: &quot;3 files changed, 41 insertions(+), 6 deletions(-)&quot; },
@@ -183,14 +183,14 @@ with a clear preview, then impri<span class="hljs-emphasis">_await_</span>decisi
 <div class="code-block"><span class="code-lang">json</span><pre><code class="hljs"><span class="hljs-punctuation">{</span>
   <span class="hljs-attr">&quot;action_id&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;act_7g2k...&quot;</span><span class="hljs-punctuation">,</span>
   <span class="hljs-attr">&quot;status&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;pending&quot;</span><span class="hljs-punctuation">,</span>
-  <span class="hljs-attr">&quot;inbox_url&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;https://app.impri.dev/inbox/act_7g2k...&quot;</span>
+  <span class="hljs-attr">&quot;inbox_url&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;https://app.airlock.dev/inbox/act_7g2k...&quot;</span>
 <span class="hljs-punctuation">}</span></code></pre></div>
-<p>Claude Code then calls <code>impri_await_decision({ action_id: &quot;act_7g2k...&quot;, timeout_s: 600 })</code> and blocks until you decide.</p>
+<p>Claude Code then calls <code>airlock_await_decision({ action_id: &quot;act_7g2k...&quot;, timeout_s: 600 })</code> and blocks until you decide.</p>
 <h2 id="troubleshooting">Troubleshooting</h2>
 <ul>
-<li><strong><code>/mcp</code> doesn&#39;t list <code>impri</code></strong> — check <code>claude mcp list</code> for a startup error; the most common cause is a missing or malformed <code>IMPRI_API_KEY</code>.</li>
-<li><strong>Tool calls fail with &quot;IMPRI_API_KEY is not set&quot;</strong> — the env var wasn&#39;t passed through; re-run the <code>claude mcp add</code> command with <code>-e IMPRI_API_KEY=...</code> rather than exporting it in the shell that starts Claude Code.</li>
-<li><strong>Self-hosted server unreachable</strong> — confirm <code>IMPRI_BASE_URL</code> has no trailing <code>/v1</code> (the client appends it) and that <code>docker compose up -d</code> is actually running on that port.</li>
+<li><strong><code>/mcp</code> doesn&#39;t list <code>airlock</code></strong> — check <code>claude mcp list</code> for a startup error; the most common cause is a missing or malformed <code>AIRLOCK_API_KEY</code>.</li>
+<li><strong>Tool calls fail with &quot;AIRLOCK_API_KEY is not set&quot;</strong> — the env var wasn&#39;t passed through; re-run the <code>claude mcp add</code> command with <code>-e AIRLOCK_API_KEY=...</code> rather than exporting it in the shell that starts Claude Code.</li>
+<li><strong>Self-hosted server unreachable</strong> — confirm <code>AIRLOCK_BASE_URL</code> has no trailing <code>/v1</code> (the client appends it) and that <code>docker compose up -d</code> is actually running on that port.</li>
 </ul>
 <h2 id="next">Next</h2>
 <p><a href="how-to-add-human-approval-to-an-ai-agent">Try the human approval pattern</a> end to end, or see it applied to a <a href="/use-cases/overnight-coding-agent">coding-agent-specific use case</a>.</p>
@@ -279,19 +279,19 @@ with a clear preview, then impri<span class="hljs-emphasis">_await_</span>decisi
 <footer class="footer">
 <div class="wrap footer-inner">
   <a class="brand" href="/">
-    <span class="mark"><svg viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.5 4.5L19 7.5" stroke="white" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Impri
+    <span class="mark"><svg viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.5 4.5L19 7.5" stroke="white" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Airlock
   </a>
   <div>
-    <a href="https://gitlab.com/sekera.radim/impri">GitLab</a>
+    <a href="https://gitlab.com/sekera.radim/airlock">GitLab</a>
     <a href="/docs">Docs</a>
-    <a href="https://gitlab.com/sekera.radim/impri/-/blob/main/LICENSE">MIT License</a>
-    <a href="https://www.npmjs.com/package/@impri/mcp">@impri/mcp</a>
+    <a href="https://gitlab.com/sekera.radim/airlock/-/blob/main/LICENSE">MIT License</a>
+    <a href="https://www.npmjs.com/package/@airlock/mcp">@airlock/mcp</a>
     <a href="/docs/privacy">Privacy</a>
     <a href="/docs/terms">Terms</a>
     <a href="https://sekera.dev">Contact</a>
   </div>
 </div>
-<div class="wrap" style="margin-top:18px"><span class="muted">© 2026 Impri · The imprimatur for your AI agents · Built by <a href="https://sekera.dev" style="color:inherit">Radim Sekera</a>. Also by the same maker: <a href="https://briefgate.dev/?utm_source=impri.dev&amp;utm_medium=referral" style="color:inherit">BriefGate</a> — client intake for agencies and AI agents.</span></div>
+<div class="wrap" style="margin-top:18px"><span class="muted">© 2026 Airlock · The airlockmatur for your AI agents · Built by <a href="https://sekera.dev" style="color:inherit">Radim Sekera</a>. Also by the same maker: <a href="https://briefgate.dev/?utm_source=airlock.dev&amp;utm_medium=referral" style="color:inherit">BriefGate</a> — client intake for agencies and AI agents.</span></div>
 </footer>
 </body>
 </html>

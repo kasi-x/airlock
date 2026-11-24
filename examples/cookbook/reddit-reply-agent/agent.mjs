@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-// reddit-reply-agent.mjs — Impri cookbook recipe #2
+// reddit-reply-agent.mjs — Airlock cookbook recipe #2
 // No dependencies. Node 18+.
 //
 // Pattern: agent finds a Reddit thread where it has something to contribute,
@@ -7,16 +7,16 @@
 // Reddit API (stub here) with the final (possibly edited) text.
 //
 // Run:
-//   IMPRI_API_KEY=im_xxx node agent.mjs
-//   IMPRI_API_KEY=im_xxx REDDIT_ACCESS_TOKEN=xxx node agent.mjs
+//   AIRLOCK_API_KEY=im_xxx node agent.mjs
+//   AIRLOCK_API_KEY=im_xxx REDDIT_ACCESS_TOKEN=xxx node agent.mjs
 //
 // Required scope: actions
 
-const API_KEY = process.env.IMPRI_API_KEY;
-const BASE = (process.env.IMPRI_BASE_URL ?? 'http://localhost:8484').replace(/\/+$/, '');
+const API_KEY = process.env.AIRLOCK_API_KEY;
+const BASE = (process.env.AIRLOCK_BASE_URL ?? 'http://localhost:8484').replace(/\/+$/, '');
 
 if (!API_KEY) {
-  console.error('Set IMPRI_API_KEY (it starts with im_).');
+  console.error('Set AIRLOCK_API_KEY (it starts with im_).');
   process.exit(1);
 }
 
@@ -54,7 +54,7 @@ const thread = {
 
 // Draft reply — in production this would come from an LLM.
 const draftReply =
-  "You might want to look at [Impri](https://impri.dev) — it's a lightweight, " +
+  "You might want to look at [Airlock](https://airlock.dev) — it's a lightweight, " +
   "self-hostable approval inbox for AI agents. You `POST` the proposed action " +
   "(draft comment, deploy command, payment) and a human taps Approve/Reject in " +
   "a mobile-friendly inbox. The agent only executes after approval. " +
@@ -84,7 +84,7 @@ async function postRedditComment(threadId, commentText) {
 // Main agent loop
 // ---------------------------------------------------------------------------
 async function main() {
-  console.log(`\nImpri reddit-reply-agent → ${BASE}`);
+  console.log(`\nAirlock reddit-reply-agent → ${BASE}`);
   console.log(`  Thread: ${thread.title}`);
   console.log(`  URL: ${thread.url}\n`);
 
@@ -136,7 +136,7 @@ async function main() {
       status: 'executed',
       detail: `Comment posted: ${commentId}`,
     });
-    console.log(`  OK — comment posted (${commentId}) and reported to Impri.`);
+    console.log(`  OK — comment posted (${commentId}) and reported to Airlock.`);
   } catch (err) {
     await api(`/actions/${action.id}/result`, 'POST', {
       status: 'execute_failed',

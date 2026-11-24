@@ -14,7 +14,7 @@ import { noopLogger, type Logger } from './metrics.js';
 
 // Email notification channels are created by anonymous self-serve projects,
 // so the address in their config is unverified input: without confirmation,
-// anyone could make Impri mail arbitrary people. Until the address owner
+// anyone could make Airlock mail arbitrary people. Until the address owner
 // clicks the confirmation link, the only email it receives is the
 // confirmation itself — fixed text, no project-controlled content, and
 // limited per address and per project.
@@ -118,9 +118,9 @@ function verificationLink(token: string): string {
 // the channel, so none of them may appear in an email to an unconfirmed address.
 function verificationEmailText(link: string): string {
   return [
-    'Someone set up Impri to send approval notifications to this address.',
+    'Someone set up Airlock to send approval notifications to this address.',
     '',
-    'Impri tells you when an AI agent is waiting for a human to approve an action.',
+    'Airlock tells you when an AI agent is waiting for a human to approve an action.',
     'Before any notification is sent here, please confirm this address:',
     '',
     link,
@@ -130,7 +130,7 @@ function verificationEmailText(link: string): string {
     "If you didn't set this up, ignore this email — nothing more will be sent unless you confirm.",
     '',
     '--',
-    'Impri',
+    'Airlock',
     '',
   ].join('\n');
 }
@@ -234,7 +234,7 @@ async function deliver(db: Db, send: PreparedSend, actor: string, log: Logger): 
     await createSmtpTransport().sendMail({
       from: smtpFrom(),
       to: send.address,
-      subject: 'Confirm your email for Impri notifications',
+      subject: 'Confirm your email for Airlock notifications',
       text: verificationEmailText(verificationLink(send.token)),
     });
   } catch (err) {

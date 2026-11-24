@@ -1,5 +1,5 @@
 import { Command } from 'commander'
-import { ImpriError, ImpriConflict, ImpriNotFound } from '@impri/sdk'
+import { AirlockError, AirlockConflict, AirlockNotFound } from '@airlock/sdk'
 import { makeClient } from '../client-factory.js'
 import { green, red, printError, printJson, ok } from '../output.js'
 
@@ -59,7 +59,7 @@ export function registerReject(program: Command): void {
         process.stdout.write(`${red('Rejected')} ${actionId}\n`)
         process.exit(0)
       } catch (err) {
-        if (err instanceof ImpriConflict) {
+        if (err instanceof AirlockConflict) {
           printError(`Action ${actionId} is already decided (conflict).`)
           process.exit(2)
         }
@@ -69,7 +69,7 @@ export function registerReject(program: Command): void {
 }
 
 function handleError(err: unknown): never {
-  if (err instanceof ImpriError) {
+  if (err instanceof AirlockError) {
     printError(err.message)
   } else {
     printError(String(err))

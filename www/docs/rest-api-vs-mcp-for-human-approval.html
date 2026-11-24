@@ -3,21 +3,21 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>REST API vs MCP for Human-in-the-Loop Approval — Impri Docs</title>
-<meta name="description" content="Use Impri's REST API when the agent is your own code, like a Python worker or a cron job; use its MCP server when the agent runs in an MCP client.">
+<title>REST API vs MCP for Human-in-the-Loop Approval — Airlock Docs</title>
+<meta name="description" content="Use Airlock's REST API when the agent is your own code, like a Python worker or a cron job; use its MCP server when the agent runs in an MCP client.">
 <meta name="theme-color" content="#06070d">
-<meta property="og:title" content="REST API vs MCP for Human-in-the-Loop Approval — Impri Docs">
-<meta property="og:description" content="Use Impri's REST API when the agent is your own code, like a Python worker or a cron job; use its MCP server when the agent runs in an MCP client.">
+<meta property="og:title" content="REST API vs MCP for Human-in-the-Loop Approval — Airlock Docs">
+<meta property="og:description" content="Use Airlock's REST API when the agent is your own code, like a Python worker or a cron job; use its MCP server when the agent runs in an MCP client.">
 <meta property="og:type" content="article">
-<meta property="og:url" content="https://impri.dev/docs/rest-api-vs-mcp-for-human-approval">
-<meta property="og:image" content="https://impri.dev/assets/og/og-docs.png">
+<meta property="og:url" content="https://airlock.dev/docs/rest-api-vs-mcp-for-human-approval">
+<meta property="og:image" content="https://airlock.dev/assets/og/og-docs.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
-<meta property="og:image:alt" content="Impri — human-in-the-loop approval inbox for AI agents">
+<meta property="og:image:alt" content="Airlock — human-in-the-loop approval inbox for AI agents">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="https://impri.dev/assets/og/og-docs.png">
-<link rel="canonical" href="https://impri.dev/docs/rest-api-vs-mcp-for-human-approval">
-<script type="application/ld+json">{"@context":"https://schema.org","@type":"TechArticle","headline":"REST API vs MCP for Human-in-the-Loop Approval","description":"Use Impri's REST API when the agent is your own code, like a Python worker or a cron job; use its MCP server when the agent runs in an MCP client.","url":"https://impri.dev/docs/rest-api-vs-mcp-for-human-approval","inLanguage":"en","author":{"@type":"Organization","name":"Impri","url":"https://impri.dev"},"publisher":{"@type":"Organization","name":"Impri","url":"https://impri.dev"}}</script>
+<meta name="twitter:image" content="https://airlock.dev/assets/og/og-docs.png">
+<link rel="canonical" href="https://airlock.dev/docs/rest-api-vs-mcp-for-human-approval">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"TechArticle","headline":"REST API vs MCP for Human-in-the-Loop Approval","description":"Use Airlock's REST API when the agent is your own code, like a Python worker or a cron job; use its MCP server when the agent runs in an MCP client.","url":"https://airlock.dev/docs/rest-api-vs-mcp-for-human-approval","inLanguage":"en","author":{"@type":"Organization","name":"Airlock","url":"https://airlock.dev"},"publisher":{"@type":"Organization","name":"Airlock","url":"https://airlock.dev"}}</script>
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <link rel="icon" href="/favicon.ico" sizes="32x32">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='9' fill='%236366f1'/%3E%3Cpath d='M9 16.5l4.5 4.5L23 11' stroke='white' stroke-width='3' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
@@ -132,13 +132,13 @@ pre code.hljs{display:block;overflow-x:auto}
 <div class="wrap nav-inner">
   <a class="brand" href="/">
     <span class="mark"><svg viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.5 4.5L19 7.5" stroke="white" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
-    Impri
+    Airlock
   </a>
   <div class="nav-links">
     <a class="link" href="/#how">How it works</a>
     <a class="link" href="/#pricing">Pricing</a>
     <a class="link active-nav" href="../docs">Docs</a>
-    <a class="btn btn-primary btn-sm" href="https://gitlab.com/sekera.radim/impri">GitLab</a>
+    <a class="btn btn-primary btn-sm" href="https://gitlab.com/sekera.radim/airlock">GitLab</a>
   </div>
 </div>
 </nav>
@@ -153,7 +153,7 @@ pre code.hljs{display:block;overflow-x:auto}
       <span>REST API vs MCP for Human-in-the-Loop Approval</span>
     </nav>
     <h1>REST API vs MCP for Human-in-the-Loop Approval</h1>
-<p>Use Impri&#39;s REST API when the agent is your own code, like a Python worker or a cron job; use its MCP server when the agent runs in an MCP client.</p>
+<p>Use Airlock&#39;s REST API when the agent is your own code, like a Python worker or a cron job; use its MCP server when the agent runs in an MCP client.</p>
 <hr>
 <h2 id="the-same-three-calls-two-transports">The same three calls, two transports</h2>
 <p>Whether you gate an action over REST or MCP, the underlying operation is identical: push an action, wait for a decision, execute only if approved. What changes is who writes the polling loop.</p>
@@ -161,7 +161,7 @@ pre code.hljs{display:block;overflow-x:auto}
 <li><strong>REST</strong>: your code makes the HTTP calls, your code polls, your code branches on the result.</li>
 <li><strong>MCP</strong>: the agent calls a tool, the tool blocks until a decision exists, the agent receives the result and continues.</li>
 </ul>
-<p>Neither path skips the gate. Both hit the same <code>https://api.impri.dev</code> backend and the same inbox. The difference is ergonomics, not security.</p>
+<p>Neither path skips the gate. Both hit the same <code>https://api.airlock.dev</code> backend and the same inbox. The difference is ergonomics, not security.</p>
 <hr>
 <h2 id="scenario-an-agent-that-merges-pull-requests">Scenario: an agent that merges pull requests</h2>
 <p>Say you have a coding agent that opens PRs and, when CI is green, wants to merge them. Merging is exactly the kind of side effect you don&#39;t want an agent doing unsupervised — a bad merge to <code>main</code> is not easily undone by a retry.</p>
@@ -171,8 +171,8 @@ pre code.hljs{display:block;overflow-x:auto}
 <span class="hljs-keyword">import</span> time
 <span class="hljs-keyword">import</span> requests
 
-API = <span class="hljs-string">&quot;https://api.impri.dev&quot;</span>
-HEADERS = {<span class="hljs-string">&quot;Authorization&quot;</span>: <span class="hljs-string">f&quot;Bearer <span class="hljs-subst">{os.environ[<span class="hljs-string">&#x27;IMPRI_API_KEY&#x27;</span>]}</span>&quot;</span>}
+API = <span class="hljs-string">&quot;https://api.airlock.dev&quot;</span>
+HEADERS = {<span class="hljs-string">&quot;Authorization&quot;</span>: <span class="hljs-string">f&quot;Bearer <span class="hljs-subst">{os.environ[<span class="hljs-string">&#x27;AIRLOCK_API_KEY&#x27;</span>]}</span>&quot;</span>}
 
 <span class="hljs-keyword">def</span> <span class="hljs-title function_">request_merge_approval</span>(<span class="hljs-params">pr_number: <span class="hljs-built_in">str</span>, pr_title: <span class="hljs-built_in">str</span>, diff_summary: <span class="hljs-built_in">str</span></span>) -&gt; <span class="hljs-built_in">dict</span>:
     resp = requests.post(<span class="hljs-string">f&quot;<span class="hljs-subst">{API}</span>/v1/actions&quot;</span>, headers=HEADERS, json={
@@ -202,25 +202,25 @@ result = request_merge_approval(<span class="hljs-string">&quot;482&quot;</span>
 <p>If the same merge-deciding agent is a Claude Code session or subagent, wire up the MCP server once and the polling loop disappears from your code entirely — it lives inside the tool implementation:</p>
 <div class="code-block"><span class="code-lang">json</span><pre><code class="hljs"><span class="hljs-punctuation">{</span>
   <span class="hljs-attr">&quot;mcpServers&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
-    <span class="hljs-attr">&quot;impri&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+    <span class="hljs-attr">&quot;airlock&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
       <span class="hljs-attr">&quot;command&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;npx&quot;</span><span class="hljs-punctuation">,</span>
-      <span class="hljs-attr">&quot;args&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">[</span><span class="hljs-string">&quot;@impri/mcp&quot;</span><span class="hljs-punctuation">]</span><span class="hljs-punctuation">,</span>
+      <span class="hljs-attr">&quot;args&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">[</span><span class="hljs-string">&quot;@airlock/mcp&quot;</span><span class="hljs-punctuation">]</span><span class="hljs-punctuation">,</span>
       <span class="hljs-attr">&quot;env&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
-        <span class="hljs-attr">&quot;IMPRI_API_KEY&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;im_your_key_here&quot;</span><span class="hljs-punctuation">,</span>
-        <span class="hljs-attr">&quot;IMPRI_BASE_URL&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;https://api.impri.dev&quot;</span>
+        <span class="hljs-attr">&quot;AIRLOCK_API_KEY&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;im_your_key_here&quot;</span><span class="hljs-punctuation">,</span>
+        <span class="hljs-attr">&quot;AIRLOCK_BASE_URL&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;https://api.airlock.dev&quot;</span>
       <span class="hljs-punctuation">}</span>
     <span class="hljs-punctuation">}</span>
   <span class="hljs-punctuation">}</span>
 <span class="hljs-punctuation">}</span></code></pre></div>
 <p>The agent&#39;s flow becomes three tool calls with no HTTP client code in your prompt or scaffolding:</p>
-<div class="code-block"><pre><code class="hljs">impri_push_action(kind=&quot;github.pr_merge&quot;, title=&quot;Merge PR #482: Add retry backoff&quot;,
+<div class="code-block"><pre><code class="hljs">airlock_push_action(kind=&quot;github.pr_merge&quot;, title=&quot;Merge PR #482: Add retry backoff&quot;,
                    preview={format:&quot;markdown&quot;, body:&quot;...&quot;}, expires_in=21600)
   → { action_id: &quot;act_482&quot;, status: &quot;pending&quot; }
 
-impri_await_decision(action_id=&quot;act_482&quot;, timeout_s=21600)
+airlock_await_decision(action_id=&quot;act_482&quot;, timeout_s=21600)
   → { status: &quot;approved&quot;, preview: {...} }
 
-impri_report_result(action_id=&quot;act_482&quot;, status=&quot;executed&quot;)</code></pre></div>
+airlock_report_result(action_id=&quot;act_482&quot;, status=&quot;executed&quot;)</code></pre></div>
 <hr>
 <h2 id="when-to-pick-which">When to pick which</h2>
 <div class="table-wrap"><table>
@@ -244,7 +244,7 @@ impri_report_result(action_id=&quot;act_482&quot;, status=&quot;executed&quot;)<
 </tr>
 <tr>
 <td>You want the agent to reason about the wait naturally in its own tool-call loop</td>
-<td>MCP — <code>impri_await_decision</code> blocks like any other tool call</td>
+<td>MCP — <code>airlock_await_decision</code> blocks like any other tool call</td>
 </tr>
 <tr>
 <td>Non-Node/Python runtime (Go, Rust, PHP)</td>
@@ -255,15 +255,15 @@ impri_report_result(action_id=&quot;act_482&quot;, status=&quot;executed&quot;)<
 <p>Both share the same rate limit (60 requests/min per key to <code>POST /v1/actions</code>) and the same expiry rules — nothing about the transport changes what counts as a valid decision.</p>
 <hr>
 <h2 id="the-part-that-doesn39t-change-either-way">The part that doesn&#39;t change either way</h2>
-<p>Regardless of transport, the gate only holds if the wrapped action truly has no other path to execution. An agent that can call the GitHub merge API directly, with its own token, can route around Impri entirely — REST or MCP. The chokepoint has to be the code path, not the request format. See <a href="how-to-add-human-approval-to-an-ai-agent">how to add human approval to an AI agent</a> for the full reasoning on that boundary, and the <a href="mcp">MCP integration guide</a> for server setup details beyond this example.</p>
+<p>Regardless of transport, the gate only holds if the wrapped action truly has no other path to execution. An agent that can call the GitHub merge API directly, with its own token, can route around Airlock entirely — REST or MCP. The chokepoint has to be the code path, not the request format. See <a href="how-to-add-human-approval-to-an-ai-agent">how to add human approval to an AI agent</a> for the full reasoning on that boundary, and the <a href="mcp">MCP integration guide</a> for server setup details beyond this example.</p>
 <p>If you&#39;re building specifically on the Claude Agent SDK, <a href="human-approval-claude-agent-sdk">the dedicated guide</a> gates tool calls in the SDK&#39;s own permission callback, so the check sits in the runtime, not in a step the model could skip.</p>
 <p>Next: <a href="quickstart">quickstart</a> to get an API key and try either path in under five minutes.</p>
 
-    <aside class="doc-cta" aria-label="Try Impri">
+    <aside class="doc-cta" aria-label="Try Airlock">
   <p class="doc-cta-title">Add an approval step to your own agent</p>
-  <p>Start on Impri Cloud: the Free tier includes 100 approvals a month. Or self-host the MIT-licensed core with Docker Compose, with no tier limits.</p>
+  <p>Start on Airlock Cloud: the Free tier includes 100 approvals a month. Or self-host the MIT-licensed core with Docker Compose, with no tier limits.</p>
   <div class="doc-cta-actions">
-    <a class="btn btn-primary btn-sm" href="https://app.impri.dev/?signup=1">Start free on Impri Cloud</a>
+    <a class="btn btn-primary btn-sm" href="https://app.airlock.dev/?signup=1">Start free on Airlock Cloud</a>
     <a class="btn btn-ghost btn-sm" href="../docs/quickstart">Quick start</a>
     <a class="btn btn-ghost btn-sm" href="../docs/self-hosting">Self-host guide</a>
   </div>
@@ -360,19 +360,19 @@ impri_report_result(action_id=&quot;act_482&quot;, status=&quot;executed&quot;)<
 <footer class="footer">
 <div class="wrap footer-inner">
   <a class="brand" href="/">
-    <span class="mark"><svg viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.5 4.5L19 7.5" stroke="white" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Impri
+    <span class="mark"><svg viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.5 4.5L19 7.5" stroke="white" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Airlock
   </a>
   <div>
-    <a href="https://gitlab.com/sekera.radim/impri">GitLab</a>
+    <a href="https://gitlab.com/sekera.radim/airlock">GitLab</a>
     <a href="/docs">Docs</a>
-    <a href="https://gitlab.com/sekera.radim/impri/-/blob/main/LICENSE">MIT License</a>
-    <a href="https://www.npmjs.com/package/@impri/mcp">@impri/mcp</a>
+    <a href="https://gitlab.com/sekera.radim/airlock/-/blob/main/LICENSE">MIT License</a>
+    <a href="https://www.npmjs.com/package/@airlock/mcp">@airlock/mcp</a>
     <a href="/docs/privacy">Privacy</a>
     <a href="/docs/terms">Terms</a>
     <a href="https://sekera.dev">Contact</a>
   </div>
 </div>
-<div class="wrap" style="margin-top:18px"><span class="muted">© 2026 Impri · The imprimatur for your AI agents · Built by <a href="https://sekera.dev" style="color:inherit">Radim Sekera</a>. Also by the same maker: <a href="https://briefgate.dev/?utm_source=impri.dev&amp;utm_medium=referral" style="color:inherit">BriefGate</a> — client intake for agencies and AI agents.</span></div>
+<div class="wrap" style="margin-top:18px"><span class="muted">© 2026 Airlock · The airlockmatur for your AI agents · Built by <a href="https://sekera.dev" style="color:inherit">Radim Sekera</a>. Also by the same maker: <a href="https://briefgate.dev/?utm_source=airlock.dev&amp;utm_medium=referral" style="color:inherit">BriefGate</a> — client intake for agencies and AI agents.</span></div>
 </footer>
 </body>
 </html>

@@ -1,18 +1,18 @@
 import { createHmac, timingSafeEqual } from 'node:crypto'
-import { ImpriWebhookSignatureError } from './errors.js'
+import { AirlockWebhookSignatureError } from './errors.js'
 
 /**
- * Verify an Impri webhook delivery.
+ * Verify an Airlock webhook delivery.
  *
  * Algorithm: HMAC-SHA256(secret, `${timestamp}.${nonce}.${rawBody}`)
- * compared constant-time against the sha256= prefix of X-Impri-Signature.
+ * compared constant-time against the sha256= prefix of X-Airlock-Signature.
  *
  * Headers to pass:
- *   - X-Impri-Signature  → signature parameter  (e.g. "sha256=abc...")
- *   - X-Impri-Timestamp  → timestamp parameter   (Unix seconds as string)
- *   - X-Impri-Nonce      → nonce parameter        (hex string)
+ *   - X-Airlock-Signature  → signature parameter  (e.g. "sha256=abc...")
+ *   - X-Airlock-Timestamp  → timestamp parameter   (Unix seconds as string)
+ *   - X-Airlock-Nonce      → nonce parameter        (hex string)
  *
- * @throws {ImpriWebhookSignatureError} if the signature is missing, malformed,
+ * @throws {AirlockWebhookSignatureError} if the signature is missing, malformed,
  *   stale (outside toleranceSec window), or does not match.
  */
 export function verifyWebhook(
@@ -26,8 +26,8 @@ export function verifyWebhook(
   const toleranceSec = opts.toleranceSec ?? 300
 
   if (!signature.startsWith('sha256=')) {
-    throw new ImpriWebhookSignatureError(
-      'X-Impri-Signature header is missing or does not start with "sha256=".',
+    throw new AirlockWebhookSignatureError(
+      'X-Airlock-Signature header is missing or does not start with "sha256=".',
     )
   }
 
@@ -35,14 +35,14 @@ export function verifyWebhook(
 
   const ts = parseInt(timestamp, 10)
   if (Number.isNaN(ts)) {
-    throw new ImpriWebhookSignatureError(
-      'X-Impri-Timestamp header is missing or is not a valid integer.',
+    throw new AirlockWebhookSignatureError(
+      'X-Airlock-Timestamp header is missing or is not a valid integer.',
     )
   }
 
   const nowSec = Math.floor(Date.now() / 1000)
   if (Math.abs(nowSec - ts) > toleranceSec) {
-    throw new ImpriWebhookSignatureError(
+    throw new AirlockWebhookSignatureError(
       `Webhook timestamp is outside the ${toleranceSec}s tolerance window ` +
         '(replay protection). Ensure your server clock is synced.',
     )
@@ -67,7 +67,7 @@ export function verifyWebhook(
   }
 
   if (mismatch) {
-    throw new ImpriWebhookSignatureError(
+    throw new AirlockWebhookSignatureError(
       'Webhook signature does not match. Verify the secret matches the value from GET /v1/project.',
     )
   }

@@ -31,8 +31,8 @@ import os
 import time
 import requests
 
-BASE = "https://api.impri.dev"
-HEADERS = {"Authorization": f"Bearer {os.environ['IMPRI_API_KEY']}"}
+BASE = "https://api.airlock.dev"
+HEADERS = {"Authorization": f"Bearer {os.environ['AIRLOCK_API_KEY']}"}
 
 
 def propose_reset(ticket_id: str, username: str, requester: str, verified: bool) -> str:
@@ -73,7 +73,7 @@ action_id = propose_reset("HD-4821", "j.novak", "j.novak via chat", verified=Fal
 decision = wait_for_decision(action_id)
 
 if decision["status"] == "approved":
-    reset_password_in_idp("j.novak")  # your directory call, not Impri's
+    reset_password_in_idp("j.novak")  # your directory call, not Airlock's
     requests.post(
         f"{BASE}/v1/actions/{action_id}/result",
         headers=HEADERS,
@@ -91,15 +91,15 @@ Two details matter here. A short `expires_in` (30 minutes; the minimum is 300 se
 
 The reviewer's job is only meaningful if the evidence in the preview is trustworthy. Have your own code, not the LLM, compute the "identity check" line from real signals (a callback log, an SSO session, a manager approval in your ticketing system) and inject it into the preview. If the agent writes "verified" in prose, you have moved the injection risk onto the reviewer's screen.
 
-Ticket text is untrusted input. Treat it as data in the system prompt, and remember that Impri does not interpret the action; it shows the card to a person you chose.
+Ticket text is untrusted input. Treat it as data in the system prompt, and remember that Airlock does not interpret the action; it shows the card to a person you chose.
 
 ---
 
 ## What this does and doesn't protect
 
-- **It is a real gate only if the approved path is the agent's only path.** Give the agent a directory service account that can reset passwords directly and it can bypass Impri. Put the reset behind a wrapper that requires the approved decision, and hold the privileged credential in that wrapper, not in the agent's tool list. See [integrations](integrations.md).
-- **Impri does not verify identities.** It stores the proposal, notifies a human and holds the decision. Deciding whether the requester is who they claim is still the reviewer's call.
-- **It isn't a ticketing system or a workflow engine.** Keep routing, SLAs and escalation in your helpdesk tool; use Impri as the approval step within it.
+- **It is a real gate only if the approved path is the agent's only path.** Give the agent a directory service account that can reset passwords directly and it can bypass Airlock. Put the reset behind a wrapper that requires the approved decision, and hold the privileged credential in that wrapper, not in the agent's tool list. See [integrations](integrations.md).
+- **Airlock does not verify identities.** It stores the proposal, notifies a human and holds the decision. Deciding whether the requester is who they claim is still the reviewer's call.
+- **It isn't a ticketing system or a workflow engine.** Keep routing, SLAs and escalation in your helpdesk tool; use Airlock as the approval step within it.
 
 The reviewer can approve from the [inbox](inbox.md), or from chat via [Slack approval](slack-approval.md) if your helpdesk team lives there. Every decision lands in the [audit log](audit-log.md), which is useful when someone later asks who authorised a group change.
 
@@ -107,4 +107,4 @@ The reviewer can approve from the [inbox](inbox.md), or from chat via [Slack app
 
 ## Next step
 
-Get a key and push your first action in the [quickstart](quickstart.md), or read the general pattern in [how to add human approval to an AI agent](how-to-add-human-approval-to-an-ai-agent.md). Impri is open-core with an MIT self-hostable core; the hosted version is at impri.dev.
+Get a key and push your first action in the [quickstart](quickstart.md), or read the general pattern in [how to add human approval to an AI agent](how-to-add-human-approval-to-an-ai-agent.md). Airlock is open-core with an MIT self-hostable core; the hosted version is at airlock.dev.

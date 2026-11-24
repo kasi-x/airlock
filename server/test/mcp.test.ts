@@ -5,9 +5,9 @@
  * Coverage:
  *  - auth: 401 with no key / wrong key, key never appears in logs
  *  - initialize + tools/list return the 8 shared tool definitions
- *  - tools/call happy path (impri_push_action -> impri_inbox_status)
+ *  - tools/call happy path (airlock_push_action -> airlock_inbox_status)
  *  - body-too-large (413)
- *  - impri_await_decision's timeout_s is capped regardless of what was requested
+ *  - airlock_await_decision's timeout_s is capped regardless of what was requested
  *  - GET/DELETE /mcp -> 405 (stateless server)
  *  - GET /.well-known/mcp/server-card.json is public and matches the tool list
  */
@@ -16,8 +16,8 @@ import { afterEach, describe, expect, it } from 'vitest';
 import { createDb } from '../src/db.js';
 import { bootstrapAdminKey } from '../src/auth.js';
 import { createApp } from '../src/index.js';
-import { TOOLS } from '@impri/mcp/toolDefs';
-import { VERSION as MCP_PKG_VERSION } from '@impri/mcp/serverInfo';
+import { TOOLS } from '@airlock/mcp/toolDefs';
+import { VERSION as MCP_PKG_VERSION } from '@airlock/mcp/serverInfo';
 
 process.env.DISABLE_WATCHER_SCHEDULER = '1';
 
@@ -71,7 +71,7 @@ describe('POST /mcp — anonymous access (metadata only, same as the public serv
       payload: rpc('initialize', { protocolVersion: '2025-06-18' }),
     });
     expect(res.statusCode).toBe(200);
-    expect(res.json().result.serverInfo.name).toBe('@impri/mcp');
+    expect(res.json().result.serverInfo.name).toBe('@airlock/mcp');
   });
 
   it('tools/list works with no Authorization header', async () => {
@@ -103,7 +103,7 @@ describe('POST /mcp — anonymous access (metadata only, same as the public serv
       method: 'POST',
       url: '/mcp',
       headers: { 'Content-Type': 'application/json' },
-      payload: rpc('tools/call', { name: 'impri_inbox_status', arguments: {} }),
+      payload: rpc('tools/call', { name: 'airlock_inbox_status', arguments: {} }),
     });
     expect(res.statusCode).toBe(401);
     expect(res.headers['www-authenticate']).toMatch(/Bearer/);
@@ -151,7 +151,7 @@ describe('POST /mcp — auth', () => {
         method: 'POST',
         url: '/mcp',
         headers: auth(adminKey),
-        payload: rpc('tools/call', { name: 'impri_push_action', arguments: { kind: 'x', title: 'x', preview: { format: 'plain', body: 'x' } } }),
+        payload: rpc('tools/call', { name: 'airlock_push_action', arguments: { kind: 'x', title: 'x', preview: { format: 'plain', body: 'x' } } }),
       });
     });
 
@@ -167,9 +167,9 @@ describe('POST /mcp — protocol', () => {
     expect(res.statusCode).toBe(200);
     const body = res.json();
     expect(body.result.protocolVersion).toBe('2025-06-18');
-    expect(body.result.serverInfo.name).toBe('@impri/mcp');
-    expect(body.result.serverInfo.title).toBe('Impri');
-    // Must track @impri/mcp's own version, not @impri/server's — this used
+    expect(body.result.serverInfo.name).toBe('@airlock/mcp');
+    expect(body.result.serverInfo.title).toBe('Airlock');
+    // Must track @airlock/mcp's own version, not @airlock/server's — this used
     // to leak the server package's version (0.1.0) while mcp was at 0.1.2.
     expect(body.result.serverInfo.version).toBe(MCP_PKG_VERSION);
   });
@@ -180,9 +180,9 @@ describe('POST /mcp — protocol', () => {
     const body = res.json();
     expect(typeof body.result.instructions).toBe('string');
     expect(body.result.instructions.length).toBeGreaterThan(100);
-    expect(body.result.instructions).toContain('impri_push_action');
-    expect(body.result.instructions).toContain('impri_await_decision');
-    expect(body.result.instructions).toContain('impri_report_result');
+    expect(body.result.instructions).toContain('airlock_push_action');
+    expect(body.result.instructions).toContain('airlock_await_decision');
+    expect(body.result.instructions).toContain('airlock_report_result');
   });
 
   it('tools/list returns exactly the 8 shared tool definitions', async () => {
@@ -252,7 +252,7 @@ describe('GET/DELETE /mcp — stateless server', () => {
 });
 
 describe('POST /mcp — tools/call happy path', () => {
-  it('impri_push_action then impri_inbox_status round-trips through the real REST routes', async () => {
+  it('airlock_push_action then airlock_inbox_status round-trips through the real REST routes', async () => {
     const { app, adminKey } = await setup();
 
     const pushRes = await app.inject({
@@ -260,7 +260,7 @@ describe('POST /mcp — tools/call happy path', () => {
       url: '/mcp',
       headers: auth(adminKey),
       payload: rpc('tools/call', {
-        name: 'impri_push_action',
+        name: 'airlock_push_action',
         arguments: {
           kind: 'test.mcp',
           title: 'MCP endpoint test',
@@ -290,21 +290,21 @@ describe('POST /mcp — tools/call happy path', () => {
       method: 'POST',
       url: '/mcp',
       headers: auth(adminKey),
-      payload: rpc('tools/call', { name: 'impri_inbox_status', arguments: {} }),
+      payload: rpc('tools/call', { name: 'airlock_inbox_status', arguments: {} }),
     });
     expect(inboxRes.statusCode).toBe(200);
     const inboxBody = inboxRes.json();
     expect(inboxBody.result.content[0].text).toContain(pushText.action_id);
   });
 
-  it('impri_push_action result carries structuredContent matching its outputSchema', async () => {
+  it('airlock_push_action result carries structuredContent matching its outputSchema', async () => {
     const { app, adminKey } = await setup();
     const res = await app.inject({
       method: 'POST',
       url: '/mcp',
       headers: auth(adminKey),
       payload: rpc('tools/call', {
-        name: 'impri_push_action',
+        name: 'airlock_push_action',
         arguments: { kind: 'test.mcp', title: 'x', preview: { format: 'plain', body: 'x' } },
       }),
     });
@@ -324,7 +324,7 @@ describe('POST /mcp — tools/call happy path', () => {
       method: 'POST',
       url: '/mcp',
       headers: auth(adminKey),
-      payload: rpc('tools/call', { name: 'impri_does_not_exist', arguments: {} }),
+      payload: rpc('tools/call', { name: 'airlock_does_not_exist', arguments: {} }),
     });
     expect(res.statusCode).toBe(200);
     expect(res.json().error.code).toBe(-32602);
@@ -339,7 +339,7 @@ describe('POST /mcp — body size limit', () => {
       url: '/mcp',
       headers: auth(adminKey),
       payload: rpc('tools/call', {
-        name: 'impri_push_action',
+        name: 'airlock_push_action',
         arguments: { kind: 'x', title: 'x', preview: { format: 'plain', body: 'x'.repeat(600 * 1024) } },
       }),
     });
@@ -347,7 +347,7 @@ describe('POST /mcp — body size limit', () => {
   });
 });
 
-describe('POST /mcp — impri_await_decision timeout cap', () => {
+describe('POST /mcp — airlock_await_decision timeout cap', () => {
   it('clamps a requested 300s wait to the configured max', async () => {
     process.env.MCP_AWAIT_DECISION_MAX_S = '1';
     const { app, adminKey } = await setup();
@@ -357,7 +357,7 @@ describe('POST /mcp — impri_await_decision timeout cap', () => {
       url: '/mcp',
       headers: auth(adminKey),
       payload: rpc('tools/call', {
-        name: 'impri_push_action',
+        name: 'airlock_push_action',
         arguments: { kind: 'test.await', title: 'Await cap test', preview: { format: 'plain', body: 'x' } },
       }),
     });
@@ -369,7 +369,7 @@ describe('POST /mcp — impri_await_decision timeout cap', () => {
       url: '/mcp',
       headers: auth(adminKey),
       payload: rpc('tools/call', {
-        name: 'impri_await_decision',
+        name: 'airlock_await_decision',
         arguments: { action_id: actionId, timeout_s: 300 },
       }),
     });
@@ -402,7 +402,7 @@ describe('GET /.well-known/mcp/server-card.json', () => {
       expect(t.outputSchema, t.name).toBeTruthy();
     }
     // Same version/instructions gap the /mcp initialize response had to fix.
-    expect(card.serverInfo.title).toBe('Impri');
+    expect(card.serverInfo.title).toBe('Airlock');
     expect(card.serverInfo.version).toBe(MCP_PKG_VERSION);
     expect(typeof card.instructions).toBe('string');
     expect(card.instructions.length).toBeGreaterThan(100);
@@ -453,7 +453,7 @@ describe('POST /mcp — Authorization without the "Bearer " prefix (Smithery gat
       method: 'POST',
       url: '/mcp',
       headers: { Authorization: 'Basic dXNlcjpwYXNz', 'Content-Type': 'application/json' },
-      payload: rpc('tools/call', { name: 'impri_inbox_status', arguments: {} }),
+      payload: rpc('tools/call', { name: 'airlock_inbox_status', arguments: {} }),
     });
     expect(callRes.statusCode).toBe(401);
   });

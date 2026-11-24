@@ -3,21 +3,21 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Discord Approval Bot — Impri Docs</title>
-<meta name="description" content="Impri can send pending-action notifications to a Discord channel with Approve and Reject buttons that let your team decide without ever opening a browser. The…">
+<title>Discord Approval Bot — Airlock Docs</title>
+<meta name="description" content="Airlock can send pending-action notifications to a Discord channel with Approve and Reject buttons that let your team decide without ever opening a browser. The…">
 <meta name="theme-color" content="#06070d">
-<meta property="og:title" content="Discord Approval Bot — Impri Docs">
-<meta property="og:description" content="Impri can send pending-action notifications to a Discord channel with Approve and Reject buttons that let your team decide without ever opening a browser. The…">
+<meta property="og:title" content="Discord Approval Bot — Airlock Docs">
+<meta property="og:description" content="Airlock can send pending-action notifications to a Discord channel with Approve and Reject buttons that let your team decide without ever opening a browser. The…">
 <meta property="og:type" content="article">
-<meta property="og:url" content="https://impri.dev/docs/discord-approval">
-<meta property="og:image" content="https://impri.dev/assets/og/og-docs.png">
+<meta property="og:url" content="https://airlock.dev/docs/discord-approval">
+<meta property="og:image" content="https://airlock.dev/assets/og/og-docs.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
-<meta property="og:image:alt" content="Impri — human-in-the-loop approval inbox for AI agents">
+<meta property="og:image:alt" content="Airlock — human-in-the-loop approval inbox for AI agents">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="https://impri.dev/assets/og/og-docs.png">
-<link rel="canonical" href="https://impri.dev/docs/discord-approval">
-<script type="application/ld+json">{"@context":"https://schema.org","@type":"TechArticle","headline":"Discord Approval Bot","description":"Impri can send pending-action notifications to a Discord channel with Approve and Reject buttons that let your team decide without ever opening a browser. The…","url":"https://impri.dev/docs/discord-approval","inLanguage":"en","author":{"@type":"Organization","name":"Impri","url":"https://impri.dev"},"publisher":{"@type":"Organization","name":"Impri","url":"https://impri.dev"}}</script>
+<meta name="twitter:image" content="https://airlock.dev/assets/og/og-docs.png">
+<link rel="canonical" href="https://airlock.dev/docs/discord-approval">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"TechArticle","headline":"Discord Approval Bot","description":"Airlock can send pending-action notifications to a Discord channel with Approve and Reject buttons that let your team decide without ever opening a browser. The…","url":"https://airlock.dev/docs/discord-approval","inLanguage":"en","author":{"@type":"Organization","name":"Airlock","url":"https://airlock.dev"},"publisher":{"@type":"Organization","name":"Airlock","url":"https://airlock.dev"}}</script>
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <link rel="icon" href="/favicon.ico" sizes="32x32">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='9' fill='%236366f1'/%3E%3Cpath d='M9 16.5l4.5 4.5L23 11' stroke='white' stroke-width='3' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
@@ -132,13 +132,13 @@ pre code.hljs{display:block;overflow-x:auto}
 <div class="wrap nav-inner">
   <a class="brand" href="/">
     <span class="mark"><svg viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.5 4.5L19 7.5" stroke="white" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
-    Impri
+    Airlock
   </a>
   <div class="nav-links">
     <a class="link" href="/#how">How it works</a>
     <a class="link" href="/#pricing">Pricing</a>
     <a class="link active-nav" href="../docs">Docs</a>
-    <a class="btn btn-primary btn-sm" href="https://gitlab.com/sekera.radim/impri">GitLab</a>
+    <a class="btn btn-primary btn-sm" href="https://gitlab.com/sekera.radim/airlock">GitLab</a>
   </div>
 </div>
 </nav>
@@ -153,29 +153,29 @@ pre code.hljs{display:block;overflow-x:auto}
       <span>Discord Approval Bot</span>
     </nav>
     <h1>Discord Approval Bot</h1>
-<p>Impri can send pending-action notifications to a Discord channel with
+<p>Airlock can send pending-action notifications to a Discord channel with
 <strong>Approve</strong> and <strong>Reject</strong> buttons that let your team decide without
-ever opening a browser. The decision is recorded in Impri with the same
+ever opening a browser. The decision is recorded in Airlock with the same
 integrity guarantees as a web-inbox decision.</p>
 <p>This is an extension of the existing <code>discord</code> notification channel
 (see <a href="notifications">Notification channels</a>). When <code>approval_mode</code>
 is <code>false</code> (the default), the channel behaves exactly as before —
-a rich embed notification with a &quot;Review in Impri&quot; link. Setting
+a rich embed notification with a &quot;Review in Airlock&quot; link. Setting
 <code>approval_mode: true</code> enables the interactive-button approval flow
 described here.</p>
 <hr>
 <h2 id="how-it-works">How it works</h2>
 <ol>
-<li>An action lands in Impri as <code>pending</code>.</li>
-<li>Impri posts a Discord message embed to the configured channel with
+<li>An action lands in Airlock as <code>pending</code>.</li>
+<li>Airlock posts a Discord message embed to the configured channel with
 two component buttons: <strong>✅ Approve</strong> and <strong>❌ Reject</strong>.</li>
 <li>An authorized team member clicks a button. Discord delivers an
-interaction (type 3, MESSAGE_COMPONENT) to Impri&#39;s interaction
+interaction (type 3, MESSAGE_COMPONENT) to Airlock&#39;s interaction
 endpoint via HTTP POST.</li>
-<li>Impri verifies the Ed25519 signature from Discord&#39;s servers, the
+<li>Airlock verifies the Ed25519 signature from Discord&#39;s servers, the
 HMAC on the button <code>custom_id</code>, and the clicker&#39;s Discord user ID
 against the allow-list.</li>
-<li>If all checks pass, Impri records the decision (same transaction as
+<li>If all checks pass, Airlock records the decision (same transaction as
 <code>POST /v1/actions/:id/decision</code>), fires any <code>callback_url</code> webhook,
 and responds with an interaction response (type 7, UPDATE_MESSAGE)
 that replaces the original message to show the outcome and remove the
@@ -201,7 +201,7 @@ interactions-only bots).</p>
 — this is <code>application_id</code>.</li>
 <li><strong>Public Key</strong> (64-char hex string) — this is <code>public_key</code>. Discord
 uses the corresponding private key to sign every interaction it sends
-to your endpoint; Impri uses <code>public_key</code> to verify those signatures.</li>
+to your endpoint; Airlock uses <code>public_key</code> to verify those signatures.</li>
 </ul>
 <h3 id="step-3-invite-the-bot-to-your-server">Step 3 — Invite the bot to your server</h3>
 <p>Go to <strong>OAuth2 → URL Generator</strong>. Select scope <code>bot</code> and permission
@@ -216,8 +216,8 @@ server to add the bot.</p>
 → <strong>Copy User ID</strong> (numeric snowflake). These go in
 <code>allowed_approver_discord_user_ids</code>.</li>
 </ul>
-<h3 id="step-5-create-the-approval-channel-via-the-impri-api">Step 5 — Create the approval channel via the Impri API</h3>
-<div class="code-block"><span class="code-lang">bash</span><pre><code class="hljs">curl -X POST https://api.impri.dev/v1/notification-channels \
+<h3 id="step-5-create-the-approval-channel-via-the-airlock-api">Step 5 — Create the approval channel via the Airlock API</h3>
+<div class="code-block"><span class="code-lang">bash</span><pre><code class="hljs">curl -X POST https://api.airlock.dev/v1/notification-channels \
   -H <span class="hljs-string">&quot;Authorization: Bearer im_...&quot;</span> \
   -H <span class="hljs-string">&quot;Content-Type: application/json&quot;</span> \
   -d <span class="hljs-string">&#x27;{
@@ -233,24 +233,24 @@ server to add the bot.</p>
     },
     &quot;enabled&quot;: true
   }&#x27;</span></code></pre></div>
-<p><strong>Omit <code>hmac_secret</code></strong> — Impri generates 32 random bytes (64-char hex)
+<p><strong>Omit <code>hmac_secret</code></strong> — Airlock generates 32 random bytes (64-char hex)
 automatically and stores it masked (<code>****xxxx</code>). This secret signs the
 button <code>custom_id</code> values so they cannot be forged.</p>
 <p>Copy the <code>id</code> field from the response (e.g. <code>nchan_...</code>).</p>
 <h3 id="step-6-set-the-interactions-endpoint-url-in-discord">Step 6 — Set the Interactions Endpoint URL in Discord</h3>
 <p>In the Discord Developer Portal → <strong>General Information</strong>, find the
 <strong>Interactions Endpoint URL</strong> field and enter:</p>
-<div class="code-block"><pre><code class="hljs">https://your-impri-host/v1/integrations/discord/interactions/nchan_...</code></pre></div>
-<p>Replace <code>your-impri-host</code> with your Impri server&#39;s public hostname and
+<div class="code-block"><pre><code class="hljs">https://your-airlock-host/v1/integrations/discord/interactions/nchan_...</code></pre></div>
+<p>Replace <code>your-airlock-host</code> with your Airlock server&#39;s public hostname and
 <code>nchan_...</code> with the channel ID from Step 5. Click <strong>Save Changes</strong>.</p>
 <p>Discord immediately sends a PING (interaction type 1) signed with its
-Ed25519 private key. Impri verifies the signature and responds
+Ed25519 private key. Airlock verifies the signature and responds
 <code>{&quot;type&quot;:1}</code> (PONG). If the endpoint is unreachable or the signature
 verification fails, Discord rejects the URL — this is a live security
 check during setup.</p>
 <p><strong>Local dev:</strong> Discord requires a publicly reachable HTTPS URL. Use
 <code>ngrok http 8484</code> or <code>cloudflared tunnel --url http://localhost:8484</code>,
-set <code>BASE_URL=https://your-tunnel-url</code>, restart Impri, then enter the
+set <code>BASE_URL=https://your-tunnel-url</code>, restart Airlock, then enter the
 tunnel URL in the Developer Portal.</p>
 <h3 id="step-7-verify">Step 7 — Verify</h3>
 <div class="code-block"><span class="code-lang">bash</span><pre><code class="hljs"><span class="hljs-comment"># Send a test message with interactive buttons</span>
@@ -395,7 +395,7 @@ Developer Portal is optional.</p>
 via Ed25519 signature verification before the request body is parsed.
 Operators do not call this endpoint directly — Discord does.</p>
 <p><strong>Signature verification:</strong> Discord attaches <code>X-Signature-Ed25519</code> and
-<code>X-Signature-Timestamp</code> headers. Impri:</p>
+<code>X-Signature-Timestamp</code> headers. Airlock:</p>
 <ol>
 <li>Reads both headers. If either is absent, returns <strong>401</strong>.</li>
 <li>Constructs the signed message: <code>Buffer.concat([timestamp_bytes, rawBody_bytes])</code>.</li>
@@ -407,8 +407,8 @@ string Discord&#39;s endpoint validator checks when you save the URL).</li>
 <p>This check runs on <strong>every</strong> request including PING (type 1) — skipping
 it for PINGs would create an unauthenticated code path.</p>
 <p>Discord uses an asymmetric scheme: Discord holds the Ed25519 private
-key and signs every interaction; Impri holds only <code>public_key</code> and
-verifies. This means Impri cannot forge Discord interactions, and
+key and signs every interaction; Airlock holds only <code>public_key</code> and
+verifies. This means Airlock cannot forge Discord interactions, and
 <code>public_key</code> is not strictly a secret (though it is masked for
 defense-in-depth).</p>
 <p>Rate limit: 100 requests per minute per <code>channelId</code> (fixed window,
@@ -420,11 +420,11 @@ request per button click; this limit stops scanner abuse.</p>
 <p>An attacker must bypass <strong>all five</strong> simultaneously to forge an approval.</p>
 <p><strong>1. Discord Ed25519 signature (asymmetric)</strong></p>
 <p>Every interaction from Discord carries <code>X-Signature-Ed25519</code> and
-<code>X-Signature-Timestamp</code>. Impri verifies using the application&#39;s
+<code>X-Signature-Timestamp</code>. Airlock verifies using the application&#39;s
 <code>public_key</code> via <code>webcrypto.subtle.verify(&#39;Ed25519&#39;, ...)</code>. Discord&#39;s
 servers hold the private key; without it, no one outside Discord can
 produce a valid signature. Invalid signature → <strong>401</strong> immediately.</p>
-<p>Unlike Slack&#39;s HMAC approach, Ed25519 is asymmetric: Impri cannot
+<p>Unlike Slack&#39;s HMAC approach, Ed25519 is asymmetric: Airlock cannot
 forge Discord signatures even if you have the <code>public_key</code>.</p>
 <p><strong>2. Button <code>custom_id</code> HMAC (unforgeable action binding)</strong></p>
 <p>Each Approve / Reject button carries a signature in its <code>custom_id</code>:</p>
@@ -441,7 +441,7 @@ fabricate a valid <code>custom_id</code> for any action ID. Comparison uses
 <p>Discord sets <code>interaction.member.user.id</code> (guild/server interactions)
 or <code>interaction.user.id</code> (DM interactions) in its own infrastructure.
 After the Ed25519 signature passes (Layer 1), this field is
-authoritative. Impri checks it against
+authoritative. Airlock checks it against
 <code>allowed_approver_discord_user_ids</code>. On failure, an ephemeral &quot;Not
 authorized&quot; message is returned (type 4, flags 64 — visible only to the
 clicker); HTTP 200 is returned so Discord does not retry. No action data
@@ -459,7 +459,7 @@ button click is a safe no-op.</p>
 <hr>
 <h3 id="response-timing">Response timing</h3>
 <p>Discord requires a response to an interaction within 3 seconds. Because
-Impri&#39;s decision is a synchronous SQLite transaction, there is no async
+Airlock&#39;s decision is a synchronous SQLite transaction, there is no async
 latency risk — the response is type 7 (UPDATE_MESSAGE), which replaces
 the original message with the decision outcome and removes the buttons
 in a single round-trip. No deferred response (<code>type: 5</code>) is needed.</p>
@@ -513,17 +513,17 @@ stored in logs or <code>audit_log</code>. All outbound Discord API calls go thro
 Make sure:</p>
 <ul>
 <li>The URL is publicly reachable over HTTPS.</li>
-<li>The <code>channelId</code> in the URL matches the channel Impri created.</li>
+<li>The <code>channelId</code> in the URL matches the channel Airlock created.</li>
 <li>The <code>public_key</code> in the channel config matches <strong>exactly</strong> the Public
 Key shown in the Discord Developer Portal → General Information.</li>
-<li>Impri is running and returning <code>{&quot;type&quot;:1}</code> for the PING.</li>
+<li>Airlock is running and returning <code>{&quot;type&quot;:1}</code> for the PING.</li>
 </ul>
-<p>Check Impri logs for a 401 or signature mismatch error.</p>
+<p>Check Airlock logs for a 401 or signature mismatch error.</p>
 <p><strong>The bot posts a message but buttons do nothing.</strong></p>
 <p>The Interactions Endpoint URL in the Developer Portal is not set, is
 pointing to an unreachable URL, or the <code>channelId</code> in the URL does not
 match the channel. Verify the URL matches
-<code>https://your-impri-host/v1/integrations/discord/interactions/{channelId}</code>.</p>
+<code>https://your-airlock-host/v1/integrations/discord/interactions/{channelId}</code>.</p>
 <p><strong>&quot;Not authorized to approve in this project&quot; when clicking a button.</strong></p>
 <p>The Discord user ID of the person clicking is not in
 <code>allowed_approver_discord_user_ids</code>. Find their ID (Developer Mode →
@@ -542,8 +542,8 @@ button belongs to a test message. Check
 one to it. The decision is idempotent — nothing went wrong.</p>
 <p><strong>The Discord message still shows buttons after a decision.</strong></p>
 <p>The interaction response (type 7) was not delivered within Discord&#39;s
-3-second window (rare — Impri uses synchronous SQLite). The decision
-was still recorded in Impri. The buttons are cosmetically stale; any
+3-second window (rare — Airlock uses synchronous SQLite). The decision
+was still recorded in Airlock. The buttons are cosmetically stale; any
 additional click is answered with an ephemeral &quot;Already decided&quot; and is
 a no-op.</p>
 <p><strong>The channel was auto-disabled (fail_count reached 5).</strong></p>
@@ -630,7 +630,7 @@ then:</p>
 <li class="ptoc-h3"><a href="#step-2-copy-the-application-credentials">Step 2 — Copy the application credentials</a></li>
 <li class="ptoc-h3"><a href="#step-3-invite-the-bot-to-your-server">Step 3 — Invite the bot to your server</a></li>
 <li class="ptoc-h3"><a href="#step-4-enable-developer-mode-and-collect-ids">Step 4 — Enable Developer Mode and collect IDs</a></li>
-<li class="ptoc-h3"><a href="#step-5-create-the-approval-channel-via-the-impri-api">Step 5 — Create the approval channel via the Impri API</a></li>
+<li class="ptoc-h3"><a href="#step-5-create-the-approval-channel-via-the-airlock-api">Step 5 — Create the approval channel via the Airlock API</a></li>
 <li class="ptoc-h3"><a href="#step-6-set-the-interactions-endpoint-url-in-discord">Step 6 — Set the Interactions Endpoint URL in Discord</a></li>
 <li class="ptoc-h3"><a href="#step-7-verify">Step 7 — Verify</a></li>
 <li class="ptoc-h2"><a href="#configuration-reference">Configuration reference</a></li>
@@ -649,19 +649,19 @@ then:</p>
 <footer class="footer">
 <div class="wrap footer-inner">
   <a class="brand" href="/">
-    <span class="mark"><svg viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.5 4.5L19 7.5" stroke="white" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Impri
+    <span class="mark"><svg viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.5 4.5L19 7.5" stroke="white" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Airlock
   </a>
   <div>
-    <a href="https://gitlab.com/sekera.radim/impri">GitLab</a>
+    <a href="https://gitlab.com/sekera.radim/airlock">GitLab</a>
     <a href="/docs">Docs</a>
-    <a href="https://gitlab.com/sekera.radim/impri/-/blob/main/LICENSE">MIT License</a>
-    <a href="https://www.npmjs.com/package/@impri/mcp">@impri/mcp</a>
+    <a href="https://gitlab.com/sekera.radim/airlock/-/blob/main/LICENSE">MIT License</a>
+    <a href="https://www.npmjs.com/package/@airlock/mcp">@airlock/mcp</a>
     <a href="/docs/privacy">Privacy</a>
     <a href="/docs/terms">Terms</a>
     <a href="https://sekera.dev">Contact</a>
   </div>
 </div>
-<div class="wrap" style="margin-top:18px"><span class="muted">© 2026 Impri · The imprimatur for your AI agents · Built by <a href="https://sekera.dev" style="color:inherit">Radim Sekera</a>. Also by the same maker: <a href="https://briefgate.dev/?utm_source=impri.dev&amp;utm_medium=referral" style="color:inherit">BriefGate</a> — client intake for agencies and AI agents.</span></div>
+<div class="wrap" style="margin-top:18px"><span class="muted">© 2026 Airlock · The airlockmatur for your AI agents · Built by <a href="https://sekera.dev" style="color:inherit">Radim Sekera</a>. Also by the same maker: <a href="https://briefgate.dev/?utm_source=airlock.dev&amp;utm_medium=referral" style="color:inherit">BriefGate</a> — client intake for agencies and AI agents.</span></div>
 </footer>
 </body>
 </html>

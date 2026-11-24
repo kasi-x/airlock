@@ -1,17 +1,17 @@
 import { describe, it, expect, vi, afterEach } from 'vitest'
 import {
-  ImpriClient,
-  ImpriApiError,
-  ImpriConfigError,
-  ImpriConflict,
-  ImpriExpired,
-  ImpriNotFound,
-  ImpriQuotaExceeded,
-  ImpriRateLimited,
-  ImpriRejected,
-  ImpriTimeout,
-  ImpriUnauthorized,
-  ImpriValidationError,
+  AirlockClient,
+  AirlockApiError,
+  AirlockConfigError,
+  AirlockConflict,
+  AirlockExpired,
+  AirlockNotFound,
+  AirlockQuotaExceeded,
+  AirlockRateLimited,
+  AirlockRejected,
+  AirlockTimeout,
+  AirlockUnauthorized,
+  AirlockValidationError,
   type BulkDecisionResponse,
   type WatcherPreset,
 } from '../src/index.js'
@@ -23,7 +23,7 @@ const TEST_BASE = 'http://localhost:19999'
 const ACT_ID = 'act_test001'
 
 function client() {
-  return new ImpriClient({ apiKey: TEST_KEY, baseUrl: TEST_BASE })
+  return new AirlockClient({ apiKey: TEST_KEY, baseUrl: TEST_BASE })
 }
 
 /** Build a mock Response-like object. */
@@ -91,31 +91,31 @@ afterEach(() => {
 
 // ─── Constructor ──────────────────────────────────────────────────────────────
 
-describe('ImpriClient constructor', () => {
-  it('throws ImpriConfigError when no API key is provided', () => {
-    const saved = process.env.IMPRI_API_KEY
-    delete process.env.IMPRI_API_KEY
+describe('AirlockClient constructor', () => {
+  it('throws AirlockConfigError when no API key is provided', () => {
+    const saved = process.env.AIRLOCK_API_KEY
+    delete process.env.AIRLOCK_API_KEY
     try {
-      expect(() => new ImpriClient({ baseUrl: TEST_BASE })).toThrow(ImpriConfigError)
+      expect(() => new AirlockClient({ baseUrl: TEST_BASE })).toThrow(AirlockConfigError)
     } finally {
-      if (saved !== undefined) process.env.IMPRI_API_KEY = saved
+      if (saved !== undefined) process.env.AIRLOCK_API_KEY = saved
     }
   })
 
-  it('reads API key from IMPRI_API_KEY env var', () => {
-    const saved = process.env.IMPRI_API_KEY
-    process.env.IMPRI_API_KEY = 'im_from_env'
+  it('reads API key from AIRLOCK_API_KEY env var', () => {
+    const saved = process.env.AIRLOCK_API_KEY
+    process.env.AIRLOCK_API_KEY = 'im_from_env'
     try {
-      expect(() => new ImpriClient({ baseUrl: TEST_BASE })).not.toThrow()
+      expect(() => new AirlockClient({ baseUrl: TEST_BASE })).not.toThrow()
     } finally {
-      if (saved !== undefined) process.env.IMPRI_API_KEY = saved
-      else delete process.env.IMPRI_API_KEY
+      if (saved !== undefined) process.env.AIRLOCK_API_KEY = saved
+      else delete process.env.AIRLOCK_API_KEY
     }
   })
 
-  it('throws ImpriConfigError for a non-URL baseUrl', () => {
-    expect(() => new ImpriClient({ apiKey: TEST_KEY, baseUrl: 'not-a-url' })).toThrow(
-      ImpriConfigError,
+  it('throws AirlockConfigError for a non-URL baseUrl', () => {
+    expect(() => new AirlockClient({ apiKey: TEST_KEY, baseUrl: 'not-a-url' })).toThrow(
+      AirlockConfigError,
     )
   })
 
@@ -123,7 +123,7 @@ describe('ImpriClient constructor', () => {
     const mockFetch = vi.fn().mockResolvedValue(resp(200, { items: [], has_more: false }))
     vi.stubGlobal('fetch', mockFetch)
 
-    const c = new ImpriClient({ apiKey: TEST_KEY, baseUrl: 'http://localhost:19999/' })
+    const c = new AirlockClient({ apiKey: TEST_KEY, baseUrl: 'http://localhost:19999/' })
     await c.listActions()
 
     const url = mockFetch.mock.calls[0][0] as string
@@ -423,50 +423,50 @@ describe('awaitDecision', () => {
     expect(mockFetch).toHaveBeenCalledTimes(2)
   })
 
-  it('throws ImpriRejected when action is rejected', async () => {
+  it('throws AirlockRejected when action is rejected', async () => {
     vi.stubGlobal('fetch', vi.fn().mockResolvedValue(resp(200, rejectedAction())))
 
-    await expect(client().awaitDecision(ACT_ID)).rejects.toBeInstanceOf(ImpriRejected)
+    await expect(client().awaitDecision(ACT_ID)).rejects.toBeInstanceOf(AirlockRejected)
   })
 
-  it('ImpriRejected carries actionId and decision', async () => {
+  it('AirlockRejected carries actionId and decision', async () => {
     vi.stubGlobal('fetch', vi.fn().mockResolvedValue(resp(200, rejectedAction())))
 
     try {
       await client().awaitDecision(ACT_ID)
       expect.fail('should have thrown')
     } catch (err) {
-      expect(err).toBeInstanceOf(ImpriRejected)
-      const e = err as ImpriRejected
+      expect(err).toBeInstanceOf(AirlockRejected)
+      const e = err as AirlockRejected
       expect(e.actionId).toBe(ACT_ID)
       expect(e.decision.verdict).toBe('reject')
     }
   })
 
-  it('throws ImpriExpired when action is expired', async () => {
+  it('throws AirlockExpired when action is expired', async () => {
     vi.stubGlobal('fetch', vi.fn().mockResolvedValue(resp(200, expiredAction())))
 
-    await expect(client().awaitDecision(ACT_ID)).rejects.toBeInstanceOf(ImpriExpired)
+    await expect(client().awaitDecision(ACT_ID)).rejects.toBeInstanceOf(AirlockExpired)
   })
 
-  it('throws ImpriTimeout when deadline elapses while action is still pending', async () => {
+  it('throws AirlockTimeout when deadline elapses while action is still pending', async () => {
     // Always return pending — timeout=0 means deadline is immediately past.
     vi.stubGlobal('fetch', vi.fn().mockResolvedValue(resp(200, pendingAction())))
 
     await expect(
       client().awaitDecision(ACT_ID, { timeoutS: 0, pollIntervalS: 0 }),
-    ).rejects.toBeInstanceOf(ImpriTimeout)
+    ).rejects.toBeInstanceOf(AirlockTimeout)
   })
 
-  it('ImpriTimeout carries the actionId', async () => {
+  it('AirlockTimeout carries the actionId', async () => {
     vi.stubGlobal('fetch', vi.fn().mockResolvedValue(resp(200, pendingAction())))
 
     try {
       await client().awaitDecision(ACT_ID, { timeoutS: 0, pollIntervalS: 0 })
       expect.fail('should have thrown')
     } catch (err) {
-      expect(err).toBeInstanceOf(ImpriTimeout)
-      expect((err as ImpriTimeout).actionId).toBe(ACT_ID)
+      expect(err).toBeInstanceOf(AirlockTimeout)
+      expect((err as AirlockTimeout).actionId).toBe(ACT_ID)
     }
   })
 })
@@ -475,17 +475,17 @@ describe('awaitDecision', () => {
 
 describe('HTTP error mapping', () => {
   const cases = [
-    [401, ImpriUnauthorized],
-    [403, ImpriUnauthorized],
-    [404, ImpriNotFound],
-    [409, ImpriConflict],
-    [410, ImpriExpired],
-    [429, ImpriRateLimited],
-    [402, ImpriQuotaExceeded],
-    [422, ImpriValidationError],
-    [400, ImpriValidationError],
-    [500, ImpriApiError],
-    [503, ImpriApiError],
+    [401, AirlockUnauthorized],
+    [403, AirlockUnauthorized],
+    [404, AirlockNotFound],
+    [409, AirlockConflict],
+    [410, AirlockExpired],
+    [429, AirlockRateLimited],
+    [402, AirlockQuotaExceeded],
+    [422, AirlockValidationError],
+    [400, AirlockValidationError],
+    [500, AirlockApiError],
+    [503, AirlockApiError],
   ] as const
 
   for (const [status, ErrorClass] of cases) {
@@ -495,16 +495,16 @@ describe('HTTP error mapping', () => {
     })
   }
 
-  it('ImpriUnauthorized carries statusCode', async () => {
+  it('AirlockUnauthorized carries statusCode', async () => {
     vi.stubGlobal('fetch', vi.fn().mockResolvedValue(resp(401, { message: 'Unauthorized' })))
     try {
       await client().getAction(ACT_ID)
     } catch (err) {
-      expect((err as ImpriUnauthorized).statusCode).toBe(401)
+      expect((err as AirlockUnauthorized).statusCode).toBe(401)
     }
   })
 
-  it('ImpriRateLimited carries retryAfter from Retry-After header', async () => {
+  it('AirlockRateLimited carries retryAfter from Retry-After header', async () => {
     vi.stubGlobal(
       'fetch',
       vi.fn().mockResolvedValue(resp(429, { message: 'Too many requests' }, { 'retry-after': '42' })),
@@ -512,12 +512,12 @@ describe('HTTP error mapping', () => {
     try {
       await client().getAction(ACT_ID)
     } catch (err) {
-      expect(err).toBeInstanceOf(ImpriRateLimited)
-      expect((err as ImpriRateLimited).retryAfter).toBe(42)
+      expect(err).toBeInstanceOf(AirlockRateLimited)
+      expect((err as AirlockRateLimited).retryAfter).toBe(42)
     }
   })
 
-  it('ImpriQuotaExceeded carries limit and tier', async () => {
+  it('AirlockQuotaExceeded carries limit and tier', async () => {
     vi.stubGlobal(
       'fetch',
       vi.fn().mockResolvedValue(resp(402, { message: 'Quota exceeded', limit: 100, tier: 'free' })),
@@ -525,14 +525,14 @@ describe('HTTP error mapping', () => {
     try {
       await client().getAction(ACT_ID)
     } catch (err) {
-      expect(err).toBeInstanceOf(ImpriQuotaExceeded)
-      const e = err as ImpriQuotaExceeded
+      expect(err).toBeInstanceOf(AirlockQuotaExceeded)
+      const e = err as AirlockQuotaExceeded
       expect(e.limit).toBe(100)
       expect(e.tier).toBe('free')
     }
   })
 
-  it('ImpriValidationError carries issues array', async () => {
+  it('AirlockValidationError carries issues array', async () => {
     vi.stubGlobal(
       'fetch',
       vi.fn().mockResolvedValue(
@@ -542,8 +542,8 @@ describe('HTTP error mapping', () => {
     try {
       await client().getAction(ACT_ID)
     } catch (err) {
-      expect(err).toBeInstanceOf(ImpriValidationError)
-      expect((err as ImpriValidationError).issues).toHaveLength(1)
+      expect(err).toBeInstanceOf(AirlockValidationError)
+      expect((err as AirlockValidationError).issues).toHaveLength(1)
     }
   })
 })
@@ -571,7 +571,7 @@ describe('requiresApproval', () => {
     expect(fn).toHaveBeenCalledOnce()
   })
 
-  it('throws ImpriRejected and does NOT call fn when rejected', async () => {
+  it('throws AirlockRejected and does NOT call fn when rejected', async () => {
     const created = { id: ACT_ID, status: 'pending', inbox_url: 'u', expires_at: 0, created_at: 0 }
     const mockFetch = vi
       .fn()
@@ -582,7 +582,7 @@ describe('requiresApproval', () => {
     const fn = vi.fn().mockResolvedValue('result')
     const wrapped = client().requiresApproval(fn, { kind: 'test', title: 'Test' })
 
-    await expect(wrapped()).rejects.toBeInstanceOf(ImpriRejected)
+    await expect(wrapped()).rejects.toBeInstanceOf(AirlockRejected)
     expect(fn).not.toHaveBeenCalled()
   })
 
@@ -681,7 +681,7 @@ describe('approvalGate', () => {
     expect(gate.finalPreview.body).toBe('hello') // from pendingAction fixture
   })
 
-  it('throws ImpriRejected on rejection', async () => {
+  it('throws AirlockRejected on rejection', async () => {
     const created = { id: ACT_ID, status: 'pending', inbox_url: 'u', expires_at: 0, created_at: 0 }
     const mockFetch = vi
       .fn()
@@ -691,7 +691,7 @@ describe('approvalGate', () => {
 
     await expect(
       client().approvalGate({ kind: 'k', title: 't', preview: { format: 'plain', body: 'b' } }),
-    ).rejects.toBeInstanceOf(ImpriRejected)
+    ).rejects.toBeInstanceOf(AirlockRejected)
   })
 })
 
@@ -953,9 +953,9 @@ describe('listWatcherPresets', () => {
     expect(p.params[1].required).toBe(false)
   })
 
-  it('propagates 401 as ImpriUnauthorized', async () => {
+  it('propagates 401 as AirlockUnauthorized', async () => {
     vi.stubGlobal('fetch', vi.fn().mockResolvedValue(resp(401, { message: 'Unauthorized' })))
-    await expect(client().listWatcherPresets()).rejects.toBeInstanceOf(ImpriUnauthorized)
+    await expect(client().listWatcherPresets()).rejects.toBeInstanceOf(AirlockUnauthorized)
   })
 })
 
@@ -1052,17 +1052,17 @@ describe('createWatcherFromPreset', () => {
     expect(body.schedule).toEqual({ every: '6h' })
   })
 
-  it('throws ImpriNotFound (404) when preset_id is unknown', async () => {
+  it('throws AirlockNotFound (404) when preset_id is unknown', async () => {
     vi.stubGlobal(
       'fetch',
       vi.fn().mockResolvedValue(resp(404, { error: 'preset_not_found' })),
     )
     await expect(client().createWatcherFromPreset('no-such-preset')).rejects.toBeInstanceOf(
-      ImpriNotFound,
+      AirlockNotFound,
     )
   })
 
-  it('throws ImpriValidationError (400) when a required param is missing', async () => {
+  it('throws AirlockValidationError (400) when a required param is missing', async () => {
     vi.stubGlobal(
       'fetch',
       vi.fn().mockResolvedValue(
@@ -1075,10 +1075,10 @@ describe('createWatcherFromPreset', () => {
     // Calling reddit-keyword without the required 'query' param
     await expect(
       client().createWatcherFromPreset('reddit-keyword', {}),
-    ).rejects.toBeInstanceOf(ImpriValidationError)
+    ).rejects.toBeInstanceOf(AirlockValidationError)
   })
 
-  it('throws ImpriValidationError when a param value fails format validation', async () => {
+  it('throws AirlockValidationError when a param value fails format validation', async () => {
     vi.stubGlobal(
       'fetch',
       vi.fn().mockResolvedValue(
@@ -1090,10 +1090,10 @@ describe('createWatcherFromPreset', () => {
     )
     await expect(
       client().createWatcherFromPreset('youtube-channel', { channel_id: 'INVALID' }),
-    ).rejects.toBeInstanceOf(ImpriValidationError)
+    ).rejects.toBeInstanceOf(AirlockValidationError)
   })
 
-  it('throws ImpriQuotaExceeded (402) when watcher limit is reached', async () => {
+  it('throws AirlockQuotaExceeded (402) when watcher limit is reached', async () => {
     vi.stubGlobal(
       'fetch',
       vi.fn().mockResolvedValue(
@@ -1101,11 +1101,11 @@ describe('createWatcherFromPreset', () => {
       ),
     )
     await expect(client().createWatcherFromPreset('hn-front-page')).rejects.toBeInstanceOf(
-      ImpriQuotaExceeded,
+      AirlockQuotaExceeded,
     )
   })
 
-  it('throws ImpriRateLimited (429) when rate limit bucket is exhausted', async () => {
+  it('throws AirlockRateLimited (429) when rate limit bucket is exhausted', async () => {
     vi.stubGlobal(
       'fetch',
       vi.fn().mockResolvedValue(
@@ -1113,7 +1113,7 @@ describe('createWatcherFromPreset', () => {
       ),
     )
     await expect(client().createWatcherFromPreset('hn-front-page')).rejects.toBeInstanceOf(
-      ImpriRateLimited,
+      AirlockRateLimited,
     )
   })
 
@@ -1238,20 +1238,20 @@ describe('bulkDecide', () => {
     expect((init.headers as Record<string, string>).Authorization).toBe(`Bearer ${TEST_KEY}`)
   })
 
-  it('throws ImpriRateLimited on 429', async () => {
+  it('throws AirlockRateLimited on 429', async () => {
     vi.stubGlobal(
       'fetch',
       vi.fn().mockResolvedValue(resp(429, { message: 'Too many requests' }, { 'retry-after': '6' })),
     )
-    await expect(client().bulkDecide(['act_1'], 'approve')).rejects.toBeInstanceOf(ImpriRateLimited)
+    await expect(client().bulkDecide(['act_1'], 'approve')).rejects.toBeInstanceOf(AirlockRateLimited)
   })
 
-  it('throws ImpriUnauthorized on 403', async () => {
+  it('throws AirlockUnauthorized on 403', async () => {
     vi.stubGlobal('fetch', vi.fn().mockResolvedValue(resp(403, { message: 'Forbidden' })))
-    await expect(client().bulkDecide(['act_1'], 'approve')).rejects.toBeInstanceOf(ImpriUnauthorized)
+    await expect(client().bulkDecide(['act_1'], 'approve')).rejects.toBeInstanceOf(AirlockUnauthorized)
   })
 
-  it('throws ImpriValidationError on 400 (e.g. ids array too large)', async () => {
+  it('throws AirlockValidationError on 400 (e.g. ids array too large)', async () => {
     vi.stubGlobal(
       'fetch',
       vi.fn().mockResolvedValue(
@@ -1263,7 +1263,7 @@ describe('bulkDecide', () => {
     )
     const oversizedIds = Array.from({ length: 51 }, (_, i) => `act_${i}`)
     await expect(client().bulkDecide(oversizedIds, 'approve')).rejects.toBeInstanceOf(
-      ImpriValidationError,
+      AirlockValidationError,
     )
   })
 

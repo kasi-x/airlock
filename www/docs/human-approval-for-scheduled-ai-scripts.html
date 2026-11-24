@@ -3,21 +3,21 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Human Approval for Scheduled AI Scripts — Impri Docs</title>
+<title>Human Approval for Scheduled AI Scripts — Airlock Docs</title>
 <meta name="description" content="Gate the output of a scheduled AI script — a nightly GitHub Actions job, a Lambda cron, a CI-triggered generator — without holding a runner idle for hours…">
 <meta name="theme-color" content="#06070d">
-<meta property="og:title" content="Human Approval for Scheduled AI Scripts — Impri Docs">
+<meta property="og:title" content="Human Approval for Scheduled AI Scripts — Airlock Docs">
 <meta property="og:description" content="Gate the output of a scheduled AI script — a nightly GitHub Actions job, a Lambda cron, a CI-triggered generator — without holding a runner idle for hours…">
 <meta property="og:type" content="article">
-<meta property="og:url" content="https://impri.dev/docs/human-approval-for-scheduled-ai-scripts">
-<meta property="og:image" content="https://impri.dev/assets/og/og-docs.png">
+<meta property="og:url" content="https://airlock.dev/docs/human-approval-for-scheduled-ai-scripts">
+<meta property="og:image" content="https://airlock.dev/assets/og/og-docs.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
-<meta property="og:image:alt" content="Impri — human-in-the-loop approval inbox for AI agents">
+<meta property="og:image:alt" content="Airlock — human-in-the-loop approval inbox for AI agents">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="https://impri.dev/assets/og/og-docs.png">
-<link rel="canonical" href="https://impri.dev/docs/human-approval-for-scheduled-ai-scripts">
-<script type="application/ld+json">{"@context":"https://schema.org","@type":"TechArticle","headline":"Human Approval for Scheduled AI Scripts","description":"Gate the output of a scheduled AI script — a nightly GitHub Actions job, a Lambda cron, a CI-triggered generator — without holding a runner idle for hours…","url":"https://impri.dev/docs/human-approval-for-scheduled-ai-scripts","inLanguage":"en","author":{"@type":"Organization","name":"Impri","url":"https://impri.dev"},"publisher":{"@type":"Organization","name":"Impri","url":"https://impri.dev"}}</script>
+<meta name="twitter:image" content="https://airlock.dev/assets/og/og-docs.png">
+<link rel="canonical" href="https://airlock.dev/docs/human-approval-for-scheduled-ai-scripts">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"TechArticle","headline":"Human Approval for Scheduled AI Scripts","description":"Gate the output of a scheduled AI script — a nightly GitHub Actions job, a Lambda cron, a CI-triggered generator — without holding a runner idle for hours…","url":"https://airlock.dev/docs/human-approval-for-scheduled-ai-scripts","inLanguage":"en","author":{"@type":"Organization","name":"Airlock","url":"https://airlock.dev"},"publisher":{"@type":"Organization","name":"Airlock","url":"https://airlock.dev"}}</script>
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <link rel="icon" href="/favicon.ico" sizes="32x32">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='9' fill='%236366f1'/%3E%3Cpath d='M9 16.5l4.5 4.5L23 11' stroke='white' stroke-width='3' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
@@ -132,13 +132,13 @@ pre code.hljs{display:block;overflow-x:auto}
 <div class="wrap nav-inner">
   <a class="brand" href="/">
     <span class="mark"><svg viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.5 4.5L19 7.5" stroke="white" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
-    Impri
+    Airlock
   </a>
   <div class="nav-links">
     <a class="link" href="/#how">How it works</a>
     <a class="link" href="/#pricing">Pricing</a>
     <a class="link active-nav" href="../docs">Docs</a>
-    <a class="btn btn-primary btn-sm" href="https://gitlab.com/sekera.radim/impri">GitLab</a>
+    <a class="btn btn-primary btn-sm" href="https://gitlab.com/sekera.radim/airlock">GitLab</a>
   </div>
 </div>
 </nav>
@@ -160,7 +160,7 @@ pre code.hljs{display:block;overflow-x:auto}
 <p>The fix isn&#39;t a different approval flow — it&#39;s splitting the script into two separate scheduled runs instead of one long-blocking one.</p>
 <hr>
 <h2 id="split-into-a-propose-workflow-and-an-execute-workflow">Split into a propose workflow and an execute workflow</h2>
-<p>The <strong>propose</strong> workflow does the LLM generation, pushes the action to Impri, and exits immediately — no polling, no waiting.</p>
+<p>The <strong>propose</strong> workflow does the LLM generation, pushes the action to Airlock, and exits immediately — no polling, no waiting.</p>
 <div class="code-block"><span class="code-lang">yaml</span><pre><code class="hljs"><span class="hljs-comment"># .github/workflows/nightly-release-notes-propose.yml</span>
 <span class="hljs-attr">name:</span> <span class="hljs-string">Propose</span> <span class="hljs-string">nightly</span> <span class="hljs-string">release</span> <span class="hljs-string">notes</span>
 <span class="hljs-attr">on:</span>
@@ -174,7 +174,7 @@ pre code.hljs{display:block;overflow-x:auto}
       <span class="hljs-bullet">-</span> <span class="hljs-attr">run:</span> <span class="hljs-string">npm</span> <span class="hljs-string">ci</span>
       <span class="hljs-bullet">-</span> <span class="hljs-attr">name:</span> <span class="hljs-string">Generate</span> <span class="hljs-string">and</span> <span class="hljs-string">push</span> <span class="hljs-string">for</span> <span class="hljs-string">approval</span>
         <span class="hljs-attr">env:</span>
-          <span class="hljs-attr">IMPRI_API_KEY:</span> <span class="hljs-string">${{</span> <span class="hljs-string">secrets.IMPRI_API_KEY</span> <span class="hljs-string">}}</span>
+          <span class="hljs-attr">AIRLOCK_API_KEY:</span> <span class="hljs-string">${{</span> <span class="hljs-string">secrets.AIRLOCK_API_KEY</span> <span class="hljs-string">}}</span>
         <span class="hljs-attr">run:</span> <span class="hljs-string">node</span> <span class="hljs-string">scripts/propose-release-notes.mjs</span></code></pre></div>
 <p>The <strong>execute</strong> workflow runs on its own short schedule, checks for any actions that have since been approved, and only then runs the actual side effect (publishing, posting, committing):</p>
 <div class="code-block"><span class="code-lang">yaml</span><pre><code class="hljs"><span class="hljs-comment"># .github/workflows/execute-approved-actions.yml</span>
@@ -190,7 +190,7 @@ pre code.hljs{display:block;overflow-x:auto}
       <span class="hljs-bullet">-</span> <span class="hljs-attr">run:</span> <span class="hljs-string">npm</span> <span class="hljs-string">ci</span>
       <span class="hljs-bullet">-</span> <span class="hljs-attr">name:</span> <span class="hljs-string">Execute</span> <span class="hljs-string">anything</span> <span class="hljs-string">approved</span>
         <span class="hljs-attr">env:</span>
-          <span class="hljs-attr">IMPRI_API_KEY:</span> <span class="hljs-string">${{</span> <span class="hljs-string">secrets.IMPRI_API_KEY</span> <span class="hljs-string">}}</span>
+          <span class="hljs-attr">AIRLOCK_API_KEY:</span> <span class="hljs-string">${{</span> <span class="hljs-string">secrets.AIRLOCK_API_KEY</span> <span class="hljs-string">}}</span>
         <span class="hljs-attr">run:</span> <span class="hljs-string">node</span> <span class="hljs-string">scripts/execute-approved.mjs</span></code></pre></div>
 <p>Neither workflow ever blocks. The <code>propose</code> job stores the action ID somewhere durable (a repo file, a small key-value store, a GitHub Actions artifact) so the <code>execute</code> job knows what to look up:</p>
 <div class="code-block"><span class="code-lang">javascript</span><pre><code class="hljs"><span class="hljs-comment">// scripts/propose-release-notes.mjs</span>
@@ -198,10 +198,10 @@ pre code.hljs{display:block;overflow-x:auto}
 
 <span class="hljs-keyword">const</span> notes = <span class="hljs-keyword">await</span> <span class="hljs-title function_">generateReleaseNotes</span>(); <span class="hljs-comment">// your LLM call</span>
 
-<span class="hljs-keyword">const</span> res = <span class="hljs-keyword">await</span> <span class="hljs-title function_">fetch</span>(<span class="hljs-string">&quot;https://api.impri.dev/v1/actions&quot;</span>, {
+<span class="hljs-keyword">const</span> res = <span class="hljs-keyword">await</span> <span class="hljs-title function_">fetch</span>(<span class="hljs-string">&quot;https://api.airlock.dev/v1/actions&quot;</span>, {
   <span class="hljs-attr">method</span>: <span class="hljs-string">&quot;POST&quot;</span>,
   <span class="hljs-attr">headers</span>: {
-    <span class="hljs-title class_">Authorization</span>: <span class="hljs-string">`Bearer <span class="hljs-subst">${process.env.IMPRI_API_KEY}</span>`</span>,
+    <span class="hljs-title class_">Authorization</span>: <span class="hljs-string">`Bearer <span class="hljs-subst">${process.env.AIRLOCK_API_KEY}</span>`</span>,
     <span class="hljs-string">&quot;Content-Type&quot;</span>: <span class="hljs-string">&quot;application/json&quot;</span>,
   },
   <span class="hljs-attr">body</span>: <span class="hljs-title class_">JSON</span>.<span class="hljs-title function_">stringify</span>({
@@ -214,11 +214,11 @@ pre code.hljs{display:block;overflow-x:auto}
 });
 
 <span class="hljs-keyword">const</span> { id } = <span class="hljs-keyword">await</span> res.<span class="hljs-title function_">json</span>();
-<span class="hljs-keyword">await</span> <span class="hljs-title function_">writeFile</span>(<span class="hljs-string">&quot;.impri-pending/release-notes.json&quot;</span>, <span class="hljs-title class_">JSON</span>.<span class="hljs-title function_">stringify</span>({ id }));</code></pre></div>
+<span class="hljs-keyword">await</span> <span class="hljs-title function_">writeFile</span>(<span class="hljs-string">&quot;.airlock-pending/release-notes.json&quot;</span>, <span class="hljs-title class_">JSON</span>.<span class="hljs-title function_">stringify</span>({ id }));</code></pre></div>
 <p>The <code>execute</code> job reads that file, calls <code>GET /v1/actions/:id</code> once, and either runs the publish step (if <code>approved</code>) or does nothing and leaves the pending file alone (if still <code>pending</code>).</p>
 <hr>
 <h2 id="secrets-and-scopes">Secrets and scopes</h2>
-<p>Store <code>IMPRI_API_KEY</code> as a GitHub Actions repository secret, never in the workflow file itself. Scope it to <code>actions</code> only — a CI script proposing and checking actions has no reason to hold <code>admin</code> or <code>watch</code> scope. If the propose and execute workflows run as separate jobs, they can share the same <code>actions</code>-scoped key; there&#39;s no benefit to splitting it further.</p>
+<p>Store <code>AIRLOCK_API_KEY</code> as a GitHub Actions repository secret, never in the workflow file itself. Scope it to <code>actions</code> only — a CI script proposing and checking actions has no reason to hold <code>admin</code> or <code>watch</code> scope. If the propose and execute workflows run as separate jobs, they can share the same <code>actions</code>-scoped key; there&#39;s no benefit to splitting it further.</p>
 <hr>
 <h2 id="picking-expiresin-for-a-schedule-not-a-person">Picking <code>expires_in</code> for a schedule, not a person</h2>
 <p>For a synchronous approval you&#39;d set a short expiry — minutes to hours. For a scheduled script, size the expiry to the gap between runs plus slack for a weekend or a day someone doesn&#39;t check their phone:</p>
@@ -250,14 +250,14 @@ pre code.hljs{display:block;overflow-x:auto}
 <p>Too short and a real Friday-evening backlog silently expires before Monday; too long and stale, no-longer-relevant drafts sit around waiting for a stray approval. Treat <code>expired</code> the same as <code>rejected</code> in the execute job — log it and let the next scheduled run generate a fresh proposal if the task still matters.</p>
 <hr>
 <h2 id="what-this-doesn39t-replace">What this doesn&#39;t replace</h2>
-<p>This pattern is not a substitute for GitHub&#39;s own Environments protection rules if you&#39;re already using them for deploy gating inside a single workflow run — use those when the approval and the job are the same CI run. Reach for the propose/execute split specifically when the script runs unattended on a schedule and you don&#39;t want a runner burning minutes (or a self-hosted runner sitting blocked) waiting on a human. And as always, Impri only holds the decision — it doesn&#39;t generate the release notes, doesn&#39;t know what &quot;good&quot; output looks like, and the execute script is what actually has to enforce that nothing runs without <code>status: &quot;approved&quot;</code>.</p>
+<p>This pattern is not a substitute for GitHub&#39;s own Environments protection rules if you&#39;re already using them for deploy gating inside a single workflow run — use those when the approval and the job are the same CI run. Reach for the propose/execute split specifically when the script runs unattended on a schedule and you don&#39;t want a runner burning minutes (or a self-hosted runner sitting blocked) waiting on a human. And as always, Airlock only holds the decision — it doesn&#39;t generate the release notes, doesn&#39;t know what &quot;good&quot; output looks like, and the execute script is what actually has to enforce that nothing runs without <code>status: &quot;approved&quot;</code>.</p>
 <p>For the same pattern on a server&#39;s crontab, where the card&#39;s <code>idempotency_key</code> replaces the pending file, see <a href="gate-a-cron-job-with-human-approval">adding human approval to a cron job</a>. For everything else on wiring up the three calls, start with the <a href="quickstart">quickstart</a> or browse <a href="integrations">integrations</a>.</p>
 
-    <aside class="doc-cta" aria-label="Try Impri">
+    <aside class="doc-cta" aria-label="Try Airlock">
   <p class="doc-cta-title">Add an approval step to your own agent</p>
-  <p>Start on Impri Cloud: the Free tier includes 100 approvals a month. Or self-host the MIT-licensed core with Docker Compose, with no tier limits.</p>
+  <p>Start on Airlock Cloud: the Free tier includes 100 approvals a month. Or self-host the MIT-licensed core with Docker Compose, with no tier limits.</p>
   <div class="doc-cta-actions">
-    <a class="btn btn-primary btn-sm" href="https://app.impri.dev/?signup=1">Start free on Impri Cloud</a>
+    <a class="btn btn-primary btn-sm" href="https://app.airlock.dev/?signup=1">Start free on Airlock Cloud</a>
     <a class="btn btn-ghost btn-sm" href="../docs/quickstart">Quick start</a>
     <a class="btn btn-ghost btn-sm" href="../docs/self-hosting">Self-host guide</a>
   </div>
@@ -352,19 +352,19 @@ pre code.hljs{display:block;overflow-x:auto}
 <footer class="footer">
 <div class="wrap footer-inner">
   <a class="brand" href="/">
-    <span class="mark"><svg viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.5 4.5L19 7.5" stroke="white" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Impri
+    <span class="mark"><svg viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.5 4.5L19 7.5" stroke="white" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Airlock
   </a>
   <div>
-    <a href="https://gitlab.com/sekera.radim/impri">GitLab</a>
+    <a href="https://gitlab.com/sekera.radim/airlock">GitLab</a>
     <a href="/docs">Docs</a>
-    <a href="https://gitlab.com/sekera.radim/impri/-/blob/main/LICENSE">MIT License</a>
-    <a href="https://www.npmjs.com/package/@impri/mcp">@impri/mcp</a>
+    <a href="https://gitlab.com/sekera.radim/airlock/-/blob/main/LICENSE">MIT License</a>
+    <a href="https://www.npmjs.com/package/@airlock/mcp">@airlock/mcp</a>
     <a href="/docs/privacy">Privacy</a>
     <a href="/docs/terms">Terms</a>
     <a href="https://sekera.dev">Contact</a>
   </div>
 </div>
-<div class="wrap" style="margin-top:18px"><span class="muted">© 2026 Impri · The imprimatur for your AI agents · Built by <a href="https://sekera.dev" style="color:inherit">Radim Sekera</a>. Also by the same maker: <a href="https://briefgate.dev/?utm_source=impri.dev&amp;utm_medium=referral" style="color:inherit">BriefGate</a> — client intake for agencies and AI agents.</span></div>
+<div class="wrap" style="margin-top:18px"><span class="muted">© 2026 Airlock · The airlockmatur for your AI agents · Built by <a href="https://sekera.dev" style="color:inherit">Radim Sekera</a>. Also by the same maker: <a href="https://briefgate.dev/?utm_source=airlock.dev&amp;utm_medium=referral" style="color:inherit">BriefGate</a> — client intake for agencies and AI agents.</span></div>
 </footer>
 </body>
 </html>

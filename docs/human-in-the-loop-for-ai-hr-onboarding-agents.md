@@ -21,12 +21,12 @@ HR data also has a compliance angle most agent actions don't: account creation a
 
 ## Gating the provisioning actions
 
-The drafting stays agentic. Only the three actions in the right-hand column above go through Impri. Using the TypeScript SDK's `requiresApproval` wrapper keeps the approval logic out of the provisioning functions themselves:
+The drafting stays agentic. Only the three actions in the right-hand column above go through Airlock. Using the TypeScript SDK's `requiresApproval` wrapper keeps the approval logic out of the provisioning functions themselves:
 
 ```typescript
-import { ImpriClient, ImpriRejected } from '@impri/sdk'
+import { AirlockClient, AirlockRejected } from '@airlock/sdk'
 
-const client = new ImpriClient({ apiKey: process.env.IMPRI_API_KEY! })
+const client = new AirlockClient({ apiKey: process.env.AIRLOCK_API_KEY! })
 
 async function createSsoAccount(employee: { name: string; email: string; role: string }) {
   await sso.createUser({ email: employee.email, displayName: employee.name, role: employee.role })
@@ -45,7 +45,7 @@ const gatedCreateSsoAccount = client.requiresApproval(createSsoAccount, {
 try {
   await gatedCreateSsoAccount({ name: 'Jordan Lee', email: 'jordan.lee@company.com', role: 'backend-engineer' })
 } catch (err) {
-  if (err instanceof ImpriRejected) {
+  if (err instanceof AirlockRejected) {
     console.log('HR rejected — likely a data mismatch, check the HRIS record before retrying.')
   } else {
     throw err

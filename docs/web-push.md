@@ -1,8 +1,8 @@
 # Web Push Notifications
 
-Impri supports browser-native push notifications via the Web Push API (VAPID). When an action is created with `status=pending`, all subscribed browser sessions for the project receive an immediate push notification — no polling or page refresh needed.
+Airlock supports browser-native push notifications via the Web Push API (VAPID). When an action is created with `status=pending`, all subscribed browser sessions for the project receive an immediate push notification — no polling or page refresh needed.
 
-Web push is a complement to the notification channel system (Slack, Telegram, etc.) and is built into the web inbox at `app.impri.dev`.
+Web push is a complement to the notification channel system (Slack, Telegram, etc.) and is built into the web inbox at `app.airlock.dev`.
 
 ---
 
@@ -10,7 +10,7 @@ Web push is a complement to the notification channel system (Slack, Telegram, et
 
 1. The browser fetches the server's VAPID public key (`GET /v1/push/vapid-public-key`).
 2. The browser registers a push subscription with its push service (using the VAPID key).
-3. The subscription endpoint + crypto keys are registered with Impri (`POST /v1/push/subscribe`).
+3. The subscription endpoint + crypto keys are registered with Airlock (`POST /v1/push/subscribe`).
 4. When `POST /v1/actions` creates a pending action, the server sends a push to all project-scoped subscriptions.
 5. The browser receives the push and shows a native OS notification.
 6. On logout or unsubscribe, the endpoint is removed (`DELETE /v1/push/subscribe`).
@@ -158,4 +158,4 @@ Use notification channels to send alerts to team Slack or Telegram. Use web push
 
 ## Browser compatibility
 
-Web push is supported in all modern browsers (Chrome, Firefox, Edge, Safari 16.4+). The push service is managed by the browser vendor (FCM for Chrome, APNs for Safari). Impri uses the VAPID protocol — no Google account or Firebase project required.
+Web push is supported in all modern browsers (Chrome, Firefox, Edge, Safari 16.4+). The push service is managed by the browser vendor (FCM for Chrome, APNs for Safari). Airlock uses the VAPID protocol — no Google account or Firebase project required.

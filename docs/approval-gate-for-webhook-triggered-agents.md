@@ -16,7 +16,7 @@ That means the approval step needs to be a real suspend-and-resume in the code, 
 
 Say you have an agent that reads the diff on incoming PRs opened by a bot (Dependabot-style version bumps) and decides whether the bump looks safe. When it's confident, its job is to merge. That's exactly the kind of action worth gating — a bad automatic merge is hard to notice until something breaks in production.
 
-Here's a minimal Flask webhook receiver in Python that pushes the merge decision to Impri instead of merging directly:
+Here's a minimal Flask webhook receiver in Python that pushes the merge decision to Airlock instead of merging directly:
 
 ```python
 import os
@@ -24,8 +24,8 @@ import requests
 from flask import Flask, request
 
 app = Flask(__name__)
-IMPRI_KEY = os.environ["IMPRI_API_KEY"]
-IMPRI_BASE = "https://api.impri.dev"
+AIRLOCK_KEY = os.environ["AIRLOCK_API_KEY"]
+AIRLOCK_BASE = "https://api.airlock.dev"
 
 @app.route("/webhooks/github", methods=["POST"])
 def handle_pr_event():
@@ -38,8 +38,8 @@ def handle_pr_event():
         return "", 204
 
     action = requests.post(
-        f"{IMPRI_BASE}/v1/actions",
-        headers={"Authorization": f"Bearer {IMPRI_KEY}"},
+        f"{AIRLOCK_BASE}/v1/actions",
+        headers={"Authorization": f"Bearer {AIRLOCK_KEY}"},
         json={
             "kind": "git.merge_pr",
             "title": f"Auto-merge: {pr['title']}",
@@ -69,8 +69,8 @@ import time
 def process_pending_merge(action_id, pr_number):
     while True:
         result = requests.get(
-            f"{IMPRI_BASE}/v1/actions/{action_id}",
-            headers={"Authorization": f"Bearer {IMPRI_KEY}"},
+            f"{AIRLOCK_BASE}/v1/actions/{action_id}",
+            headers={"Authorization": f"Bearer {AIRLOCK_KEY}"},
         ).json()
 
         if result["status"] == "pending":
@@ -80,8 +80,8 @@ def process_pending_merge(action_id, pr_number):
         if result["status"] == "approved":
             merge_pull_request(pr_number)  # your GitHub API call
             requests.post(
-                f"{IMPRI_BASE}/v1/actions/{action_id}/result",
-                headers={"Authorization": f"Bearer {IMPRI_KEY}"},
+                f"{AIRLOCK_BASE}/v1/actions/{action_id}/result",
+                headers={"Authorization": f"Bearer {AIRLOCK_KEY}"},
                 json={"status": "executed"},
             )
         # rejected or expired: do nothing, PR stays open for a human to handle manually
@@ -100,9 +100,9 @@ Chat-driven approvals can afford a long expiry — a human might come back to th
 
 ## What this does and doesn't protect against
 
-Impri holds the decision and notifies a human; it does not inspect the PR diff, run your safety heuristic, or know anything about GitHub. The gate only holds if `merge_pull_request()` genuinely cannot be reached except through the approved path — if the agent process also has a GitHub token it could call directly on some other code path, the gate is decorative. Route the credential only through the code that checks `status: "approved"` first.
+Airlock holds the decision and notifies a human; it does not inspect the PR diff, run your safety heuristic, or know anything about GitHub. The gate only holds if `merge_pull_request()` genuinely cannot be reached except through the approved path — if the agent process also has a GitHub token it could call directly on some other code path, the gate is decorative. Route the credential only through the code that checks `status: "approved"` first.
 
-For the full three-call pattern this builds on, see [how to add human approval to an AI agent](how-to-add-human-approval-to-an-ai-agent.md). For receiving the GitHub/Stripe/etc. webhook itself (separate from Impri's own decision notifications), see [webhooks](webhooks.md). To wire the target tool so the approved path is the only path, see [integrations](integrations.md).
+For the full three-call pattern this builds on, see [how to add human approval to an AI agent](how-to-add-human-approval-to-an-ai-agent.md). For receiving the GitHub/Stripe/etc. webhook itself (separate from Airlock's own decision notifications), see [webhooks](webhooks.md). To wire the target tool so the approved path is the only path, see [integrations](integrations.md).
 
 ---
 

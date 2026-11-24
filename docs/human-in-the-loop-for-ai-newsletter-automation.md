@@ -14,19 +14,19 @@ This is exactly the profile of action that benefits from a gate: high blast radi
 
 ## Wiring the gate around the send step
 
-The pattern is the same three calls as any Impri integration: push the drafted issue as a pending action, wait for a decision, then call your ESP's send endpoint only if approved.
+The pattern is the same three calls as any Airlock integration: push the drafted issue as a pending action, wait for a decision, then call your ESP's send endpoint only if approved.
 
 ```python
 import os
 import time
 import requests
 
-IMPRI_KEY = os.environ["IMPRI_API_KEY"]
-HEADERS = {"Authorization": f"Bearer {IMPRI_KEY}", "Content-Type": "application/json"}
+AIRLOCK_KEY = os.environ["AIRLOCK_API_KEY"]
+HEADERS = {"Authorization": f"Bearer {AIRLOCK_KEY}", "Content-Type": "application/json"}
 
 def push_newsletter_for_approval(subject: str, body_markdown: str, esp_draft_url: str) -> str:
     resp = requests.post(
-        "https://api.impri.dev/v1/actions",
+        "https://api.airlock.dev/v1/actions",
         headers=HEADERS,
         json={
             "kind": "newsletter.campaign.send",
@@ -43,7 +43,7 @@ def push_newsletter_for_approval(subject: str, body_markdown: str, esp_draft_url
 
 def wait_for_decision(action_id: str) -> dict:
     while True:
-        result = requests.get(f"https://api.impri.dev/v1/actions/{action_id}", headers=HEADERS).json()
+        result = requests.get(f"https://api.airlock.dev/v1/actions/{action_id}", headers=HEADERS).json()
         if result["status"] != "pending":
             return result
         time.sleep(15)
@@ -55,7 +55,7 @@ if decision["status"] == "approved":
     final_body = decision["decision"]["final_preview"]["body"]  # carries editor's changes
     send_campaign(esp_campaign_id, final_body)  # your ESP call — Mailchimp, ConvertKit, Buttondown, etc.
     requests.post(
-        f"https://api.impri.dev/v1/actions/{action_id}/result",
+        f"https://api.airlock.dev/v1/actions/{action_id}/result",
         headers=HEADERS,
         json={"status": "executed"},
     )
@@ -79,13 +79,13 @@ A weekly newsletter has a narrow relevance window. Setting `expires_in` to somet
 | Subject line, and the ESP draft link via `target_url` | Whether the agent's copy is factually accurate — that's still on you upstream |
 | An editable body they can fix typos or claims in before approving | List size or delivery infrastructure |
 
-Impri does not check facts or brand voice — it presents the draft to a human who does. If your agent pulls product details or numbers into the newsletter from an upstream source, validate those before the action is even created; the approval step catches "should this go out," not "is this true."
+Airlock does not check facts or brand voice — it presents the draft to a human who does. If your agent pulls product details or numbers into the newsletter from an upstream source, validate those before the action is even created; the approval step catches "should this go out," not "is this true."
 
 ---
 
 ## Boundary: this only holds if the send credential lives behind the gate
 
-The gate only works if `send_campaign()` above is genuinely unreachable without an `approved` status — same as any other Impri integration. If the agent also holds a standing ESP API key it could call directly (outside this code path), the approval step is decorative. Keep the send credential inside the wrapper that checks the decision first; see [wrapping a tool with a human approval step](wrapping-a-tool-with-a-human-approval-step.md) for the general pattern.
+The gate only works if `send_campaign()` above is genuinely unreachable without an `approved` status — same as any other Airlock integration. If the agent also holds a standing ESP API key it could call directly (outside this code path), the approval step is decorative. Keep the send credential inside the wrapper that checks the decision first; see [wrapping a tool with a human approval step](wrapping-a-tool-with-a-human-approval-step.md) for the general pattern.
 
 ---
 

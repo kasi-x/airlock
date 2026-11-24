@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * scripts/build-docs.mjs — Impri docs static site generator
+ * scripts/build-docs.mjs — Airlock docs static site generator
  *
  * Reads every docs/*.md (excluding llms.txt and research/launch files),
  * renders each to www/docs/<slug>.html wrapped in a shared template that
@@ -237,7 +237,7 @@ ${links}
 /** Extract plain-text title from H1 in rendered HTML. */
 function extractTitle(html) {
   const m = html.match(/<h1[^>]*>([\s\S]*?)<\/h1>/i);
-  return m ? decodeEntities(m[1].replace(/<[^>]+>/g, '')).trim() : 'Impri Docs';
+  return m ? decodeEntities(m[1].replace(/<[^>]+>/g, '')).trim() : 'Airlock Docs';
 }
 
 /**
@@ -267,7 +267,7 @@ function extractDesc(html) {
     decodeEntities(m[1].replace(/<[^>]+>/g, '')).replace(/\s+/g, ' ').trim()
   );
   const text = paras.find((p) => p.length >= 25) || paras[0]
-    || 'Impri documentation: add a human approval step to any AI agent.';
+    || 'Airlock documentation: add a human approval step to any AI agent.';
   return truncateAtWord(text, 160);
 }
 
@@ -304,11 +304,11 @@ const FAVICON_LINKS = `<link rel="icon" href="/favicon.svg" type="image/svg+xml"
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <link rel="manifest" href="/site.webmanifest">`;
 
-const OG_DOCS = 'https://impri.dev/assets/og/og-docs.png';
+const OG_DOCS = 'https://airlock.dev/assets/og/og-docs.png';
 
 const LOGO_SVG = `<svg viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.5 4.5L19 7.5" stroke="white" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
 
-// Custom hljs dark theme tuned to the Impri palette (background matches terminal in styles.css)
+// Custom hljs dark theme tuned to the Airlock palette (background matches terminal in styles.css)
 const HLJS_CSS = `
 pre code.hljs{display:block;overflow-x:auto}
 .hljs{color:#cdd3e1;background:transparent}
@@ -418,7 +418,7 @@ function buildNav(root) {
 <div class="wrap nav-inner">
   <a class="brand" href="/">
     <span class="mark">${LOGO_SVG}</span>
-    Impri
+    Airlock
   </a>
   <div class="nav-links">
     <a class="link" href="/#how">How it works</a>
@@ -434,19 +434,19 @@ function buildFooter() {
   return `<footer class="footer">
 <div class="wrap footer-inner">
   <a class="brand" href="/">
-    <span class="mark">${LOGO_SVG}</span>Impri
+    <span class="mark">${LOGO_SVG}</span>Airlock
   </a>
   <div>
     <a href="https://gitlab.com/sekera.radim/impri">GitLab</a>
     <a href="/docs">Docs</a>
     <a href="https://gitlab.com/sekera.radim/impri/-/blob/main/LICENSE">MIT License</a>
-    <a href="https://www.npmjs.com/package/@impri/mcp">@impri/mcp</a>
+    <a href="https://www.npmjs.com/package/@airlock/mcp">@airlock/mcp</a>
     <a href="/docs/privacy">Privacy</a>
     <a href="/docs/terms">Terms</a>
     <a href="https://sekera.dev">Contact</a>
   </div>
 </div>
-<div class="wrap" style="margin-top:18px"><span class="muted">© 2026 Impri · The imprimatur for your AI agents · Built by <a href="https://sekera.dev" style="color:inherit">Radim Sekera</a>. Also by the same maker: <a href="https://briefgate.dev/?utm_source=impri.dev&amp;utm_medium=referral" style="color:inherit">BriefGate</a> — client intake for agencies and AI agents.</span></div>
+<div class="wrap" style="margin-top:18px"><span class="muted">© 2026 Airlock · The airlockmatur for your AI agents · Built by <a href="https://sekera.dev" style="color:inherit">Radim Sekera</a>. Also by the same maker: <a href="https://briefgate.dev/?utm_source=airlock.dev&amp;utm_medium=referral" style="color:inherit">BriefGate</a> — client intake for agencies and AI agents.</span></div>
 </footer>`;
 }
 
@@ -455,11 +455,11 @@ function buildFooter() {
 // pages are product docs that already sit inside the docs navigation. Limits
 // match FREE in server/src/billing.ts and docs/billing.md.
 function buildArticleCta(root) {
-  return `<aside class="doc-cta" aria-label="Try Impri">
+  return `<aside class="doc-cta" aria-label="Try Airlock">
   <p class="doc-cta-title">Add an approval step to your own agent</p>
-  <p>Start on Impri Cloud: the Free tier includes 100 approvals a month. Or self-host the MIT-licensed core with Docker Compose, with no tier limits.</p>
+  <p>Start on Airlock Cloud: the Free tier includes 100 approvals a month. Or self-host the MIT-licensed core with Docker Compose, with no tier limits.</p>
   <div class="doc-cta-actions">
-    <a class="btn btn-primary btn-sm" href="https://app.impri.dev/?signup=1">Start free on Impri Cloud</a>
+    <a class="btn btn-primary btn-sm" href="https://app.airlock.dev/?signup=1">Start free on Airlock Cloud</a>
     <a class="btn btn-ghost btn-sm" href="${root}docs/quickstart">Quick start</a>
     <a class="btn btn-ghost btn-sm" href="${root}docs/self-hosting">Self-host guide</a>
   </div>
@@ -487,7 +487,7 @@ function linkedDocSlugs(contentHtml, knownSlugs) {
   const found = new Set();
   for (const [, href] of contentHtml.matchAll(/<a href="([^"]*)"/g)) {
     const path = href
-      .replace(/^https:\/\/impri\.dev/, '')
+      .replace(/^https:\/\/airlock\.dev/, '')
       .replace(/[#?].*$/, '')
       .replace(/\.html$/, '')
       .replace(/\/$/, '');
@@ -502,7 +502,7 @@ function linkedDocSlugs(contentHtml, knownSlugs) {
 function renderDocPage({ slug, title, desc, section, contentHtml, sidebarHtml, pageTocHtml, root, unlisted, relatedHtml = '' }) {
   // Cloudflare Pages serves the clean URL (/docs/slug) and 308-redirects the
   // .html form to it, so canonical/OG/JSON-LD must point at the clean URL.
-  const canonical = `https://impri.dev/docs/${slug}`;
+  const canonical = `https://airlock.dev/docs/${slug}`;
   const jsonLd = JSON.stringify({
     '@context': 'https://schema.org',
     '@type': 'TechArticle',
@@ -510,14 +510,14 @@ function renderDocPage({ slug, title, desc, section, contentHtml, sidebarHtml, p
     description: desc,
     url: canonical,
     inLanguage: 'en',
-    author:    { '@type': 'Organization', name: 'Impri', url: 'https://impri.dev' },
-    publisher: { '@type': 'Organization', name: 'Impri', url: 'https://impri.dev' },
+    author:    { '@type': 'Organization', name: 'Airlock', url: 'https://airlock.dev' },
+    publisher: { '@type': 'Organization', name: 'Airlock', url: 'https://airlock.dev' },
   });
-  // The <title>/og:title tag is "<H1> — Impri Docs": the H1 itself is the
+  // The <title>/og:title tag is "<H1> — Airlock Docs": the H1 itself is the
   // exact target search phrase (see scripts/seo/brief.md) and stays full
   // length everywhere else (breadcrumb, JSON-LD headline, hub/llms.txt) —
   // only this rendered tag gets truncated to Google/Bing's ~70-char budget.
-  const TITLE_SUFFIX = ' — Impri Docs';
+  const TITLE_SUFFIX = ' — Airlock Docs';
   const titleTag = escHtml(truncateAtWord(title, 70 - TITLE_SUFFIX.length)) + TITLE_SUFFIX;
   const descAttr = escAttrWithBudget(desc, 160);
   return `<!DOCTYPE html>
@@ -535,7 +535,7 @@ function renderDocPage({ slug, title, desc, section, contentHtml, sidebarHtml, p
 <meta property="og:image" content="${OG_DOCS}">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
-<meta property="og:image:alt" content="Impri — human-in-the-loop approval inbox for AI agents">
+<meta property="og:image:alt" content="Airlock — human-in-the-loop approval inbox for AI agents">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:image" content="${OG_DOCS}">
 <link rel="canonical" href="${canonical}">
@@ -606,20 +606,20 @@ ${pageLinks}
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Impri Docs — human approval for AI agents</title>
-<meta name="description" content="Impri documentation: add a human approval step to any AI agent. Self-host in 5 minutes, integrate over REST or MCP, use watchers to surface work with no code.">
+<title>Airlock Docs — human approval for AI agents</title>
+<meta name="description" content="Airlock documentation: add a human approval step to any AI agent. Self-host in 5 minutes, integrate over REST or MCP, use watchers to surface work with no code.">
 <meta name="theme-color" content="#06070d">
-<meta property="og:title" content="Impri Docs — human approval for AI agents">
-<meta property="og:description" content="Complete reference for Impri: quickstart, API, SDKs, integrations, CLI, and self-hosting.">
+<meta property="og:title" content="Airlock Docs — human approval for AI agents">
+<meta property="og:description" content="Complete reference for Airlock: quickstart, API, SDKs, integrations, CLI, and self-hosting.">
 <meta property="og:type" content="website">
-<meta property="og:url" content="https://impri.dev/docs">
+<meta property="og:url" content="https://airlock.dev/docs">
 <meta property="og:image" content="${OG_DOCS}">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
-<meta property="og:image:alt" content="Impri — human-in-the-loop approval inbox for AI agents">
+<meta property="og:image:alt" content="Airlock — human-in-the-loop approval inbox for AI agents">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:image" content="${OG_DOCS}">
-<link rel="canonical" href="https://impri.dev/docs">
+<link rel="canonical" href="https://airlock.dev/docs">
 ${FAVICON_LINKS}
 <link rel="stylesheet" href="styles.css">
 <style>
@@ -637,7 +637,7 @@ ${buildNav('')}
 <div class="docs-hub">
   <div class="hub-hero">
     <span class="eyebrow">Reference</span>
-    <h1 style="margin-top:16px">Impri documentation</h1>
+    <h1 style="margin-top:16px">Airlock documentation</h1>
     <p>Add a human approval step to any AI agent. An agent proposes an action, a person approves or rejects it in the inbox, and only then does it run. Everything you need to get started and go deep.</p>
     <div style="display:flex;gap:12px;margin-top:28px;flex-wrap:wrap">
       <a class="btn btn-primary btn-sm" href="docs/quickstart">Quickstart</a>
@@ -766,20 +766,20 @@ function main() {
   const changedOn = (...paths) =>
     execFileSync('git', ['log', '-1', '--format=%cs', '--', ...paths], { cwd: ROOT, encoding: 'utf8' }).trim() || today;
   const entries = [
-    ['https://impri.dev/', changedOn('www/index.html')],
-    ['https://impri.dev/docs', changedOn('docs', 'scripts/build-docs.mjs')],
-    ['https://impri.dev/pricing', changedOn('www/pricing.html')],
+    ['https://airlock.dev/', changedOn('www/index.html')],
+    ['https://airlock.dev/docs', changedOn('docs', 'scripts/build-docs.mjs')],
+    ['https://airlock.dev/pricing', changedOn('www/pricing.html')],
   ];
   for (const slug of pageIndex.keys()) {
-    entries.push([`https://impri.dev/docs/${slug}`, changedOn(`docs/${slug}.md`)]);
+    entries.push([`https://airlock.dev/docs/${slug}`, changedOn(`docs/${slug}.md`)]);
   }
   if (useCasesManifest.useCases.length) {
-    entries.push(['https://impri.dev/use-cases', changedOn('docs/use-cases')]);
+    entries.push(['https://airlock.dev/use-cases', changedOn('docs/use-cases')]);
     for (const uc of useCasesManifest.useCases) {
-      entries.push([`https://impri.dev/use-cases/${uc.slug}`, changedOn(`docs/use-cases/${uc.slug}.md`)]);
+      entries.push([`https://airlock.dev/use-cases/${uc.slug}`, changedOn(`docs/use-cases/${uc.slug}.md`)]);
     }
   }
-  if (useCasesManifest.agents) entries.push(['https://impri.dev/agents', changedOn('scripts/build-usecases.mjs')]);
+  if (useCasesManifest.agents) entries.push(['https://airlock.dev/agents', changedOn('scripts/build-usecases.mjs')]);
   const sitemap =
     `<?xml version="1.0" encoding="UTF-8"?>\n` +
     `<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n` +
@@ -802,7 +802,7 @@ function main() {
       if (PAGE_MAP.has(slug)) continue; // NAV pages already listed in the curated section
       // Extensionless — the .html form 308-redirects, and Search Console reports
       // every redirected URL as "Page with redirect".
-      guideLines.push(`- ${info.title}: https://impri.dev/docs/${slug}`);
+      guideLines.push(`- ${info.title}: https://airlock.dev/docs/${slug}`);
     }
     let section = '';
     if (guideLines.length) {
@@ -811,22 +811,22 @@ function main() {
     if (useCasesManifest.useCases.length) {
       section += `\n## Install per agent\n`;
       for (const g of NAV.find(g => g.section === 'Install').pages) {
-        section += `- ${g.title}: https://impri.dev/docs/${g.slug}\n`;
+        section += `- ${g.title}: https://airlock.dev/docs/${g.slug}\n`;
       }
       section += `\n## Use cases\n`;
-      section += `- Use cases index: https://impri.dev/use-cases\n`;
+      section += `- Use cases index: https://airlock.dev/use-cases\n`;
       for (const uc of useCasesManifest.useCases) {
-        section += `- ${uc.title}: https://impri.dev/use-cases/${uc.slug}\n`;
+        section += `- ${uc.title}: https://airlock.dev/use-cases/${uc.slug}\n`;
       }
     }
     if (useCasesManifest.agents) {
-      section += `\n## For AI agents\n- ${useCasesManifest.agents.title}: https://impri.dev/agents\n`;
+      section += `\n## For AI agents\n- ${useCasesManifest.agents.title}: https://airlock.dev/agents\n`;
     }
     if (section) {
       llms = llms.replace(/\s+$/, '') + `\n\n${GUIDES_MARKER}\n` + section.replace(/^\n/, '');
       writeFileSync(llmsPath, llms, 'utf8');
       // README and the SDK docs point at docs/llms.txt as the API contract.
-      // It used to be a hand-kept copy that drifted from what impri.dev serves
+      // It used to be a hand-kept copy that drifted from what airlock.dev serves
       // (it was missing public endpoints), so it is now written from the same text.
       writeFileSync(join(DOCS_SRC, 'llms.txt'), llms, 'utf8');
       console.log(`  ✓  llms.txt (guides + use cases + install + agents; docs/llms.txt kept identical)`);

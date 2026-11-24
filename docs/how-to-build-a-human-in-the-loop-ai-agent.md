@@ -10,13 +10,13 @@ The phrase gets used loosely. For this guide it means one specific thing: **the 
 
 That is different from asking the model to "check with the user before sending." A prompt instruction can be talked past; a data dependency cannot. If the agent's posting function requires an approved action ID before it runs, and the only way to get that ID approved is through a human clicking a button, the gate is real.
 
-What Impri provides is exactly that data dependency: you push a proposed action, Impri holds it, a human decides, and your agent gets back `status: "approved"` or `status: "rejected"`. Execution code that only runs on `"approved"` cannot be bypassed by prompt injection or model drift.
+What Airlock provides is exactly that data dependency: you push a proposed action, Airlock holds it, a human decides, and your agent gets back `status: "approved"` or `status: "rejected"`. Execution code that only runs on `"approved"` cannot be bypassed by prompt injection or model drift.
 
 ---
 
 ## What you need
 
-- An [Impri API key](api-keys.md) with `actions` scope
+- An [Airlock API key](api-keys.md) with `actions` scope
 - An agent that performs some external action (post, send, publish, modify)
 - A way to receive notifications — email is on by default; see [notifications](notifications.md) to add Slack, Telegram, or mobile push
 
@@ -26,10 +26,10 @@ No SDK required. Any HTTP client works. The examples below use TypeScript with n
 
 ## The three-step loop
 
-Every human-in-the-loop agent built on Impri follows the same structure:
+Every human-in-the-loop agent built on Airlock follows the same structure:
 
 ```
-1. propose   →  POST /v1/actions          (agent → Impri)
+1. propose   →  POST /v1/actions          (agent → Airlock)
 2. wait       →  GET  /v1/actions/:id      (agent polls; human decides in inbox/Slack/Telegram)
 3. execute    →  run your side effect      (only if approved)
               →  POST /v1/actions/:id/result  (close the audit record)
@@ -44,23 +44,23 @@ That loop can run inside any agent framework — plain Node.js, LangChain, Claud
 Here is a complete TypeScript example. The agent generates a blog post summary and asks for approval before publishing it to an external CMS.
 
 ```typescript
-const IMPRI_KEY = process.env.IMPRI_API_KEY!;
-const IMPRI_BASE = "https://api.impri.dev";
+const AIRLOCK_KEY = process.env.AIRLOCK_API_KEY!;
+const AIRLOCK_BASE = "https://api.airlock.dev";
 
-async function impriPost(path: string, body: object): Promise<Response> {
-  return fetch(`${IMPRI_BASE}${path}`, {
+async function airlockPost(path: string, body: object): Promise<Response> {
+  return fetch(`${AIRLOCK_BASE}${path}`, {
     method: "POST",
     headers: {
-      Authorization: `Bearer ${IMPRI_KEY}`,
+      Authorization: `Bearer ${AIRLOCK_KEY}`,
       "Content-Type": "application/json",
     },
     body: JSON.stringify(body),
   });
 }
 
-async function impriGet(path: string): Promise<Response> {
-  return fetch(`${IMPRI_BASE}${path}`, {
-    headers: { Authorization: `Bearer ${IMPRI_KEY}` },
+async function airlockGet(path: string): Promise<Response> {
+  return fetch(`${AIRLOCK_BASE}${path}`, {
+    headers: { Authorization: `Bearer ${AIRLOCK_KEY}` },
   });
 }
 
@@ -75,7 +75,7 @@ async function proposePublication(
   summary: string
 ): Promise<Proposal> {
   // Step 1: Push the proposed action
-  const push = await impriPost("/v1/actions", {
+  const push = await airlockPost("/v1/actions", {
     kind: "blog.publish",
     title,
     preview: { format: "markdown", body: summary },
@@ -91,7 +91,7 @@ async function proposePublication(
   while (true) {
     await new Promise((r) => setTimeout(r, 10_000)); // 10-second poll interval
 
-    const poll = await impriGet(`/v1/actions/${actionId}`);
+    const poll = await airlockGet(`/v1/actions/${actionId}`);
     const result = await poll.json();
 
     if (result.status !== "pending") {
@@ -124,10 +124,10 @@ async function runPublishingAgent(title: string, draft: string): Promise<void> {
   try {
     await publishToCMS(contentToPublish);
 
-    // Step 3: Report success back to Impri
-    await impriPost(`/v1/actions/${actionId}/result`, { status: "executed" });
+    // Step 3: Report success back to Airlock
+    await airlockPost(`/v1/actions/${actionId}/result`, { status: "executed" });
   } catch (err) {
-    await impriPost(`/v1/actions/${actionId}/result`, {
+    await airlockPost(`/v1/actions/${actionId}/result`, {
       status: "execute_failed",
     });
     throw err;
@@ -143,9 +143,9 @@ await runPublishingAgent(
 
 Walk through what happens:
 
-1. The agent calls `proposePublication`. Impri stores the draft and sends you a notification.
+1. The agent calls `proposePublication`. Airlock stores the draft and sends you a notification.
 2. The poll loop runs every 10 seconds. Your agent process keeps running but does nothing until you decide.
-3. If you approve in the Impri inbox (or Slack/Telegram if configured), `result.status` becomes `"approved"` and the loop exits.
+3. If you approve in the Airlock inbox (or Slack/Telegram if configured), `result.status` becomes `"approved"` and the loop exits.
 4. `final_preview.body` holds whatever you typed if you edited the draft before approving. Always use this — not the original `draft`.
 5. A `"rejected"` or `"expired"` decision returns early without touching the CMS.
 6. The final `POST /v1/actions/:id/result` closes the audit record, recording whether execution succeeded.
@@ -179,5 +179,5 @@ if (decision.status === "expired") {
 
 - Run the [quickstart](quickstart.md) to push your first action in under five minutes
 - Add Slack, Telegram, or mobile push so approval requests reach you wherever you work: [notifications](notifications.md)
-- For the MCP-based flow — where a Claude agent calls `impri_push_action` as a tool rather than making raw HTTP calls — see the [MCP server docs](mcp.md)
+- For the MCP-based flow — where a Claude agent calls `airlock_push_action` as a tool rather than making raw HTTP calls — see the [MCP server docs](mcp.md)
 - For a deeper look at the push → approve → execute pattern, including the REST examples in shell and the `editable` field semantics, see [How to Add Human Approval to an AI Agent](how-to-add-human-approval-to-an-ai-agent.md)

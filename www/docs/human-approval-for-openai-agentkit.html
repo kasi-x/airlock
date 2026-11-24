@@ -3,21 +3,21 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Human Approval for OpenAI AgentKit After Agent Builder — Impri Docs</title>
-<meta name="description" content="Agent Builder shuts down on November 30, 2026. Export your AgentKit workflow to the Agents SDK and send its tool approvals to a reviewer's Impri inbox.">
+<title>Human Approval for OpenAI AgentKit After Agent Builder — Airlock Docs</title>
+<meta name="description" content="Agent Builder shuts down on November 30, 2026. Export your AgentKit workflow to the Agents SDK and send its tool approvals to a reviewer's Airlock inbox.">
 <meta name="theme-color" content="#06070d">
-<meta property="og:title" content="Human Approval for OpenAI AgentKit After Agent Builder — Impri Docs">
-<meta property="og:description" content="Agent Builder shuts down on November 30, 2026. Export your AgentKit workflow to the Agents SDK and send its tool approvals to a reviewer's Impri inbox.">
+<meta property="og:title" content="Human Approval for OpenAI AgentKit After Agent Builder — Airlock Docs">
+<meta property="og:description" content="Agent Builder shuts down on November 30, 2026. Export your AgentKit workflow to the Agents SDK and send its tool approvals to a reviewer's Airlock inbox.">
 <meta property="og:type" content="article">
-<meta property="og:url" content="https://impri.dev/docs/human-approval-for-openai-agentkit">
-<meta property="og:image" content="https://impri.dev/assets/og/og-docs.png">
+<meta property="og:url" content="https://airlock.dev/docs/human-approval-for-openai-agentkit">
+<meta property="og:image" content="https://airlock.dev/assets/og/og-docs.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
-<meta property="og:image:alt" content="Impri — human-in-the-loop approval inbox for AI agents">
+<meta property="og:image:alt" content="Airlock — human-in-the-loop approval inbox for AI agents">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="https://impri.dev/assets/og/og-docs.png">
-<link rel="canonical" href="https://impri.dev/docs/human-approval-for-openai-agentkit">
-<script type="application/ld+json">{"@context":"https://schema.org","@type":"TechArticle","headline":"Human Approval for OpenAI AgentKit After Agent Builder","description":"Agent Builder shuts down on November 30, 2026. Export your AgentKit workflow to the Agents SDK and send its tool approvals to a reviewer's Impri inbox.","url":"https://impri.dev/docs/human-approval-for-openai-agentkit","inLanguage":"en","author":{"@type":"Organization","name":"Impri","url":"https://impri.dev"},"publisher":{"@type":"Organization","name":"Impri","url":"https://impri.dev"}}</script>
+<meta name="twitter:image" content="https://airlock.dev/assets/og/og-docs.png">
+<link rel="canonical" href="https://airlock.dev/docs/human-approval-for-openai-agentkit">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"TechArticle","headline":"Human Approval for OpenAI AgentKit After Agent Builder","description":"Agent Builder shuts down on November 30, 2026. Export your AgentKit workflow to the Agents SDK and send its tool approvals to a reviewer's Airlock inbox.","url":"https://airlock.dev/docs/human-approval-for-openai-agentkit","inLanguage":"en","author":{"@type":"Organization","name":"Airlock","url":"https://airlock.dev"},"publisher":{"@type":"Organization","name":"Airlock","url":"https://airlock.dev"}}</script>
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <link rel="icon" href="/favicon.ico" sizes="32x32">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='9' fill='%236366f1'/%3E%3Cpath d='M9 16.5l4.5 4.5L23 11' stroke='white' stroke-width='3' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
@@ -132,13 +132,13 @@ pre code.hljs{display:block;overflow-x:auto}
 <div class="wrap nav-inner">
   <a class="brand" href="/">
     <span class="mark"><svg viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.5 4.5L19 7.5" stroke="white" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
-    Impri
+    Airlock
   </a>
   <div class="nav-links">
     <a class="link" href="/#how">How it works</a>
     <a class="link" href="/#pricing">Pricing</a>
     <a class="link active-nav" href="../docs">Docs</a>
-    <a class="btn btn-primary btn-sm" href="https://gitlab.com/sekera.radim/impri">GitLab</a>
+    <a class="btn btn-primary btn-sm" href="https://gitlab.com/sekera.radim/airlock">GitLab</a>
   </div>
 </div>
 </nav>
@@ -153,7 +153,7 @@ pre code.hljs{display:block;overflow-x:auto}
       <span>Human Approval for OpenAI AgentKit After Agent Builder</span>
     </nav>
     <h1>Human Approval for OpenAI AgentKit After Agent Builder</h1>
-<p>Agent Builder shuts down on November 30, 2026. Export your AgentKit workflow to the Agents SDK and send its tool approvals to a reviewer&#39;s Impri inbox.</p>
+<p>Agent Builder shuts down on November 30, 2026. Export your AgentKit workflow to the Agents SDK and send its tool approvals to a reviewer&#39;s Airlock inbox.</p>
 <hr>
 <h2 id="what-changes-on-november-30-2026">What changes on November 30, 2026</h2>
 <p>OpenAI&#39;s <a href="https://developers.openai.com/api/docs/deprecations" target="_blank" rel="noopener">deprecations page</a> lists Agent Builder, the visual workflow editor in AgentKit, as deprecated since June 3, 2026, with a shutdown date of November 30, 2026. The named replacements are the Agents SDK (agents in code) or ChatGPT Workspace Agents (no-code agents inside a ChatGPT Business, Enterprise or Edu workspace). ChatKit remains available.</p>
@@ -172,14 +172,14 @@ pre code.hljs{display:block;overflow-x:auto}
 <li>The person in the chat shouldn&#39;t approve the action: a customer asking for their own refund, an employee asking for their own access.</li>
 <li>Nobody is in a chat at all: the agent runs from a queue, a cron job or a webhook.</li>
 </ul>
-<p>Then the approval has to reach someone else. Impri puts the pending call in a reviewer&#39;s web inbox, notifies them (Slack, Discord, Telegram, ntfy or email, as the project is set up) and returns the decision to your code.</p>
+<p>Then the approval has to reach someone else. Airlock puts the pending call in a reviewer&#39;s web inbox, notifies them (Slack, Discord, Telegram, ntfy or email, as the project is set up) and returns the decision to your code.</p>
 <h2 id="route-each-interruption-to-a-reviewer">Route each interruption to a reviewer</h2>
-<p>Each <code>send_ticket_reply</code> call becomes an Impri action; the reviewer&#39;s decision becomes <code>approve()</code> or <code>reject()</code> on the run state:</p>
+<p>Each <code>send_ticket_reply</code> call becomes an Airlock action; the reviewer&#39;s decision becomes <code>approve()</code> or <code>reject()</code> on the run state:</p>
 <div class="code-block"><span class="code-lang">typescript</span><pre><code class="hljs"><span class="hljs-keyword">import</span> { <span class="hljs-title class_">Agent</span>, run, tool } <span class="hljs-keyword">from</span> <span class="hljs-string">&quot;@openai/agents&quot;</span>;
-<span class="hljs-keyword">import</span> { <span class="hljs-title class_">ImpriClient</span>, <span class="hljs-title class_">ImpriRejected</span>, <span class="hljs-title class_">ImpriExpired</span> } <span class="hljs-keyword">from</span> <span class="hljs-string">&quot;@impri/sdk&quot;</span>;
+<span class="hljs-keyword">import</span> { <span class="hljs-title class_">AirlockClient</span>, <span class="hljs-title class_">AirlockRejected</span>, <span class="hljs-title class_">AirlockExpired</span> } <span class="hljs-keyword">from</span> <span class="hljs-string">&quot;@airlock/sdk&quot;</span>;
 <span class="hljs-keyword">import</span> { z } <span class="hljs-keyword">from</span> <span class="hljs-string">&quot;zod&quot;</span>;
 
-<span class="hljs-keyword">const</span> impri = <span class="hljs-keyword">new</span> <span class="hljs-title class_">ImpriClient</span>({ <span class="hljs-attr">apiKey</span>: process.<span class="hljs-property">env</span>.<span class="hljs-property">IMPRI_API_KEY</span>! });
+<span class="hljs-keyword">const</span> airlock = <span class="hljs-keyword">new</span> <span class="hljs-title class_">AirlockClient</span>({ <span class="hljs-attr">apiKey</span>: process.<span class="hljs-property">env</span>.<span class="hljs-property">AIRLOCK_API_KEY</span>! });
 
 <span class="hljs-keyword">const</span> sendReply = <span class="hljs-title function_">tool</span>({
   <span class="hljs-attr">name</span>: <span class="hljs-string">&quot;send_ticket_reply&quot;</span>,
@@ -199,8 +199,8 @@ pre code.hljs{display:block;overflow-x:auto}
 
 <span class="hljs-keyword">while</span> (result.<span class="hljs-property">interruptions</span>.<span class="hljs-property">length</span> &gt; <span class="hljs-number">0</span>) {
   <span class="hljs-keyword">for</span> (<span class="hljs-keyword">const</span> interruption <span class="hljs-keyword">of</span> result.<span class="hljs-property">interruptions</span>) {
-    <span class="hljs-comment">// One Impri action per pending tool call, shown to the reviewer as-is.</span>
-    <span class="hljs-keyword">const</span> created = <span class="hljs-keyword">await</span> impri.<span class="hljs-title function_">createAction</span>({
+    <span class="hljs-comment">// One Airlock action per pending tool call, shown to the reviewer as-is.</span>
+    <span class="hljs-keyword">const</span> created = <span class="hljs-keyword">await</span> airlock.<span class="hljs-title function_">createAction</span>({
       <span class="hljs-attr">kind</span>: <span class="hljs-string">`agents_sdk.<span class="hljs-subst">${interruption.name}</span>`</span>,
       <span class="hljs-attr">title</span>: <span class="hljs-string">`<span class="hljs-subst">${interruption.agent.name}</span> wants to call <span class="hljs-subst">${interruption.name}</span>`</span>,
       <span class="hljs-attr">preview</span>: { <span class="hljs-attr">format</span>: <span class="hljs-string">&quot;markdown&quot;</span>, <span class="hljs-attr">body</span>: <span class="hljs-string">&quot;```json\n&quot;</span> + (interruption.<span class="hljs-property">arguments</span> ?? <span class="hljs-string">&quot;{}&quot;</span>) + <span class="hljs-string">&quot;\n```&quot;</span> },
@@ -208,13 +208,13 @@ pre code.hljs{display:block;overflow-x:auto}
     });
 
     <span class="hljs-keyword">try</span> {
-      <span class="hljs-keyword">await</span> impri.<span class="hljs-title function_">awaitDecision</span>(created.<span class="hljs-property">id</span>, { <span class="hljs-attr">timeoutS</span>: <span class="hljs-number">3600</span> });
+      <span class="hljs-keyword">await</span> airlock.<span class="hljs-title function_">awaitDecision</span>(created.<span class="hljs-property">id</span>, { <span class="hljs-attr">timeoutS</span>: <span class="hljs-number">3600</span> });
       result.<span class="hljs-property">state</span>.<span class="hljs-title function_">approve</span>(interruption);
     } <span class="hljs-keyword">catch</span> (e) {
-      <span class="hljs-keyword">if</span> (e <span class="hljs-keyword">instanceof</span> <span class="hljs-title class_">ImpriRejected</span> || e <span class="hljs-keyword">instanceof</span> <span class="hljs-title class_">ImpriExpired</span>) {
+      <span class="hljs-keyword">if</span> (e <span class="hljs-keyword">instanceof</span> <span class="hljs-title class_">AirlockRejected</span> || e <span class="hljs-keyword">instanceof</span> <span class="hljs-title class_">AirlockExpired</span>) {
         result.<span class="hljs-property">state</span>.<span class="hljs-title function_">reject</span>(interruption, { <span class="hljs-attr">message</span>: <span class="hljs-string">&quot;A reviewer did not approve this call.&quot;</span> });
       } <span class="hljs-keyword">else</span> {
-        <span class="hljs-keyword">throw</span> e; <span class="hljs-comment">// ImpriTimeout: still pending in the inbox, decide what to do</span>
+        <span class="hljs-keyword">throw</span> e; <span class="hljs-comment">// AirlockTimeout: still pending in the inbox, decide what to do</span>
       }
     }
   }
@@ -227,7 +227,7 @@ pre code.hljs{display:block;overflow-x:auto}
 <li><strong><code>reject()</code> with a message</strong> tells the model why the call didn&#39;t happen.</li>
 <li><strong>Leave <code>editable</code> off for this pattern.</strong> <code>state.approve()</code> runs the tool with the model&#39;s original arguments, so an edit made in the inbox would never reach the tool. When the reviewer should be able to change the text, use the gate-inside-the-tool pattern from <a href="human-in-the-loop-openai-agents-sdk">human-in-the-loop for the OpenAI Agents SDK</a>, which reads <code>decision.final_preview</code>.</li>
 </ul>
-<p><code>awaitDecision</code> keeps the process waiting for up to an hour here. For longer reviews, the SDK can save the paused run with <code>result.state.toString()</code> and restore it later with <code>RunState.fromString(agent, saved)</code>; pass a <code>callback_url</code> when you create the action and resume when Impri&#39;s <a href="webhooks">webhook</a> arrives.</p>
+<p><code>awaitDecision</code> keeps the process waiting for up to an hour here. For longer reviews, the SDK can save the paused run with <code>result.state.toString()</code> and restore it later with <code>RunState.fromString(agent, saved)</code>; pass a <code>callback_url</code> when you create the action and resume when Airlock&#39;s <a href="webhooks">webhook</a> arrives.</p>
 <h2 id="guardrails-are-not-approvals">Guardrails are not approvals</h2>
 <div class="table-wrap"><table>
 <thead>
@@ -242,25 +242,25 @@ pre code.hljs{display:block;overflow-x:auto}
 </tr>
 <tr>
 <td>A named person says yes to one specific tool call</td>
-<td><code>needsApproval</code> + Impri</td>
+<td><code>needsApproval</code> + Airlock</td>
 </tr>
 <tr>
 <td>A record of who approved what, and when</td>
-<td>Impri&#39;s <a href="audit-log">audit log</a></td>
+<td>Airlock&#39;s <a href="audit-log">audit log</a></td>
 </tr>
 </tbody></table>
 </div>
 <p>Use both: a guardrail stops an obviously bad draft before a reviewer sees it.</p>
-<h2 id="where-impri-stops">Where Impri stops</h2>
-<p>Impri doesn&#39;t run your tools and doesn&#39;t know your agent. It stores the proposed call, notifies the reviewer and returns the decision; the Agents SDK runs the tool after <code>approve()</code>. The gate only holds if every tool that reaches the helpdesk is marked <code>needsApproval</code>: an unmarked tool with the same API key is a way around it.</p>
+<h2 id="where-airlock-stops">Where Airlock stops</h2>
+<p>Airlock doesn&#39;t run your tools and doesn&#39;t know your agent. It stores the proposed call, notifies the reviewer and returns the decision; the Agents SDK runs the tool after <code>approve()</code>. The gate only holds if every tool that reaches the helpdesk is marked <code>needsApproval</code>: an unmarked tool with the same API key is a way around it.</p>
 <h2 id="next-step">Next step</h2>
-<p><a href="https://app.impri.dev/?signup=1" target="_blank" rel="noopener">Start free on Impri cloud</a> or <a href="self-hosting">self-host</a> the MIT-licensed core, then follow the <a href="quickstart">quickstart</a> to approve one test action from the inbox before you wire it into the exported workflow. The general three-call pattern is in <a href="how-to-add-human-approval-to-an-ai-agent">how to add human approval to an AI agent</a>.</p>
+<p><a href="https://app.airlock.dev/?signup=1" target="_blank" rel="noopener">Start free on Airlock cloud</a> or <a href="self-hosting">self-host</a> the MIT-licensed core, then follow the <a href="quickstart">quickstart</a> to approve one test action from the inbox before you wire it into the exported workflow. The general three-call pattern is in <a href="how-to-add-human-approval-to-an-ai-agent">how to add human approval to an AI agent</a>.</p>
 
-    <aside class="doc-cta" aria-label="Try Impri">
+    <aside class="doc-cta" aria-label="Try Airlock">
   <p class="doc-cta-title">Add an approval step to your own agent</p>
-  <p>Start on Impri Cloud: the Free tier includes 100 approvals a month. Or self-host the MIT-licensed core with Docker Compose, with no tier limits.</p>
+  <p>Start on Airlock Cloud: the Free tier includes 100 approvals a month. Or self-host the MIT-licensed core with Docker Compose, with no tier limits.</p>
   <div class="doc-cta-actions">
-    <a class="btn btn-primary btn-sm" href="https://app.impri.dev/?signup=1">Start free on Impri Cloud</a>
+    <a class="btn btn-primary btn-sm" href="https://app.airlock.dev/?signup=1">Start free on Airlock Cloud</a>
     <a class="btn btn-ghost btn-sm" href="../docs/quickstart">Quick start</a>
     <a class="btn btn-ghost btn-sm" href="../docs/self-hosting">Self-host guide</a>
   </div>
@@ -347,7 +347,7 @@ pre code.hljs{display:block;overflow-x:auto}
 <li class="ptoc-h2"><a href="#the-human-approval-node-doesn39t-come-along-as-is">The Human approval node doesn't come along as-is</a></li>
 <li class="ptoc-h2"><a href="#route-each-interruption-to-a-reviewer">Route each interruption to a reviewer</a></li>
 <li class="ptoc-h2"><a href="#guardrails-are-not-approvals">Guardrails are not approvals</a></li>
-<li class="ptoc-h2"><a href="#where-impri-stops">Where Impri stops</a></li>
+<li class="ptoc-h2"><a href="#where-airlock-stops">Where Airlock stops</a></li>
 <li class="ptoc-h2"><a href="#next-step">Next step</a></li></ul>
 </nav>
   </aside>
@@ -356,19 +356,19 @@ pre code.hljs{display:block;overflow-x:auto}
 <footer class="footer">
 <div class="wrap footer-inner">
   <a class="brand" href="/">
-    <span class="mark"><svg viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.5 4.5L19 7.5" stroke="white" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Impri
+    <span class="mark"><svg viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.5 4.5L19 7.5" stroke="white" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Airlock
   </a>
   <div>
-    <a href="https://gitlab.com/sekera.radim/impri">GitLab</a>
+    <a href="https://gitlab.com/sekera.radim/airlock">GitLab</a>
     <a href="/docs">Docs</a>
-    <a href="https://gitlab.com/sekera.radim/impri/-/blob/main/LICENSE">MIT License</a>
-    <a href="https://www.npmjs.com/package/@impri/mcp">@impri/mcp</a>
+    <a href="https://gitlab.com/sekera.radim/airlock/-/blob/main/LICENSE">MIT License</a>
+    <a href="https://www.npmjs.com/package/@airlock/mcp">@airlock/mcp</a>
     <a href="/docs/privacy">Privacy</a>
     <a href="/docs/terms">Terms</a>
     <a href="https://sekera.dev">Contact</a>
   </div>
 </div>
-<div class="wrap" style="margin-top:18px"><span class="muted">© 2026 Impri · The imprimatur for your AI agents · Built by <a href="https://sekera.dev" style="color:inherit">Radim Sekera</a>. Also by the same maker: <a href="https://briefgate.dev/?utm_source=impri.dev&amp;utm_medium=referral" style="color:inherit">BriefGate</a> — client intake for agencies and AI agents.</span></div>
+<div class="wrap" style="margin-top:18px"><span class="muted">© 2026 Airlock · The airlockmatur for your AI agents · Built by <a href="https://sekera.dev" style="color:inherit">Radim Sekera</a>. Also by the same maker: <a href="https://briefgate.dev/?utm_source=airlock.dev&amp;utm_medium=referral" style="color:inherit">BriefGate</a> — client intake for agencies and AI agents.</span></div>
 </footer>
 </body>
 </html>

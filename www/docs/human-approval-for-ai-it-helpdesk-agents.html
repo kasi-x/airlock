@@ -3,21 +3,21 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Human Approval for AI IT Helpdesk Agents — Impri Docs</title>
+<title>Human Approval for AI IT Helpdesk Agents — Airlock Docs</title>
 <meta name="description" content="Human approval for AI IT helpdesk agents: gate password resets, group changes and license grants behind one-tap review so a fooled agent cannot leak access.">
 <meta name="theme-color" content="#06070d">
-<meta property="og:title" content="Human Approval for AI IT Helpdesk Agents — Impri Docs">
+<meta property="og:title" content="Human Approval for AI IT Helpdesk Agents — Airlock Docs">
 <meta property="og:description" content="Human approval for AI IT helpdesk agents: gate password resets, group changes and license grants behind one-tap review so a fooled agent cannot leak access.">
 <meta property="og:type" content="article">
-<meta property="og:url" content="https://impri.dev/docs/human-approval-for-ai-it-helpdesk-agents">
-<meta property="og:image" content="https://impri.dev/assets/og/og-docs.png">
+<meta property="og:url" content="https://airlock.dev/docs/human-approval-for-ai-it-helpdesk-agents">
+<meta property="og:image" content="https://airlock.dev/assets/og/og-docs.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
-<meta property="og:image:alt" content="Impri — human-in-the-loop approval inbox for AI agents">
+<meta property="og:image:alt" content="Airlock — human-in-the-loop approval inbox for AI agents">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="https://impri.dev/assets/og/og-docs.png">
-<link rel="canonical" href="https://impri.dev/docs/human-approval-for-ai-it-helpdesk-agents">
-<script type="application/ld+json">{"@context":"https://schema.org","@type":"TechArticle","headline":"Human Approval for AI IT Helpdesk Agents","description":"Human approval for AI IT helpdesk agents: gate password resets, group changes and license grants behind one-tap review so a fooled agent cannot leak access.","url":"https://impri.dev/docs/human-approval-for-ai-it-helpdesk-agents","inLanguage":"en","author":{"@type":"Organization","name":"Impri","url":"https://impri.dev"},"publisher":{"@type":"Organization","name":"Impri","url":"https://impri.dev"}}</script>
+<meta name="twitter:image" content="https://airlock.dev/assets/og/og-docs.png">
+<link rel="canonical" href="https://airlock.dev/docs/human-approval-for-ai-it-helpdesk-agents">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"TechArticle","headline":"Human Approval for AI IT Helpdesk Agents","description":"Human approval for AI IT helpdesk agents: gate password resets, group changes and license grants behind one-tap review so a fooled agent cannot leak access.","url":"https://airlock.dev/docs/human-approval-for-ai-it-helpdesk-agents","inLanguage":"en","author":{"@type":"Organization","name":"Airlock","url":"https://airlock.dev"},"publisher":{"@type":"Organization","name":"Airlock","url":"https://airlock.dev"}}</script>
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <link rel="icon" href="/favicon.ico" sizes="32x32">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='9' fill='%236366f1'/%3E%3Cpath d='M9 16.5l4.5 4.5L23 11' stroke='white' stroke-width='3' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
@@ -132,13 +132,13 @@ pre code.hljs{display:block;overflow-x:auto}
 <div class="wrap nav-inner">
   <a class="brand" href="/">
     <span class="mark"><svg viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.5 4.5L19 7.5" stroke="white" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
-    Impri
+    Airlock
   </a>
   <div class="nav-links">
     <a class="link" href="/#how">How it works</a>
     <a class="link" href="/#pricing">Pricing</a>
     <a class="link active-nav" href="../docs">Docs</a>
-    <a class="btn btn-primary btn-sm" href="https://gitlab.com/sekera.radim/impri">GitLab</a>
+    <a class="btn btn-primary btn-sm" href="https://gitlab.com/sekera.radim/airlock">GitLab</a>
   </div>
 </div>
 </nav>
@@ -201,8 +201,8 @@ pre code.hljs{display:block;overflow-x:auto}
 <span class="hljs-keyword">import</span> time
 <span class="hljs-keyword">import</span> requests
 
-BASE = <span class="hljs-string">&quot;https://api.impri.dev&quot;</span>
-HEADERS = {<span class="hljs-string">&quot;Authorization&quot;</span>: <span class="hljs-string">f&quot;Bearer <span class="hljs-subst">{os.environ[<span class="hljs-string">&#x27;IMPRI_API_KEY&#x27;</span>]}</span>&quot;</span>}
+BASE = <span class="hljs-string">&quot;https://api.airlock.dev&quot;</span>
+HEADERS = {<span class="hljs-string">&quot;Authorization&quot;</span>: <span class="hljs-string">f&quot;Bearer <span class="hljs-subst">{os.environ[<span class="hljs-string">&#x27;AIRLOCK_API_KEY&#x27;</span>]}</span>&quot;</span>}
 
 
 <span class="hljs-keyword">def</span> <span class="hljs-title function_">propose_reset</span>(<span class="hljs-params">ticket_id: <span class="hljs-built_in">str</span>, username: <span class="hljs-built_in">str</span>, requester: <span class="hljs-built_in">str</span>, verified: <span class="hljs-built_in">bool</span></span>) -&gt; <span class="hljs-built_in">str</span>:
@@ -243,7 +243,7 @@ action_id = propose_reset(<span class="hljs-string">&quot;HD-4821&quot;</span>, 
 decision = wait_for_decision(action_id)
 
 <span class="hljs-keyword">if</span> decision[<span class="hljs-string">&quot;status&quot;</span>] == <span class="hljs-string">&quot;approved&quot;</span>:
-    reset_password_in_idp(<span class="hljs-string">&quot;j.novak&quot;</span>)  <span class="hljs-comment"># your directory call, not Impri&#x27;s</span>
+    reset_password_in_idp(<span class="hljs-string">&quot;j.novak&quot;</span>)  <span class="hljs-comment"># your directory call, not Airlock&#x27;s</span>
     requests.post(
         <span class="hljs-string">f&quot;<span class="hljs-subst">{BASE}</span>/v1/actions/<span class="hljs-subst">{action_id}</span>/result&quot;</span>,
         headers=HEADERS,
@@ -255,24 +255,24 @@ decision = wait_for_decision(action_id)
 <hr>
 <h2 id="keep-the-identity-check-out-of-the-model39s-hands">Keep the identity check out of the model&#39;s hands</h2>
 <p>The reviewer&#39;s job is only meaningful if the evidence in the preview is trustworthy. Have your own code, not the LLM, compute the &quot;identity check&quot; line from real signals (a callback log, an SSO session, a manager approval in your ticketing system) and inject it into the preview. If the agent writes &quot;verified&quot; in prose, you have moved the injection risk onto the reviewer&#39;s screen.</p>
-<p>Ticket text is untrusted input. Treat it as data in the system prompt, and remember that Impri does not interpret the action; it shows the card to a person you chose.</p>
+<p>Ticket text is untrusted input. Treat it as data in the system prompt, and remember that Airlock does not interpret the action; it shows the card to a person you chose.</p>
 <hr>
 <h2 id="what-this-does-and-doesn39t-protect">What this does and doesn&#39;t protect</h2>
 <ul>
-<li><strong>It is a real gate only if the approved path is the agent&#39;s only path.</strong> Give the agent a directory service account that can reset passwords directly and it can bypass Impri. Put the reset behind a wrapper that requires the approved decision, and hold the privileged credential in that wrapper, not in the agent&#39;s tool list. See <a href="integrations">integrations</a>.</li>
-<li><strong>Impri does not verify identities.</strong> It stores the proposal, notifies a human and holds the decision. Deciding whether the requester is who they claim is still the reviewer&#39;s call.</li>
-<li><strong>It isn&#39;t a ticketing system or a workflow engine.</strong> Keep routing, SLAs and escalation in your helpdesk tool; use Impri as the approval step within it.</li>
+<li><strong>It is a real gate only if the approved path is the agent&#39;s only path.</strong> Give the agent a directory service account that can reset passwords directly and it can bypass Airlock. Put the reset behind a wrapper that requires the approved decision, and hold the privileged credential in that wrapper, not in the agent&#39;s tool list. See <a href="integrations">integrations</a>.</li>
+<li><strong>Airlock does not verify identities.</strong> It stores the proposal, notifies a human and holds the decision. Deciding whether the requester is who they claim is still the reviewer&#39;s call.</li>
+<li><strong>It isn&#39;t a ticketing system or a workflow engine.</strong> Keep routing, SLAs and escalation in your helpdesk tool; use Airlock as the approval step within it.</li>
 </ul>
 <p>The reviewer can approve from the <a href="inbox">inbox</a>, or from chat via <a href="slack-approval">Slack approval</a> if your helpdesk team lives there. Every decision lands in the <a href="audit-log">audit log</a>, which is useful when someone later asks who authorised a group change.</p>
 <hr>
 <h2 id="next-step">Next step</h2>
-<p>Get a key and push your first action in the <a href="quickstart">quickstart</a>, or read the general pattern in <a href="how-to-add-human-approval-to-an-ai-agent">how to add human approval to an AI agent</a>. Impri is open-core with an MIT self-hostable core; the hosted version is at impri.dev.</p>
+<p>Get a key and push your first action in the <a href="quickstart">quickstart</a>, or read the general pattern in <a href="how-to-add-human-approval-to-an-ai-agent">how to add human approval to an AI agent</a>. Airlock is open-core with an MIT self-hostable core; the hosted version is at airlock.dev.</p>
 
-    <aside class="doc-cta" aria-label="Try Impri">
+    <aside class="doc-cta" aria-label="Try Airlock">
   <p class="doc-cta-title">Add an approval step to your own agent</p>
-  <p>Start on Impri Cloud: the Free tier includes 100 approvals a month. Or self-host the MIT-licensed core with Docker Compose, with no tier limits.</p>
+  <p>Start on Airlock Cloud: the Free tier includes 100 approvals a month. Or self-host the MIT-licensed core with Docker Compose, with no tier limits.</p>
   <div class="doc-cta-actions">
-    <a class="btn btn-primary btn-sm" href="https://app.impri.dev/?signup=1">Start free on Impri Cloud</a>
+    <a class="btn btn-primary btn-sm" href="https://app.airlock.dev/?signup=1">Start free on Airlock Cloud</a>
     <a class="btn btn-ghost btn-sm" href="../docs/quickstart">Quick start</a>
     <a class="btn btn-ghost btn-sm" href="../docs/self-hosting">Self-host guide</a>
   </div>
@@ -367,19 +367,19 @@ decision = wait_for_decision(action_id)
 <footer class="footer">
 <div class="wrap footer-inner">
   <a class="brand" href="/">
-    <span class="mark"><svg viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.5 4.5L19 7.5" stroke="white" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Impri
+    <span class="mark"><svg viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.5 4.5L19 7.5" stroke="white" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Airlock
   </a>
   <div>
-    <a href="https://gitlab.com/sekera.radim/impri">GitLab</a>
+    <a href="https://gitlab.com/sekera.radim/airlock">GitLab</a>
     <a href="/docs">Docs</a>
-    <a href="https://gitlab.com/sekera.radim/impri/-/blob/main/LICENSE">MIT License</a>
-    <a href="https://www.npmjs.com/package/@impri/mcp">@impri/mcp</a>
+    <a href="https://gitlab.com/sekera.radim/airlock/-/blob/main/LICENSE">MIT License</a>
+    <a href="https://www.npmjs.com/package/@airlock/mcp">@airlock/mcp</a>
     <a href="/docs/privacy">Privacy</a>
     <a href="/docs/terms">Terms</a>
     <a href="https://sekera.dev">Contact</a>
   </div>
 </div>
-<div class="wrap" style="margin-top:18px"><span class="muted">© 2026 Impri · The imprimatur for your AI agents · Built by <a href="https://sekera.dev" style="color:inherit">Radim Sekera</a>. Also by the same maker: <a href="https://briefgate.dev/?utm_source=impri.dev&amp;utm_medium=referral" style="color:inherit">BriefGate</a> — client intake for agencies and AI agents.</span></div>
+<div class="wrap" style="margin-top:18px"><span class="muted">© 2026 Airlock · The airlockmatur for your AI agents · Built by <a href="https://sekera.dev" style="color:inherit">Radim Sekera</a>. Also by the same maker: <a href="https://briefgate.dev/?utm_source=airlock.dev&amp;utm_medium=referral" style="color:inherit">BriefGate</a> — client intake for agencies and AI agents.</span></div>
 </footer>
 </body>
 </html>

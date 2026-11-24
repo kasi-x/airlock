@@ -611,7 +611,7 @@ describe('POST /v1/integrations/slack/interactions/:channelId', () => {
       method: 'POST',
       url: '/v1/signup',
       payload: { project_name: 'Project B' },
-      headers: { 'x-impri-signup-token': process.env.SIGNUP_SECRET ?? '' },
+      headers: { 'x-airlock-signup-token': process.env.SIGNUP_SECRET ?? '' },
     });
     if (signupB.statusCode !== 201) {
       // Signup disabled — skip cross-project test

@@ -1,21 +1,21 @@
 #!/usr/bin/env node
-// Example Impri agent — no dependencies, Node 18+.
+// Example Airlock agent — no dependencies, Node 18+.
 //
-// It demonstrates the loop every Impri-integrated agent follows:
+// It demonstrates the loop every Airlock-integrated agent follows:
 //   1. propose an action       POST /v1/actions
 //   2. wait for a human        poll GET /v1/actions/:id
 //   3. act only if approved    then POST /v1/actions/:id/result
 //
 // Run it:
-//   IMPRI_API_KEY=im_xxx IMPRI_BASE_URL=https://api.impri.dev node approval-gated-agent.mjs
+//   AIRLOCK_API_KEY=im_xxx AIRLOCK_BASE_URL=https://api.airlock.dev node approval-gated-agent.mjs
 //
-// Then open your Impri inbox and Approve or Reject the request that appears.
+// Then open your Airlock inbox and Approve or Reject the request that appears.
 
-const API_KEY = process.env.IMPRI_API_KEY;
-const BASE = (process.env.IMPRI_BASE_URL ?? 'http://localhost:8484').replace(/\/+$/, '');
+const API_KEY = process.env.AIRLOCK_API_KEY;
+const BASE = (process.env.AIRLOCK_BASE_URL ?? 'http://localhost:8484').replace(/\/+$/, '');
 
 if (!API_KEY) {
-  console.error('Set IMPRI_API_KEY (it starts with im_).');
+  console.error('Set AIRLOCK_API_KEY (it starts with im_).');
   process.exit(1);
 }
 
@@ -52,10 +52,10 @@ async function performAction() {
 }
 
 async function main() {
-  console.log(`\nProposing an action to Impri at ${BASE} ...`);
+  console.log(`\nProposing an action to Airlock at ${BASE} ...`);
   const action = await api('/actions', 'POST', task);
   console.log(`  - created ${action.id} (status: ${action.status})`);
-  console.log('  - open your Impri inbox and Approve or Reject it.\n');
+  console.log('  - open your Airlock inbox and Approve or Reject it.\n');
 
   let current = action;
   while (current.status === 'pending') {
@@ -69,7 +69,7 @@ async function main() {
     try {
       const detail = await performAction();
       await api(`/actions/${action.id}/result`, 'POST', { status: 'executed', detail });
-      console.log('  OK approved -> action performed and reported back to Impri.');
+      console.log('  OK approved -> action performed and reported back to Airlock.');
     } catch (err) {
       await api(`/actions/${action.id}/result`, 'POST', {
         status: 'execute_failed',

@@ -3,21 +3,21 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Approve AI Agent Ad Spend and Marketing Budget Changes — Impri Docs</title>
+<title>Approve AI Agent Ad Spend and Marketing Budget Changes — Airlock Docs</title>
 <meta name="description" content="Approve AI agent ad spend and marketing budget changes before money moves: the agent proposes each bid, budget or campaign change, and a human signs off first.">
 <meta name="theme-color" content="#06070d">
-<meta property="og:title" content="Approve AI Agent Ad Spend and Marketing Budget Changes — Impri Docs">
+<meta property="og:title" content="Approve AI Agent Ad Spend and Marketing Budget Changes — Airlock Docs">
 <meta property="og:description" content="Approve AI agent ad spend and marketing budget changes before money moves: the agent proposes each bid, budget or campaign change, and a human signs off first.">
 <meta property="og:type" content="article">
-<meta property="og:url" content="https://impri.dev/docs/approve-ai-agent-ad-spend-and-marketing-budget-changes">
-<meta property="og:image" content="https://impri.dev/assets/og/og-docs.png">
+<meta property="og:url" content="https://airlock.dev/docs/approve-ai-agent-ad-spend-and-marketing-budget-changes">
+<meta property="og:image" content="https://airlock.dev/assets/og/og-docs.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
-<meta property="og:image:alt" content="Impri — human-in-the-loop approval inbox for AI agents">
+<meta property="og:image:alt" content="Airlock — human-in-the-loop approval inbox for AI agents">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="https://impri.dev/assets/og/og-docs.png">
-<link rel="canonical" href="https://impri.dev/docs/approve-ai-agent-ad-spend-and-marketing-budget-changes">
-<script type="application/ld+json">{"@context":"https://schema.org","@type":"TechArticle","headline":"Approve AI Agent Ad Spend and Marketing Budget Changes","description":"Approve AI agent ad spend and marketing budget changes before money moves: the agent proposes each bid, budget or campaign change, and a human signs off first.","url":"https://impri.dev/docs/approve-ai-agent-ad-spend-and-marketing-budget-changes","inLanguage":"en","author":{"@type":"Organization","name":"Impri","url":"https://impri.dev"},"publisher":{"@type":"Organization","name":"Impri","url":"https://impri.dev"}}</script>
+<meta name="twitter:image" content="https://airlock.dev/assets/og/og-docs.png">
+<link rel="canonical" href="https://airlock.dev/docs/approve-ai-agent-ad-spend-and-marketing-budget-changes">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"TechArticle","headline":"Approve AI Agent Ad Spend and Marketing Budget Changes","description":"Approve AI agent ad spend and marketing budget changes before money moves: the agent proposes each bid, budget or campaign change, and a human signs off first.","url":"https://airlock.dev/docs/approve-ai-agent-ad-spend-and-marketing-budget-changes","inLanguage":"en","author":{"@type":"Organization","name":"Airlock","url":"https://airlock.dev"},"publisher":{"@type":"Organization","name":"Airlock","url":"https://airlock.dev"}}</script>
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <link rel="icon" href="/favicon.ico" sizes="32x32">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='9' fill='%236366f1'/%3E%3Cpath d='M9 16.5l4.5 4.5L23 11' stroke='white' stroke-width='3' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
@@ -132,13 +132,13 @@ pre code.hljs{display:block;overflow-x:auto}
 <div class="wrap nav-inner">
   <a class="brand" href="/">
     <span class="mark"><svg viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.5 4.5L19 7.5" stroke="white" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
-    Impri
+    Airlock
   </a>
   <div class="nav-links">
     <a class="link" href="/#how">How it works</a>
     <a class="link" href="/#pricing">Pricing</a>
     <a class="link active-nav" href="../docs">Docs</a>
-    <a class="btn btn-primary btn-sm" href="https://gitlab.com/sekera.radim/impri">GitLab</a>
+    <a class="btn btn-primary btn-sm" href="https://gitlab.com/sekera.radim/airlock">GitLab</a>
   </div>
 </div>
 </nav>
@@ -161,9 +161,9 @@ pre code.hljs{display:block;overflow-x:auto}
 <hr>
 <h2 id="what-the-reviewer-needs-on-the-card">What the reviewer needs on the card</h2>
 <p>The approval is only as good as what the human can see. Put the numbers in the preview, not just a summary sentence: current value, proposed value, the delta, the scope, and the agent&#39;s stated reason. A markdown table renders well in the card.</p>
-<div class="code-block"><span class="code-lang">typescript</span><pre><code class="hljs"><span class="hljs-keyword">const</span> <span class="hljs-variable constant_">IMPRI</span> = <span class="hljs-string">&quot;https://api.impri.dev&quot;</span>;
+<div class="code-block"><span class="code-lang">typescript</span><pre><code class="hljs"><span class="hljs-keyword">const</span> <span class="hljs-variable constant_">AIRLOCK</span> = <span class="hljs-string">&quot;https://api.airlock.dev&quot;</span>;
 <span class="hljs-keyword">const</span> headers = {
-  <span class="hljs-title class_">Authorization</span>: <span class="hljs-string">`Bearer <span class="hljs-subst">${process.env.IMPRI_API_KEY}</span>`</span>,
+  <span class="hljs-title class_">Authorization</span>: <span class="hljs-string">`Bearer <span class="hljs-subst">${process.env.AIRLOCK_API_KEY}</span>`</span>,
   <span class="hljs-string">&quot;Content-Type&quot;</span>: <span class="hljs-string">&quot;application/json&quot;</span>,
 };
 
@@ -177,7 +177,7 @@ pre code.hljs{display:block;overflow-x:auto}
 <span class="hljs-keyword">export</span> <span class="hljs-keyword">async</span> <span class="hljs-keyword">function</span> <span class="hljs-title function_">proposeBudgetChange</span>(<span class="hljs-params"><span class="hljs-attr">c</span>: <span class="hljs-title class_">BudgetChange</span></span>): <span class="hljs-title class_">Promise</span>&lt;<span class="hljs-built_in">boolean</span>&gt; {
   <span class="hljs-keyword">const</span> delta = ((c.<span class="hljs-property">proposedDaily</span> - c.<span class="hljs-property">currentDaily</span>) / c.<span class="hljs-property">currentDaily</span>) * <span class="hljs-number">100</span>;
 
-  <span class="hljs-keyword">const</span> res = <span class="hljs-keyword">await</span> <span class="hljs-title function_">fetch</span>(<span class="hljs-string">`<span class="hljs-subst">${IMPRI}</span>/v1/actions`</span>, {
+  <span class="hljs-keyword">const</span> res = <span class="hljs-keyword">await</span> <span class="hljs-title function_">fetch</span>(<span class="hljs-string">`<span class="hljs-subst">${AIRLOCK}</span>/v1/actions`</span>, {
     <span class="hljs-attr">method</span>: <span class="hljs-string">&quot;POST&quot;</span>,
     headers,
     <span class="hljs-attr">body</span>: <span class="hljs-title class_">JSON</span>.<span class="hljs-title function_">stringify</span>({
@@ -203,15 +203,15 @@ pre code.hljs{display:block;overflow-x:auto}
   <span class="hljs-keyword">let</span> <span class="hljs-attr">action</span>: <span class="hljs-built_in">any</span>;
   <span class="hljs-keyword">do</span> {
     <span class="hljs-keyword">await</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">Promise</span>(<span class="hljs-function">(<span class="hljs-params">r</span>) =&gt;</span> <span class="hljs-built_in">setTimeout</span>(r, <span class="hljs-number">15_000</span>));
-    action = <span class="hljs-title function_">await</span> (<span class="hljs-keyword">await</span> <span class="hljs-title function_">fetch</span>(<span class="hljs-string">`<span class="hljs-subst">${IMPRI}</span>/v1/actions/<span class="hljs-subst">${id}</span>`</span>, { headers })).<span class="hljs-title function_">json</span>();
+    action = <span class="hljs-title function_">await</span> (<span class="hljs-keyword">await</span> <span class="hljs-title function_">fetch</span>(<span class="hljs-string">`<span class="hljs-subst">${AIRLOCK}</span>/v1/actions/<span class="hljs-subst">${id}</span>`</span>, { headers })).<span class="hljs-title function_">json</span>();
   } <span class="hljs-keyword">while</span> (action.<span class="hljs-property">status</span> === <span class="hljs-string">&quot;pending&quot;</span>);
 
   <span class="hljs-keyword">if</span> (action.<span class="hljs-property">status</span> !== <span class="hljs-string">&quot;approved&quot;</span>) <span class="hljs-keyword">return</span> <span class="hljs-literal">false</span>;
 
-  <span class="hljs-comment">// Your own function that calls the ad platform; Impri never touches it.</span>
+  <span class="hljs-comment">// Your own function that calls the ad platform; Airlock never touches it.</span>
   <span class="hljs-keyword">const</span> applied = <span class="hljs-keyword">await</span> <span class="hljs-title function_">applyBudgetToPlatform</span>(c.<span class="hljs-property">campaign</span>, action.<span class="hljs-property">decision</span>.<span class="hljs-property">final_preview</span>.<span class="hljs-property">body</span>);
 
-  <span class="hljs-keyword">await</span> <span class="hljs-title function_">fetch</span>(<span class="hljs-string">`<span class="hljs-subst">${IMPRI}</span>/v1/actions/<span class="hljs-subst">${id}</span>/result`</span>, {
+  <span class="hljs-keyword">await</span> <span class="hljs-title function_">fetch</span>(<span class="hljs-string">`<span class="hljs-subst">${AIRLOCK}</span>/v1/actions/<span class="hljs-subst">${id}</span>/result`</span>, {
     <span class="hljs-attr">method</span>: <span class="hljs-string">&quot;POST&quot;</span>,
     headers,
     <span class="hljs-attr">body</span>: <span class="hljs-title class_">JSON</span>.<span class="hljs-title function_">stringify</span>({ <span class="hljs-attr">status</span>: applied ? <span class="hljs-string">&quot;executed&quot;</span> : <span class="hljs-string">&quot;execute_failed&quot;</span> }),
@@ -221,26 +221,26 @@ pre code.hljs{display:block;overflow-x:auto}
 <p>Note the edit path. If you set <code>editable: [&quot;preview.body&quot;]</code>, the reviewer can change the proposed number before approving, so parse the amount from <code>final_preview</code> rather than trusting the value the agent sent. <code>applyBudgetToPlatform</code> must validate whatever it parses.</p>
 <hr>
 <h2 id="layering-your-own-limits">Layering your own limits</h2>
-<p>Impri does not know what a sensible budget is. Keep hard limits in code as well as in the human gate:</p>
+<p>Airlock does not know what a sensible budget is. Keep hard limits in code as well as in the human gate:</p>
 <ul>
 <li><strong>Cap outside the agent.</strong> Enforce a maximum per-campaign and per-day figure in the executor, so an approval cannot push past a ceiling you set on purpose.</li>
-<li><strong>Split by risk.</strong> Send small nudges (a few percent) straight through and route only changes above a threshold to the inbox. Deciding the threshold is your logic, not Impri&#39;s.</li>
+<li><strong>Split by risk.</strong> Send small nudges (a few percent) straight through and route only changes above a threshold to the inbox. Deciding the threshold is your logic, not Airlock&#39;s.</li>
 <li><strong>Distinct <code>kind</code> values</strong> such as <code>ads.budget_change</code>, <code>ads.pause</code>, <code>ads.creative_launch</code> keep the <a href="inbox">inbox</a> sortable and let you filter the <a href="audit-log">audit log</a> when finance asks who approved a change.</li>
 </ul>
 <hr>
 <h2 id="boundaries">Boundaries</h2>
-<p>Impri is only the approval gate. It stores the proposal, notifies the reviewer, and records the decision. It does not analyze performance, decide whether a budget is reasonable, or talk to Google Ads, Meta, or any other platform.</p>
+<p>Airlock is only the approval gate. It stores the proposal, notifies the reviewer, and records the decision. It does not analyze performance, decide whether a budget is reasonable, or talk to Google Ads, Meta, or any other platform.</p>
 <p>It is a real control only when the ad-platform credential lives in the executor that runs after approval. If the agent also holds a token that can change budgets directly, it can bypass the gate. Confine it by wrapping the platform call, as covered in <a href="integrations">the integrations guide</a>.</p>
 <p>Use a short <code>expires_in</code>. Approving a change an hour late means approving it against data that no longer holds.</p>
 <hr>
 <h2 id="next-step">Next step</h2>
 <p>Start with the <a href="quickstart">quickstart</a> to get a key, then gate a single action type, budget increases, before adding pauses and creative launches. If your reviewers live in chat, <a href="slack-approval">Slack approval</a> puts the card where they already are.</p>
 
-    <aside class="doc-cta" aria-label="Try Impri">
+    <aside class="doc-cta" aria-label="Try Airlock">
   <p class="doc-cta-title">Add an approval step to your own agent</p>
-  <p>Start on Impri Cloud: the Free tier includes 100 approvals a month. Or self-host the MIT-licensed core with Docker Compose, with no tier limits.</p>
+  <p>Start on Airlock Cloud: the Free tier includes 100 approvals a month. Or self-host the MIT-licensed core with Docker Compose, with no tier limits.</p>
   <div class="doc-cta-actions">
-    <a class="btn btn-primary btn-sm" href="https://app.impri.dev/?signup=1">Start free on Impri Cloud</a>
+    <a class="btn btn-primary btn-sm" href="https://app.airlock.dev/?signup=1">Start free on Airlock Cloud</a>
     <a class="btn btn-ghost btn-sm" href="../docs/quickstart">Quick start</a>
     <a class="btn btn-ghost btn-sm" href="../docs/self-hosting">Self-host guide</a>
   </div>
@@ -335,19 +335,19 @@ pre code.hljs{display:block;overflow-x:auto}
 <footer class="footer">
 <div class="wrap footer-inner">
   <a class="brand" href="/">
-    <span class="mark"><svg viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.5 4.5L19 7.5" stroke="white" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Impri
+    <span class="mark"><svg viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.5 4.5L19 7.5" stroke="white" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Airlock
   </a>
   <div>
-    <a href="https://gitlab.com/sekera.radim/impri">GitLab</a>
+    <a href="https://gitlab.com/sekera.radim/airlock">GitLab</a>
     <a href="/docs">Docs</a>
-    <a href="https://gitlab.com/sekera.radim/impri/-/blob/main/LICENSE">MIT License</a>
-    <a href="https://www.npmjs.com/package/@impri/mcp">@impri/mcp</a>
+    <a href="https://gitlab.com/sekera.radim/airlock/-/blob/main/LICENSE">MIT License</a>
+    <a href="https://www.npmjs.com/package/@airlock/mcp">@airlock/mcp</a>
     <a href="/docs/privacy">Privacy</a>
     <a href="/docs/terms">Terms</a>
     <a href="https://sekera.dev">Contact</a>
   </div>
 </div>
-<div class="wrap" style="margin-top:18px"><span class="muted">© 2026 Impri · The imprimatur for your AI agents · Built by <a href="https://sekera.dev" style="color:inherit">Radim Sekera</a>. Also by the same maker: <a href="https://briefgate.dev/?utm_source=impri.dev&amp;utm_medium=referral" style="color:inherit">BriefGate</a> — client intake for agencies and AI agents.</span></div>
+<div class="wrap" style="margin-top:18px"><span class="muted">© 2026 Airlock · The airlockmatur for your AI agents · Built by <a href="https://sekera.dev" style="color:inherit">Radim Sekera</a>. Also by the same maker: <a href="https://briefgate.dev/?utm_source=airlock.dev&amp;utm_medium=referral" style="color:inherit">BriefGate</a> — client intake for agencies and AI agents.</span></div>
 </footer>
 </body>
 </html>

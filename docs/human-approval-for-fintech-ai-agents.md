@@ -17,9 +17,9 @@ What's needed instead is a gate outside the model: the agent proposes the transa
 Say an agent monitors expense reports and initiates reimbursement payouts for anything under a threshold, escalating larger ones. Using the Python SDK's `requires_approval` decorator keeps the gate close to the function that actually moves money:
 
 ```python
-from impri import ImpriClient, ImpriRejected
+from airlock import AirlockClient, AirlockRejected
 
-client = ImpriClient(api_key=os.environ["IMPRI_API_KEY"])
+client = AirlockClient(api_key=os.environ["AIRLOCK_API_KEY"])
 
 @client.requires_approval(
     kind="payout.initiate",
@@ -35,11 +35,11 @@ async def send_payout(emp, amount_cents: int):
 
 try:
     result = await send_payout(employee, amount_cents=48200)
-except ImpriRejected:
+except AirlockRejected:
     logger.info("Payout rejected by reviewer, expense report flagged for manual follow-up")
 ```
 
-The decorator pushes the action, blocks until a human decides, and only calls `payments_api.create_payout` on approval — a rejection raises `ImpriRejected` and `create_payout` is never reached. Mark payout actions `idempotent=False` (the default assumption Impri makes when the field is omitted is "unknown" — set it explicitly for anything that moves money) so the reviewer sees a warning if a retry is attempted.
+The decorator pushes the action, blocks until a human decides, and only calls `payments_api.create_payout` on approval — a rejection raises `AirlockRejected` and `create_payout` is never reached. Mark payout actions `idempotent=False` (the default assumption Airlock makes when the field is omitted is "unknown" — set it explicitly for anything that moves money) so the reviewer sees a warning if a retry is attempted.
 
 ---
 
@@ -59,7 +59,7 @@ Not every fintech-adjacent agent action carries the same risk. A rough mapping:
 
 ## Building the audit trail compliance will ask for
 
-Every decision Impri records carries who acted (`decision.decided_at`, the reviewer identity from the channel they approved through), what they saw (the `preview` at decision time), and — if they edited it — the `diff` between what the agent proposed and what was approved. That combination is closer to what a compliance review needs than an application log line saying "payout sent."
+Every decision Airlock records carries who acted (`decision.decided_at`, the reviewer identity from the channel they approved through), what they saw (the `preview` at decision time), and — if they edited it — the `diff` between what the agent proposed and what was approved. That combination is closer to what a compliance review needs than an application log line saying "payout sent."
 
 Pull the trail programmatically instead of screenshotting the inbox:
 
@@ -72,9 +72,9 @@ See [the audit log doc](audit-log.md) for what's retained and for how long. If y
 
 ---
 
-## What Impri does not give you here
+## What Airlock does not give you here
 
-Impri is the approval gate, not a compliance engine. It does not classify transactions as high-risk, does not run KYC/AML checks, and does not itself satisfy any specific regulatory framework (SOC 2, PCI DSS, etc.) — it gives you the primitive (proposal → human decision → audit record) that a compliance program can be built on top of. And the gate only holds if `payments_api.create_payout` is unreachable except through the approved path — an agent that also holds a raw payments API key with no wrapper can bypass it entirely. Keep payment credentials inside the service that enforces the gate, not in the agent's own tool access.
+Airlock is the approval gate, not a compliance engine. It does not classify transactions as high-risk, does not run KYC/AML checks, and does not itself satisfy any specific regulatory framework (SOC 2, PCI DSS, etc.) — it gives you the primitive (proposal → human decision → audit record) that a compliance program can be built on top of. And the gate only holds if `payments_api.create_payout` is unreachable except through the approved path — an agent that also holds a raw payments API key with no wrapper can bypass it entirely. Keep payment credentials inside the service that enforces the gate, not in the agent's own tool access.
 
 The Python SDK used above is pre-release (v0.1) — install from the repo's `sdk/python` source rather than PyPI for now; the REST API underneath it is stable. See [the SDK docs](sdk-python.md) for the full method list including `bulk_decide` for reviewing a batch of payouts at once.
 

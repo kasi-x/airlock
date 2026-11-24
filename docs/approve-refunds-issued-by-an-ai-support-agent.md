@@ -12,14 +12,14 @@ This is also the failure mode most likely to compound: a support agent processin
 
 ## Wiring the gate into the refund path
 
-The agent's refund tool should never call Stripe directly — it should call a wrapper that pushes the proposal to Impri and only calls Stripe once approved:
+The agent's refund tool should never call Stripe directly — it should call a wrapper that pushes the proposal to Airlock and only calls Stripe once approved:
 
 ```typescript
 import Stripe from "stripe";
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!);
-const IMPRI_KEY = process.env.IMPRI_API_KEY!;
-const BASE = "https://api.impri.dev";
+const AIRLOCK_KEY = process.env.AIRLOCK_API_KEY!;
+const BASE = "https://api.airlock.dev";
 
 interface RefundProposal {
   chargeId: string;
@@ -32,7 +32,7 @@ async function proposeRefund(p: RefundProposal): Promise<string> {
   const res = await fetch(`${BASE}/v1/actions`, {
     method: "POST",
     headers: {
-      Authorization: `Bearer ${IMPRI_KEY}`,
+      Authorization: `Bearer ${AIRLOCK_KEY}`,
       "Content-Type": "application/json",
     },
     body: JSON.stringify({
@@ -54,7 +54,7 @@ async function proposeRefund(p: RefundProposal): Promise<string> {
 async function waitForDecision(actionId: string) {
   while (true) {
     const res = await fetch(`${BASE}/v1/actions/${actionId}`, {
-      headers: { Authorization: `Bearer ${IMPRI_KEY}` },
+      headers: { Authorization: `Bearer ${AIRLOCK_KEY}` },
     });
     const data = await res.json();
     if (data.status !== "pending") return data;
@@ -74,7 +74,7 @@ async function refundWithApproval(p: RefundProposal) {
 
   await fetch(`${BASE}/v1/actions/${actionId}/result`, {
     method: "POST",
-    headers: { Authorization: `Bearer ${IMPRI_KEY}`, "Content-Type": "application/json" },
+    headers: { Authorization: `Bearer ${AIRLOCK_KEY}`, "Content-Type": "application/json" },
     body: JSON.stringify({ status: "executed", payload: { refundId: refund.id } }),
   });
 
@@ -101,6 +101,6 @@ Reporting `result` with `payload: { refundId: refund.id }` means the Stripe refu
 
 ## Boundaries
 
-Impri does not know your refund policy and does not evaluate whether $340 is reasonable for this ticket — it shows the reviewer what the agent proposed and holds the yes/no. The agent still owns the reasoning; the reviewer still owns the judgment call; Impri owns making sure the Stripe call can't happen without both. For the full three-call pattern (REST and MCP) and how to make the wrapper an actual chokepoint rather than a suggestion, see the [main integration guide](how-to-add-human-approval-to-an-ai-agent.md). For discount codes, the smaller cousin of refunds, see [human-in-the-loop AI for e-commerce discounts](human-in-the-loop-for-ai-in-ecommerce.md). If your team wants a Slack-based approve/reject flow instead of the web inbox, see [approving agent actions from Slack](approve-ai-agent-actions-from-slack.md).
+Airlock does not know your refund policy and does not evaluate whether $340 is reasonable for this ticket — it shows the reviewer what the agent proposed and holds the yes/no. The agent still owns the reasoning; the reviewer still owns the judgment call; Airlock owns making sure the Stripe call can't happen without both. For the full three-call pattern (REST and MCP) and how to make the wrapper an actual chokepoint rather than a suggestion, see the [main integration guide](how-to-add-human-approval-to-an-ai-agent.md). For discount codes, the smaller cousin of refunds, see [human-in-the-loop AI for e-commerce discounts](human-in-the-loop-for-ai-in-ecommerce.md). If your team wants a Slack-based approve/reject flow instead of the web inbox, see [approving agent actions from Slack](approve-ai-agent-actions-from-slack.md).
 
-New to Impri? Start with the [quickstart](quickstart.md).
+New to Airlock? Start with the [quickstart](quickstart.md).

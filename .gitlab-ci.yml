@@ -36,10 +36,10 @@ server:
   before_script:
     - npm ci --cache .npm --prefer-offline
   script:
-    - npm run typecheck --workspace=@impri/server
-    - npm run lint --workspace=@impri/server
-    - npm test --workspace=@impri/server
-    - npm run build --workspace=@impri/server
+    - npm run typecheck --workspace=@airlock/server
+    - npm run lint --workspace=@airlock/server
+    - npm test --workspace=@airlock/server
+    - npm run build --workspace=@airlock/server
 
 mcp:
   stage: test

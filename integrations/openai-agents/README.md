@@ -1,20 +1,20 @@
-# impri-openai
+# airlock-openai
 
-**Impri human-approval integration for the OpenAI Agents SDK.**
+**Airlock human-approval integration for the OpenAI Agents SDK.**
 
 Every tool call or agent run that matters should have a human in the loop.
-`impri-openai` makes that one decorator away.
+`airlock-openai` makes that one decorator away.
 
 ```
-pip install impri-openai                          # core (httpx only)
-pip install 'impri-openai[openai-agents]'         # + InputGuardrail helper
+pip install airlock-openai                          # core (httpx only)
+pip install 'airlock-openai[openai-agents]'         # + InputGuardrail helper
 ```
 
 ---
 
 ## What it does
 
-An agent proposes an action → a human sees it in their [Impri inbox](https://app.impri.dev)
+An agent proposes an action → a human sees it in their [Airlock inbox](https://app.airlock.dev)
 and taps **Approve** or **Reject** → the agent proceeds only on approval.
 
 Two integration levels:
@@ -35,11 +35,11 @@ Self-hosted:
 docker compose up -d   # key is printed to stdout on first start
 ```
 
-Cloud: create a key at [app.impri.dev](https://app.impri.dev) or via
+Cloud: create a key at [app.airlock.dev](https://app.airlock.dev) or via
 `POST /v1/signup`.
 
 ```bash
-export IMPRI_API_KEY=im_...
+export AIRLOCK_API_KEY=im_...
 ```
 
 ### 2. Gate a tool with `requires_approval`
@@ -47,9 +47,9 @@ export IMPRI_API_KEY=im_...
 ```python
 import asyncio
 from agents import Agent, Runner, function_tool
-from impri_openai import ImpriClient
+from airlock_openai import AirlockClient
 
-client = ImpriClient()  # reads IMPRI_API_KEY from env
+client = AirlockClient()  # reads AIRLOCK_API_KEY from env
 
 @function_tool
 @client.requires_approval(
@@ -77,10 +77,10 @@ asyncio.run(Runner.run(agent, "Send a welcome email to alice@example.com"))
 
 ```python
 from agents import Agent, Runner
-from impri_openai import ImpriClient
-from impri_openai.guardrail import make_guardrail
+from airlock_openai import AirlockClient
+from airlock_openai.guardrail import make_guardrail
 
-client = ImpriClient()
+client = AirlockClient()
 approval = make_guardrail(
     client,
     kind="agent.run",
@@ -94,7 +94,7 @@ agent = Agent(
     input_guardrails=[approval],
 )
 
-# Runner.run() blocks until a human approves in the Impri inbox.
+# Runner.run() blocks until a human approves in the Airlock inbox.
 # If rejected, InputGuardrailTripwireTriggered is raised.
 result = asyncio.run(Runner.run(agent, "Delete all draft emails"))
 ```
@@ -103,12 +103,12 @@ result = asyncio.run(Runner.run(agent, "Delete all draft emails"))
 
 ## API reference
 
-### `ImpriClient`
+### `AirlockClient`
 
 ```python
-client = ImpriClient(
-    api_key="im_...",           # or IMPRI_API_KEY env var
-    base_url="https://api.impri.dev",  # or IMPRI_BASE_URL; default http://localhost:8484
+client = AirlockClient(
+    api_key="im_...",           # or AIRLOCK_API_KEY env var
+    base_url="https://api.airlock.dev",  # or AIRLOCK_BASE_URL; default http://localhost:8484
 )
 ```
 
@@ -174,7 +174,7 @@ async def send_email(to: str, body: str) -> str:
 - If the function has a `body` parameter → `body` is replaced with the edited text.
 - Otherwise → `_decision` dict is injected as a keyword argument (if the function accepts `**kwargs` or `_decision`).
 
-**On rejection** → `ImpriRejected` is raised without calling the function.
+**On rejection** → `AirlockRejected` is raised without calling the function.
 
 ### `approval_gate` context manager
 
@@ -196,7 +196,7 @@ async with client.approval_gate(
 ### `make_guardrail` (OpenAI Agents SDK)
 
 ```python
-from impri_openai.guardrail import make_guardrail
+from airlock_openai.guardrail import make_guardrail
 
 guardrail = make_guardrail(
     client,
@@ -213,16 +213,16 @@ Returns an `InputGuardrail` ready for `Agent(input_guardrails=[guardrail])`.
 ### `verify_webhook` (standalone)
 
 ```python
-from impri_openai import verify_webhook
+from airlock_openai import verify_webhook
 
 verify_webhook(
     raw_body=request.body,              # bytes — NOT parsed JSON
     secret=project["webhook_secret"],   # from client.get_project()
-    timestamp=request.headers["X-Impri-Timestamp"],
-    nonce=request.headers["X-Impri-Nonce"],
-    signature=request.headers["X-Impri-Signature"],
+    timestamp=request.headers["X-Airlock-Timestamp"],
+    nonce=request.headers["X-Airlock-Nonce"],
+    signature=request.headers["X-Airlock-Signature"],
 )
-# raises ImpriWebhookSignatureError on mismatch
+# raises AirlockWebhookSignatureError on mismatch
 ```
 
 ---
@@ -230,22 +230,22 @@ verify_webhook(
 ## Exception hierarchy
 
 ```
-ImpriError
-├── ImpriConfigError        — api_key missing at construction
-├── ImpriUnauthorized       — 401/403 wrong key or missing scope
-├── ImpriNotFound           — 404 action/watcher not found
-├── ImpriConflict           — 409 already decided, idempotency race
-├── ImpriExpired            — 410 or status='expired'
-├── ImpriRateLimited        — 429  (.retry_after seconds hint)
-├── ImpriQuotaExceeded      — 402  (.limit, .tier)
-├── ImpriValidationError    — 400/422 (.issues list)
-├── ImpriApiError           — other 4xx/5xx (.status_code)
-├── ImpriRejected           — await_decision: human said no (NOT an error)
-├── ImpriTimeout            — await_decision: timeout_s elapsed (action still pending)
-└── ImpriWebhookSignatureError — verify_webhook HMAC mismatch
+AirlockError
+├── AirlockConfigError        — api_key missing at construction
+├── AirlockUnauthorized       — 401/403 wrong key or missing scope
+├── AirlockNotFound           — 404 action/watcher not found
+├── AirlockConflict           — 409 already decided, idempotency race
+├── AirlockExpired            — 410 or status='expired'
+├── AirlockRateLimited        — 429  (.retry_after seconds hint)
+├── AirlockQuotaExceeded      — 402  (.limit, .tier)
+├── AirlockValidationError    — 400/422 (.issues list)
+├── AirlockApiError           — other 4xx/5xx (.status_code)
+├── AirlockRejected           — await_decision: human said no (NOT an error)
+├── AirlockTimeout            — await_decision: timeout_s elapsed (action still pending)
+└── AirlockWebhookSignatureError — verify_webhook HMAC mismatch
 ```
 
-`ImpriRejected` is a **normal flow outcome**, not an error. Catch it separately
+`AirlockRejected` is a **normal flow outcome**, not an error. Catch it separately
 and handle it gracefully (log, notify, etc.).
 
 ---
@@ -276,8 +276,8 @@ tests are automatically skipped when `openai-agents` is not installed.
 
 | | Self-hosted | Cloud |
 |---|---|---|
-| Base URL | `http://localhost:8484` (default) | `https://api.impri.dev` |
-| Set via | `base_url=` or `IMPRI_BASE_URL` | same |
+| Base URL | `http://localhost:8484` (default) | `https://api.airlock.dev` |
+| Set via | `base_url=` or `AIRLOCK_BASE_URL` | same |
 | Key prefix | `im_...` | `im_...` |
 
-Source: [gitlab.com/sekera.radim/impri](https://gitlab.com/sekera.radim/impri) · Docs: [impri.dev/docs](https://impri.dev/docs)
+Source: [gitlab.com/sekera.radim/airlock](https://gitlab.com/sekera.radim/airlock) · Docs: [airlock.dev/docs](https://airlock.dev/docs)

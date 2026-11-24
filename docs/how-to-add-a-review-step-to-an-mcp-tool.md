@@ -8,7 +8,7 @@ Wrap any MCP tool's execute handler so it pauses for human approval before runni
 
 Model Context Protocol tools are designed to run as soon as the client invokes them. That's fine for a `read_file` or `search_docs` tool. It's a problem for a tool like `send_invoice`, `delete_repo_branch`, or `post_to_crm` — the MCP client (Claude Code, Claude Desktop, a custom agent runtime) calls the tool, the tool's `execute` function runs, and the side effect happens. There is no built-in pause in the protocol.
 
-If you own the MCP server, you can add that pause yourself: wrap the tool's handler so it pushes an Impri action first and only calls the real handler after approval.
+If you own the MCP server, you can add that pause yourself: wrap the tool's handler so it pushes an Airlock action first and only calls the real handler after approval.
 
 ---
 
@@ -27,18 +27,18 @@ server.tool(
 );
 ```
 
-Add a gate by pushing an Impri action before the real call, and blocking on the decision:
+Add a gate by pushing an Airlock action before the real call, and blocking on the decision:
 
 ```typescript
-import { ImpriClient } from "@impri/sdk";
+import { AirlockClient } from "@airlock/sdk";
 
-const impri = new ImpriClient({ apiKey: process.env.IMPRI_API_KEY });
+const airlock = new AirlockClient({ apiKey: process.env.AIRLOCK_API_KEY });
 
 server.tool(
   "send_invoice",
   { customerId: z.string(), amountCents: z.number() },
   async ({ customerId, amountCents }) => {
-    const action = await impri.createAction({
+    const action = await airlock.createAction({
       kind: "invoice.send",
       title: `Send invoice: customer ${customerId}, $${amountCents / 100}`,
       preview: {
@@ -48,20 +48,20 @@ server.tool(
       expires_in: 3600,
     });
 
-    const decision = await impri.awaitDecision(action.id, { timeoutS: 1800 });
+    const decision = await airlock.awaitDecision(action.id, { timeoutS: 1800 });
 
     if (decision.status !== "approved") {
       return { content: [{ type: "text", text: `Not sent: ${decision.status}` }] };
     }
 
     await billingApi.sendInvoice(customerId, amountCents);
-    await impri.reportResult(action.id, "executed");
+    await airlock.reportResult(action.id, "executed");
     return { content: [{ type: "text", text: "Invoice sent after approval." }] };
   }
 );
 ```
 
-The `billingApi.sendInvoice` call only appears once, inside the `approved` branch. There is no code path where the tool executes without first getting back `status: "approved"` from Impri. (The REST API also accepts optional `idempotent` and `undo` hints on `POST /v1/actions`; the TypeScript SDK's `createAction` params don't expose them yet — use a raw `fetch` call if you need them today.)
+The `billingApi.sendInvoice` call only appears once, inside the `approved` branch. There is no code path where the tool executes without first getting back `status: "approved"` from Airlock. (The REST API also accepts optional `idempotent` and `undo` hints on `POST /v1/actions`; the TypeScript SDK's `createAction` params don't expose them yet — use a raw `fetch` call if you need them today.)
 
 ---
 
@@ -77,7 +77,7 @@ This is the same chokepoint principle used for [any agent tool call](how-to-add-
 
 Not every tool in an MCP server needs a gate. A reasonable rule: wrap tools that produce an external, hard-to-reverse effect (sending, posting, deleting, charging), and leave read-only tools (`list_invoices`, `get_customer`) alone. Gating every tool call would make the agent unusable — the gate is for the moments a human genuinely needs to weigh in.
 
-| Tool type | Wrap with Impri? |
+| Tool type | Wrap with Airlock? |
 |---|---|
 | Read-only lookup (`get_customer`, `search_docs`) | No |
 | Sends money, email, or a message externally | Yes |
@@ -93,7 +93,7 @@ Not every tool in an MCP server needs a gate. A reasonable rule: wrap tools that
 - Set `timeoutS` in `awaitDecision` well under any client-side request timeout, and treat a timeout as "not yet decided" rather than "rejected" — check `GET /v1/actions/:id` later instead of re-pushing.
 - For tools where the human might take hours, don't block synchronously at all: push the action, return an "awaiting approval, action id `act_xyz`" message to the agent, and let a follow-up tool call (or a webhook — see [webhooks](webhooks.md)) resolve it later.
 
-For the full server setup — configuring `@impri/mcp` as a standalone process versus building the gate directly into your own server as shown above — see the [MCP integration guide](mcp.md). If your agent runs on the Claude Agent SDK rather than a raw MCP client, [the Claude Agent SDK guide](human-approval-claude-agent-sdk.md) puts the same review step in the SDK's permission callback.
+For the full server setup — configuring `@airlock/mcp` as a standalone process versus building the gate directly into your own server as shown above — see the [MCP integration guide](mcp.md). If your agent runs on the Claude Agent SDK rather than a raw MCP client, [the Claude Agent SDK guide](human-approval-claude-agent-sdk.md) puts the same review step in the SDK's permission callback.
 
 ---
 

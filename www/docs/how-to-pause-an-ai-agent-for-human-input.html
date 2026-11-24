@@ -3,21 +3,21 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>How to Pause an AI Agent for Human Input — Impri Docs</title>
+<title>How to Pause an AI Agent for Human Input — Airlock Docs</title>
 <meta name="description" content="Pause an AI agent for human input with one step that sends the proposed action to an approval inbox and blocks until a person approves, edits or rejects it.">
 <meta name="theme-color" content="#06070d">
-<meta property="og:title" content="How to Pause an AI Agent for Human Input — Impri Docs">
+<meta property="og:title" content="How to Pause an AI Agent for Human Input — Airlock Docs">
 <meta property="og:description" content="Pause an AI agent for human input with one step that sends the proposed action to an approval inbox and blocks until a person approves, edits or rejects it.">
 <meta property="og:type" content="article">
-<meta property="og:url" content="https://impri.dev/docs/how-to-pause-an-ai-agent-for-human-input">
-<meta property="og:image" content="https://impri.dev/assets/og/og-docs.png">
+<meta property="og:url" content="https://airlock.dev/docs/how-to-pause-an-ai-agent-for-human-input">
+<meta property="og:image" content="https://airlock.dev/assets/og/og-docs.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
-<meta property="og:image:alt" content="Impri — human-in-the-loop approval inbox for AI agents">
+<meta property="og:image:alt" content="Airlock — human-in-the-loop approval inbox for AI agents">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="https://impri.dev/assets/og/og-docs.png">
-<link rel="canonical" href="https://impri.dev/docs/how-to-pause-an-ai-agent-for-human-input">
-<script type="application/ld+json">{"@context":"https://schema.org","@type":"TechArticle","headline":"How to Pause an AI Agent for Human Input","description":"Pause an AI agent for human input with one step that sends the proposed action to an approval inbox and blocks until a person approves, edits or rejects it.","url":"https://impri.dev/docs/how-to-pause-an-ai-agent-for-human-input","inLanguage":"en","author":{"@type":"Organization","name":"Impri","url":"https://impri.dev"},"publisher":{"@type":"Organization","name":"Impri","url":"https://impri.dev"}}</script>
+<meta name="twitter:image" content="https://airlock.dev/assets/og/og-docs.png">
+<link rel="canonical" href="https://airlock.dev/docs/how-to-pause-an-ai-agent-for-human-input">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"TechArticle","headline":"How to Pause an AI Agent for Human Input","description":"Pause an AI agent for human input with one step that sends the proposed action to an approval inbox and blocks until a person approves, edits or rejects it.","url":"https://airlock.dev/docs/how-to-pause-an-ai-agent-for-human-input","inLanguage":"en","author":{"@type":"Organization","name":"Airlock","url":"https://airlock.dev"},"publisher":{"@type":"Organization","name":"Airlock","url":"https://airlock.dev"}}</script>
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <link rel="icon" href="/favicon.ico" sizes="32x32">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='9' fill='%236366f1'/%3E%3Cpath d='M9 16.5l4.5 4.5L23 11' stroke='white' stroke-width='3' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
@@ -132,13 +132,13 @@ pre code.hljs{display:block;overflow-x:auto}
 <div class="wrap nav-inner">
   <a class="brand" href="/">
     <span class="mark"><svg viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.5 4.5L19 7.5" stroke="white" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
-    Impri
+    Airlock
   </a>
   <div class="nav-links">
     <a class="link" href="/#how">How it works</a>
     <a class="link" href="/#pricing">Pricing</a>
     <a class="link active-nav" href="../docs">Docs</a>
-    <a class="btn btn-primary btn-sm" href="https://gitlab.com/sekera.radim/impri">GitLab</a>
+    <a class="btn btn-primary btn-sm" href="https://gitlab.com/sekera.radim/airlock">GitLab</a>
   </div>
 </div>
 </nav>
@@ -164,14 +164,14 @@ pre code.hljs{display:block;overflow-x:auto}
 <div class="code-block"><span class="code-lang">python</span><pre><code class="hljs"><span class="hljs-keyword">import</span> time
 <span class="hljs-keyword">import</span> requests
 
-IMPRI_BASE = <span class="hljs-string">&quot;https://api.impri.dev&quot;</span>
-HEADERS = {<span class="hljs-string">&quot;Authorization&quot;</span>: <span class="hljs-string">f&quot;Bearer <span class="hljs-subst">{IMPRI_API_KEY}</span>&quot;</span>}
+AIRLOCK_BASE = <span class="hljs-string">&quot;https://api.airlock.dev&quot;</span>
+HEADERS = {<span class="hljs-string">&quot;Authorization&quot;</span>: <span class="hljs-string">f&quot;Bearer <span class="hljs-subst">{AIRLOCK_API_KEY}</span>&quot;</span>}
 
 <span class="hljs-keyword">def</span> <span class="hljs-title function_">human_gate_node</span>(<span class="hljs-params">state</span>):
     <span class="hljs-string">&quot;&quot;&quot;LangGraph node: pause the run until a human approves the pending action.&quot;&quot;&quot;</span>
     proposed = state[<span class="hljs-string">&quot;pending_action&quot;</span>]  <span class="hljs-comment"># built by the previous agent node</span>
 
-    resp = requests.post(<span class="hljs-string">f&quot;<span class="hljs-subst">{IMPRI_BASE}</span>/v1/actions&quot;</span>, headers=HEADERS, json={
+    resp = requests.post(<span class="hljs-string">f&quot;<span class="hljs-subst">{AIRLOCK_BASE}</span>/v1/actions&quot;</span>, headers=HEADERS, json={
         <span class="hljs-string">&quot;kind&quot;</span>: <span class="hljs-string">&quot;db.schema_change&quot;</span>,
         <span class="hljs-string">&quot;title&quot;</span>: <span class="hljs-string">f&quot;Apply migration: <span class="hljs-subst">{proposed[<span class="hljs-string">&#x27;name&#x27;</span>]}</span>&quot;</span>,
         <span class="hljs-string">&quot;preview&quot;</span>: {<span class="hljs-string">&quot;format&quot;</span>: <span class="hljs-string">&quot;markdown&quot;</span>, <span class="hljs-string">&quot;body&quot;</span>: proposed[<span class="hljs-string">&quot;sql&quot;</span>]},
@@ -182,7 +182,7 @@ HEADERS = {<span class="hljs-string">&quot;Authorization&quot;</span>: <span cla
 
     <span class="hljs-comment"># Block the graph here. This is the pause.</span>
     <span class="hljs-keyword">while</span> <span class="hljs-literal">True</span>:
-        result = requests.get(<span class="hljs-string">f&quot;<span class="hljs-subst">{IMPRI_BASE}</span>/v1/actions/<span class="hljs-subst">{action_id}</span>&quot;</span>, headers=HEADERS).json()
+        result = requests.get(<span class="hljs-string">f&quot;<span class="hljs-subst">{AIRLOCK_BASE}</span>/v1/actions/<span class="hljs-subst">{action_id}</span>&quot;</span>, headers=HEADERS).json()
         <span class="hljs-keyword">if</span> result[<span class="hljs-string">&quot;status&quot;</span>] != <span class="hljs-string">&quot;pending&quot;</span>:
             <span class="hljs-keyword">break</span>
         time.sleep(<span class="hljs-number">5</span>)
@@ -224,12 +224,12 @@ HEADERS = {<span class="hljs-string">&quot;Authorization&quot;</span>: <span cla
 </div>
 <hr>
 <h2 id="pausing-without-a-graph-framework">Pausing without a graph framework</h2>
-<p>If your agent is a plain loop rather than a graph, the same pattern applies — the &quot;pause&quot; is just the function call that doesn&#39;t return until the action is decided. For agents running inside Claude Code or another MCP client, <a href="mcp">`mcp.md`</a> wraps this exact poll loop into a single blocking tool call (<code>impri_await_decision</code>), so you don&#39;t hand-write the <code>while</code> loop at all.</p>
-<p>Frameworks with their own pause fit the same shape. The OpenAI Agents SDK stops a run before any tool marked <code>needs_approval</code> and can save it as a <code>RunState</code>, so the wait can outlast the process: see <a href="human-in-the-loop-openai-agents-sdk">human-in-the-loop for the OpenAI Agents SDK</a> for a version that turns each pause into an Impri card and resumes the run after the decision. Temporal does it with a signal: <a href="human-in-the-loop-temporal-workflows-for-ai-agents">Temporal human-in-the-loop with an approval inbox</a> wakes the workflow from Impri&#39;s webhook. Pydantic AI ends the run with <code>DeferredToolRequests</code> when the model calls a tool marked <code>requires_approval</code>: <a href="human-in-the-loop-pydantic-ai">human-in-the-loop for Pydantic AI</a> saves the message history and resumes it with the reviewer&#39;s decision. LlamaIndex pauses inside the tool itself with <code>ctx.wait_for_event</code>: <a href="human-in-the-loop-llamaindex-agents">human-in-the-loop for LlamaIndex agents</a> saves the run when the card opens and resumes it in a second process after the decision.</p>
+<p>If your agent is a plain loop rather than a graph, the same pattern applies — the &quot;pause&quot; is just the function call that doesn&#39;t return until the action is decided. For agents running inside Claude Code or another MCP client, <a href="mcp">`mcp.md`</a> wraps this exact poll loop into a single blocking tool call (<code>airlock_await_decision</code>), so you don&#39;t hand-write the <code>while</code> loop at all.</p>
+<p>Frameworks with their own pause fit the same shape. The OpenAI Agents SDK stops a run before any tool marked <code>needs_approval</code> and can save it as a <code>RunState</code>, so the wait can outlast the process: see <a href="human-in-the-loop-openai-agents-sdk">human-in-the-loop for the OpenAI Agents SDK</a> for a version that turns each pause into an Airlock card and resumes the run after the decision. Temporal does it with a signal: <a href="human-in-the-loop-temporal-workflows-for-ai-agents">Temporal human-in-the-loop with an approval inbox</a> wakes the workflow from Airlock&#39;s webhook. Pydantic AI ends the run with <code>DeferredToolRequests</code> when the model calls a tool marked <code>requires_approval</code>: <a href="human-in-the-loop-pydantic-ai">human-in-the-loop for Pydantic AI</a> saves the message history and resumes it with the reviewer&#39;s decision. LlamaIndex pauses inside the tool itself with <code>ctx.wait_for_event</code>: <a href="human-in-the-loop-llamaindex-agents">human-in-the-loop for LlamaIndex agents</a> saves the run when the card opens and resumes it in a second process after the decision.</p>
 <hr>
 <h2 id="when-the-input-is-information-not-a-decision">When the input is information, not a decision</h2>
 <p>Everything above assumes the human answers a question about something the agent already drafted. Sometimes the agent is blocked on something it cannot draft at all: a client&#39;s logo, a login, a signed contract, facts only that person knows. An approval card is the wrong shape for that. The person is often outside your team, has no inbox in your tools, may take days, and needs typed fields and file uploads rather than an Approve button.</p>
-<p>The pause itself stays the same (stop, wait for an external event, resume), but the request goes to a collection tool instead of an approval queue. <a href="https://briefgate.dev/docs/async-human-input-for-coding-agents" target="_blank" rel="noopener">BriefGate</a>, built by the same developer as Impri, does this: the agent lists the items it needs, the person gets a portal link that works without an account, BriefGate sends the reminders, and the agent resumes once the items are in.</p>
+<p>The pause itself stays the same (stop, wait for an external event, resume), but the request goes to a collection tool instead of an approval queue. <a href="https://briefgate.dev/docs/async-human-input-for-coding-agents" target="_blank" rel="noopener">BriefGate</a>, built by the same developer as Airlock, does this: the agent lists the items it needs, the person gets a portal link that works without an account, BriefGate sends the reminders, and the agent resumes once the items are in.</p>
 <div class="code-block"><span class="code-lang">http</span><pre><code class="hljs">POST https://api.briefgate.dev/v1/intakes
 <span class="hljs-attribute">Authorization</span><span class="hljs-punctuation">: </span>Bearer bg_live_...
 <span class="hljs-attribute">Content-Type</span><span class="hljs-punctuation">: </span>application/json
@@ -242,16 +242,16 @@ HEADERS = {<span class="hljs-string">&quot;Authorization&quot;</span>: <span cla
     { &quot;key&quot;: &quot;cms_login&quot;, &quot;type&quot;: &quot;secret&quot;, &quot;label&quot;: &quot;CMS admin login&quot; }
   ]
 }</code></pre></div>
-<p>The agent then checks <code>GET /v1/intakes/:id/status</code> (or the <code>get_intake_status</code> MCP tool) and reads the values with <code>GET /v1/intakes/:id/results</code> when they arrive. Plenty of agents need both: collect the inputs with BriefGate, then send the finished draft through Impri for approval before anything goes live.</p>
+<p>The agent then checks <code>GET /v1/intakes/:id/status</code> (or the <code>get_intake_status</code> MCP tool) and reads the values with <code>GET /v1/intakes/:id/results</code> when they arrive. Plenty of agents need both: collect the inputs with BriefGate, then send the finished draft through Airlock for approval before anything goes live.</p>
 <hr>
 <h2 id="next-step">Next step</h2>
 <p>Start with <a href="quickstart">quickstart</a> to get an API key, then see <a href="how-to-add-human-approval-to-an-ai-agent">the full REST/MCP walkthrough</a> for the three-call pattern this pause node is built on. If you&#39;re integrating with Python specifically, <a href="sdk-python">sdk-python</a> covers the client library.</p>
 
-    <aside class="doc-cta" aria-label="Try Impri">
+    <aside class="doc-cta" aria-label="Try Airlock">
   <p class="doc-cta-title">Add an approval step to your own agent</p>
-  <p>Start on Impri Cloud: the Free tier includes 100 approvals a month. Or self-host the MIT-licensed core with Docker Compose, with no tier limits.</p>
+  <p>Start on Airlock Cloud: the Free tier includes 100 approvals a month. Or self-host the MIT-licensed core with Docker Compose, with no tier limits.</p>
   <div class="doc-cta-actions">
-    <a class="btn btn-primary btn-sm" href="https://app.impri.dev/?signup=1">Start free on Impri Cloud</a>
+    <a class="btn btn-primary btn-sm" href="https://app.airlock.dev/?signup=1">Start free on Airlock Cloud</a>
     <a class="btn btn-ghost btn-sm" href="../docs/quickstart">Quick start</a>
     <a class="btn btn-ghost btn-sm" href="../docs/self-hosting">Self-host guide</a>
   </div>
@@ -348,19 +348,19 @@ HEADERS = {<span class="hljs-string">&quot;Authorization&quot;</span>: <span cla
 <footer class="footer">
 <div class="wrap footer-inner">
   <a class="brand" href="/">
-    <span class="mark"><svg viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.5 4.5L19 7.5" stroke="white" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Impri
+    <span class="mark"><svg viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.5 4.5L19 7.5" stroke="white" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Airlock
   </a>
   <div>
-    <a href="https://gitlab.com/sekera.radim/impri">GitLab</a>
+    <a href="https://gitlab.com/sekera.radim/airlock">GitLab</a>
     <a href="/docs">Docs</a>
-    <a href="https://gitlab.com/sekera.radim/impri/-/blob/main/LICENSE">MIT License</a>
-    <a href="https://www.npmjs.com/package/@impri/mcp">@impri/mcp</a>
+    <a href="https://gitlab.com/sekera.radim/airlock/-/blob/main/LICENSE">MIT License</a>
+    <a href="https://www.npmjs.com/package/@airlock/mcp">@airlock/mcp</a>
     <a href="/docs/privacy">Privacy</a>
     <a href="/docs/terms">Terms</a>
     <a href="https://sekera.dev">Contact</a>
   </div>
 </div>
-<div class="wrap" style="margin-top:18px"><span class="muted">© 2026 Impri · The imprimatur for your AI agents · Built by <a href="https://sekera.dev" style="color:inherit">Radim Sekera</a>. Also by the same maker: <a href="https://briefgate.dev/?utm_source=impri.dev&amp;utm_medium=referral" style="color:inherit">BriefGate</a> — client intake for agencies and AI agents.</span></div>
+<div class="wrap" style="margin-top:18px"><span class="muted">© 2026 Airlock · The airlockmatur for your AI agents · Built by <a href="https://sekera.dev" style="color:inherit">Radim Sekera</a>. Also by the same maker: <a href="https://briefgate.dev/?utm_source=airlock.dev&amp;utm_medium=referral" style="color:inherit">BriefGate</a> — client intake for agencies and AI agents.</span></div>
 </footer>
 </body>
 </html>

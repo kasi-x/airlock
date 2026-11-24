@@ -11,7 +11,7 @@ export interface TransportResponse {
 
 export type Transport = (method: string, path: string, body?: unknown) => Promise<TransportResponse>;
 
-export interface ImpriConfig {
+export interface AirlockConfig {
   apiKey: string;
   baseUrl: string;
   /** Optional in-process transport. When set, `baseUrl`/`fetch` are not used. */
@@ -56,7 +56,7 @@ export interface Action {
 }
 
 export async function apiRequest<T>(
-  config: ImpriConfig,
+  config: AirlockConfig,
   method: string,
   path: string,
   body?: unknown,
@@ -106,7 +106,7 @@ async function throwApiError(res: TransportResponse): Promise<never> {
     case 401:
     case 403:
       throw new Error(
-        "Authentication failed — verify your IMPRI_API_KEY is correct and has the required scope.",
+        "Authentication failed — verify your AIRLOCK_API_KEY is correct and has the required scope.",
       );
     case 404:
       throw new Error(
@@ -114,11 +114,11 @@ async function throwApiError(res: TransportResponse): Promise<never> {
       );
     case 409:
       throw new Error(
-        "Conflict — an action with this idempotency_key already exists; use impri_await_decision to check its status.",
+        "Conflict — an action with this idempotency_key already exists; use airlock_await_decision to check its status.",
       );
     case 410:
       throw new Error(
-        "Action expired — the approval window has closed. Create a new action with impri_push_action if the task is still relevant.",
+        "Action expired — the approval window has closed. Create a new action with airlock_push_action if the task is still relevant.",
       );
     case 422:
       throw new Error(
@@ -130,7 +130,7 @@ async function throwApiError(res: TransportResponse): Promise<never> {
       );
     default:
       throw new Error(
-        `Impri API error ${res.status}${detail ? `: ${detail}` : ""}`,
+        `Airlock API error ${res.status}${detail ? `: ${detail}` : ""}`,
       );
   }
 }

@@ -3,15 +3,15 @@
     <v-card-text>
       <div class="d-flex align-center gap-2 mb-2">
         <v-icon color="primary">mdi-rocket-launch-outline</v-icon>
-        <span class="text-subtitle-1 font-weight-bold">Welcome to Impri</span>
+        <span class="text-subtitle-1 font-weight-bold">Welcome to Airlock</span>
         <v-spacer />
         <v-btn icon="mdi-close" size="x-small" variant="text" title="Dismiss" aria-label="Dismiss" @click="dismiss" />
       </div>
 
       <p class="text-body-2 text-medium-emphasis mb-4">
-        Impri is a human approval step for AI agents and automations. Something
+        Airlock is a human approval step for AI agents and automations. Something
         creates a request, you review it here and approve or reject — and only
-        then does it run. Impri never acts on its own.
+        then does it run. Airlock never acts on its own.
       </p>
 
       <v-row dense class="mb-1">
@@ -230,31 +230,31 @@ const agentTab = ref<'claude' | 'codex' | 'cursor' | 'windsurf' | 'json'>('claud
 const apiKeyValue = computed(() => auth.apiKey ?? 'im_YOUR_KEY')
 
 // The MCP server's own default is localhost:8484 (see mcp/src/index.ts), so
-// only spell out IMPRI_BASE_URL when pointing anywhere else (e.g. the cloud).
+// only spell out AIRLOCK_BASE_URL when pointing anywhere else (e.g. the cloud).
 const showBaseUrl = computed(() => apiOrigin !== 'http://localhost:8484')
 
 const claudeCommand = computed(() => {
-  const envArgs = [`-e IMPRI_API_KEY=${apiKeyValue.value}`]
-  if (showBaseUrl.value) envArgs.push(`-e IMPRI_BASE_URL=${apiOrigin}`)
-  return `claude mcp add impri \\\n  ${envArgs.join(' \\\n  ')} \\\n  -- npx -y @impri/mcp`
+  const envArgs = [`-e AIRLOCK_API_KEY=${apiKeyValue.value}`]
+  if (showBaseUrl.value) envArgs.push(`-e AIRLOCK_BASE_URL=${apiOrigin}`)
+  return `claude mcp add airlock \\\n  ${envArgs.join(' \\\n  ')} \\\n  -- npx -y @airlock/mcp`
 })
 
 const codexCommand = computed(() => {
-  const envArgs = [`--env IMPRI_API_KEY=${apiKeyValue.value}`]
-  if (showBaseUrl.value) envArgs.push(`--env IMPRI_BASE_URL=${apiOrigin}`)
-  return `codex mcp add impri \\\n  ${envArgs.join(' \\\n  ')} \\\n  -- npx -y @impri/mcp`
+  const envArgs = [`--env AIRLOCK_API_KEY=${apiKeyValue.value}`]
+  if (showBaseUrl.value) envArgs.push(`--env AIRLOCK_BASE_URL=${apiOrigin}`)
+  return `codex mcp add airlock \\\n  ${envArgs.join(' \\\n  ')} \\\n  -- npx -y @airlock/mcp`
 })
 
 const jsonSnippet = computed(() =>
   JSON.stringify(
     {
       mcpServers: {
-        impri: {
+        airlock: {
           command: 'npx',
-          args: ['-y', '@impri/mcp'],
+          args: ['-y', '@airlock/mcp'],
           env: showBaseUrl.value
-            ? { IMPRI_API_KEY: apiKeyValue.value, IMPRI_BASE_URL: apiOrigin }
-            : { IMPRI_API_KEY: apiKeyValue.value },
+            ? { AIRLOCK_API_KEY: apiKeyValue.value, AIRLOCK_BASE_URL: apiOrigin }
+            : { AIRLOCK_API_KEY: apiKeyValue.value },
         },
       },
     },
@@ -297,7 +297,7 @@ function copy(text: string, key: string): void {
 }
 
 function dismiss(): void {
-  localStorage.setItem('impri-onboarding-dismissed', '1')
+  localStorage.setItem('airlock-onboarding-dismissed', '1')
   emit('dismiss')
 }
 </script>

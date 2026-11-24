@@ -17,12 +17,12 @@ The pattern is the same three-call gate used for any other action — push, poll
 A spend agent that tops up an ad account when the daily budget drops below a floor:
 
 ```typescript
-import { ImpriClient, ImpriRejected, ImpriTimeout } from '@impri/sdk'
+import { AirlockClient, AirlockRejected, AirlockTimeout } from '@airlock/sdk'
 
-const impri = new ImpriClient({ apiKey: process.env.IMPRI_API_KEY! })
+const airlock = new AirlockClient({ apiKey: process.env.AIRLOCK_API_KEY! })
 
 async function topUpAdBudget(vendor: string, amountUsd: number, cardLast4: string) {
-  const action = await impri.createAction({
+  const action = await airlock.createAction({
     kind: 'payment.charge',
     title: `Top up ${vendor} ad budget — $${amountUsd.toFixed(2)}`,
     preview: {
@@ -35,13 +35,13 @@ async function topUpAdBudget(vendor: string, amountUsd: number, cardLast4: strin
   })
 
   try {
-    const decided = await impri.awaitDecision(action.id, { timeoutS: 3600 })
+    const decided = await airlock.awaitDecision(action.id, { timeoutS: 3600 })
     await chargeCard(vendor, amountUsd, cardLast4)   // your payment provider call
-    await impri.reportResult(decided.id, 'executed')
+    await airlock.reportResult(decided.id, 'executed')
   } catch (e) {
-    if (e instanceof ImpriRejected) {
+    if (e instanceof AirlockRejected) {
       console.log('Top-up declined — campaigns stay paused until someone reviews spend manually.')
-    } else if (e instanceof ImpriTimeout) {
+    } else if (e instanceof AirlockTimeout) {
       console.log('No decision within the hour — treat this run as not approved.')
     } else {
       throw e
@@ -65,8 +65,8 @@ For a drafted email or social post, letting the reviewer tweak the wording befor
 `POST /v1/actions` accepts an `idempotent` hint and an `undo` description that show up directly on the approval card. For a charge, both are worth setting:
 
 ```bash
-curl -X POST https://api.impri.dev/v1/actions \
-  -H "Authorization: Bearer $IMPRI_API_KEY" \
+curl -X POST https://api.airlock.dev/v1/actions \
+  -H "Authorization: Bearer $AIRLOCK_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "kind": "payment.charge",
@@ -83,7 +83,7 @@ curl -X POST https://api.impri.dev/v1/actions \
 
 ## Auto-approving the ones that don't need a human
 
-Not every charge needs a person to look at it. [Impri's rules engine](rules.md) evaluates `payload_conditions` against the `payload` field you send, so a small recurring top-up can skip the queue while anything larger still waits for a human:
+Not every charge needs a person to look at it. [Airlock's rules engine](rules.md) evaluates `payload_conditions` against the `payload` field you send, so a small recurring top-up can skip the queue while anything larger still waits for a human:
 
 ```json
 {
@@ -102,6 +102,6 @@ For larger amounts, a second rule with `rule_action: "escalate"` marks the actio
 
 ## What happens on rejection, timeout, or expiry
 
-`ImpriRejected` and `ImpriTimeout` are normal outcomes, not errors — a rejected top-up just means the campaign stays paused until a human tops it up manually or approves the next attempt. Impri never decides whether a charge is a good idea; it stores the proposed charge, notifies someone, and holds the decision. The judgment about whether $1,200 for an annual renewal is reasonable stays entirely with the person who taps approve, and [the audit log](audit-log.md) keeps a record of exactly who approved which charge and when.
+`AirlockRejected` and `AirlockTimeout` are normal outcomes, not errors — a rejected top-up just means the campaign stays paused until a human tops it up manually or approves the next attempt. Airlock never decides whether a charge is a good idea; it stores the proposed charge, notifies someone, and holds the decision. The judgment about whether $1,200 for an annual renewal is reasonable stays entirely with the person who taps approve, and [the audit log](audit-log.md) keeps a record of exactly who approved which charge and when.
 
 Next step: [the TypeScript SDK reference](sdk-typescript.md) for the full `createAction`/`awaitDecision`/`reportResult` API this example uses.

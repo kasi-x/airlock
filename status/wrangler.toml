@@ -1,11 +1,11 @@
-# Status page pro Impri — Cloudflare Worker (status.impri.dev).
+# Status page pro Airlock — Cloudflare Worker (status.airlock.dev).
 # Cron každých 15 min pinguje API/app/web, výsledky agreguje do KV,
 # fetch handler servíruje HTML stránku + /api/status JSON.
 # (15 min = 96 běhů/den. "latest" se zapisuje každý běh, "history" jen při
 #  změně hodinového bucketu (~1×/hod) — viz KV-budget poznámka v runChecks
 #  ve worker.js. Dohromady ~120 zápisů/den, komfortně pod free-tier limitem
 #  1000/den sdíleným s dalšími Workers na účtu.)
-name = "impri-status"
+name = "airlock-status"
 main = "worker.js"
 compatibility_date = "2026-07-01"
 account_id = "898d4e753b02b649839a27835aa351a7"
@@ -18,5 +18,5 @@ kv_namespaces = [
 crons = ["*/15 * * * *"]
 
 [[routes]]
-pattern = "status.impri.dev"
+pattern = "status.airlock.dev"
 custom_domain = true

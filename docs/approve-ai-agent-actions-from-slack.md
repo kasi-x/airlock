@@ -1,12 +1,12 @@
 # Approve AI Agent Actions From Slack
 
-Connect Impri to Slack and your AI agent's proposed actions land in a channel where you can approve or reject them with a single tap — no dashboard required.
+Connect Airlock to Slack and your AI agent's proposed actions land in a channel where you can approve or reject them with a single tap — no dashboard required.
 
 ---
 
 ## How it works
 
-When an agent pushes a proposed action to Impri, Impri routes the approval notification to wherever you've configured it — including a Slack channel. The agent then polls for the decision. If you approve in Slack, the agent proceeds; if you reject, it stops. The agent code is identical regardless of which channel you use for approvals. What changes is the notification routing, which you configure once in the Impri dashboard.
+When an agent pushes a proposed action to Airlock, Airlock routes the approval notification to wherever you've configured it — including a Slack channel. The agent then polls for the decision. If you approve in Slack, the agent proceeds; if you reject, it stops. The agent code is identical regardless of which channel you use for approvals. What changes is the notification routing, which you configure once in the Airlock dashboard.
 
 The action card that arrives in Slack shows the action title, a preview of the content (formatted as the agent sent it), and Approve / Reject buttons. Clicking either one records the decision immediately and unblocks the polling agent.
 
@@ -14,7 +14,7 @@ The action card that arrives in Slack shows the action title, a preview of the c
 
 ## Setting up Slack notifications
 
-Connect your Slack workspace once via the Impri notifications settings. The full walk-through — including creating the Slack app, OAuth scopes, and which channel gets which actions — is in the [Slack approval guide](slack-approval.md). Once connected, every action your agent pushes will trigger a Slack notification automatically.
+Connect your Slack workspace once via the Airlock notifications settings. The full walk-through — including creating the Slack app, OAuth scopes, and which channel gets which actions — is in the [Slack approval guide](slack-approval.md). Once connected, every action your agent pushes will trigger a Slack notification automatically.
 
 If you want different agents to route to different channels, configure separate API keys and assign each key a distinct notification target in the dashboard.
 
@@ -28,16 +28,16 @@ The agent code follows the same push → poll → execute pattern regardless of 
 import time
 import httpx
 
-IMPRI_API_KEY = "im_your_key_here"
-IMPRI_BASE = "https://api.impri.dev"
+AIRLOCK_API_KEY = "im_your_key_here"
+AIRLOCK_BASE = "https://api.airlock.dev"
 
 def propose_and_wait(draft: str) -> dict | None:
     """Push a social post draft for approval. Returns the decision or None on rejection/expiry."""
 
     # 1. Push the proposed action
     resp = httpx.post(
-        f"{IMPRI_BASE}/v1/actions",
-        headers={"Authorization": f"Bearer {IMPRI_API_KEY}"},
+        f"{AIRLOCK_BASE}/v1/actions",
+        headers={"Authorization": f"Bearer {AIRLOCK_API_KEY}"},
         json={
             "kind": "social.post",
             "title": "LinkedIn post: Q3 product update",
@@ -59,8 +59,8 @@ def propose_and_wait(draft: str) -> dict | None:
     # 2. Poll until a human decides in Slack (or until expiry)
     while True:
         result = httpx.get(
-            f"{IMPRI_BASE}/v1/actions/{action_id}",
-            headers={"Authorization": f"Bearer {IMPRI_API_KEY}"},
+            f"{AIRLOCK_BASE}/v1/actions/{action_id}",
+            headers={"Authorization": f"Bearer {AIRLOCK_API_KEY}"},
             timeout=10,
         ).json()
 
@@ -89,10 +89,10 @@ def run_agent(draft: str) -> None:
 
     post_to_linkedin(decision["body"])
 
-    # 4. Report result back to Impri (closes the audit record)
+    # 4. Report result back to Airlock (closes the audit record)
     httpx.post(
-        f"{IMPRI_BASE}/v1/actions/{action_id}/result",  # reuse action_id from outer scope
-        headers={"Authorization": f"Bearer {IMPRI_API_KEY}"},
+        f"{AIRLOCK_BASE}/v1/actions/{action_id}/result",  # reuse action_id from outer scope
+        headers={"Authorization": f"Bearer {AIRLOCK_API_KEY}"},
         json={"status": "executed"},
         timeout=10,
     )

@@ -1,9 +1,9 @@
-"""Impri Python SDK — human-in-the-loop approval API client.
+"""Airlock Python SDK — human-in-the-loop approval API client.
 
 Quickstart::
 
-    import impri
-    client = impri.ImpriClient()          # reads IMPRI_API_KEY from env
+    import airlock
+    client = airlock.AirlockClient()          # reads AIRLOCK_API_KEY from env
     action = client.create_action(
         kind="email.send",
         title="Send weekly digest to alice@example.com",
@@ -13,23 +13,23 @@ Quickstart::
     approved = client.await_decision(action["id"])
     client.report_result(action["id"], "executed")
 
-Cloud endpoint: set IMPRI_BASE_URL=https://api.impri.dev (default: http://localhost:8484).
+Cloud endpoint: set AIRLOCK_BASE_URL=https://api.airlock.dev (default: http://localhost:8484).
 """
-from .client import ImpriClient, verify_webhook
+from .client import AirlockClient, verify_webhook
 from .errors import (
-    ImpriApiError,
-    ImpriConfigError,
-    ImpriConflict,
-    ImpriError,
-    ImpriExpired,
-    ImpriNotFound,
-    ImpriQuotaExceeded,
-    ImpriRateLimited,
-    ImpriRejected,
-    ImpriTimeout,
-    ImpriUnauthorized,
-    ImpriValidationError,
-    ImpriWebhookSignatureError,
+    AirlockApiError,
+    AirlockConfigError,
+    AirlockConflict,
+    AirlockError,
+    AirlockExpired,
+    AirlockNotFound,
+    AirlockQuotaExceeded,
+    AirlockRateLimited,
+    AirlockRejected,
+    AirlockTimeout,
+    AirlockUnauthorized,
+    AirlockValidationError,
+    AirlockWebhookSignatureError,
 )
 from .models import (
     Action,
@@ -66,22 +66,22 @@ from .models import (
 
 __all__ = [
     # Client
-    "ImpriClient",
+    "AirlockClient",
     "verify_webhook",
     # Errors
-    "ImpriError",
-    "ImpriConfigError",
-    "ImpriUnauthorized",
-    "ImpriNotFound",
-    "ImpriConflict",
-    "ImpriExpired",
-    "ImpriRateLimited",
-    "ImpriQuotaExceeded",
-    "ImpriRejected",
-    "ImpriTimeout",
-    "ImpriValidationError",
-    "ImpriApiError",
-    "ImpriWebhookSignatureError",
+    "AirlockError",
+    "AirlockConfigError",
+    "AirlockUnauthorized",
+    "AirlockNotFound",
+    "AirlockConflict",
+    "AirlockExpired",
+    "AirlockRateLimited",
+    "AirlockQuotaExceeded",
+    "AirlockRejected",
+    "AirlockTimeout",
+    "AirlockValidationError",
+    "AirlockApiError",
+    "AirlockWebhookSignatureError",
     # Models
     "AuditEvent",
     "AuditPage",

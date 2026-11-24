@@ -1,4 +1,4 @@
-# impri (fork)
+# airlock (fork)
 
 **Human-in-the-loop approval inbox for AI agents.**
 
@@ -22,18 +22,18 @@ Agent (Claude Code / any MCP client)  →  approval inbox  →  You approve, edi
 ## Status
 
 Development fork — not published, not rebranded yet. Upstream's hosted
-endpoints (`impri.dev`, `api.impri.dev`) are **not referenced** by any
+endpoints (`airlock.dev`, `api.airlock.dev`) are **not referenced** by any
 runtime code or deploy template; everything runs self-hosted or against a
 server you point at explicitly.
 
 ## Self-host in 60 seconds
 
 ```sh
-git clone https://github.com/kasi-x/impri.git
-cd impri
+git clone https://github.com/kasi-x/airlock.git
+cd airlock
 npm ci                                   # server + mcp workspaces
 npm install-scripts approve better-sqlite3 argon2   # npm >= 12 blocks install scripts
-npm run build --workspace=mcp            # server imports @impri/mcp from dist
+npm run build --workspace=mcp            # server imports @airlock/mcp from dist
 docker compose up                        # or: npm run dev (server on :8484, ui separately)
 ```
 
@@ -44,12 +44,12 @@ The bootstrap admin API key prints to the server logs on first start.
 
 ```bash
 ACTION=$(curl -s -X POST http://localhost:8484/v1/actions \
-  -H "Authorization: Bearer $IMPRI_API_KEY" -H "Content-Type: application/json" \
+  -H "Authorization: Bearer $AIRLOCK_API_KEY" -H "Content-Type: application/json" \
   -d '{"kind":"email.send","title":"Outreach: Acme","preview":{"format":"markdown","body":"Hi Sarah, ..."}}')
 ID=$(echo "$ACTION" | jq -r .id)
 
 # a human approves in the web inbox (or via Slack/Telegram/Discord buttons)
-DECISION=$(curl -s "http://localhost:8484/v1/actions/$ID" -H "Authorization: Bearer $IMPRI_API_KEY")
+DECISION=$(curl -s "http://localhost:8484/v1/actions/$ID" -H "Authorization: Bearer $AIRLOCK_API_KEY")
 
 # only now, and only if approved
 [ "$(echo "$DECISION" | jq -r .status)" = "approved" ] && send_email ...
@@ -58,7 +58,7 @@ DECISION=$(curl -s "http://localhost:8484/v1/actions/$ID" -H "Authorization: Bea
 Or from any MCP client (stdio, pointing at your self-hosted server):
 
 ```bash
-claude mcp add impri --env IMPRI_API_KEY=im_... -- npx -y @impri/mcp
+claude mcp add airlock --env AIRLOCK_API_KEY=im_... -- npx -y @airlock/mcp
 ```
 
 ## Layout
@@ -66,7 +66,7 @@ claude mcp add impri --env IMPRI_API_KEY=im_... -- npx -y @impri/mcp
 | Package | What |
 |---|---|
 | `server/` | Fastify REST API + SQLite, hosted streamable-HTTP `/mcp` endpoint |
-| `mcp/` | stdio MCP server (`@impri/mcp`): push_action, await_decision, report_result, inbox_status |
+| `mcp/` | stdio MCP server (`@airlock/mcp`): push_action, await_decision, report_result, inbox_status |
 | `ui/` | Vue 3 + Vuetify approval inbox |
 | `cli/`, `sdk/typescript/`, `sdk/python/` | Clients over the REST API |
 | `integrations/` | Claude Agent SDK / CrewAI / LangChain / OpenAI Agents adapters |
@@ -79,4 +79,4 @@ rebrand boundary (what must be replaced before any release).
 
 MIT — inherits upstream's license
 ([LICENSE](LICENSE), © 2026 Radim Sekera). Upstream project:
-<https://github.com/sekera-radim/impri> · docs: <https://impri.dev> (upstream).
+<https://github.com/sekera-radim/impri> · docs: <https://airlock.dev> (upstream).

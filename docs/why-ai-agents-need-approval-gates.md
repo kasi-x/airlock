@@ -24,10 +24,10 @@ None of these require the agent to be malicious or even particularly buggy — a
 
 ```typescript
 async function proposeAndExecute(kind: string, title: string, body: string) {
-  const create = await fetch("https://api.impri.dev/v1/actions", {
+  const create = await fetch("https://api.airlock.dev/v1/actions", {
     method: "POST",
     headers: {
-      Authorization: `Bearer ${process.env.IMPRI_API_KEY}`,
+      Authorization: `Bearer ${process.env.AIRLOCK_API_KEY}`,
       "Content-Type": "application/json",
     },
     body: JSON.stringify({
@@ -42,8 +42,8 @@ async function proposeAndExecute(kind: string, title: string, body: string) {
 
   let decision;
   while (true) {
-    const poll = await fetch(`https://api.impri.dev/v1/actions/${id}`, {
-      headers: { Authorization: `Bearer ${process.env.IMPRI_API_KEY}` },
+    const poll = await fetch(`https://api.airlock.dev/v1/actions/${id}`, {
+      headers: { Authorization: `Bearer ${process.env.AIRLOCK_API_KEY}` },
     });
     decision = await poll.json();
     if (decision.status !== "pending") break;
@@ -57,10 +57,10 @@ async function proposeAndExecute(kind: string, title: string, body: string) {
   // The only line in this function that touches the real system:
   await runTheActualSideEffect(decision.decision.final_preview.body);
 
-  await fetch(`https://api.impri.dev/v1/actions/${id}/result`, {
+  await fetch(`https://api.airlock.dev/v1/actions/${id}/result`, {
     method: "POST",
     headers: {
-      Authorization: `Bearer ${process.env.IMPRI_API_KEY}`,
+      Authorization: `Bearer ${process.env.AIRLOCK_API_KEY}`,
       "Content-Type": "application/json",
     },
     body: JSON.stringify({ status: "executed" }),

@@ -10,13 +10,13 @@ A calendar agent looks low-stakes compared to one that sends money or deletes da
 
 ## What gets proposed vs. what gets executed
 
-The agent never calls the calendar provider's API directly. It builds the change it wants to make — reschedule, new invite, cancellation — as an Impri action, and a small executor function is the only code path allowed to call the real calendar API, and only after seeing `status: "approved"`.
+The agent never calls the calendar provider's API directly. It builds the change it wants to make — reschedule, new invite, cancellation — as an Airlock action, and a small executor function is the only code path allowed to call the real calendar API, and only after seeing `status: "approved"`.
 
 ```typescript
-import { ImpriClient, ImpriRejected, ImpriExpired } from "@impri/sdk";
+import { AirlockClient, AirlockRejected, AirlockExpired } from "@airlock/sdk";
 import { google } from "googleapis"; // or your calendar client of choice
 
-const impri = new ImpriClient({ apiKey: process.env.IMPRI_API_KEY! });
+const airlock = new AirlockClient({ apiKey: process.env.AIRLOCK_API_KEY! });
 
 interface ProposedReschedule {
   eventId: string;
@@ -28,7 +28,7 @@ interface ProposedReschedule {
 }
 
 async function proposeReschedule(change: ProposedReschedule) {
-  const action = await impri.createAction({
+  const action = await airlock.createAction({
     kind: "calendar.reschedule",
     title: `Reschedule: ${change.title}`,
     preview: {
@@ -49,10 +49,10 @@ async function proposeReschedule(change: ProposedReschedule) {
 
 async function applyIfApproved(actionId: string, change: ProposedReschedule) {
   try {
-    await impri.awaitDecision(actionId, { timeoutS: 3600 });
+    await airlock.awaitDecision(actionId, { timeoutS: 3600 });
   } catch (e) {
-    if (e instanceof ImpriRejected || e instanceof ImpriExpired) {
-      console.log(`Reschedule not applied: ${e instanceof ImpriRejected ? "rejected" : "expired"}`);
+    if (e instanceof AirlockRejected || e instanceof AirlockExpired) {
+      console.log(`Reschedule not applied: ${e instanceof AirlockRejected ? "rejected" : "expired"}`);
       return;
     }
     throw e;
@@ -67,7 +67,7 @@ async function applyIfApproved(actionId: string, change: ProposedReschedule) {
     requestBody: { start: { dateTime: change.proposedStart } },
   });
 
-  await impri.reportResult(actionId, "executed");
+  await airlock.reportResult(actionId, "executed");
 }
 ```
 
@@ -89,6 +89,6 @@ A reschedule proposal that sits unapproved for a day is usually wrong by the tim
 
 ## What this doesn't cover
 
-Impri gates the write — it doesn't understand calendar semantics, detect double-bookings, or know which attendees are important enough to warrant extra caution. That logic stays in your agent or a rules layer in front of it; see [rules](rules.md) for filtering which actions need approval at all versus which can auto-approve. For agents that also draft the invite email itself, [approve emails before your AI agent sends them](approve-emails-before-your-ai-agent-sends-them.md) covers that adjacent gate.
+Airlock gates the write — it doesn't understand calendar semantics, detect double-bookings, or know which attendees are important enough to warrant extra caution. That logic stays in your agent or a rules layer in front of it; see [rules](rules.md) for filtering which actions need approval at all versus which can auto-approve. For agents that also draft the invite email itself, [approve emails before your AI agent sends them](approve-emails-before-your-ai-agent-sends-them.md) covers that adjacent gate.
 
 **Next step:** [quickstart](quickstart.md) to create a key, then swap the calendar client above for your own — the [TypeScript SDK](sdk-typescript.md) covers the full action/decision API surface used here.

@@ -23,23 +23,23 @@ This doesn't replace approval — it bounds the damage a misconfigured or compro
 
 ## Pattern 2 — Least-privilege credentials, not one shared key
 
-An agent that reads Terraform plans doesn't need a key that can also apply them. An agent that drafts an action doesn't need the scope that executes it. Split credentials by what the agent actually does, and prefer short-lived, narrowly scoped tokens over one admin key reused everywhere. If you're using Impri for the approval step itself, give the agent an `actions` scope key, not `admin`: a compromised agent process shouldn't be able to mint API keys or rewrite the rules that auto-approve actions.
+An agent that reads Terraform plans doesn't need a key that can also apply them. An agent that drafts an action doesn't need the scope that executes it. Split credentials by what the agent actually does, and prefer short-lived, narrowly scoped tokens over one admin key reused everywhere. If you're using Airlock for the approval step itself, give the agent an `actions` scope key, not `admin`: a compromised agent process shouldn't be able to mint API keys or rewrite the rules that auto-approve actions.
 
 ## Pattern 3 — Rate limit the loop, not just the endpoint
 
-Agents get stuck in loops in ways scripts rarely do — a misread error message can cause the same "fix" to be retried a hundred times. Rate limiting the outbound action (not just relying on the target API's own limits) turns a runaway loop into a throttled nuisance instead of a hundred applied changes. Impri caps action creation at 60 requests per minute per API key, so an agent caught in a retry loop gets `429` responses instead of flooding the reviewer's inbox.
+Agents get stuck in loops in ways scripts rarely do — a misread error message can cause the same "fix" to be retried a hundred times. Rate limiting the outbound action (not just relying on the target API's own limits) turns a runaway loop into a throttled nuisance instead of a hundred applied changes. Airlock caps action creation at 60 requests per minute per API key, so an agent caught in a retry loop gets `429` responses instead of flooding the reviewer's inbox.
 
 ## Pattern 4 — A human approval gate on irreversible actions
 
 This is the pattern that catches what the first three don't: a well-scoped, rate-limited agent that is still about to do the *wrong* thing. The gate has to be structural — the executor function must be unreachable except from the approved branch — not a prompt instruction asking the model to pause.
 
 ```typescript
-import { ImpriClient, ImpriRejected, ImpriExpired, ImpriTimeout } from "@impri/sdk";
+import { AirlockClient, AirlockRejected, AirlockExpired, AirlockTimeout } from "@airlock/sdk";
 
-const impri = new ImpriClient({ apiKey: process.env.IMPRI_API_KEY! });
+const airlock = new AirlockClient({ apiKey: process.env.AIRLOCK_API_KEY! });
 
 async function proposeApply(plan: string, changeSummary: string) {
-  const action = await impri.createAction({
+  const action = await airlock.createAction({
     kind: "infra.terraform_apply",
     title: `Apply: ${changeSummary}`,
     preview: { format: "markdown", body: "```\n" + plan + "\n```" },
@@ -48,9 +48,9 @@ async function proposeApply(plan: string, changeSummary: string) {
 
   try {
     // Returns only once a human approved; throws on rejection, expiry or timeout.
-    await impri.awaitDecision(action.id, { timeoutS: 1800 });
+    await airlock.awaitDecision(action.id, { timeoutS: 1800 });
   } catch (e) {
-    if (e instanceof ImpriRejected || e instanceof ImpriExpired || e instanceof ImpriTimeout) {
+    if (e instanceof AirlockRejected || e instanceof AirlockExpired || e instanceof AirlockTimeout) {
       return; // runTerraformApply is never called
     }
     throw e;
@@ -58,9 +58,9 @@ async function proposeApply(plan: string, changeSummary: string) {
 
   try {
     await runTerraformApply(plan); // the only call site for the real side effect
-    await impri.reportResult(action.id, "executed");
+    await airlock.reportResult(action.id, "executed");
   } catch (e) {
-    await impri.reportResult(action.id, "execute_failed", { detail: String(e) });
+    await airlock.reportResult(action.id, "execute_failed", { detail: String(e) });
     throw e;
   }
 }

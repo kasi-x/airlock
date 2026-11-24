@@ -1,6 +1,6 @@
 # Reversible vs Irreversible AI Agent Actions: What to Gate
 
-Not every AI agent action needs a human. Learn which reversible vs irreversible actions to gate, and how to flag them on the approval card with Impri.
+Not every AI agent action needs a human. Learn which reversible vs irreversible actions to gate, and how to flag them on the approval card with Airlock.
 
 ---
 
@@ -27,8 +27,8 @@ The line is not "dangerous vs safe". It is "undoable vs not". An email cannot be
 import os
 import requests
 
-BASE = "https://api.impri.dev"
-HEADERS = {"Authorization": f"Bearer {os.environ['IMPRI_API_KEY']}"}
+BASE = "https://api.airlock.dev"
+HEADERS = {"Authorization": f"Bearer {os.environ['AIRLOCK_API_KEY']}"}
 
 # Policy: which kinds are worth a human. Everything else runs directly.
 GATED = {
@@ -54,7 +54,7 @@ def propose(kind: str, title: str, body: str) -> str:
     return r.json()["id"]
 ```
 
-Note that the `GATED` table is your policy, kept in your code. Impri does not classify actions for you and does not decide what needs approval; it holds the decision for whatever you send it.
+Note that the `GATED` table is your policy, kept in your code. Airlock does not classify actions for you and does not decide what needs approval; it holds the decision for whatever you send it.
 
 ## An irreversible action with an honest undo
 
@@ -78,8 +78,8 @@ def report(action_id: str, ok: bool, payload: dict | None = None):
 ## Limits of this approach
 
 - The gate only works if the gated tool is the agent's only route to the side effect. An agent that also holds the raw API key can skip it.
-- Impri does not verify that `undo` is true or that `idempotent` is accurate. Those are your claims, shown to the human.
-- Impri does not execute anything and is not a workflow engine. Rollback, if needed, is your code.
+- Airlock does not verify that `undo` is true or that `idempotent` is accurate. Those are your claims, shown to the human.
+- Airlock does not execute anything and is not a workflow engine. Rollback, if needed, is your code.
 
 ## Next step
 

@@ -425,9 +425,9 @@ export function registerActionRoutes(app: FastifyInstance, db: Db): void {
       try {
         commitBulkItem();
 
-        incCounter('impri_action_decisions_total', { verdict: body.verdict, channel });
+        incCounter('airlock_action_decisions_total', { verdict: body.verdict, channel });
         const latencySec = now - (action.created_at as number);
-        obsHistogram('impri_action_decision_latency_seconds', { verdict: body.verdict }, latencySec);
+        obsHistogram('airlock_action_decision_latency_seconds', { verdict: body.verdict }, latencySec);
 
         // Schedule webhook delivery per item — identical to single-decision.
         if (action.callback_url) {
@@ -634,9 +634,9 @@ export function registerActionRoutes(app: FastifyInstance, db: Db): void {
     }
 
     const channel = body.channel ?? 'api';
-    incCounter('impri_action_decisions_total', { verdict: body.decision, channel });
+    incCounter('airlock_action_decisions_total', { verdict: body.decision, channel });
     const latencySec = now - (action.created_at as number);
-    obsHistogram('impri_action_decision_latency_seconds', { verdict: body.decision }, latencySec);
+    obsHistogram('airlock_action_decision_latency_seconds', { verdict: body.decision }, latencySec);
     request.log.info({
       event: 'action.decided',
       action_id: action.id,

@@ -1,4 +1,4 @@
-/* Impri landing — interactions. No external deps, CSP-safe (script-src 'self'). */
+/* Airlock landing — interactions. No external deps, CSP-safe (script-src 'self'). */
 (() => {
   'use strict';
   const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -98,7 +98,7 @@
   /* ---- terminal typing ---- */
   const term = $('#term');
   const LINES = [
-    '<span class="tok-flag">$</span> <span class="tok-cmd">curl</span> -X POST <span class="tok-url">https://api.impri.dev/v1/actions</span> \\',
+    '<span class="tok-flag">$</span> <span class="tok-cmd">curl</span> -X POST <span class="tok-url">https://api.airlock.dev/v1/actions</span> \\',
     '    -H <span class="tok-str">"Authorization: Bearer im_…"</span> \\',
     '    -H <span class="tok-str">"Content-Type: application/json"</span> \\',
     '    -d <span class="tok-punc">\'{</span>',

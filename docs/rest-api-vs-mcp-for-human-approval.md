@@ -1,6 +1,6 @@
 # REST API vs MCP for Human-in-the-Loop Approval
 
-Use Impri's REST API when the agent is your own code, like a Python worker or a cron job; use its MCP server when the agent runs in an MCP client.
+Use Airlock's REST API when the agent is your own code, like a Python worker or a cron job; use its MCP server when the agent runs in an MCP client.
 
 ---
 
@@ -11,7 +11,7 @@ Whether you gate an action over REST or MCP, the underlying operation is identic
 - **REST**: your code makes the HTTP calls, your code polls, your code branches on the result.
 - **MCP**: the agent calls a tool, the tool blocks until a decision exists, the agent receives the result and continues.
 
-Neither path skips the gate. Both hit the same `https://api.impri.dev` backend and the same inbox. The difference is ergonomics, not security.
+Neither path skips the gate. Both hit the same `https://api.airlock.dev` backend and the same inbox. The difference is ergonomics, not security.
 
 ---
 
@@ -28,8 +28,8 @@ import os
 import time
 import requests
 
-API = "https://api.impri.dev"
-HEADERS = {"Authorization": f"Bearer {os.environ['IMPRI_API_KEY']}"}
+API = "https://api.airlock.dev"
+HEADERS = {"Authorization": f"Bearer {os.environ['AIRLOCK_API_KEY']}"}
 
 def request_merge_approval(pr_number: str, pr_title: str, diff_summary: str) -> dict:
     resp = requests.post(f"{API}/v1/actions", headers=HEADERS, json={
@@ -65,12 +65,12 @@ If the same merge-deciding agent is a Claude Code session or subagent, wire up t
 ```json
 {
   "mcpServers": {
-    "impri": {
+    "airlock": {
       "command": "npx",
-      "args": ["@impri/mcp"],
+      "args": ["@airlock/mcp"],
       "env": {
-        "IMPRI_API_KEY": "im_your_key_here",
-        "IMPRI_BASE_URL": "https://api.impri.dev"
+        "AIRLOCK_API_KEY": "im_your_key_here",
+        "AIRLOCK_BASE_URL": "https://api.airlock.dev"
       }
     }
   }
@@ -80,14 +80,14 @@ If the same merge-deciding agent is a Claude Code session or subagent, wire up t
 The agent's flow becomes three tool calls with no HTTP client code in your prompt or scaffolding:
 
 ```
-impri_push_action(kind="github.pr_merge", title="Merge PR #482: Add retry backoff",
+airlock_push_action(kind="github.pr_merge", title="Merge PR #482: Add retry backoff",
                    preview={format:"markdown", body:"..."}, expires_in=21600)
   → { action_id: "act_482", status: "pending" }
 
-impri_await_decision(action_id="act_482", timeout_s=21600)
+airlock_await_decision(action_id="act_482", timeout_s=21600)
   → { status: "approved", preview: {...} }
 
-impri_report_result(action_id="act_482", status="executed")
+airlock_report_result(action_id="act_482", status="executed")
 ```
 
 ---
@@ -99,7 +99,7 @@ impri_report_result(action_id="act_482", status="executed")
 | Standalone script, cron job, backend worker | REST — no MCP runtime needed |
 | Claude Code, Claude Desktop, or another MCP client | MCP — the client already speaks the protocol |
 | You need custom retry/backoff logic around polling | REST — full control over the loop |
-| You want the agent to reason about the wait naturally in its own tool-call loop | MCP — `impri_await_decision` blocks like any other tool call |
+| You want the agent to reason about the wait naturally in its own tool-call loop | MCP — `airlock_await_decision` blocks like any other tool call |
 | Non-Node/Python runtime (Go, Rust, PHP) | REST — MCP server ships as an npx package, REST works from anywhere with HTTP |
 
 Both share the same rate limit (60 requests/min per key to `POST /v1/actions`) and the same expiry rules — nothing about the transport changes what counts as a valid decision.
@@ -108,7 +108,7 @@ Both share the same rate limit (60 requests/min per key to `POST /v1/actions`) a
 
 ## The part that doesn't change either way
 
-Regardless of transport, the gate only holds if the wrapped action truly has no other path to execution. An agent that can call the GitHub merge API directly, with its own token, can route around Impri entirely — REST or MCP. The chokepoint has to be the code path, not the request format. See [how to add human approval to an AI agent](how-to-add-human-approval-to-an-ai-agent.md) for the full reasoning on that boundary, and the [MCP integration guide](mcp.md) for server setup details beyond this example.
+Regardless of transport, the gate only holds if the wrapped action truly has no other path to execution. An agent that can call the GitHub merge API directly, with its own token, can route around Airlock entirely — REST or MCP. The chokepoint has to be the code path, not the request format. See [how to add human approval to an AI agent](how-to-add-human-approval-to-an-ai-agent.md) for the full reasoning on that boundary, and the [MCP integration guide](mcp.md) for server setup details beyond this example.
 
 If you're building specifically on the Claude Agent SDK, [the dedicated guide](human-approval-claude-agent-sdk.md) gates tool calls in the SDK's own permission callback, so the check sits in the runtime, not in a step the model could skip.
 

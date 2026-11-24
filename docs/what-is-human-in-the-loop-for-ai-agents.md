@@ -48,8 +48,8 @@ The standard pattern is three steps. The agent proposes the action by pushing it
 ```python
 import httpx, time, os
 
-HEADERS = {"Authorization": f"Bearer {os.environ['IMPRI_API_KEY']}"}
-BASE = "https://api.impri.dev"
+HEADERS = {"Authorization": f"Bearer {os.environ['AIRLOCK_API_KEY']}"}
+BASE = "https://api.airlock.dev"
 
 def push_action(kind, title, body):
     r = httpx.post(
@@ -87,13 +87,13 @@ if result["status"] == "approved":
 
 The key property: `send_to_slack` can only be reached after `status == "approved"`. The execution block is never reached on rejection or expiry — there is no branch to skip around the gate.
 
-This is a real gate only as long as `send_to_slack` is the agent's sole path to Slack. If the agent still holds the raw credential to call Slack directly, it can route around the gate. Impri is a chokepoint you confine the agent to, not a network-level interceptor.
+This is a real gate only as long as `send_to_slack` is the agent's sole path to Slack. If the agent still holds the raw credential to call Slack directly, it can route around the gate. Airlock is a chokepoint you confine the agent to, not a network-level interceptor.
 
 ---
 
 ## What HITL is not
 
-**Not content moderation.** Impri does not read or judge the content itself. It surfaces the proposed action to a specific human — you — who makes the call.
+**Not content moderation.** Airlock does not read or judge the content itself. It surfaces the proposed action to a specific human — you — who makes the call.
 
 **Not a workflow engine.** There is no branching logic, retry scheduling, or multi-step orchestration built into the gate. If you need those, use a workflow tool (n8n, Temporal, Inngest) and put the HITL gate as one step inside it.
 

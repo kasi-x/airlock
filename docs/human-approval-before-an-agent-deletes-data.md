@@ -21,19 +21,19 @@ def delete_inactive_accounts(account_ids: list[str]) -> None:
     db.execute("DELETE FROM accounts WHERE id = ANY(%s)", [account_ids])
 ```
 
-The agent's only path to that side effect should be a wrapped version that requires an approved Impri action first. Everything else — the model choosing to call the tool, the reasoning that led there — stays exactly as flexible as before. What changes is that the tool itself refuses to run without a decision:
+The agent's only path to that side effect should be a wrapped version that requires an approved Airlock action first. Everything else — the model choosing to call the tool, the reasoning that led there — stays exactly as flexible as before. What changes is that the tool itself refuses to run without a decision:
 
 ```python
 import os
 import time
 import requests
 
-IMPRI_BASE = "https://api.impri.dev"
-HEADERS = {"Authorization": f"Bearer {os.environ['IMPRI_API_KEY']}"}
+AIRLOCK_BASE = "https://api.airlock.dev"
+HEADERS = {"Authorization": f"Bearer {os.environ['AIRLOCK_API_KEY']}"}
 
 def delete_inactive_accounts(account_ids: list[str], reason: str) -> None:
     action = requests.post(
-        f"{IMPRI_BASE}/v1/actions",
+        f"{AIRLOCK_BASE}/v1/actions",
         headers=HEADERS,
         json={
             "kind": "data.delete",
@@ -51,7 +51,7 @@ def delete_inactive_accounts(account_ids: list[str], reason: str) -> None:
     action_id = action["id"]
 
     while True:
-        result = requests.get(f"{IMPRI_BASE}/v1/actions/{action_id}", headers=HEADERS).json()
+        result = requests.get(f"{AIRLOCK_BASE}/v1/actions/{action_id}", headers=HEADERS).json()
         if result["status"] != "pending":
             break
         time.sleep(10)
@@ -62,7 +62,7 @@ def delete_inactive_accounts(account_ids: list[str], reason: str) -> None:
 
     db.execute("DELETE FROM accounts WHERE id = ANY(%s)", [account_ids])
     requests.post(
-        f"{IMPRI_BASE}/v1/actions/{action_id}/result",
+        f"{AIRLOCK_BASE}/v1/actions/{action_id}/result",
         headers=HEADERS,
         json={"status": "executed", "payload": {"deleted_count": len(account_ids)}},
     )
@@ -74,7 +74,7 @@ The `account_ids` list is not editable here — for a delete, letting a human si
 
 ## `idempotent: false` and `undo` are doing real work here
 
-Two of Impri's optional fields matter more for deletes than for almost any other action kind:
+Two of Airlock's optional fields matter more for deletes than for almost any other action kind:
 
 - **`idempotent: false`** — a retried delete of the same IDs is harmless (they're already gone), but a retry that includes *newly matched* rows because the filter re-ran is not. Setting this to `false` puts a "retrying may duplicate this action" warning on the card, which for a delete reads more like "retrying may delete more than you think" — worth the reviewer's attention.
 - **`undo`** — even when there's no real undo, say so explicitly (`"No undo — restore from backup"`). A blank field reads as "reversible" by omission. A stated boundary reads as what it is.

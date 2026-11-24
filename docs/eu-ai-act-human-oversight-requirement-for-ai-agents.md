@@ -10,7 +10,7 @@ Article 14 of the EU AI Act requires that high-risk AI systems be designed so a 
 
 This is a compliance question your legal team owns, not something a piece of software can certify for you. What follows is the technical shape of one way to satisfy the "a human can stop this" and "there is a record" parts, for the subset of an AI system that is an agent about to take an external action.
 
-**Important caveat up front: Impri is not a compliance product and does not claim to satisfy the AI Act on its own.** It is a gate and an audit log. Whether that gate, combined with your risk classification, your documentation, and your process around it, satisfies Article 14 for your specific system is a legal determination outside what this page (or Impri) can tell you.
+**Important caveat up front: Airlock is not a compliance product and does not claim to satisfy the AI Act on its own.** It is a gate and an audit log. Whether that gate, combined with your risk classification, your documentation, and your process around it, satisfies Article 14 for your specific system is a legal determination outside what this page (or Airlock) can tell you.
 
 ---
 
@@ -23,12 +23,12 @@ import os
 import time
 import requests
 
-IMPRI_BASE = "https://api.impri.dev"
-HEADERS = {"Authorization": f"Bearer {os.environ['IMPRI_API_KEY']}"}
+AIRLOCK_BASE = "https://api.airlock.dev"
+HEADERS = {"Authorization": f"Bearer {os.environ['AIRLOCK_API_KEY']}"}
 
 def request_oversight(kind: str, title: str, body: str, undo: str):
     resp = requests.post(
-        f"{IMPRI_BASE}/v1/actions",
+        f"{AIRLOCK_BASE}/v1/actions",
         headers=HEADERS,
         json={
             "kind": kind,
@@ -43,7 +43,7 @@ def request_oversight(kind: str, title: str, body: str, undo: str):
 
 def await_decision(action_id: str, poll_seconds: int = 15) -> dict:
     while True:
-        resp = requests.get(f"{IMPRI_BASE}/v1/actions/{action_id}", headers=HEADERS)
+        resp = requests.get(f"{AIRLOCK_BASE}/v1/actions/{action_id}", headers=HEADERS)
         data = resp.json()
         if data["status"] != "pending":
             return data
@@ -72,20 +72,20 @@ else:
 
 ## The part it can't address
 
-A gate proves *that* a human made a decision. It says nothing about whether the human was qualified to make it, had enough time and context, or wasn't just clicking approve on autopilot — all things regulators and auditors will actually ask about. Article 14 also covers requirements Impri has no bearing on at all: risk management documentation, technical robustness, training data governance, and the conformity assessment itself. Those live in your compliance process, not in an API call.
+A gate proves *that* a human made a decision. It says nothing about whether the human was qualified to make it, had enough time and context, or wasn't just clicking approve on autopilot — all things regulators and auditors will actually ask about. Article 14 also covers requirements Airlock has no bearing on at all: risk management documentation, technical robustness, training data governance, and the conformity assessment itself. Those live in your compliance process, not in an API call.
 
 | Article 14 concern | Where it's addressed |
 |---|---|
-| Human can review the proposed action before it takes effect | An Impri action gate |
+| Human can review the proposed action before it takes effect | An Airlock action gate |
 | Human can decline / stop the action | `rejected` status, never executed |
 | Timestamped record of who decided what, when | [Audit log](audit-log.md) |
-| Human was competent and adequately informed | Your review process, not Impri |
-| Risk classification, conformity assessment, documentation | Your compliance program, not Impri |
+| Human was competent and adequately informed | Your review process, not Airlock |
+| Risk classification, conformity assessment, documentation | Your compliance program, not Airlock |
 
 ---
 
 ## Self-hosting for data residency
 
-Some high-risk deployments need the oversight data to stay in-region or off a third-party's cloud entirely. Impri's core is MIT-licensed and self-hostable — see [self-hosting](self-hosting.md) — which keeps the action records and audit trail on your own infrastructure rather than `api.impri.dev`, if that's a constraint your compliance team has.
+Some high-risk deployments need the oversight data to stay in-region or off a third-party's cloud entirely. Airlock's core is MIT-licensed and self-hostable — see [self-hosting](self-hosting.md) — which keeps the action records and audit trail on your own infrastructure rather than `api.airlock.dev`, if that's a constraint your compliance team has.
 
 For the base three-call integration pattern this is built on, start with [How to Add Human Approval to an AI Agent](how-to-add-human-approval-to-an-ai-agent.md), then talk to your legal counsel about whether it covers what your specific system needs.

@@ -2,7 +2,7 @@
 <html>
 <head>
 <meta charset="utf-8">
-<title>Impri killer demo — short</title>
+<title>Airlock killer demo — short</title>
 <style>
   :root {
     --bg:        #06070d;
@@ -116,7 +116,7 @@
   <!-- SCENE 1 — risky action (compressed) -->
   <div class="scene dark-bg" id="scene1">
     <div class="terminal full">
-      <div class="term-bar"><i></i><i></i><i></i><span class="term-title">Claude Code — impri MCP</span></div>
+      <div class="term-bar"><i></i><i></i><i></i><span class="term-title">Claude Code — airlock MCP</span></div>
       <div class="term-body">
         <div class="ln" id="s1-l1"></div>
         <div class="ln" id="s1-tool" style="opacity:0"></div>
@@ -133,7 +133,7 @@
         <div class="screen">
           <div class="chat-top">
             <span class="app-ico"><svg viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.5 4.5L19 7.5" stroke="white" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
-            Impri
+            Airlock
           </div>
           <div class="chat-body">
             <div class="msg-card">
@@ -162,10 +162,10 @@
     <div class="final-card" id="s3-card" style="opacity:0">
       <div class="wordmark">
         <span class="mark"><svg viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.5 4.5L19 7.5" stroke="white" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
-        <span class="word">Impri</span>
+        <span class="word">Airlock</span>
       </div>
       <div class="final-tag">Nothing executes without a human's yes.</div>
-      <div class="final-sub">impri.dev &middot; open source &middot; MCP + REST</div>
+      <div class="final-sub">airlock.dev &middot; open source &middot; MCP + REST</div>
       <div class="final-track"><div class="final-fill" id="s3-fill"></div></div>
     </div>
   </div>
@@ -214,7 +214,7 @@ function seek(t) {
   // SCENE 1
   setTyped($('s1-l1'), t, 0.0, 0.8, '<span class="tok-prompt">&gt; </span>', 'Delete 40 stale customer records from the CRM.', 'tok-prompt');
   show($('s1-tool'), t, 1.1, 0.3);
-  $('s1-tool').innerHTML = '<div class="tool-block"><span class="tok-fn">impri_push_action</span><span class="tok-punc">(</span><span class="tok-str">"Delete 40 stale customer records"</span><span class="tok-punc">)</span></div>';
+  $('s1-tool').innerHTML = '<div class="tool-block"><span class="tok-fn">airlock_push_action</span><span class="tok-punc">(</span><span class="tok-str">"Delete 40 stale customer records"</span><span class="tok-punc">)</span></div>';
   show($('s1-cap'), t, 1.5, 0.35);
 
   // SCENE 2

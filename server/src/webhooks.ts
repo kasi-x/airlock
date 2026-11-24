@@ -44,7 +44,7 @@ export async function deliverWebhook(
     db.prepare(
       "UPDATE webhook_deliveries SET status = 'dlq', last_attempt_at = ?, last_error = ? WHERE id = ?",
     ).run(nowSec(), `SSRF blocked: ${msg}`, deliveryId);
-    incCounter('impri_webhook_deliveries_total', { result: 'ssrf_blocked' });
+    incCounter('airlock_webhook_deliveries_total', { result: 'ssrf_blocked' });
     log.warn({ event: 'webhook.dlq', delivery_id: deliveryId, action_id: event.action_id, attempt: 0 },
       'webhook delivery SSRF blocked → dlq');
     return false;
@@ -59,9 +59,9 @@ export async function deliverWebhook(
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'X-Impri-Signature': `sha256=${signature}`,
-        'X-Impri-Timestamp': String(timestamp),
-        'X-Impri-Nonce': nonce,
+        'X-Airlock-Signature': `sha256=${signature}`,
+        'X-Airlock-Timestamp': String(timestamp),
+        'X-Airlock-Nonce': nonce,
       },
       body,
       signal: AbortSignal.timeout(10_000),
@@ -77,8 +77,8 @@ export async function deliverWebhook(
       db.prepare(
         "UPDATE actions SET callback_url = NULL WHERE id = (SELECT action_id FROM webhook_deliveries WHERE id = ?)",
       ).run(deliveryId);
-      incCounter('impri_webhook_deliveries_total', { result: 'gone' });
-      obsHistogram('impri_webhook_delivery_duration_seconds', {}, durationSec);
+      incCounter('airlock_webhook_deliveries_total', { result: 'gone' });
+      obsHistogram('airlock_webhook_delivery_duration_seconds', {}, durationSec);
       log.info({ event: 'webhook.delivery', delivery_id: deliveryId, action_id: event.action_id, attempt: 0, result: 'gone', status_code: 410, duration_ms: Math.round(durationSec * 1000) });
       return false;
     }
@@ -87,18 +87,18 @@ export async function deliverWebhook(
       db.prepare(
         "UPDATE webhook_deliveries SET status = 'delivered', last_status_code = ?, last_attempt_at = ? WHERE id = ?",
       ).run(statusCode, nowSec(), deliveryId);
-      incCounter('impri_webhook_deliveries_total', { result: 'delivered' });
-      obsHistogram('impri_webhook_delivery_duration_seconds', {}, durationSec);
+      incCounter('airlock_webhook_deliveries_total', { result: 'delivered' });
+      obsHistogram('airlock_webhook_delivery_duration_seconds', {}, durationSec);
       log.info({ event: 'webhook.delivery', delivery_id: deliveryId, action_id: event.action_id, attempt: 0, result: 'delivered', status_code: statusCode, duration_ms: Math.round(durationSec * 1000) });
       return true;
     }
 
     // Non-2xx — schedule retry
     error = `HTTP ${statusCode}`;
-    obsHistogram('impri_webhook_delivery_duration_seconds', {}, durationSec);
+    obsHistogram('airlock_webhook_delivery_duration_seconds', {}, durationSec);
   } catch (err) {
     error = err instanceof Error ? err.message : String(err);
-    obsHistogram('impri_webhook_delivery_duration_seconds', {}, (Date.now() - startMs) / 1000);
+    obsHistogram('airlock_webhook_delivery_duration_seconds', {}, (Date.now() - startMs) / 1000);
   }
 
   // Determine current attempt number
@@ -112,7 +112,7 @@ export async function deliverWebhook(
     db.prepare(
       "UPDATE webhook_deliveries SET status = 'dlq', attempt = ?, last_attempt_at = ?, last_error = ?, last_status_code = ? WHERE id = ?",
     ).run(attempt, nowSec(), error, statusCode ?? null, deliveryId);
-    incCounter('impri_webhook_deliveries_total', { result: 'dlq' });
+    incCounter('airlock_webhook_deliveries_total', { result: 'dlq' });
     log.error({ event: 'webhook.dlq', delivery_id: deliveryId, action_id: event.action_id, attempt });
     return false;
   }
@@ -121,7 +121,7 @@ export async function deliverWebhook(
   db.prepare(
     "UPDATE webhook_deliveries SET status = 'retry', attempt = ?, next_attempt_at = ?, last_attempt_at = ?, last_error = ?, last_status_code = ? WHERE id = ?",
   ).run(attempt, nextAt, nowSec(), error, statusCode ?? null, deliveryId);
-  incCounter('impri_webhook_deliveries_total', { result: 'retry' });
+  incCounter('airlock_webhook_deliveries_total', { result: 'retry' });
   log.warn({ event: 'webhook.delivery', delivery_id: deliveryId, action_id: event.action_id, attempt, result: 'retry', status_code: statusCode ?? null, duration_ms: Math.round((Date.now() - startMs) / 1000 * 1000) });
   return false;
 }
@@ -225,7 +225,7 @@ export async function runExpiryTick(db: Db, webhookSecret: string, log: Logger =
   for (const action of expired) {
     const didExpire = expireOne(action);
     if (didExpire) {
-      incCounter('impri_actions_expired_total');
+      incCounter('airlock_actions_expired_total');
       log.info({ event: 'action.expired', action_id: action.id, project_id: action.project_id });
       if (action.callback_url) {
         scheduleWebhookDelivery(db, action.id, action.callback_url);

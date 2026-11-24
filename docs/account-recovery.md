@@ -1,6 +1,6 @@
 # Account Recovery
 
-Impri is intentionally anonymous — no email address, no password. Your API key is the only credential. If you lose all your keys, this guide explains how to recover access using a **recovery code**.
+Airlock is intentionally anonymous — no email address, no password. Your API key is the only credential. If you lose all your keys, this guide explains how to recover access using a **recovery code**.
 
 ## How it works
 
@@ -110,11 +110,11 @@ Recovery does **not** revoke your existing keys. If you lost them, that is fine 
 
 On a self-hosted single-tenant instance you also have direct database access. If you lose both your API key and recovery code:
 
-1. Open the SQLite database (default: `impri.db`).
+1. Open the SQLite database (default: `airlock.db`).
 2. Run: `SELECT id, name FROM projects;` to find your project.
 3. Use the bootstrap flow: if there are no active keys, the server prints a new admin key on startup — but only when the `api_keys` table is empty. You can revoke all keys via SQL and restart.
 
-Or use the Impri CLI (if installed): `impri reset-key --project proj_…`.
+Or use the Airlock CLI (if installed): `airlock reset-key --project proj_…`.
 
 ## Security notes
 

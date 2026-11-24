@@ -3,21 +3,21 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>4 Types of Human-in-the-Loop Tools, Compared — Impri Docs</title>
+<title>4 Types of Human-in-the-Loop Tools, Compared — Airlock Docs</title>
 <meta name="description" content="Framework interrupts, workflow-engine nodes, general approval software, and dedicated gates: a practical comparison so you pick a HITL tool by category.">
 <meta name="theme-color" content="#06070d">
-<meta property="og:title" content="4 Types of Human-in-the-Loop Tools, Compared — Impri Docs">
+<meta property="og:title" content="4 Types of Human-in-the-Loop Tools, Compared — Airlock Docs">
 <meta property="og:description" content="Framework interrupts, workflow-engine nodes, general approval software, and dedicated gates: a practical comparison so you pick a HITL tool by category.">
 <meta property="og:type" content="article">
-<meta property="og:url" content="https://impri.dev/docs/hitl-tools-for-llm-agents-compared">
-<meta property="og:image" content="https://impri.dev/assets/og/og-docs.png">
+<meta property="og:url" content="https://airlock.dev/docs/hitl-tools-for-llm-agents-compared">
+<meta property="og:image" content="https://airlock.dev/assets/og/og-docs.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
-<meta property="og:image:alt" content="Impri — human-in-the-loop approval inbox for AI agents">
+<meta property="og:image:alt" content="Airlock — human-in-the-loop approval inbox for AI agents">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="https://impri.dev/assets/og/og-docs.png">
-<link rel="canonical" href="https://impri.dev/docs/hitl-tools-for-llm-agents-compared">
-<script type="application/ld+json">{"@context":"https://schema.org","@type":"TechArticle","headline":"4 Types of Human-in-the-Loop Tools, Compared","description":"Framework interrupts, workflow-engine nodes, general approval software, and dedicated gates: a practical comparison so you pick a HITL tool by category.","url":"https://impri.dev/docs/hitl-tools-for-llm-agents-compared","inLanguage":"en","author":{"@type":"Organization","name":"Impri","url":"https://impri.dev"},"publisher":{"@type":"Organization","name":"Impri","url":"https://impri.dev"}}</script>
+<meta name="twitter:image" content="https://airlock.dev/assets/og/og-docs.png">
+<link rel="canonical" href="https://airlock.dev/docs/hitl-tools-for-llm-agents-compared">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"TechArticle","headline":"4 Types of Human-in-the-Loop Tools, Compared","description":"Framework interrupts, workflow-engine nodes, general approval software, and dedicated gates: a practical comparison so you pick a HITL tool by category.","url":"https://airlock.dev/docs/hitl-tools-for-llm-agents-compared","inLanguage":"en","author":{"@type":"Organization","name":"Airlock","url":"https://airlock.dev"},"publisher":{"@type":"Organization","name":"Airlock","url":"https://airlock.dev"}}</script>
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <link rel="icon" href="/favicon.ico" sizes="32x32">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='9' fill='%236366f1'/%3E%3Cpath d='M9 16.5l4.5 4.5L23 11' stroke='white' stroke-width='3' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
@@ -132,13 +132,13 @@ pre code.hljs{display:block;overflow-x:auto}
 <div class="wrap nav-inner">
   <a class="brand" href="/">
     <span class="mark"><svg viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.5 4.5L19 7.5" stroke="white" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
-    Impri
+    Airlock
   </a>
   <div class="nav-links">
     <a class="link" href="/#how">How it works</a>
     <a class="link" href="/#pricing">Pricing</a>
     <a class="link active-nav" href="../docs">Docs</a>
-    <a class="btn btn-primary btn-sm" href="https://gitlab.com/sekera.radim/impri">GitLab</a>
+    <a class="btn btn-primary btn-sm" href="https://gitlab.com/sekera.radim/airlock">GitLab</a>
   </div>
 </div>
 </nav>
@@ -186,7 +186,7 @@ pre code.hljs{display:block;overflow-x:auto}
 </tr>
 <tr>
 <td>Dedicated agent approval gate</td>
-<td>Impri</td>
+<td>Airlock</td>
 <td>Separate service, agent-aware</td>
 <td>Agent proposes → human decides → agent executes</td>
 </tr>
@@ -211,15 +211,15 @@ pre code.hljs{display:block;overflow-x:auto}
 }</code></pre></div>
 <p>This is the tightest integration you can get — no network hop, no separate service, the pause is a first-class part of the graph. The tradeoff is that the &quot;waiting for a human&quot; part is entirely up to you: something still has to notify a reviewer, render a card they can act on from their phone, and store the decision. The interrupt is the pause primitive, not the inbox, the notification, or the audit log around it. Teams often end up building (or bolting on) exactly the kind of gate described below, just triggered from inside the interrupt.</p>
 <h2 id="workflow-engine-nodes">Workflow-engine nodes</h2>
-<p>If the agent step is one node in a larger n8n or Temporal workflow, the engine&#39;s own human-input primitive is usually the right default — n8n&#39;s Wait node resumes on a webhook call; Temporal workflows can block on a signal sent by an external approval action. You avoid adding a new service, and the approval step shows up in the same execution history as the rest of the workflow. If that workflow still needs a place where people see and answer the request, <a href="human-in-the-loop-temporal-workflows-for-ai-agents">Temporal human-in-the-loop with an approval inbox</a> wires a Temporal signal to an Impri card.</p>
+<p>If the agent step is one node in a larger n8n or Temporal workflow, the engine&#39;s own human-input primitive is usually the right default — n8n&#39;s Wait node resumes on a webhook call; Temporal workflows can block on a signal sent by an external approval action. You avoid adding a new service, and the approval step shows up in the same execution history as the rest of the workflow. If that workflow still needs a place where people see and answer the request, <a href="human-in-the-loop-temporal-workflows-for-ai-agents">Temporal human-in-the-loop with an approval inbox</a> wires a Temporal signal to an Airlock card.</p>
 <p>The limitation shows up when the approval step needs to be agent-specific: a diff view of what a human edited before approving, a notion of &quot;this draft expired, don&#39;t send it,&quot; a mobile-first card instead of a generic form. Workflow engines are general-purpose by design; they don&#39;t know that this particular wait step is &quot;should this LLM-drafted email go out.&quot;</p>
 <h2 id="general-approvalticketing-software">General approval/ticketing software</h2>
 <p>Some teams route agent actions through whatever approval tooling already exists — a Jira workflow, a lightweight BPM tool. It avoids new infrastructure, but these systems have no concept of an agent polling for status, no <code>final_preview</code> carrying a human edit back to the exact text the agent should execute, and no expiry tuned to &quot;this draft is now stale.&quot; Expect to write and maintain glue code, and expect it to break when the ticketing tool changes its API.</p>
 <h2 id="dedicated-agent-approval-gates">Dedicated agent approval gates</h2>
-<p>The fourth category is software built specifically for the agent-proposes → human-decides → agent-executes loop and nothing else. Impri is in this category: an agent pushes a proposed action, a human approves, rejects, or edits it from an inbox (web, Slack, Telegram, Discord, or push notification), and the agent polls or blocks for the decision before doing anything.</p>
+<p>The fourth category is software built specifically for the agent-proposes → human-decides → agent-executes loop and nothing else. Airlock is in this category: an agent pushes a proposed action, a human approves, rejects, or edits it from an inbox (web, Slack, Telegram, Discord, or push notification), and the agent polls or blocks for the decision before doing anything.</p>
 <div class="code-block"><span class="code-lang">bash</span><pre><code class="hljs"><span class="hljs-comment"># Push a proposed action from any agent, any framework</span>
-curl -X POST https://api.impri.dev/v1/actions \
-  -H <span class="hljs-string">&quot;Authorization: Bearer <span class="hljs-variable">$IMPRI_API_KEY</span>&quot;</span> \
+curl -X POST https://api.airlock.dev/v1/actions \
+  -H <span class="hljs-string">&quot;Authorization: Bearer <span class="hljs-variable">$AIRLOCK_API_KEY</span>&quot;</span> \
   -H <span class="hljs-string">&quot;Content-Type: application/json&quot;</span> \
   -d <span class="hljs-string">&#x27;{
     &quot;kind&quot;: &quot;social.post&quot;,
@@ -229,7 +229,7 @@ curl -X POST https://api.impri.dev/v1/actions \
     &quot;expires_in&quot;: 14400
   }&#x27;</span>
 <span class="hljs-comment"># → { &quot;id&quot;: &quot;act_...&quot;, &quot;status&quot;: &quot;pending&quot;, &quot;inbox_url&quot;: &quot;...&quot; }</span></code></pre></div>
-<p>Because it&#39;s agent-agnostic — REST or MCP, no framework required — it composes with any of the other three categories rather than competing with them: trigger the push from inside a LangGraph <code>interrupt()</code>, or from an n8n node, and let Impri own the inbox, notification, human-edit, and audit-log surface instead of building that part yourself.</p>
+<p>Because it&#39;s agent-agnostic — REST or MCP, no framework required — it composes with any of the other three categories rather than competing with them: trigger the push from inside a LangGraph <code>interrupt()</code>, or from an n8n node, and let Airlock own the inbox, notification, human-edit, and audit-log surface instead of building that part yourself.</p>
 <hr>
 <h2 id="picking-one">Picking one</h2>
 <p>Start from where your agent already lives, not from a feature list:</p>
@@ -240,11 +240,11 @@ curl -X POST https://api.impri.dev/v1/actions \
 </ul>
 <p>None of these are mutually exclusive. Most real setups combine a framework-native pause with a dedicated gate behind it, because the pause and the inbox solve different halves of the problem.</p>
 
-    <aside class="doc-cta" aria-label="Try Impri">
+    <aside class="doc-cta" aria-label="Try Airlock">
   <p class="doc-cta-title">Add an approval step to your own agent</p>
-  <p>Start on Impri Cloud: the Free tier includes 100 approvals a month. Or self-host the MIT-licensed core with Docker Compose, with no tier limits.</p>
+  <p>Start on Airlock Cloud: the Free tier includes 100 approvals a month. Or self-host the MIT-licensed core with Docker Compose, with no tier limits.</p>
   <div class="doc-cta-actions">
-    <a class="btn btn-primary btn-sm" href="https://app.impri.dev/?signup=1">Start free on Impri Cloud</a>
+    <a class="btn btn-primary btn-sm" href="https://app.airlock.dev/?signup=1">Start free on Airlock Cloud</a>
     <a class="btn btn-ghost btn-sm" href="../docs/quickstart">Quick start</a>
     <a class="btn btn-ghost btn-sm" href="../docs/self-hosting">Self-host guide</a>
   </div>
@@ -341,19 +341,19 @@ curl -X POST https://api.impri.dev/v1/actions \
 <footer class="footer">
 <div class="wrap footer-inner">
   <a class="brand" href="/">
-    <span class="mark"><svg viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.5 4.5L19 7.5" stroke="white" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Impri
+    <span class="mark"><svg viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.5 4.5L19 7.5" stroke="white" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Airlock
   </a>
   <div>
-    <a href="https://gitlab.com/sekera.radim/impri">GitLab</a>
+    <a href="https://gitlab.com/sekera.radim/airlock">GitLab</a>
     <a href="/docs">Docs</a>
-    <a href="https://gitlab.com/sekera.radim/impri/-/blob/main/LICENSE">MIT License</a>
-    <a href="https://www.npmjs.com/package/@impri/mcp">@impri/mcp</a>
+    <a href="https://gitlab.com/sekera.radim/airlock/-/blob/main/LICENSE">MIT License</a>
+    <a href="https://www.npmjs.com/package/@airlock/mcp">@airlock/mcp</a>
     <a href="/docs/privacy">Privacy</a>
     <a href="/docs/terms">Terms</a>
     <a href="https://sekera.dev">Contact</a>
   </div>
 </div>
-<div class="wrap" style="margin-top:18px"><span class="muted">© 2026 Impri · The imprimatur for your AI agents · Built by <a href="https://sekera.dev" style="color:inherit">Radim Sekera</a>. Also by the same maker: <a href="https://briefgate.dev/?utm_source=impri.dev&amp;utm_medium=referral" style="color:inherit">BriefGate</a> — client intake for agencies and AI agents.</span></div>
+<div class="wrap" style="margin-top:18px"><span class="muted">© 2026 Airlock · The airlockmatur for your AI agents · Built by <a href="https://sekera.dev" style="color:inherit">Radim Sekera</a>. Also by the same maker: <a href="https://briefgate.dev/?utm_source=airlock.dev&amp;utm_medium=referral" style="color:inherit">BriefGate</a> — client intake for agencies and AI agents.</span></div>
 </footer>
 </body>
 </html>

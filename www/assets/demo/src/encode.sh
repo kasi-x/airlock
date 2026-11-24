@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Encode the Impri killer demo frames (produced by capture-killer.mjs) into
+# Encode the Airlock killer demo frames (produced by capture-killer.mjs) into
 # mp4/webm/gif/poster deliverables. Run from this directory.
 set -euo pipefail
 cd "$(dirname "$0")"

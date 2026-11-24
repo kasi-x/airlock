@@ -14,7 +14,7 @@ The fix isn't a different approval flow — it's splitting the script into two s
 
 ## Split into a propose workflow and an execute workflow
 
-The **propose** workflow does the LLM generation, pushes the action to Impri, and exits immediately — no polling, no waiting.
+The **propose** workflow does the LLM generation, pushes the action to Airlock, and exits immediately — no polling, no waiting.
 
 ```yaml
 # .github/workflows/nightly-release-notes-propose.yml
@@ -30,7 +30,7 @@ jobs:
       - run: npm ci
       - name: Generate and push for approval
         env:
-          IMPRI_API_KEY: ${{ secrets.IMPRI_API_KEY }}
+          AIRLOCK_API_KEY: ${{ secrets.AIRLOCK_API_KEY }}
         run: node scripts/propose-release-notes.mjs
 ```
 
@@ -50,7 +50,7 @@ jobs:
       - run: npm ci
       - name: Execute anything approved
         env:
-          IMPRI_API_KEY: ${{ secrets.IMPRI_API_KEY }}
+          AIRLOCK_API_KEY: ${{ secrets.AIRLOCK_API_KEY }}
         run: node scripts/execute-approved.mjs
 ```
 
@@ -62,10 +62,10 @@ import { writeFile } from "node:fs/promises";
 
 const notes = await generateReleaseNotes(); // your LLM call
 
-const res = await fetch("https://api.impri.dev/v1/actions", {
+const res = await fetch("https://api.airlock.dev/v1/actions", {
   method: "POST",
   headers: {
-    Authorization: `Bearer ${process.env.IMPRI_API_KEY}`,
+    Authorization: `Bearer ${process.env.AIRLOCK_API_KEY}`,
     "Content-Type": "application/json",
   },
   body: JSON.stringify({
@@ -78,7 +78,7 @@ const res = await fetch("https://api.impri.dev/v1/actions", {
 });
 
 const { id } = await res.json();
-await writeFile(".impri-pending/release-notes.json", JSON.stringify({ id }));
+await writeFile(".airlock-pending/release-notes.json", JSON.stringify({ id }));
 ```
 
 The `execute` job reads that file, calls `GET /v1/actions/:id` once, and either runs the publish step (if `approved`) or does nothing and leaves the pending file alone (if still `pending`).
@@ -87,7 +87,7 @@ The `execute` job reads that file, calls `GET /v1/actions/:id` once, and either 
 
 ## Secrets and scopes
 
-Store `IMPRI_API_KEY` as a GitHub Actions repository secret, never in the workflow file itself. Scope it to `actions` only — a CI script proposing and checking actions has no reason to hold `admin` or `watch` scope. If the propose and execute workflows run as separate jobs, they can share the same `actions`-scoped key; there's no benefit to splitting it further.
+Store `AIRLOCK_API_KEY` as a GitHub Actions repository secret, never in the workflow file itself. Scope it to `actions` only — a CI script proposing and checking actions has no reason to hold `admin` or `watch` scope. If the propose and execute workflows run as separate jobs, they can share the same `actions`-scoped key; there's no benefit to splitting it further.
 
 ---
 
@@ -108,6 +108,6 @@ Too short and a real Friday-evening backlog silently expires before Monday; too 
 
 ## What this doesn't replace
 
-This pattern is not a substitute for GitHub's own Environments protection rules if you're already using them for deploy gating inside a single workflow run — use those when the approval and the job are the same CI run. Reach for the propose/execute split specifically when the script runs unattended on a schedule and you don't want a runner burning minutes (or a self-hosted runner sitting blocked) waiting on a human. And as always, Impri only holds the decision — it doesn't generate the release notes, doesn't know what "good" output looks like, and the execute script is what actually has to enforce that nothing runs without `status: "approved"`.
+This pattern is not a substitute for GitHub's own Environments protection rules if you're already using them for deploy gating inside a single workflow run — use those when the approval and the job are the same CI run. Reach for the propose/execute split specifically when the script runs unattended on a schedule and you don't want a runner burning minutes (or a self-hosted runner sitting blocked) waiting on a human. And as always, Airlock only holds the decision — it doesn't generate the release notes, doesn't know what "good" output looks like, and the execute script is what actually has to enforce that nothing runs without `status: "approved"`.
 
 For the same pattern on a server's crontab, where the card's `idempotency_key` replaces the pending file, see [adding human approval to a cron job](gate-a-cron-job-with-human-approval.md). For everything else on wiring up the three calls, start with the [quickstart](quickstart.md) or browse [integrations](integrations.md).

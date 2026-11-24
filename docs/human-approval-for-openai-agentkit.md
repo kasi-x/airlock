@@ -1,6 +1,6 @@
 # Human Approval for OpenAI AgentKit After Agent Builder
 
-Agent Builder shuts down on November 30, 2026. Export your AgentKit workflow to the Agents SDK and send its tool approvals to a reviewer's Impri inbox.
+Agent Builder shuts down on November 30, 2026. Export your AgentKit workflow to the Agents SDK and send its tool approvals to a reviewer's Airlock inbox.
 
 ---
 
@@ -27,18 +27,18 @@ Who answers is now your code's choice. That matters when:
 - The person in the chat shouldn't approve the action: a customer asking for their own refund, an employee asking for their own access.
 - Nobody is in a chat at all: the agent runs from a queue, a cron job or a webhook.
 
-Then the approval has to reach someone else. Impri puts the pending call in a reviewer's web inbox, notifies them (Slack, Discord, Telegram, ntfy or email, as the project is set up) and returns the decision to your code.
+Then the approval has to reach someone else. Airlock puts the pending call in a reviewer's web inbox, notifies them (Slack, Discord, Telegram, ntfy or email, as the project is set up) and returns the decision to your code.
 
 ## Route each interruption to a reviewer
 
-Each `send_ticket_reply` call becomes an Impri action; the reviewer's decision becomes `approve()` or `reject()` on the run state:
+Each `send_ticket_reply` call becomes an Airlock action; the reviewer's decision becomes `approve()` or `reject()` on the run state:
 
 ```typescript
 import { Agent, run, tool } from "@openai/agents";
-import { ImpriClient, ImpriRejected, ImpriExpired } from "@impri/sdk";
+import { AirlockClient, AirlockRejected, AirlockExpired } from "@airlock/sdk";
 import { z } from "zod";
 
-const impri = new ImpriClient({ apiKey: process.env.IMPRI_API_KEY! });
+const airlock = new AirlockClient({ apiKey: process.env.AIRLOCK_API_KEY! });
 
 const sendReply = tool({
   name: "send_ticket_reply",
@@ -58,8 +58,8 @@ let result = await run(agent, "Ticket 4812: the customer was charged twice for M
 
 while (result.interruptions.length > 0) {
   for (const interruption of result.interruptions) {
-    // One Impri action per pending tool call, shown to the reviewer as-is.
-    const created = await impri.createAction({
+    // One Airlock action per pending tool call, shown to the reviewer as-is.
+    const created = await airlock.createAction({
       kind: `agents_sdk.${interruption.name}`,
       title: `${interruption.agent.name} wants to call ${interruption.name}`,
       preview: { format: "markdown", body: "```json\n" + (interruption.arguments ?? "{}") + "\n```" },
@@ -67,13 +67,13 @@ while (result.interruptions.length > 0) {
     });
 
     try {
-      await impri.awaitDecision(created.id, { timeoutS: 3600 });
+      await airlock.awaitDecision(created.id, { timeoutS: 3600 });
       result.state.approve(interruption);
     } catch (e) {
-      if (e instanceof ImpriRejected || e instanceof ImpriExpired) {
+      if (e instanceof AirlockRejected || e instanceof AirlockExpired) {
         result.state.reject(interruption, { message: "A reviewer did not approve this call." });
       } else {
-        throw e; // ImpriTimeout: still pending in the inbox, decide what to do
+        throw e; // AirlockTimeout: still pending in the inbox, decide what to do
       }
     }
   }
@@ -87,22 +87,22 @@ console.log(result.finalOutput);
 - **`reject()` with a message** tells the model why the call didn't happen.
 - **Leave `editable` off for this pattern.** `state.approve()` runs the tool with the model's original arguments, so an edit made in the inbox would never reach the tool. When the reviewer should be able to change the text, use the gate-inside-the-tool pattern from [human-in-the-loop for the OpenAI Agents SDK](human-in-the-loop-openai-agents-sdk.md), which reads `decision.final_preview`.
 
-`awaitDecision` keeps the process waiting for up to an hour here. For longer reviews, the SDK can save the paused run with `result.state.toString()` and restore it later with `RunState.fromString(agent, saved)`; pass a `callback_url` when you create the action and resume when Impri's [webhook](webhooks.md) arrives.
+`awaitDecision` keeps the process waiting for up to an hour here. For longer reviews, the SDK can save the paused run with `result.state.toString()` and restore it later with `RunState.fromString(agent, saved)`; pass a `callback_url` when you create the action and resume when Airlock's [webhook](webhooks.md) arrives.
 
 ## Guardrails are not approvals
 
 | Need | Where it lives |
 |---|---|
 | Check every input or output automatically | Agents SDK guardrails |
-| A named person says yes to one specific tool call | `needsApproval` + Impri |
-| A record of who approved what, and when | Impri's [audit log](audit-log.md) |
+| A named person says yes to one specific tool call | `needsApproval` + Airlock |
+| A record of who approved what, and when | Airlock's [audit log](audit-log.md) |
 
 Use both: a guardrail stops an obviously bad draft before a reviewer sees it.
 
-## Where Impri stops
+## Where Airlock stops
 
-Impri doesn't run your tools and doesn't know your agent. It stores the proposed call, notifies the reviewer and returns the decision; the Agents SDK runs the tool after `approve()`. The gate only holds if every tool that reaches the helpdesk is marked `needsApproval`: an unmarked tool with the same API key is a way around it.
+Airlock doesn't run your tools and doesn't know your agent. It stores the proposed call, notifies the reviewer and returns the decision; the Agents SDK runs the tool after `approve()`. The gate only holds if every tool that reaches the helpdesk is marked `needsApproval`: an unmarked tool with the same API key is a way around it.
 
 ## Next step
 
-[Start free on Impri cloud](https://app.impri.dev/?signup=1) or [self-host](self-hosting.md) the MIT-licensed core, then follow the [quickstart](quickstart.md) to approve one test action from the inbox before you wire it into the exported workflow. The general three-call pattern is in [how to add human approval to an AI agent](how-to-add-human-approval-to-an-ai-agent.md).
+[Start free on Airlock cloud](https://app.airlock.dev/?signup=1) or [self-host](self-hosting.md) the MIT-licensed core, then follow the [quickstart](quickstart.md) to approve one test action from the inbox before you wire it into the exported workflow. The general three-call pattern is in [how to add human approval to an AI agent](how-to-add-human-approval-to-an-ai-agent.md).

@@ -3,21 +3,21 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Adding Human Approval to CrewAI Agents — Impri Docs</title>
+<title>Adding Human Approval to CrewAI Agents — Airlock Docs</title>
 <meta name="description" content="CrewAI agents call tools on their own to get work done. This guide shows how to put a human approval step in front of any CrewAI tool so it proposes an action…">
 <meta name="theme-color" content="#06070d">
-<meta property="og:title" content="Adding Human Approval to CrewAI Agents — Impri Docs">
+<meta property="og:title" content="Adding Human Approval to CrewAI Agents — Airlock Docs">
 <meta property="og:description" content="CrewAI agents call tools on their own to get work done. This guide shows how to put a human approval step in front of any CrewAI tool so it proposes an action…">
 <meta property="og:type" content="article">
-<meta property="og:url" content="https://impri.dev/docs/human-approval-for-crewai-agents">
-<meta property="og:image" content="https://impri.dev/assets/og/og-docs.png">
+<meta property="og:url" content="https://airlock.dev/docs/human-approval-for-crewai-agents">
+<meta property="og:image" content="https://airlock.dev/assets/og/og-docs.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
-<meta property="og:image:alt" content="Impri — human-in-the-loop approval inbox for AI agents">
+<meta property="og:image:alt" content="Airlock — human-in-the-loop approval inbox for AI agents">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="https://impri.dev/assets/og/og-docs.png">
-<link rel="canonical" href="https://impri.dev/docs/human-approval-for-crewai-agents">
-<script type="application/ld+json">{"@context":"https://schema.org","@type":"TechArticle","headline":"Adding Human Approval to CrewAI Agents","description":"CrewAI agents call tools on their own to get work done. This guide shows how to put a human approval step in front of any CrewAI tool so it proposes an action…","url":"https://impri.dev/docs/human-approval-for-crewai-agents","inLanguage":"en","author":{"@type":"Organization","name":"Impri","url":"https://impri.dev"},"publisher":{"@type":"Organization","name":"Impri","url":"https://impri.dev"}}</script>
+<meta name="twitter:image" content="https://airlock.dev/assets/og/og-docs.png">
+<link rel="canonical" href="https://airlock.dev/docs/human-approval-for-crewai-agents">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"TechArticle","headline":"Adding Human Approval to CrewAI Agents","description":"CrewAI agents call tools on their own to get work done. This guide shows how to put a human approval step in front of any CrewAI tool so it proposes an action…","url":"https://airlock.dev/docs/human-approval-for-crewai-agents","inLanguage":"en","author":{"@type":"Organization","name":"Airlock","url":"https://airlock.dev"},"publisher":{"@type":"Organization","name":"Airlock","url":"https://airlock.dev"}}</script>
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <link rel="icon" href="/favicon.ico" sizes="32x32">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='9' fill='%236366f1'/%3E%3Cpath d='M9 16.5l4.5 4.5L23 11' stroke='white' stroke-width='3' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
@@ -132,13 +132,13 @@ pre code.hljs{display:block;overflow-x:auto}
 <div class="wrap nav-inner">
   <a class="brand" href="/">
     <span class="mark"><svg viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.5 4.5L19 7.5" stroke="white" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
-    Impri
+    Airlock
   </a>
   <div class="nav-links">
     <a class="link" href="/#how">How it works</a>
     <a class="link" href="/#pricing">Pricing</a>
     <a class="link active-nav" href="../docs">Docs</a>
-    <a class="btn btn-primary btn-sm" href="https://gitlab.com/sekera.radim/impri">GitLab</a>
+    <a class="btn btn-primary btn-sm" href="https://gitlab.com/sekera.radim/airlock">GitLab</a>
   </div>
 </div>
 </nav>
@@ -160,13 +160,13 @@ pre code.hljs{display:block;overflow-x:auto}
 <p>Telling the agent &quot;ask me first&quot; in the task description does not hold. The model can reason past it, and a crew running unattended has nobody to ask. What you need is a tool that structurally cannot execute its side effect until a human has said yes.</p>
 <hr>
 <h2 id="wrap-the-tool-not-the-crew">Wrap the tool, not the crew</h2>
-<p>The clean place for the gate is the tool itself. Impri provides the gate: your tool proposes the action, blocks until a human decides, and only then runs. Everything else in the crew stays the same.</p>
-<p>Here is a CrewAI custom tool that sends an email, wrapped so the send is unreachable without an approved Impri decision:</p>
+<p>The clean place for the gate is the tool itself. Airlock provides the gate: your tool proposes the action, blocks until a human decides, and only then runs. Everything else in the crew stays the same.</p>
+<p>Here is a CrewAI custom tool that sends an email, wrapped so the send is unreachable without an approved Airlock decision:</p>
 <div class="code-block"><span class="code-lang">python</span><pre><code class="hljs"><span class="hljs-keyword">import</span> os, time, requests
 <span class="hljs-keyword">from</span> crewai.tools <span class="hljs-keyword">import</span> BaseTool
 
-IMPRI = <span class="hljs-string">&quot;https://api.impri.dev&quot;</span>
-H = {<span class="hljs-string">&quot;Authorization&quot;</span>: <span class="hljs-string">f&quot;Bearer <span class="hljs-subst">{os.environ[<span class="hljs-string">&#x27;IMPRI_API_KEY&#x27;</span>]}</span>&quot;</span>,
+AIRLOCK = <span class="hljs-string">&quot;https://api.airlock.dev&quot;</span>
+H = {<span class="hljs-string">&quot;Authorization&quot;</span>: <span class="hljs-string">f&quot;Bearer <span class="hljs-subst">{os.environ[<span class="hljs-string">&#x27;AIRLOCK_API_KEY&#x27;</span>]}</span>&quot;</span>,
      <span class="hljs-string">&quot;Content-Type&quot;</span>: <span class="hljs-string">&quot;application/json&quot;</span>}
 
 <span class="hljs-keyword">class</span> <span class="hljs-title class_">ApprovedEmailTool</span>(<span class="hljs-title class_ inherited__">BaseTool</span>):
@@ -175,7 +175,7 @@ H = {<span class="hljs-string">&quot;Authorization&quot;</span>: <span class="hl
 
     <span class="hljs-keyword">def</span> <span class="hljs-title function_">_run</span>(<span class="hljs-params">self, to: <span class="hljs-built_in">str</span>, subject: <span class="hljs-built_in">str</span>, body: <span class="hljs-built_in">str</span></span>) -&gt; <span class="hljs-built_in">str</span>:
         <span class="hljs-comment"># 1. Propose the action — nothing is sent yet.</span>
-        action = requests.post(<span class="hljs-string">f&quot;<span class="hljs-subst">{IMPRI}</span>/v1/actions&quot;</span>, headers=H, json={
+        action = requests.post(<span class="hljs-string">f&quot;<span class="hljs-subst">{AIRLOCK}</span>/v1/actions&quot;</span>, headers=H, json={
             <span class="hljs-string">&quot;kind&quot;</span>: <span class="hljs-string">&quot;email.send&quot;</span>,
             <span class="hljs-string">&quot;title&quot;</span>: <span class="hljs-string">f&quot;Email to <span class="hljs-subst">{to}</span>: <span class="hljs-subst">{subject}</span>&quot;</span>,
             <span class="hljs-string">&quot;preview&quot;</span>: {<span class="hljs-string">&quot;format&quot;</span>: <span class="hljs-string">&quot;markdown&quot;</span>, <span class="hljs-string">&quot;body&quot;</span>: body},
@@ -186,7 +186,7 @@ H = {<span class="hljs-string">&quot;Authorization&quot;</span>: <span class="hl
         <span class="hljs-comment"># 2. Poll until a human decides.</span>
         <span class="hljs-keyword">while</span> <span class="hljs-literal">True</span>:
             time.sleep(<span class="hljs-number">10</span>)
-            state = requests.get(<span class="hljs-string">f&quot;<span class="hljs-subst">{IMPRI}</span>/v1/actions/<span class="hljs-subst">{action[<span class="hljs-string">&#x27;id&#x27;</span>]}</span>&quot;</span>, headers=H).json()
+            state = requests.get(<span class="hljs-string">f&quot;<span class="hljs-subst">{AIRLOCK}</span>/v1/actions/<span class="hljs-subst">{action[<span class="hljs-string">&#x27;id&#x27;</span>]}</span>&quot;</span>, headers=H).json()
             <span class="hljs-keyword">if</span> state[<span class="hljs-string">&quot;status&quot;</span>] != <span class="hljs-string">&quot;pending&quot;</span>:
                 <span class="hljs-keyword">break</span>
 
@@ -196,7 +196,7 @@ H = {<span class="hljs-string">&quot;Authorization&quot;</span>: <span class="hl
         <span class="hljs-comment"># 3. Execute with the approved (possibly edited) content.</span>
         final = state[<span class="hljs-string">&quot;decision&quot;</span>][<span class="hljs-string">&quot;final_preview&quot;</span>][<span class="hljs-string">&quot;body&quot;</span>]
         send_via_your_provider(to, subject, final)   <span class="hljs-comment"># your real send</span>
-        requests.post(<span class="hljs-string">f&quot;<span class="hljs-subst">{IMPRI}</span>/v1/actions/<span class="hljs-subst">{action[<span class="hljs-string">&#x27;id&#x27;</span>]}</span>/result&quot;</span>,
+        requests.post(<span class="hljs-string">f&quot;<span class="hljs-subst">{AIRLOCK}</span>/v1/actions/<span class="hljs-subst">{action[<span class="hljs-string">&#x27;id&#x27;</span>]}</span>/result&quot;</span>,
                       headers=H, json={<span class="hljs-string">&quot;status&quot;</span>: <span class="hljs-string">&quot;executed&quot;</span>})
         <span class="hljs-keyword">return</span> <span class="hljs-string">&quot;Sent after human approval.&quot;</span></code></pre></div>
 <p>Give this tool to your agent in place of a raw sender:</p>
@@ -210,7 +210,7 @@ outreach = Agent(
 <p>The agent still decides <em>what</em> to send and <em>when</em> to call the tool. It just cannot complete the send without you.</p>
 <hr>
 <h2 id="why-the-block-belongs-in-the-tool">Why the block belongs in the tool</h2>
-<p>CrewAI&#39;s <code>_run</code> is synchronous, so the polling loop holds the tool call open until the decision arrives. The gate is real because <code>send_via_your_provider(...)</code> is only reachable after <code>status == &quot;approved&quot;</code>. If you leave the raw send available elsewhere in the crew, the agent can route around the gate — Impri is a chokepoint you confine the tool to, not a network-level interceptor of every egress.</p>
+<p>CrewAI&#39;s <code>_run</code> is synchronous, so the polling loop holds the tool call open until the decision arrives. The gate is real because <code>send_via_your_provider(...)</code> is only reachable after <code>status == &quot;approved&quot;</code>. If you leave the raw send available elsewhere in the crew, the agent can route around the gate — Airlock is a chokepoint you confine the tool to, not a network-level interceptor of every egress.</p>
 <p>A few practical notes:</p>
 <ul>
 <li><strong>Edits win.</strong> Send <code>decision.final_preview.body</code>, never the original <code>preview.body</code>. When you mark a field in <code>editable</code>, the human can fix the draft in the inbox and your tool executes their version.</li>
@@ -218,18 +218,18 @@ outreach = Agent(
 <li><strong>Fully unattended crews.</strong> A 10-second poll is fine for a crew you are watching. For one that runs for hours, prefer the <a href="mcp">MCP server</a> or a webhook so you are not holding a thread open the whole time.</li>
 </ul>
 <hr>
-<h2 id="what-impri-does-and-does-not-do">What Impri does and does not do</h2>
-<p>Impri is only the approval gate. It stores the proposed action, notifies you, and holds the decision — it does not run your crew, interpret the email, or send anything itself. That keeps the integration to a single tool wrapper.</p>
-<p>If you need branching, multi-step orchestration, that is CrewAI&#39;s job (or a workflow engine); Impri is one gated step inside it.</p>
+<h2 id="what-airlock-does-and-does-not-do">What Airlock does and does not do</h2>
+<p>Airlock is only the approval gate. It stores the proposed action, notifies you, and holds the decision — it does not run your crew, interpret the email, or send anything itself. That keeps the integration to a single tool wrapper.</p>
+<p>If you need branching, multi-step orchestration, that is CrewAI&#39;s job (or a workflow engine); Airlock is one gated step inside it.</p>
 <hr>
 <h2 id="next-step">Next step</h2>
 <p>Start with the <a href="quickstart">quickstart</a> to get an API key with the <code>actions</code> scope, then read the <a href="how-to-add-human-approval-to-an-ai-agent">human approval pattern</a> for the full propose → approve → execute contract. For a ready-made wrapper and other frameworks, see <a href="integrations">integrations</a>.</p>
 
-    <aside class="doc-cta" aria-label="Try Impri">
+    <aside class="doc-cta" aria-label="Try Airlock">
   <p class="doc-cta-title">Add an approval step to your own agent</p>
-  <p>Start on Impri Cloud: the Free tier includes 100 approvals a month. Or self-host the MIT-licensed core with Docker Compose, with no tier limits.</p>
+  <p>Start on Airlock Cloud: the Free tier includes 100 approvals a month. Or self-host the MIT-licensed core with Docker Compose, with no tier limits.</p>
   <div class="doc-cta-actions">
-    <a class="btn btn-primary btn-sm" href="https://app.impri.dev/?signup=1">Start free on Impri Cloud</a>
+    <a class="btn btn-primary btn-sm" href="https://app.airlock.dev/?signup=1">Start free on Airlock Cloud</a>
     <a class="btn btn-ghost btn-sm" href="../docs/quickstart">Quick start</a>
     <a class="btn btn-ghost btn-sm" href="../docs/self-hosting">Self-host guide</a>
   </div>
@@ -315,7 +315,7 @@ outreach = Agent(
 <ul><li class="ptoc-h2"><a href="#the-problem-with-autonomous-crews">The problem with autonomous crews</a></li>
 <li class="ptoc-h2"><a href="#wrap-the-tool-not-the-crew">Wrap the tool, not the crew</a></li>
 <li class="ptoc-h2"><a href="#why-the-block-belongs-in-the-tool">Why the block belongs in the tool</a></li>
-<li class="ptoc-h2"><a href="#what-impri-does-and-does-not-do">What Impri does and does not do</a></li>
+<li class="ptoc-h2"><a href="#what-airlock-does-and-does-not-do">What Airlock does and does not do</a></li>
 <li class="ptoc-h2"><a href="#next-step">Next step</a></li></ul>
 </nav>
   </aside>
@@ -324,19 +324,19 @@ outreach = Agent(
 <footer class="footer">
 <div class="wrap footer-inner">
   <a class="brand" href="/">
-    <span class="mark"><svg viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.5 4.5L19 7.5" stroke="white" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Impri
+    <span class="mark"><svg viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.5 4.5L19 7.5" stroke="white" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Airlock
   </a>
   <div>
-    <a href="https://gitlab.com/sekera.radim/impri">GitLab</a>
+    <a href="https://gitlab.com/sekera.radim/airlock">GitLab</a>
     <a href="/docs">Docs</a>
-    <a href="https://gitlab.com/sekera.radim/impri/-/blob/main/LICENSE">MIT License</a>
-    <a href="https://www.npmjs.com/package/@impri/mcp">@impri/mcp</a>
+    <a href="https://gitlab.com/sekera.radim/airlock/-/blob/main/LICENSE">MIT License</a>
+    <a href="https://www.npmjs.com/package/@airlock/mcp">@airlock/mcp</a>
     <a href="/docs/privacy">Privacy</a>
     <a href="/docs/terms">Terms</a>
     <a href="https://sekera.dev">Contact</a>
   </div>
 </div>
-<div class="wrap" style="margin-top:18px"><span class="muted">© 2026 Impri · The imprimatur for your AI agents · Built by <a href="https://sekera.dev" style="color:inherit">Radim Sekera</a>. Also by the same maker: <a href="https://briefgate.dev/?utm_source=impri.dev&amp;utm_medium=referral" style="color:inherit">BriefGate</a> — client intake for agencies and AI agents.</span></div>
+<div class="wrap" style="margin-top:18px"><span class="muted">© 2026 Airlock · The airlockmatur for your AI agents · Built by <a href="https://sekera.dev" style="color:inherit">Radim Sekera</a>. Also by the same maker: <a href="https://briefgate.dev/?utm_source=airlock.dev&amp;utm_medium=referral" style="color:inherit">BriefGate</a> — client intake for agencies and AI agents.</span></div>
 </footer>
 </body>
 </html>

@@ -50,14 +50,14 @@ That file is the easy 20%. The Slack interactivity endpoint, the expiry sweep, t
 
 ## What buying gets you on day one
 
-Impri's REST API collapses that entire list into three calls: push the action, poll for a decision, report the result. Expiry, editable drafts with diffs, audit log, and rate limiting are already handled server-side — see the [full integration walkthrough](how-to-add-human-approval-to-an-ai-agent.md) for the exact request shapes.
+Airlock's REST API collapses that entire list into three calls: push the action, poll for a decision, report the result. Expiry, editable drafts with diffs, audit log, and rate limiting are already handled server-side — see the [full integration walkthrough](how-to-add-human-approval-to-an-ai-agent.md) for the exact request shapes.
 
 ```typescript
-import { ImpriClient } from "@impri/sdk";
+import { AirlockClient } from "@airlock/sdk";
 
-const impri = new ImpriClient({ apiKey: process.env.IMPRI_API_KEY });
+const airlock = new AirlockClient({ apiKey: process.env.AIRLOCK_API_KEY });
 
-const created = await impri.createAction({
+const created = await airlock.createAction({
   kind: "email.send",
   title: "Weekly digest to enterprise-tier customers",
   preview: { format: "markdown", body: draftBody },
@@ -65,10 +65,10 @@ const created = await impri.createAction({
   expires_in: 86_400,
 });
 
-const action = await impri.awaitDecision(created.id, { timeoutS: 3600 });
+const action = await airlock.awaitDecision(created.id, { timeoutS: 3600 });
 if (action.status === "approved") {
   await sendEmail(action.decision!.final_preview!.body); // human-edited version, not the original
-  await impri.reportResult(created.id, "executed");
+  await airlock.reportResult(created.id, "executed");
 }
 ```
 
@@ -76,10 +76,10 @@ Same guarantees as the schema above, minus the six weeks and the on-call rotatio
 
 ## When building actually makes sense
 
-Buying isn't universally right. If approvals are core to your product — you're building a moderation platform, not using one — owning that logic is the point, not overhead. If you need branching, multi-step orchestration, or agent-to-agent handoffs, that's a workflow engine's job (n8n, Temporal, Inngest), not an approval queue's; Impri is deliberately narrow and can sit as one step inside a broader workflow rather than replace it. And if compliance requires the data to never leave your infrastructure, the [self-hosted option](self-hosting.md) keeps the build-vs-buy calculus but skips the "who's on call for this" part.
+Buying isn't universally right. If approvals are core to your product — you're building a moderation platform, not using one — owning that logic is the point, not overhead. If you need branching, multi-step orchestration, or agent-to-agent handoffs, that's a workflow engine's job (n8n, Temporal, Inngest), not an approval queue's; Airlock is deliberately narrow and can sit as one step inside a broader workflow rather than replace it. And if compliance requires the data to never leave your infrastructure, the [self-hosted option](self-hosting.md) keeps the build-vs-buy calculus but skips the "who's on call for this" part.
 
 ## The honest boundary
 
-Impri stores the proposed action, notifies a human, and holds the decision — it doesn't generate content or execute anything itself. Wiring the actual send/post/publish call, and making sure the agent has no path around the gate, is still your integration work either way. Buying removes the queue infrastructure, not the responsibility for the chokepoint.
+Airlock stores the proposed action, notifies a human, and holds the decision — it doesn't generate content or execute anything itself. Wiring the actual send/post/publish call, and making sure the agent has no path around the gate, is still your integration work either way. Buying removes the queue infrastructure, not the responsibility for the chokepoint.
 
 **Next step:** [quickstart](quickstart.md) to get an API key and push your first action in under five minutes.

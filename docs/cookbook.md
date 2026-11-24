@@ -2,7 +2,7 @@
 
 Concrete patterns for common approval scenarios. Each recipe shows the full loop: create → await → execute → report. The Python examples use `asyncio`; drop the `await` and use the sync variants when the SDK ships a synchronous client.
 
-> Examples assume the SDK is installed from `sdk/python/` or `sdk/typescript/`. Set `IMPRI_API_KEY` and optionally `IMPRI_BASE_URL` in the environment before running.
+> Examples assume the SDK is installed from `sdk/python/` or `sdk/typescript/`. Set `AIRLOCK_API_KEY` and optionally `AIRLOCK_BASE_URL` in the environment before running.
 
 ---
 
@@ -11,9 +11,9 @@ Concrete patterns for common approval scenarios. Each recipe shows the full loop
 The most common use case. The agent drafts an email and waits for a human to approve (and optionally edit) the copy before it is sent.
 
 ```python
-from impri import ImpriClient, ImpriRejected
+from airlock import AirlockClient, AirlockRejected
 
-client = ImpriClient()  # reads IMPRI_API_KEY from env
+client = AirlockClient()  # reads AIRLOCK_API_KEY from env
 
 async def send_approved_email(to: str, subject: str, body: str) -> None:
     action = await client.create_action(
@@ -27,7 +27,7 @@ async def send_approved_email(to: str, subject: str, body: str) -> None:
 
     try:
         decided = await client.await_decision(action.id, timeout_s=600)
-    except ImpriRejected:
+    except AirlockRejected:
         print("Human rejected — no email sent.")
         return
 
@@ -90,7 +90,7 @@ async def post_to_reddit(subreddit: str, title: str, body: str) -> None:
 
     try:
         decided = await client.await_decision(action.id, timeout_s=3600)
-    except ImpriRejected as e:
+    except AirlockRejected as e:
         return  # human vetoed; do not post
 
     # Parse title and body back out of the approved preview
@@ -106,12 +106,12 @@ async def post_to_reddit(subreddit: str, title: str, body: str) -> None:
 An agent proposes a shell command or Python snippet. A human reviews and optionally rewrites it before it runs.
 
 ```typescript
-import { ImpriClient, ImpriRejected } from '@impri/sdk'
+import { AirlockClient, AirlockRejected } from '@airlock/sdk'
 import { exec } from 'node:child_process'
 import { promisify } from 'node:util'
 
 const run = promisify(exec)
-const client = new ImpriClient()
+const client = new AirlockClient()
 
 async function runApprovedCommand(command: string): Promise<string> {
   const { actionId, decision, finalPreview } = await client.approvalGate({
@@ -122,7 +122,7 @@ async function runApprovedCommand(command: string): Promise<string> {
     timeoutS: 300,
   })
 
-  // ImpriRejected is thrown above if human rejected; this line is reached only on approve
+  // AirlockRejected is thrown above if human rejected; this line is reached only on approve
   try {
     const { stdout } = await run(finalPreview.body)
     await client.reportResult(actionId, 'executed', { detail: stdout.slice(0, 200) })
@@ -174,10 +174,10 @@ async def setup_monitoring() -> None:
     watcher = await client.create_watcher(
         name="Brand mentions — r/selfhosted",
         kind="reddit_search",
-        config={"query": "impri OR impri.dev", "subreddit": "selfhosted"},
+        config={"query": "airlock OR airlock.dev", "subreddit": "selfhosted"},
         schedule={"every": "1h", "window": "08:00-22:00"},
         keywords=[
-            {"pattern": "impri", "points": 10},
+            {"pattern": "airlock", "points": 10},
             {"pattern": "self-host", "points": 3},
         ],
         keywords_none=["[deleted]"],
@@ -227,7 +227,7 @@ async def deploy_pipeline(run_id: str) -> None:
 
         try:
             decided = await client.await_decision(action_id, timeout_s=900)
-        except ImpriRejected:
+        except AirlockRejected:
             print(f"Step {i+1} rejected — pipeline halted.")
             return
 
@@ -247,24 +247,24 @@ A minimal Express receiver that verifies signatures and enqueues approved action
 
 ```typescript
 import express from 'express'
-import { verifyWebhook, ImpriWebhookSignatureError } from '@impri/sdk'
+import { verifyWebhook, AirlockWebhookSignatureError } from '@airlock/sdk'
 
 const app = express()
 
 app.post(
-  '/impri/webhook',
+  '/airlock/webhook',
   express.raw({ type: 'application/json' }),
   async (req, res) => {
     try {
       verifyWebhook(
         req.body,
-        process.env.IMPRI_WEBHOOK_SECRET!,
-        req.headers['x-impri-timestamp'] as string,
-        req.headers['x-impri-nonce'] as string,
-        req.headers['x-impri-signature'] as string,
+        process.env.AIRLOCK_WEBHOOK_SECRET!,
+        req.headers['x-airlock-timestamp'] as string,
+        req.headers['x-airlock-nonce'] as string,
+        req.headers['x-airlock-signature'] as string,
       )
     } catch (e) {
-      if (e instanceof ImpriWebhookSignatureError) {
+      if (e instanceof AirlockWebhookSignatureError) {
         return res.status(400).json({ error: 'bad signature' })
       }
       throw e
@@ -278,7 +278,7 @@ app.post(
         body: event.final_preview?.body,
       })
     }
-    // Anything except 2xx will trigger a retry from Impri.
+    // Anything except 2xx will trigger a retry from Airlock.
     // Return 410 Gone to permanently deregister this callback URL.
     res.status(200).end()
   }
@@ -313,13 +313,13 @@ Use `decide()` with `verdict="reject"` — do not call the server's `expires_at`
 Create the new key, update your agent's environment, then revoke the old one:
 
 ```python
-admin = ImpriClient(api_key=old_admin_key)
+admin = AirlockClient(api_key=old_admin_key)
 
 # 1. Create the replacement
 new = await admin.create_key(name="agent-v2", scopes=["actions"])
 print(new.key)  # store this immediately — returned once
 
-# 2. Rotate in your deployment (set IMPRI_API_KEY=new.key), then revoke old
+# 2. Rotate in your deployment (set AIRLOCK_API_KEY=new.key), then revoke old
 keys = await admin.list_keys()
 for k in keys:
     if k.name == "agent-v1" and not k.revoked:
@@ -327,7 +327,7 @@ for k in keys:
         print(f"Revoked {k.prefix}")
 ```
 
-Never commit the key value to version control. Store it in a secrets manager (Vault, AWS Secrets Manager, Doppler, etc.) and read it at runtime from `IMPRI_API_KEY`.
+Never commit the key value to version control. Store it in a secrets manager (Vault, AWS Secrets Manager, Doppler, etc.) and read it at runtime from `AIRLOCK_API_KEY`.
 
 ---
 

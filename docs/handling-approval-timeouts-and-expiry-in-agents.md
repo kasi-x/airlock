@@ -8,8 +8,8 @@ Two clocks run against every pending approval — your poll loop's own timeout a
 
 When an agent asks a human to approve something, there are two independent deadlines in play:
 
-1. **The poll timeout** — how long *your code* is willing to keep checking `GET /v1/actions/:id` (or block on `impri_await_decision`) before giving up and moving on to other work.
-2. **The action's expiry** — `expires_in` on the action itself, tracked by Impri. Once this passes, the status flips to `expired` server-side and the action can no longer be approved, no matter who checks it or when.
+1. **The poll timeout** — how long *your code* is willing to keep checking `GET /v1/actions/:id` (or block on `airlock_await_decision`) before giving up and moving on to other work.
+2. **The action's expiry** — `expires_in` on the action itself, tracked by Airlock. Once this passes, the status flips to `expired` server-side and the action can no longer be approved, no matter who checks it or when.
 
 These are not the same thing, and treating them as interchangeable causes two distinct bugs: an agent that stops polling too early and misses a decision made five minutes later, or an agent that keeps a long-running process alive for days waiting on an action that expired hours ago.
 
@@ -17,18 +17,18 @@ These are not the same thing, and treating them as interchangeable causes two di
 
 ## Timeout 1: your poll loop giving up
 
-Your poll loop timeout should usually be *shorter* than `expires_in`, not equal to it. If the agent is a long-running background worker, it can afford to poll for the full expiry window. If it's a short-lived script (a CI job, a serverless function), it should poll for as long as it can afford to run, then exit and let a separate process pick the decision back up later via `GET /v1/actions/:id` — the action is still `pending` in Impri regardless of whether your script is watching it.
+Your poll loop timeout should usually be *shorter* than `expires_in`, not equal to it. If the agent is a long-running background worker, it can afford to poll for the full expiry window. If it's a short-lived script (a CI job, a serverless function), it should poll for as long as it can afford to run, then exit and let a separate process pick the decision back up later via `GET /v1/actions/:id` — the action is still `pending` in Airlock regardless of whether your script is watching it.
 
 ```python
 import time
 import requests
 
-BASE = "https://api.impri.dev"
-HEADERS = {"Authorization": f"Bearer {IMPRI_API_KEY}"}
+BASE = "https://api.airlock.dev"
+HEADERS = {"Authorization": f"Bearer {AIRLOCK_API_KEY}"}
 
 def poll_for_decision(action_id: str, poll_timeout_s: int = 240, interval_s: int = 10):
     """Polls up to poll_timeout_s, but the action itself may still be
-    pending in Impri after this function gives up — that's expected."""
+    pending in Airlock after this function gives up — that's expected."""
     deadline = time.monotonic() + poll_timeout_s
     while time.monotonic() < deadline:
         resp = requests.get(f"{BASE}/v1/actions/{action_id}", headers=HEADERS)
@@ -45,7 +45,7 @@ If `poll_for_decision` returns `None`, that is not a rejection. It just means th
 
 ## Timeout 2: the action itself expiring
 
-`expires_in` is set once, at creation, and is enforced by Impri regardless of what your agent does afterward. It accepts a minimum of 300 seconds and a maximum of 2,592,000 (30 days), defaulting to 259,200 (72 hours). Once the deadline passes, `GET /v1/actions/:id` returns `status: "expired"` permanently — there is no way to re-open it.
+`expires_in` is set once, at creation, and is enforced by Airlock regardless of what your agent does afterward. It accepts a minimum of 300 seconds and a maximum of 2,592,000 (30 days), defaulting to 259,200 (72 hours). Once the deadline passes, `GET /v1/actions/:id` returns `status: "expired"` permanently — there is no way to re-open it.
 
 Treat `expired` exactly like `rejected` in your execution branch: never run the side effect.
 

@@ -1,4 +1,4 @@
-import { type ImpriConfig } from "./client.js";
+import { type AirlockConfig } from "./client.js";
 import {
   awaitDecision,
   createWatcher,
@@ -40,19 +40,19 @@ function toCallResult(result: ToolResult): ToolCallResult {
 }
 
 /**
- * Executes one of the 8 Impri tools given raw JSON-RPC-style arguments.
+ * Executes one of the 8 Airlock tools given raw JSON-RPC-style arguments.
  * Shared by the stdio server (mcp/src/index.ts) and the hosted streamable-HTTP
  * endpoint (server/src/routes/mcp.ts) so the name → typed-args → REST-call
  * mapping exists exactly once regardless of transport.
  */
 export async function callTool(
-  config: ImpriConfig,
+  config: AirlockConfig,
   name: string,
   args: Record<string, unknown>,
 ): Promise<ToolCallResult> {
   try {
     switch (name) {
-      case "impri_push_action": {
+      case "airlock_push_action": {
         const result = await pushAction(config, {
           kind: args["kind"] as string,
           title: args["title"] as string,
@@ -66,7 +66,7 @@ export async function callTool(
         return toCallResult(result);
       }
 
-      case "impri_await_decision": {
+      case "airlock_await_decision": {
         const result = await awaitDecision(config, {
           action_id: args["action_id"] as string,
           timeout_s: args["timeout_s"] as number | undefined,
@@ -74,7 +74,7 @@ export async function callTool(
         return toCallResult(result);
       }
 
-      case "impri_report_result": {
+      case "airlock_report_result": {
         const result = await reportResult(config, {
           action_id: args["action_id"] as string,
           status: args["status"] as "executed" | "execute_failed",
@@ -83,27 +83,27 @@ export async function callTool(
         return toCallResult(result);
       }
 
-      case "impri_inbox_status": {
+      case "airlock_inbox_status": {
         const result = await inboxStatus(config);
         return toCallResult(result);
       }
 
-      case "impri_create_watcher": {
+      case "airlock_create_watcher": {
         const result = await createWatcher(config, { spec: args["spec"] });
         return toCallResult(result);
       }
 
-      case "impri_list_watchers": {
+      case "airlock_list_watchers": {
         const result = await listWatchers(config, { status: args["status"] as string | undefined });
         return toCallResult(result);
       }
 
-      case "impri_list_watcher_presets": {
+      case "airlock_list_watcher_presets": {
         const result = await listWatcherPresets(config);
         return toCallResult(result);
       }
 
-      case "impri_create_watcher_from_preset": {
+      case "airlock_create_watcher_from_preset": {
         const result = await createWatcherFromPreset(config, {
           preset_id: args["preset_id"] as string,
           params: (args["params"] ?? {}) as Record<string, string>,

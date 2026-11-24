@@ -1,6 +1,6 @@
 # TypeScript SDK
 
-> **Status — v0.1, pre-release.** The SDK lives at `sdk/typescript/` in this repository. It is not yet published to npm. Install it from the local source while the package matures. The REST API it wraps is stable and works the same against the hosted cloud (`api.impri.dev`, early beta) or a self-hosted instance.
+> **Status — v0.1, pre-release.** The SDK lives at `sdk/typescript/` in this repository. It is not yet published to npm. Install it from the local source while the package matures. The REST API it wraps is stable and works the same against the hosted cloud (`api.airlock.dev`, early beta) or a self-hosted instance.
 
 ```bash
 # From the repo root
@@ -15,24 +15,24 @@ Requires **Node 18+** (uses native `fetch`). No runtime dependencies beyond the 
 ## Setup
 
 ```typescript
-import { ImpriClient } from '@impri/sdk'
+import { AirlockClient } from '@airlock/sdk'
 
-const client = new ImpriClient({
-  apiKey: 'im_...',                    // or set IMPRI_API_KEY env var
-  baseUrl: 'http://localhost:8484',    // or set IMPRI_BASE_URL; default is localhost:8484
+const client = new AirlockClient({
+  apiKey: 'im_...',                    // or set AIRLOCK_API_KEY env var
+  baseUrl: 'http://localhost:8484',    // or set AIRLOCK_BASE_URL; default is localhost:8484
 })
 
 // Cloud:
-// const client = new ImpriClient({ apiKey: 'im_...', baseUrl: 'https://api.impri.dev' })
+// const client = new AirlockClient({ apiKey: 'im_...', baseUrl: 'https://api.airlock.dev' })
 ```
 
-The constructor throws `ImpriConfigError` if neither `apiKey` nor `IMPRI_API_KEY` is set. `baseUrl` defaults to `http://localhost:8484` (self-hosted). Trailing slashes are stripped internally. The client appends `/v1` before every path; callers never include it.
+The constructor throws `AirlockConfigError` if neither `apiKey` nor `AIRLOCK_API_KEY` is set. `baseUrl` defaults to `http://localhost:8484` (self-hosted). Trailing slashes are stripped internally. The client appends `/v1` before every path; callers never include it.
 
 ---
 
 ## Types
 
-All types are exported from `@impri/sdk`:
+All types are exported from `@airlock/sdk`:
 
 ```typescript
 import type {
@@ -54,7 +54,7 @@ import type {
   Project,
   CreateActionParams,
   ApprovedAction,
-} from '@impri/sdk'
+} from '@airlock/sdk'
 ```
 
 Key types:
@@ -132,7 +132,7 @@ if (action.decision) {
 }
 ```
 
-Throws `ImpriNotFound` (404) if unknown or belonging to a different project.
+Throws `AirlockNotFound` (404) if unknown or belonging to a different project.
 
 ### `listActions`
 
@@ -169,7 +169,7 @@ Rate-limited to **300 GET/min per key**.
 Push an action and block until decided:
 
 ```typescript
-import { ImpriRejected, ImpriExpired, ImpriTimeout } from '@impri/sdk'
+import { AirlockRejected, AirlockExpired, AirlockTimeout } from '@airlock/sdk'
 
 const created = await client.createAction({
   kind: 'db.exec',
@@ -180,20 +180,20 @@ const created = await client.createAction({
 
 try {
   const action = await client.awaitDecision(created.id, {
-    timeoutS: 300,          // throw ImpriTimeout after this; action stays pending server-side
+    timeoutS: 300,          // throw AirlockTimeout after this; action stays pending server-side
     pollIntervalS: 5,       // minimum recommended is 5 s
   })
   // action.status === 'approved'
   const sqlToRun = action.decision!.final_preview!.body
 
 } catch (e) {
-  if (e instanceof ImpriRejected) {
+  if (e instanceof AirlockRejected) {
     // Human said no — normal flow, not an error.
     // e.actionId, e.decision, e.finalPreview
     console.log('Rejected.')
-  } else if (e instanceof ImpriExpired) {
+  } else if (e instanceof AirlockExpired) {
     console.log('Approval window closed.')
-  } else if (e instanceof ImpriTimeout) {
+  } else if (e instanceof AirlockTimeout) {
     // timeout elapsed; action is still pending server-side
     console.log('Timed out.')
   } else {
@@ -215,7 +215,7 @@ const result = await client.decide('act_abc123', 'approve', {
 })
 ```
 
-Throws `ImpriConflict` (409) if already decided or two writers race. Only call on pending actions.
+Throws `AirlockConflict` (409) if already decided or two writers race. Only call on pending actions.
 
 ### `bulkDecide`
 
@@ -251,7 +251,7 @@ try {
 }
 ```
 
-Throws `ImpriConflict` (409) if the action is not in `approved` state.
+Throws `AirlockConflict` (409) if the action is not in `approved` state.
 
 ---
 
@@ -259,7 +259,7 @@ Throws `ImpriConflict` (409) if the action is not in `approved` state.
 
 ### `client.requiresApproval` higher-order wrapper
 
-Wraps an async function so every call is gated through an Impri approval. On rejection it throws `ImpriRejected` without calling the underlying function.
+Wraps an async function so every call is gated through an Airlock approval. On rejection it throws `AirlockRejected` without calling the underlying function.
 
 ```typescript
 async function sendEmail(to: string, body: string): Promise<void> {
@@ -294,7 +294,7 @@ const { actionId, decision, finalPreview } = await client.approvalGate({
   timeoutS: 120,
 })
 
-// On rejection approvalGate throws ImpriRejected automatically.
+// On rejection approvalGate throws AirlockRejected automatically.
 
 try {
   await db.execute(finalPreview.body)
@@ -317,12 +317,12 @@ Monitor external sources and deliver matching items as actions with `is_untruste
 
 ```typescript
 const watcher = await client.createWatcher({
-  name: 'Impri mentions on Reddit',
+  name: 'Airlock mentions on Reddit',
   kind: 'reddit_search',
-  config: { query: 'impri approval', subreddit: 'selfhosted' },
+  config: { query: 'airlock approval', subreddit: 'selfhosted' },
   schedule: { every: '1h', window: '08:00-22:00' },
   keywords: [
-    { pattern: 'impri', points: 10 },
+    { pattern: 'airlock', points: 10 },
     { pattern: 'human-in-the-loop', points: 5 },
   ],
   keywords_none: ['spam', 'advertisement'],
@@ -407,7 +407,7 @@ const reddit = await client.createWatcherFromPreset(
 )
 ```
 
-Applies all standard guards: rate limit, tier watcher-count quota, SSRF validation, minimum schedule interval. Throws `ImpriQuotaExceeded` (402) when a tier limit would be breached.
+Applies all standard guards: rate limit, tier watcher-count quota, SSRF validation, minimum schedule interval. Throws `AirlockQuotaExceeded` (402) when a tier limit would be breached.
 
 ---
 
@@ -529,19 +529,19 @@ Audit filter params: `type` (exact event name or dot-prefix), `actor` (key ID), 
 ## Webhook verification
 
 ```typescript
-import { verifyWebhook, ImpriWebhookSignatureError } from '@impri/sdk'
+import { verifyWebhook, AirlockWebhookSignatureError } from '@airlock/sdk'
 
 app.post('/webhook', async (req, res) => {
   try {
     verifyWebhook(
       req.rawBody,                          // Buffer | string
       project.webhook_secret!,
-      req.headers['x-impri-timestamp'] as string,
-      req.headers['x-impri-nonce'] as string,
-      req.headers['x-impri-signature'] as string,
+      req.headers['x-airlock-timestamp'] as string,
+      req.headers['x-airlock-nonce'] as string,
+      req.headers['x-airlock-signature'] as string,
     )
   } catch (e) {
-    if (e instanceof ImpriWebhookSignatureError) return res.status(400).end()
+    if (e instanceof AirlockWebhookSignatureError) return res.status(400).end()
     throw e
   }
 
@@ -560,32 +560,32 @@ app.post('/webhook', async (req, res) => {
 
 ## Error handling
 
-All typed exceptions extend `ImpriError extends Error`. Errors from an API response carry `statusCode: number | undefined` and `responseBody: unknown`; `ImpriConfigError` and `ImpriWebhookSignatureError` are raised locally and carry neither.
+All typed exceptions extend `AirlockError extends Error`. Errors from an API response carry `statusCode: number | undefined` and `responseBody: unknown`; `AirlockConfigError` and `AirlockWebhookSignatureError` are raised locally and carry neither.
 
 ```typescript
 import {
-  ImpriError,
-  ImpriConfigError,       // missing apiKey at construction
-  ImpriUnauthorized,      // 401 / 403 — wrong key or missing scope
-  ImpriNotFound,          // 404
-  ImpriConflict,          // 409 — already decided; idempotency race
-  ImpriExpired,           // 410 — approval window closed
-  ImpriRateLimited,       // 429 — rate limit; check .retryAfter (seconds)
-  ImpriQuotaExceeded,     // 402 — monthly quota; .limit, .tier
-  ImpriRejected,          // not HTTP — thrown by awaitDecision on rejection
-  ImpriTimeout,           // not HTTP — thrown by awaitDecision on timeout
-  ImpriValidationError,   // 400 / 422 — schema error; .issues[]
-  ImpriApiError,          // catch-all for other 4xx / 5xx
-  ImpriWebhookSignatureError,
-} from '@impri/sdk'
+  AirlockError,
+  AirlockConfigError,       // missing apiKey at construction
+  AirlockUnauthorized,      // 401 / 403 — wrong key or missing scope
+  AirlockNotFound,          // 404
+  AirlockConflict,          // 409 — already decided; idempotency race
+  AirlockExpired,           // 410 — approval window closed
+  AirlockRateLimited,       // 429 — rate limit; check .retryAfter (seconds)
+  AirlockQuotaExceeded,     // 402 — monthly quota; .limit, .tier
+  AirlockRejected,          // not HTTP — thrown by awaitDecision on rejection
+  AirlockTimeout,           // not HTTP — thrown by awaitDecision on timeout
+  AirlockValidationError,   // 400 / 422 — schema error; .issues[]
+  AirlockApiError,          // catch-all for other 4xx / 5xx
+  AirlockWebhookSignatureError,
+} from '@airlock/sdk'
 
 try {
   await client.createAction(...)
 } catch (e) {
-  if (e instanceof ImpriRateLimited) {
+  if (e instanceof AirlockRateLimited) {
     await sleep((e.retryAfter ?? 1) * 1000)
     // retry
-  } else if (e instanceof ImpriRejected) {
+  } else if (e instanceof AirlockRejected) {
     // Normal outcome — handle, do not re-throw as an error.
   } else {
     throw e
@@ -593,7 +593,7 @@ try {
 }
 ```
 
-`ImpriRejected` is not an error to log — it is a valid human outcome and the core value of Impri.
+`AirlockRejected` is not an error to log — it is a valid human outcome and the core value of Airlock.
 
 ---
 

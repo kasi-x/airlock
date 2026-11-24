@@ -6,9 +6,9 @@ services:
     ports:
       - "8484:8484"
     volumes:
-      - impri-data:/app/data
+      - airlock-data:/app/data
     environment:
-      DB_PATH: /app/data/impri.db
+      DB_PATH: /app/data/airlock.db
       PORT: "8484"
       HOST: "0.0.0.0"
       BASE_URL: "http://localhost:8080"
@@ -45,4 +45,4 @@ services:
     restart: unless-stopped
 
 volumes:
-  impri-data:
+  airlock-data:

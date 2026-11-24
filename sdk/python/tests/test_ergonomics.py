@@ -5,7 +5,7 @@ import unittest
 import warnings
 from unittest.mock import patch
 
-from impri import ImpriClient, ImpriRejected, ImpriTimeout, ImpriExpired
+from airlock import AirlockClient, AirlockRejected, AirlockTimeout, AirlockExpired
 from .mock_transport import MockTransport
 
 API_KEY = "im_testkey123"
@@ -13,7 +13,7 @@ API_KEY = "im_testkey123"
 
 def make_client(*responses):
     transport = MockTransport(list(responses))
-    return ImpriClient(api_key=API_KEY, _transport=transport), transport
+    return AirlockClient(api_key=API_KEY, _transport=transport), transport
 
 
 ACTION_CREATED = {
@@ -105,7 +105,7 @@ class TestRequiresApproval(unittest.TestCase):
         def my_func():
             calls.append(True)
 
-        with self.assertRaises(ImpriRejected):
+        with self.assertRaises(AirlockRejected):
             my_func()
         self.assertEqual(len(calls), 0)
 
@@ -259,7 +259,7 @@ class TestApprovalGate(unittest.TestCase):
             (200, ACTION_REJECTED),
             # No report_result expected — rejected means we never yielded
         )
-        with self.assertRaises(ImpriRejected):
+        with self.assertRaises(AirlockRejected):
             with client.approval_gate(
                 kind="k", title="t", preview={"format": "plain", "body": ""}
             ) as _:
@@ -314,40 +314,40 @@ class TestApprovalGate(unittest.TestCase):
 class TestConfigErrors(unittest.TestCase):
 
     def test_raises_config_error_when_no_api_key(self):
-        from impri import ImpriConfigError
+        from airlock import AirlockConfigError
         import os
-        env_backup = os.environ.pop("IMPRI_API_KEY", None)
+        env_backup = os.environ.pop("AIRLOCK_API_KEY", None)
         try:
-            with self.assertRaises(ImpriConfigError):
-                ImpriClient()
+            with self.assertRaises(AirlockConfigError):
+                AirlockClient()
         finally:
             if env_backup is not None:
-                os.environ["IMPRI_API_KEY"] = env_backup
+                os.environ["AIRLOCK_API_KEY"] = env_backup
 
     def test_reads_api_key_from_environment(self):
         import os
-        os.environ["IMPRI_API_KEY"] = "im_from_env"
+        os.environ["AIRLOCK_API_KEY"] = "im_from_env"
         try:
-            client = ImpriClient()
+            client = AirlockClient()
             self.assertEqual(client._api_key, "im_from_env")
         finally:
-            del os.environ["IMPRI_API_KEY"]
+            del os.environ["AIRLOCK_API_KEY"]
 
     def test_base_url_arg_takes_precedence_over_env(self):
         import os
-        os.environ["IMPRI_BASE_URL"] = "https://api.impri.dev"
+        os.environ["AIRLOCK_BASE_URL"] = "https://api.airlock.dev"
         try:
-            client = ImpriClient(api_key="im_k", base_url="https://custom.example.com")
+            client = AirlockClient(api_key="im_k", base_url="https://custom.example.com")
             self.assertEqual(client._base_url, "https://custom.example.com")
         finally:
-            del os.environ["IMPRI_BASE_URL"]
+            del os.environ["AIRLOCK_BASE_URL"]
 
     def test_trailing_slash_stripped_from_base_url(self):
-        client = ImpriClient(api_key="im_k", base_url="https://api.impri.dev/")
-        self.assertEqual(client._base_url, "https://api.impri.dev")
+        client = AirlockClient(api_key="im_k", base_url="https://api.airlock.dev/")
+        self.assertEqual(client._base_url, "https://api.airlock.dev")
 
     def test_default_base_url_is_localhost(self):
         import os
-        os.environ.pop("IMPRI_BASE_URL", None)
-        client = ImpriClient(api_key="im_k")
+        os.environ.pop("AIRLOCK_BASE_URL", None)
+        client = AirlockClient(api_key="im_k")
         self.assertEqual(client._base_url, "http://localhost:8484")

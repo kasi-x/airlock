@@ -3,21 +3,21 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Human Approval Before an AI Agent Automates Your Browser — Impri Docs</title>
+<title>Human Approval Before an AI Agent Automates Your Browser — Airlock Docs</title>
 <meta name="description" content="A browser-automation agent that can click, type, and submit needs a human checkpoint before the irreversible click — here's how to wire that gate into a…">
 <meta name="theme-color" content="#06070d">
-<meta property="og:title" content="Human Approval Before an AI Agent Automates Your Browser — Impri Docs">
+<meta property="og:title" content="Human Approval Before an AI Agent Automates Your Browser — Airlock Docs">
 <meta property="og:description" content="A browser-automation agent that can click, type, and submit needs a human checkpoint before the irreversible click — here's how to wire that gate into a…">
 <meta property="og:type" content="article">
-<meta property="og:url" content="https://impri.dev/docs/human-approval-for-ai-agent-browser-automation">
-<meta property="og:image" content="https://impri.dev/assets/og/og-docs.png">
+<meta property="og:url" content="https://airlock.dev/docs/human-approval-for-ai-agent-browser-automation">
+<meta property="og:image" content="https://airlock.dev/assets/og/og-docs.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
-<meta property="og:image:alt" content="Impri — human-in-the-loop approval inbox for AI agents">
+<meta property="og:image:alt" content="Airlock — human-in-the-loop approval inbox for AI agents">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="https://impri.dev/assets/og/og-docs.png">
-<link rel="canonical" href="https://impri.dev/docs/human-approval-for-ai-agent-browser-automation">
-<script type="application/ld+json">{"@context":"https://schema.org","@type":"TechArticle","headline":"Human Approval Before an AI Agent Automates Your Browser","description":"A browser-automation agent that can click, type, and submit needs a human checkpoint before the irreversible click — here's how to wire that gate into a…","url":"https://impri.dev/docs/human-approval-for-ai-agent-browser-automation","inLanguage":"en","author":{"@type":"Organization","name":"Impri","url":"https://impri.dev"},"publisher":{"@type":"Organization","name":"Impri","url":"https://impri.dev"}}</script>
+<meta name="twitter:image" content="https://airlock.dev/assets/og/og-docs.png">
+<link rel="canonical" href="https://airlock.dev/docs/human-approval-for-ai-agent-browser-automation">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"TechArticle","headline":"Human Approval Before an AI Agent Automates Your Browser","description":"A browser-automation agent that can click, type, and submit needs a human checkpoint before the irreversible click — here's how to wire that gate into a…","url":"https://airlock.dev/docs/human-approval-for-ai-agent-browser-automation","inLanguage":"en","author":{"@type":"Organization","name":"Airlock","url":"https://airlock.dev"},"publisher":{"@type":"Organization","name":"Airlock","url":"https://airlock.dev"}}</script>
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <link rel="icon" href="/favicon.ico" sizes="32x32">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='9' fill='%236366f1'/%3E%3Cpath d='M9 16.5l4.5 4.5L23 11' stroke='white' stroke-width='3' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
@@ -132,13 +132,13 @@ pre code.hljs{display:block;overflow-x:auto}
 <div class="wrap nav-inner">
   <a class="brand" href="/">
     <span class="mark"><svg viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.5 4.5L19 7.5" stroke="white" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
-    Impri
+    Airlock
   </a>
   <div class="nav-links">
     <a class="link" href="/#how">How it works</a>
     <a class="link" href="/#pricing">Pricing</a>
     <a class="link active-nav" href="../docs">Docs</a>
-    <a class="btn btn-primary btn-sm" href="https://gitlab.com/sekera.radim/impri">GitLab</a>
+    <a class="btn btn-primary btn-sm" href="https://gitlab.com/sekera.radim/airlock">GitLab</a>
   </div>
 </div>
 </nav>
@@ -159,17 +159,17 @@ pre code.hljs{display:block;overflow-x:auto}
 <p>Most &quot;agent needs approval&quot; guides assume the risky step is an API call: send an email, hit an endpoint, post a comment. A browser-automation agent (Playwright, Puppeteer, a computer-use loop driving a real Chrome instance) is different in one important way — the dangerous action isn&#39;t a request your code makes, it&#39;s a DOM interaction your code triggers: <code>page.click(&quot;#submit-payment&quot;)</code>, <code>page.fill(&quot;#wire-amount&quot;, &quot;50000&quot;)</code>. There&#39;s no API response to inspect after the fact. Once the click fires, the page has already done whatever the click does.</p>
 <p>That means the gate has to sit <em>before</em> the interaction that matters, not around it. The agent proposes the exact action (&quot;submit this checkout form with these values&quot;), a human looks at a rendered preview of what&#39;s about to happen, and only an explicit approval unlocks the line of code that calls <code>.click()</code> or <code>.fill()</code>.</p>
 <h2 id="wiring-it-into-a-playwright-agent">Wiring it into a Playwright agent</h2>
-<p>The pattern is the same three calls as any other Impri integration — push, poll, execute — but the &quot;preview&quot; is a description of the DOM action, and &quot;execute&quot; is the actual Playwright call:</p>
+<p>The pattern is the same three calls as any other Airlock integration — push, poll, execute — but the &quot;preview&quot; is a description of the DOM action, and &quot;execute&quot; is the actual Playwright call:</p>
 <div class="code-block"><span class="code-lang">python</span><pre><code class="hljs"><span class="hljs-keyword">import</span> os
 <span class="hljs-keyword">import</span> time
 <span class="hljs-keyword">import</span> requests
 
-IMPRI = <span class="hljs-string">&quot;https://api.impri.dev&quot;</span>
-HEADERS = {<span class="hljs-string">&quot;Authorization&quot;</span>: <span class="hljs-string">f&quot;Bearer <span class="hljs-subst">{os.environ[<span class="hljs-string">&#x27;IMPRI_API_KEY&#x27;</span>]}</span>&quot;</span>}
+AIRLOCK = <span class="hljs-string">&quot;https://api.airlock.dev&quot;</span>
+HEADERS = {<span class="hljs-string">&quot;Authorization&quot;</span>: <span class="hljs-string">f&quot;Bearer <span class="hljs-subst">{os.environ[<span class="hljs-string">&#x27;AIRLOCK_API_KEY&#x27;</span>]}</span>&quot;</span>}
 
 <span class="hljs-keyword">def</span> <span class="hljs-title function_">request_approval</span>(<span class="hljs-params">kind: <span class="hljs-built_in">str</span>, title: <span class="hljs-built_in">str</span>, body: <span class="hljs-built_in">str</span>, editable=<span class="hljs-literal">None</span></span>) -&gt; <span class="hljs-built_in">dict</span>:
     resp = requests.post(
-        <span class="hljs-string">f&quot;<span class="hljs-subst">{IMPRI}</span>/v1/actions&quot;</span>,
+        <span class="hljs-string">f&quot;<span class="hljs-subst">{AIRLOCK}</span>/v1/actions&quot;</span>,
         headers=HEADERS,
         json={
             <span class="hljs-string">&quot;kind&quot;</span>: kind,
@@ -183,7 +183,7 @@ HEADERS = {<span class="hljs-string">&quot;Authorization&quot;</span>: <span cla
 
 <span class="hljs-keyword">def</span> <span class="hljs-title function_">wait_for_decision</span>(<span class="hljs-params">action_id: <span class="hljs-built_in">str</span>, poll_every=<span class="hljs-number">5</span></span>) -&gt; <span class="hljs-built_in">dict</span>:
     <span class="hljs-keyword">while</span> <span class="hljs-literal">True</span>:
-        resp = requests.get(<span class="hljs-string">f&quot;<span class="hljs-subst">{IMPRI}</span>/v1/actions/<span class="hljs-subst">{action_id}</span>&quot;</span>, headers=HEADERS).json()
+        resp = requests.get(<span class="hljs-string">f&quot;<span class="hljs-subst">{AIRLOCK}</span>/v1/actions/<span class="hljs-subst">{action_id}</span>&quot;</span>, headers=HEADERS).json()
         <span class="hljs-keyword">if</span> resp[<span class="hljs-string">&quot;status&quot;</span>] != <span class="hljs-string">&quot;pending&quot;</span>:
             <span class="hljs-keyword">return</span> resp
         time.sleep(poll_every)
@@ -200,7 +200,7 @@ decision = wait_for_decision(action[<span class="hljs-string">&quot;id&quot;</sp
 <span class="hljs-keyword">if</span> decision[<span class="hljs-string">&quot;status&quot;</span>] == <span class="hljs-string">&quot;approved&quot;</span>:
     page.click(<span class="hljs-string">&quot;#place-order&quot;</span>)
     requests.post(
-        <span class="hljs-string">f&quot;<span class="hljs-subst">{IMPRI}</span>/v1/actions/<span class="hljs-subst">{action[<span class="hljs-string">&#x27;id&#x27;</span>]}</span>/result&quot;</span>,
+        <span class="hljs-string">f&quot;<span class="hljs-subst">{AIRLOCK}</span>/v1/actions/<span class="hljs-subst">{action[<span class="hljs-string">&#x27;id&#x27;</span>]}</span>/result&quot;</span>,
         headers=HEADERS,
         json={<span class="hljs-string">&quot;status&quot;</span>: <span class="hljs-string">&quot;executed&quot;</span>},
     )
@@ -234,18 +234,18 @@ decision = wait_for_decision(action[<span class="hljs-string">&quot;id&quot;</sp
 </tr>
 </tbody></table>
 </div>
-<p>If you need the human to be able to fix a typo in the value before it&#39;s typed into the page — a shipping address, a comment body — list that field in <code>editable</code> and read it back from <code>decision.final_preview</code> rather than your original draft, the same as any other Impri integration.</p>
+<p>If you need the human to be able to fix a typo in the value before it&#39;s typed into the page — a shipping address, a comment body — list that field in <code>editable</code> and read it back from <code>decision.final_preview</code> rather than your original draft, the same as any other Airlock integration.</p>
 <h2 id="where-this-boundary-actually-sits">Where this boundary actually sits</h2>
-<p>Be precise about what this does and doesn&#39;t cover. Impri gates the <em>decision</em>, not the browser session. If your agent process holds a logged-in session and can call <code>page.click()</code> anywhere in its code, a bug or a prompt-injected instruction from a page it&#39;s scraping could still trigger the click without ever calling <code>request_approval</code>. The gate is only real if the checkout/submit/post code path is physically unreachable without a stored <code>approved</code> decision — which usually means putting the approval check inside the one function that&#39;s allowed to touch those selectors, and not giving the rest of the agent&#39;s code a shortcut around it.</p>
-<p>Impri does not render the page, does not verify the DOM matches your description, and does not click anything itself — it stores the proposed action and the decision, nothing more.</p>
+<p>Be precise about what this does and doesn&#39;t cover. Airlock gates the <em>decision</em>, not the browser session. If your agent process holds a logged-in session and can call <code>page.click()</code> anywhere in its code, a bug or a prompt-injected instruction from a page it&#39;s scraping could still trigger the click without ever calling <code>request_approval</code>. The gate is only real if the checkout/submit/post code path is physically unreachable without a stored <code>approved</code> decision — which usually means putting the approval check inside the one function that&#39;s allowed to touch those selectors, and not giving the rest of the agent&#39;s code a shortcut around it.</p>
+<p>Airlock does not render the page, does not verify the DOM matches your description, and does not click anything itself — it stores the proposed action and the decision, nothing more.</p>
 <h2 id="next-step">Next step</h2>
 <p>Start with the <a href="quickstart">quickstart</a> to get an API key, then read <a href="how-to-add-human-approval-to-an-ai-agent">how to add human approval to an AI agent</a> for the full request/poll/execute pattern this is built on. If your agent runs on Python already, the <a href="sdk-python">Python SDK</a> wraps these same three REST calls.</p>
 
-    <aside class="doc-cta" aria-label="Try Impri">
+    <aside class="doc-cta" aria-label="Try Airlock">
   <p class="doc-cta-title">Add an approval step to your own agent</p>
-  <p>Start on Impri Cloud: the Free tier includes 100 approvals a month. Or self-host the MIT-licensed core with Docker Compose, with no tier limits.</p>
+  <p>Start on Airlock Cloud: the Free tier includes 100 approvals a month. Or self-host the MIT-licensed core with Docker Compose, with no tier limits.</p>
   <div class="doc-cta-actions">
-    <a class="btn btn-primary btn-sm" href="https://app.impri.dev/?signup=1">Start free on Impri Cloud</a>
+    <a class="btn btn-primary btn-sm" href="https://app.airlock.dev/?signup=1">Start free on Airlock Cloud</a>
     <a class="btn btn-ghost btn-sm" href="../docs/quickstart">Quick start</a>
     <a class="btn btn-ghost btn-sm" href="../docs/self-hosting">Self-host guide</a>
   </div>
@@ -340,19 +340,19 @@ decision = wait_for_decision(action[<span class="hljs-string">&quot;id&quot;</sp
 <footer class="footer">
 <div class="wrap footer-inner">
   <a class="brand" href="/">
-    <span class="mark"><svg viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.5 4.5L19 7.5" stroke="white" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Impri
+    <span class="mark"><svg viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.5 4.5L19 7.5" stroke="white" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Airlock
   </a>
   <div>
-    <a href="https://gitlab.com/sekera.radim/impri">GitLab</a>
+    <a href="https://gitlab.com/sekera.radim/airlock">GitLab</a>
     <a href="/docs">Docs</a>
-    <a href="https://gitlab.com/sekera.radim/impri/-/blob/main/LICENSE">MIT License</a>
-    <a href="https://www.npmjs.com/package/@impri/mcp">@impri/mcp</a>
+    <a href="https://gitlab.com/sekera.radim/airlock/-/blob/main/LICENSE">MIT License</a>
+    <a href="https://www.npmjs.com/package/@airlock/mcp">@airlock/mcp</a>
     <a href="/docs/privacy">Privacy</a>
     <a href="/docs/terms">Terms</a>
     <a href="https://sekera.dev">Contact</a>
   </div>
 </div>
-<div class="wrap" style="margin-top:18px"><span class="muted">© 2026 Impri · The imprimatur for your AI agents · Built by <a href="https://sekera.dev" style="color:inherit">Radim Sekera</a>. Also by the same maker: <a href="https://briefgate.dev/?utm_source=impri.dev&amp;utm_medium=referral" style="color:inherit">BriefGate</a> — client intake for agencies and AI agents.</span></div>
+<div class="wrap" style="margin-top:18px"><span class="muted">© 2026 Airlock · The airlockmatur for your AI agents · Built by <a href="https://sekera.dev" style="color:inherit">Radim Sekera</a>. Also by the same maker: <a href="https://briefgate.dev/?utm_source=airlock.dev&amp;utm_medium=referral" style="color:inherit">BriefGate</a> — client intake for agencies and AI agents.</span></div>
 </footer>
 </body>
 </html>

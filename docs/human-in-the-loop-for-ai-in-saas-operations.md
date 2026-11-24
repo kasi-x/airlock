@@ -21,18 +21,18 @@ The pattern that works isn't "trust the agent less" — it's "make the handful o
 | Suspend a tenant for abuse/non-payment | Yes | Yes |
 | Delete a tenant or purge its data | No | Yes |
 
-The bottom three go through Impri as pending actions. A capped, self-service trial extension can stay automated — the moment "N days" is unbounded or touches an invoice, it moves up a row.
+The bottom three go through Airlock as pending actions. A capped, self-service trial extension can stay automated — the moment "N days" is unbounded or touches an invoice, it moves up a row.
 
 ## Gating a plan override from a TypeScript ops bot
 
-The agent still decides what change is warranted; Impri sits between that decision and the admin API call that makes it real.
+The agent still decides what change is warranted; Airlock sits between that decision and the admin API call that makes it real.
 
 ```typescript
 import { setTimeout as sleep } from "node:timers/promises";
 
-const API = "https://api.impri.dev/v1";
+const API = "https://api.airlock.dev/v1";
 const HEADERS = {
-  Authorization: `Bearer ${process.env.IMPRI_API_KEY}`,
+  Authorization: `Bearer ${process.env.AIRLOCK_API_KEY}`,
   "Content-Type": "application/json",
 };
 
@@ -89,9 +89,9 @@ Tenant suspension and deletion use the same three-call shape with `kind: "tenant
 
 Most ops mistakes are fixable if someone knows how fast. A wrong plan override is a two-minute PATCH; a wrong tenant deletion, without a backup step described somewhere, is not. Writing the `undo` string at proposal time forces the agent's author to have already thought through reversibility before the human is asked to trust the change — see [handling edits and the undo field](how-to-add-human-approval-to-an-ai-agent.md) for the full field reference.
 
-## What Impri does not do here
+## What Airlock does not do here
 
-Impri stores the proposed override or suspension, notifies whoever's on ops duty, and holds the decision — it doesn't know your pricing rules, doesn't call your admin API, and doesn't decide whether a 3x rate-limit bump for a customer is generous or reasonable. That judgment stays with the human, and `applyPlanOverrideInAdmin` is still your code to write and to wrap so it's unreachable without the approved decision. Every approved and rejected override is still worth checking against [the audit log](audit-log.md) later, especially for tenants that file a dispute months after a plan change.
+Airlock stores the proposed override or suspension, notifies whoever's on ops duty, and holds the decision — it doesn't know your pricing rules, doesn't call your admin API, and doesn't decide whether a 3x rate-limit bump for a customer is generous or reasonable. That judgment stays with the human, and `applyPlanOverrideInAdmin` is still your code to write and to wrap so it's unreachable without the approved decision. Every approved and rejected override is still worth checking against [the audit log](audit-log.md) later, especially for tenants that file a dispute months after a plan change.
 
 ---
 

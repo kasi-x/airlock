@@ -14,19 +14,19 @@ The fix is narrow: put the actual `merge` API call behind an approval gate, and 
 
 ## Wiring the gate into a merge script
 
-Say your agent runs as a GitHub Action after its own PR passes CI, and a small Node script decides whether to merge. Instead of calling the GitHub merge endpoint directly, the script pushes an Impri action first and only merges once it comes back approved:
+Say your agent runs as a GitHub Action after its own PR passes CI, and a small Node script decides whether to merge. Instead of calling the GitHub merge endpoint directly, the script pushes an Airlock action first and only merges once it comes back approved:
 
 ```typescript
 import { Octokit } from "octokit";
 
 const octokit = new Octokit({ auth: process.env.GITHUB_TOKEN });
-const IMPRI_KEY = process.env.IMPRI_API_KEY!;
+const AIRLOCK_KEY = process.env.AIRLOCK_API_KEY!;
 
 async function requestMergeApproval(owner: string, repo: string, pr: number, title: string, summary: string) {
-  const res = await fetch("https://api.impri.dev/v1/actions", {
+  const res = await fetch("https://api.airlock.dev/v1/actions", {
     method: "POST",
     headers: {
-      Authorization: `Bearer ${IMPRI_KEY}`,
+      Authorization: `Bearer ${AIRLOCK_KEY}`,
       "Content-Type": "application/json",
     },
     body: JSON.stringify({
@@ -44,15 +44,15 @@ async function requestMergeApproval(owner: string, repo: string, pr: number, tit
 
 async function pollAndMerge(owner: string, repo: string, pr: number, actionId: string) {
   while (true) {
-    const res = await fetch(`https://api.impri.dev/v1/actions/${actionId}`, {
-      headers: { Authorization: `Bearer ${IMPRI_KEY}` },
+    const res = await fetch(`https://api.airlock.dev/v1/actions/${actionId}`, {
+      headers: { Authorization: `Bearer ${AIRLOCK_KEY}` },
     });
     const { status } = await res.json();
     if (status === "approved") {
       await octokit.rest.pulls.merge({ owner, repo, pull_number: pr, merge_method: "squash" });
-      await fetch(`https://api.impri.dev/v1/actions/${actionId}/result`, {
+      await fetch(`https://api.airlock.dev/v1/actions/${actionId}/result`, {
         method: "POST",
-        headers: { Authorization: `Bearer ${IMPRI_KEY}`, "Content-Type": "application/json" },
+        headers: { Authorization: `Bearer ${AIRLOCK_KEY}`, "Content-Type": "application/json" },
         body: JSON.stringify({ status: "executed" }),
       });
       return "merged";
@@ -77,7 +77,7 @@ If your workflow instead wants the human to be able to tweak the merge commit me
 
 ## The chokepoint has to be the merge call, not the agent's intent
 
-This only works if the merge script above is the *only* code path with permission to hit the GitHub merge API. If the agent also holds a `GITHUB_TOKEN` with merge scope and could call the API directly from its own tool loop, it can route around the gate entirely — Impri has no visibility into calls it's never told about. Scope the merge-capable credential to the wrapper script alone; give the agent a token that can open PRs and push commits, not merge them. See [the SDK integrations](integrations.md) for patterns on isolating the executor from the agent's own credentials.
+This only works if the merge script above is the *only* code path with permission to hit the GitHub merge API. If the agent also holds a `GITHUB_TOKEN` with merge scope and could call the API directly from its own tool loop, it can route around the gate entirely — Airlock has no visibility into calls it's never told about. Scope the merge-capable credential to the wrapper script alone; give the agent a token that can open PRs and push commits, not merge them. See [the SDK integrations](integrations.md) for patterns on isolating the executor from the agent's own credentials.
 
 For agents built on Claude Code or another MCP client, the same flow is available as three tool calls instead of raw HTTP — see [the MCP guide](mcp.md).
 
@@ -85,7 +85,7 @@ For agents built on Claude Code or another MCP client, the same flow is availabl
 
 ## What this doesn't replace
 
-Impri doesn't review the code. It doesn't run your test suite or static analysis, and it has no opinion about whether the diff is correct — it just makes sure a specific human saw the merge request and said yes before it happened. Branch protection rules, required reviews, and CI checks are still doing their normal job upstream of this; Impri is the last gate on the specific action of merging.
+Airlock doesn't review the code. It doesn't run your test suite or static analysis, and it has no opinion about whether the diff is correct — it just makes sure a specific human saw the merge request and said yes before it happened. Branch protection rules, required reviews, and CI checks are still doing their normal job upstream of this; Airlock is the last gate on the specific action of merging.
 
 ---
 

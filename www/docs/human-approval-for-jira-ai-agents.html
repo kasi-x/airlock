@@ -3,21 +3,21 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Human Approval for Jira AI Agents — Impri Docs</title>
+<title>Human Approval for Jira AI Agents — Airlock Docs</title>
 <meta name="description" content="An agent wired into Jira can transition, close, or reassign tickets in bulk — human approval for Jira AI agents stops one bad triage pass from wrecking a…">
 <meta name="theme-color" content="#06070d">
-<meta property="og:title" content="Human Approval for Jira AI Agents — Impri Docs">
+<meta property="og:title" content="Human Approval for Jira AI Agents — Airlock Docs">
 <meta property="og:description" content="An agent wired into Jira can transition, close, or reassign tickets in bulk — human approval for Jira AI agents stops one bad triage pass from wrecking a…">
 <meta property="og:type" content="article">
-<meta property="og:url" content="https://impri.dev/docs/human-approval-for-jira-ai-agents">
-<meta property="og:image" content="https://impri.dev/assets/og/og-docs.png">
+<meta property="og:url" content="https://airlock.dev/docs/human-approval-for-jira-ai-agents">
+<meta property="og:image" content="https://airlock.dev/assets/og/og-docs.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
-<meta property="og:image:alt" content="Impri — human-in-the-loop approval inbox for AI agents">
+<meta property="og:image:alt" content="Airlock — human-in-the-loop approval inbox for AI agents">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="https://impri.dev/assets/og/og-docs.png">
-<link rel="canonical" href="https://impri.dev/docs/human-approval-for-jira-ai-agents">
-<script type="application/ld+json">{"@context":"https://schema.org","@type":"TechArticle","headline":"Human Approval for Jira AI Agents","description":"An agent wired into Jira can transition, close, or reassign tickets in bulk — human approval for Jira AI agents stops one bad triage pass from wrecking a…","url":"https://impri.dev/docs/human-approval-for-jira-ai-agents","inLanguage":"en","author":{"@type":"Organization","name":"Impri","url":"https://impri.dev"},"publisher":{"@type":"Organization","name":"Impri","url":"https://impri.dev"}}</script>
+<meta name="twitter:image" content="https://airlock.dev/assets/og/og-docs.png">
+<link rel="canonical" href="https://airlock.dev/docs/human-approval-for-jira-ai-agents">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"TechArticle","headline":"Human Approval for Jira AI Agents","description":"An agent wired into Jira can transition, close, or reassign tickets in bulk — human approval for Jira AI agents stops one bad triage pass from wrecking a…","url":"https://airlock.dev/docs/human-approval-for-jira-ai-agents","inLanguage":"en","author":{"@type":"Organization","name":"Airlock","url":"https://airlock.dev"},"publisher":{"@type":"Organization","name":"Airlock","url":"https://airlock.dev"}}</script>
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <link rel="icon" href="/favicon.ico" sizes="32x32">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='9' fill='%236366f1'/%3E%3Cpath d='M9 16.5l4.5 4.5L23 11' stroke='white' stroke-width='3' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
@@ -132,13 +132,13 @@ pre code.hljs{display:block;overflow-x:auto}
 <div class="wrap nav-inner">
   <a class="brand" href="/">
     <span class="mark"><svg viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.5 4.5L19 7.5" stroke="white" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
-    Impri
+    Airlock
   </a>
   <div class="nav-links">
     <a class="link" href="/#how">How it works</a>
     <a class="link" href="/#pricing">Pricing</a>
     <a class="link active-nav" href="../docs">Docs</a>
-    <a class="btn btn-primary btn-sm" href="https://gitlab.com/sekera.radim/impri">GitLab</a>
+    <a class="btn btn-primary btn-sm" href="https://gitlab.com/sekera.radim/airlock">GitLab</a>
   </div>
 </div>
 </nav>
@@ -159,20 +159,20 @@ pre code.hljs{display:block;overflow-x:auto}
 <p>A Jira-triaging agent doesn&#39;t usually break in a way you notice immediately. It reads a backlog, decides ticket priorities, transitions statuses, reassigns owners, and posts comments — and most of the time it&#39;s right. The failures that matter are the ones buried in volume: a P1 incident ticket auto-transitioned to &quot;Won&#39;t Fix&quot; because the agent misread a sarcastic comment thread, forty tickets reassigned to someone on leave, or a customer-facing bug silently closed as a duplicate of an unrelated ticket.</p>
 <p>None of that trips an error. Jira&#39;s API returns 200 either way. The only thing that catches it is a human looking at the <em>specific</em> transition before it lands — which is exactly what a triage agent is supposed to save you from doing at scale. The fix isn&#39;t to slow the agent down everywhere; it&#39;s to gate the transitions that are expensive to get wrong (closing, reassigning off-team, changing priority on incident-labeled tickets) and let the cheap, reversible ones (adding a triage label, posting a summary comment) go straight through.</p>
 <hr>
-<h2 id="gating-a-transition-with-impri">Gating a transition with Impri</h2>
-<p>The agent still calls the Jira REST API — Impri sits in front of the call, not instead of it. Push the proposed transition as an action, poll for a decision, and only call Jira once it comes back approved.</p>
+<h2 id="gating-a-transition-with-airlock">Gating a transition with Airlock</h2>
+<p>The agent still calls the Jira REST API — Airlock sits in front of the call, not instead of it. Push the proposed transition as an action, poll for a decision, and only call Jira once it comes back approved.</p>
 <div class="code-block"><span class="code-lang">python</span><pre><code class="hljs"><span class="hljs-keyword">import</span> os
 <span class="hljs-keyword">import</span> time
 <span class="hljs-keyword">import</span> requests
 
-IMPRI_KEY = os.environ[<span class="hljs-string">&quot;IMPRI_API_KEY&quot;</span>]
+AIRLOCK_KEY = os.environ[<span class="hljs-string">&quot;AIRLOCK_API_KEY&quot;</span>]
 JIRA_BASE = os.environ[<span class="hljs-string">&quot;JIRA_BASE_URL&quot;</span>]
 JIRA_AUTH = (os.environ[<span class="hljs-string">&quot;JIRA_EMAIL&quot;</span>], os.environ[<span class="hljs-string">&quot;JIRA_API_TOKEN&quot;</span>])
 
 <span class="hljs-keyword">def</span> <span class="hljs-title function_">propose_transition</span>(<span class="hljs-params">issue_key: <span class="hljs-built_in">str</span>, transition_id: <span class="hljs-built_in">str</span>, transition_name: <span class="hljs-built_in">str</span>, reason: <span class="hljs-built_in">str</span></span>) -&gt; <span class="hljs-built_in">str</span>:
     resp = requests.post(
-        <span class="hljs-string">&quot;https://api.impri.dev/v1/actions&quot;</span>,
-        headers={<span class="hljs-string">&quot;Authorization&quot;</span>: <span class="hljs-string">f&quot;Bearer <span class="hljs-subst">{IMPRI_KEY}</span>&quot;</span>},
+        <span class="hljs-string">&quot;https://api.airlock.dev/v1/actions&quot;</span>,
+        headers={<span class="hljs-string">&quot;Authorization&quot;</span>: <span class="hljs-string">f&quot;Bearer <span class="hljs-subst">{AIRLOCK_KEY}</span>&quot;</span>},
         json={
             <span class="hljs-string">&quot;kind&quot;</span>: <span class="hljs-string">&quot;jira.transition_issue&quot;</span>,
             <span class="hljs-string">&quot;title&quot;</span>: <span class="hljs-string">f&quot;Transition <span class="hljs-subst">{issue_key}</span> → <span class="hljs-subst">{transition_name}</span>&quot;</span>,
@@ -191,8 +191,8 @@ JIRA_AUTH = (os.environ[<span class="hljs-string">&quot;JIRA_EMAIL&quot;</span>]
 <span class="hljs-keyword">def</span> <span class="hljs-title function_">wait_for_decision</span>(<span class="hljs-params">action_id: <span class="hljs-built_in">str</span></span>) -&gt; <span class="hljs-built_in">dict</span>:
     <span class="hljs-keyword">while</span> <span class="hljs-literal">True</span>:
         r = requests.get(
-            <span class="hljs-string">f&quot;https://api.impri.dev/v1/actions/<span class="hljs-subst">{action_id}</span>&quot;</span>,
-            headers={<span class="hljs-string">&quot;Authorization&quot;</span>: <span class="hljs-string">f&quot;Bearer <span class="hljs-subst">{IMPRI_KEY}</span>&quot;</span>},
+            <span class="hljs-string">f&quot;https://api.airlock.dev/v1/actions/<span class="hljs-subst">{action_id}</span>&quot;</span>,
+            headers={<span class="hljs-string">&quot;Authorization&quot;</span>: <span class="hljs-string">f&quot;Bearer <span class="hljs-subst">{AIRLOCK_KEY}</span>&quot;</span>},
         ).json()
         <span class="hljs-keyword">if</span> r[<span class="hljs-string">&quot;status&quot;</span>] != <span class="hljs-string">&quot;pending&quot;</span>:
             <span class="hljs-keyword">return</span> r
@@ -211,8 +211,8 @@ decision = wait_for_decision(action_id)
 <span class="hljs-keyword">if</span> decision[<span class="hljs-string">&quot;status&quot;</span>] == <span class="hljs-string">&quot;approved&quot;</span>:
     apply_transition(<span class="hljs-string">&quot;OPS-4821&quot;</span>, <span class="hljs-string">&quot;31&quot;</span>)
     requests.post(
-        <span class="hljs-string">f&quot;https://api.impri.dev/v1/actions/<span class="hljs-subst">{action_id}</span>/result&quot;</span>,
-        headers={<span class="hljs-string">&quot;Authorization&quot;</span>: <span class="hljs-string">f&quot;Bearer <span class="hljs-subst">{IMPRI_KEY}</span>&quot;</span>},
+        <span class="hljs-string">f&quot;https://api.airlock.dev/v1/actions/<span class="hljs-subst">{action_id}</span>/result&quot;</span>,
+        headers={<span class="hljs-string">&quot;Authorization&quot;</span>: <span class="hljs-string">f&quot;Bearer <span class="hljs-subst">{AIRLOCK_KEY}</span>&quot;</span>},
         json={<span class="hljs-string">&quot;status&quot;</span>: <span class="hljs-string">&quot;executed&quot;</span>},
     )</code></pre></div>
 <p>The <code>target_url</code> links straight to the Jira issue, so the reviewer taps it in the inbox card and sees full context before deciding — not just the agent&#39;s summary of it.</p>
@@ -254,13 +254,13 @@ decision = wait_for_decision(action_id)
 <p>The pattern generalizes past Jira: gate on irreversibility and blast radius, not on &quot;is this a write.&quot; A label is a write too, but undoing it costs nothing.</p>
 <hr>
 <h2 id="the-one-thing-to-get-right">The one thing to get right</h2>
-<p>This only works if the agent&#39;s Jira credentials live behind the same code path as the approval check — if the agent (or a retry, or a different code branch) can call the Jira transitions endpoint directly, Impri is decoration, not a gate. Wrap the actual <code>requests.post</code> call to Jira so it&#39;s unreachable without an <code>approved</code> decision in hand; see <a href="integrations">the SDK integrations guide</a> for the wrapper pattern. Start from <a href="quickstart">the quickstart</a> to get an API key, and use the <a href="sdk-python">Python SDK</a> instead of raw <code>requests</code> if you&#39;re gating more than one Jira action type.</p>
+<p>This only works if the agent&#39;s Jira credentials live behind the same code path as the approval check — if the agent (or a retry, or a different code branch) can call the Jira transitions endpoint directly, Airlock is decoration, not a gate. Wrap the actual <code>requests.post</code> call to Jira so it&#39;s unreachable without an <code>approved</code> decision in hand; see <a href="integrations">the SDK integrations guide</a> for the wrapper pattern. Start from <a href="quickstart">the quickstart</a> to get an API key, and use the <a href="sdk-python">Python SDK</a> instead of raw <code>requests</code> if you&#39;re gating more than one Jira action type.</p>
 
-    <aside class="doc-cta" aria-label="Try Impri">
+    <aside class="doc-cta" aria-label="Try Airlock">
   <p class="doc-cta-title">Add an approval step to your own agent</p>
-  <p>Start on Impri Cloud: the Free tier includes 100 approvals a month. Or self-host the MIT-licensed core with Docker Compose, with no tier limits.</p>
+  <p>Start on Airlock Cloud: the Free tier includes 100 approvals a month. Or self-host the MIT-licensed core with Docker Compose, with no tier limits.</p>
   <div class="doc-cta-actions">
-    <a class="btn btn-primary btn-sm" href="https://app.impri.dev/?signup=1">Start free on Impri Cloud</a>
+    <a class="btn btn-primary btn-sm" href="https://app.airlock.dev/?signup=1">Start free on Airlock Cloud</a>
     <a class="btn btn-ghost btn-sm" href="../docs/quickstart">Quick start</a>
     <a class="btn btn-ghost btn-sm" href="../docs/self-hosting">Self-host guide</a>
   </div>
@@ -344,7 +344,7 @@ decision = wait_for_decision(action_id)
     <nav class="ptoc" aria-label="On this page">
 <div class="ptoc-label">On this page</div>
 <ul><li class="ptoc-h2"><a href="#the-failure-mode-is-quiet-not-loud">The failure mode is quiet, not loud</a></li>
-<li class="ptoc-h2"><a href="#gating-a-transition-with-impri">Gating a transition with Impri</a></li>
+<li class="ptoc-h2"><a href="#gating-a-transition-with-airlock">Gating a transition with Airlock</a></li>
 <li class="ptoc-h2"><a href="#what39s-worth-gating-vs-what-isn39t">What's worth gating vs. what isn't</a></li>
 <li class="ptoc-h2"><a href="#the-one-thing-to-get-right">The one thing to get right</a></li></ul>
 </nav>
@@ -354,19 +354,19 @@ decision = wait_for_decision(action_id)
 <footer class="footer">
 <div class="wrap footer-inner">
   <a class="brand" href="/">
-    <span class="mark"><svg viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.5 4.5L19 7.5" stroke="white" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Impri
+    <span class="mark"><svg viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.5 4.5L19 7.5" stroke="white" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Airlock
   </a>
   <div>
-    <a href="https://gitlab.com/sekera.radim/impri">GitLab</a>
+    <a href="https://gitlab.com/sekera.radim/airlock">GitLab</a>
     <a href="/docs">Docs</a>
-    <a href="https://gitlab.com/sekera.radim/impri/-/blob/main/LICENSE">MIT License</a>
-    <a href="https://www.npmjs.com/package/@impri/mcp">@impri/mcp</a>
+    <a href="https://gitlab.com/sekera.radim/airlock/-/blob/main/LICENSE">MIT License</a>
+    <a href="https://www.npmjs.com/package/@airlock/mcp">@airlock/mcp</a>
     <a href="/docs/privacy">Privacy</a>
     <a href="/docs/terms">Terms</a>
     <a href="https://sekera.dev">Contact</a>
   </div>
 </div>
-<div class="wrap" style="margin-top:18px"><span class="muted">© 2026 Impri · The imprimatur for your AI agents · Built by <a href="https://sekera.dev" style="color:inherit">Radim Sekera</a>. Also by the same maker: <a href="https://briefgate.dev/?utm_source=impri.dev&amp;utm_medium=referral" style="color:inherit">BriefGate</a> — client intake for agencies and AI agents.</span></div>
+<div class="wrap" style="margin-top:18px"><span class="muted">© 2026 Airlock · The airlockmatur for your AI agents · Built by <a href="https://sekera.dev" style="color:inherit">Radim Sekera</a>. Also by the same maker: <a href="https://briefgate.dev/?utm_source=airlock.dev&amp;utm_medium=referral" style="color:inherit">BriefGate</a> — client intake for agencies and AI agents.</span></div>
 </footer>
 </body>
 </html>

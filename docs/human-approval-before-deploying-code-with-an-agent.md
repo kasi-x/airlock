@@ -29,7 +29,7 @@ import (
 	"time"
 )
 
-const base = "https://api.impri.dev"
+const base = "https://api.airlock.dev"
 
 func pushDeploy(commitSHA, env, diffURL string, hasMigration bool) (string, error) {
 	body, _ := json.Marshal(map[string]any{
@@ -46,7 +46,7 @@ func pushDeploy(commitSHA, env, diffURL string, hasMigration bool) (string, erro
 		"target_url": diffURL,
 	})
 	req, _ := http.NewRequest("POST", base+"/v1/actions", bytes.NewReader(body))
-	req.Header.Set("Authorization", "Bearer "+os.Getenv("IMPRI_API_KEY"))
+	req.Header.Set("Authorization", "Bearer "+os.Getenv("AIRLOCK_API_KEY"))
 	req.Header.Set("Content-Type", "application/json")
 	res, err := http.DefaultClient.Do(req)
 	if err != nil {
@@ -61,7 +61,7 @@ func pushDeploy(commitSHA, env, diffURL string, hasMigration bool) (string, erro
 func awaitAndDeploy(actionID, env string) error {
 	for {
 		req, _ := http.NewRequest("GET", base+"/v1/actions/"+actionID, nil)
-		req.Header.Set("Authorization", "Bearer "+os.Getenv("IMPRI_API_KEY"))
+		req.Header.Set("Authorization", "Bearer "+os.Getenv("AIRLOCK_API_KEY"))
 		res, _ := http.DefaultClient.Do(req)
 		var out struct{ Status string `json:"status"` }
 		json.NewDecoder(res.Body).Decode(&out)
@@ -115,8 +115,8 @@ Not every environment needs the same gate. A reasonable default:
 
 ---
 
-## What Impri isn't doing here
+## What Airlock isn't doing here
 
-Impri stores the deploy request, notifies a human, and holds the decision — it does not run `kubectl apply` itself, does not know whether your tests are trustworthy, and does not evaluate whether the diff is actually safe. That judgment stays with whoever's holding the phone. For the base three-call pattern this builds on, see [how to add human approval to an AI agent](how-to-add-human-approval-to-an-ai-agent.md); if the agent doing the merging runs on the Claude Agent SDK, see [the Claude Agent SDK guide](human-approval-claude-agent-sdk.md) for wiring the gate into the same process. Once you're gating deploys, [the audit log](audit-log.md) gives you a record of every production rollout, who approved it, and when — useful the next time someone asks "who shipped this."
+Airlock stores the deploy request, notifies a human, and holds the decision — it does not run `kubectl apply` itself, does not know whether your tests are trustworthy, and does not evaluate whether the diff is actually safe. That judgment stays with whoever's holding the phone. For the base three-call pattern this builds on, see [how to add human approval to an AI agent](how-to-add-human-approval-to-an-ai-agent.md); if the agent doing the merging runs on the Claude Agent SDK, see [the Claude Agent SDK guide](human-approval-claude-agent-sdk.md) for wiring the gate into the same process. Once you're gating deploys, [the audit log](audit-log.md) gives you a record of every production rollout, who approved it, and when — useful the next time someone asks "who shipped this."
 
 Next step: [quickstart](quickstart.md) to get an API key and try this against a staging pipeline first.

@@ -1,11 +1,11 @@
 /**
- * ImpriClient — full Impri REST API client using native fetch.
+ * AirlockClient — full Airlock REST API client using native fetch.
  *
  * Provides all API methods (actions, watchers, keys, project) plus the
  * ergonomic helpers: requiresApproval (HOF) and approvalGate (inline gate).
  */
 
-import { ImpriConfigError, ImpriExpired, ImpriRejected, ImpriTimeout } from "./errors.js";
+import { AirlockConfigError, AirlockExpired, AirlockRejected, AirlockTimeout } from "./errors.js";
 import { apiRequest, type HttpConfig } from "./http.js";
 import type {
   Action,
@@ -19,7 +19,7 @@ import type {
   CreateWatcherParams,
   DecideParams,
   DecisionResult,
-  ImpriClientConfig,
+  AirlockClientConfig,
   KeyScope,
   ListActionsParams,
   ListWatchersParams,
@@ -51,31 +51,31 @@ export interface RequiresApprovalOpts<Args extends unknown[]> {
   title: MaybeFactory<string, Args>;
   preview?: MaybeFactory<Preview, Args>;
   editable?: string[];
-  /** Seconds to wait before raising ImpriTimeout. Default 300. */
+  /** Seconds to wait before raising AirlockTimeout. Default 300. */
   timeoutS?: number;
   /** Additional CreateActionParams fields forwarded as-is (payload, target_url, etc.). */
   [key: string]: unknown;
 }
 
-// ─── ImpriClient ─────────────────────────────────────────────────────────────
+// ─── AirlockClient ─────────────────────────────────────────────────────────────
 
-export class ImpriClient {
+export class AirlockClient {
   private readonly cfg: HttpConfig;
 
-  constructor(config: ImpriClientConfig = {}) {
+  constructor(config: AirlockClientConfig = {}) {
     const apiKey =
       config.apiKey ??
-      (typeof process !== "undefined" ? process.env["IMPRI_API_KEY"] : undefined);
+      (typeof process !== "undefined" ? process.env["AIRLOCK_API_KEY"] : undefined);
 
     if (!apiKey) {
-      throw new ImpriConfigError(
-        "IMPRI_API_KEY is not set. Pass it as { apiKey } to ImpriClient or set the IMPRI_API_KEY environment variable.",
+      throw new AirlockConfigError(
+        "AIRLOCK_API_KEY is not set. Pass it as { apiKey } to AirlockClient or set the AIRLOCK_API_KEY environment variable.",
       );
     }
 
     const rawBase =
       config.baseUrl ??
-      (typeof process !== "undefined" ? process.env["IMPRI_BASE_URL"] : undefined) ??
+      (typeof process !== "undefined" ? process.env["AIRLOCK_BASE_URL"] : undefined) ??
       "http://localhost:8484";
 
     this.cfg = {
@@ -114,9 +114,9 @@ export class ImpriClient {
     // The wire field is `decision`, not `verdict` — server/src/schemas.ts
     // DecisionBody (single decision) differs from BulkDecisionBody (bulk-decision),
     // which does use `verdict`. Sending `params` directly used to 400 with
-    // "decision: Required" (QA 2026-10-30, same root cause as @impri/sdk).
+    // "decision: Required" (QA 2026-10-30, same root cause as @airlock/sdk).
     // DecideParams.verdict keeps its public name — it matches the response
-    // shape (DecisionResult.verdict) and @impri/sdk's own decide() signature;
+    // shape (DecisionResult.verdict) and @airlock/sdk's own decide() signature;
     // only this wire translation needed fixing.
     const body: Record<string, unknown> = { decision: params.verdict };
     if (params.edited !== undefined) body.edited = params.edited;
@@ -139,7 +139,7 @@ export class ImpriClient {
    *
    * Polls GET /v1/actions/:id every pollIntervalMs milliseconds until status
    * leaves 'pending'. On 'approved' returns an ApprovedAction ready for
-   * execution. Throws ImpriRejected, ImpriExpired, or ImpriTimeout as
+   * execution. Throws AirlockRejected, AirlockExpired, or AirlockTimeout as
    * documented in the spec.
    *
    * Always use decision.finalPreview for execution when editable fields were
@@ -164,7 +164,7 @@ export class ImpriClient {
 
       const remaining = deadline - Date.now();
       if (remaining <= 0) {
-        throw new ImpriTimeout(actionId, timeoutS);
+        throw new AirlockTimeout(actionId, timeoutS);
       }
 
       await sleep(Math.min(pollIntervalMs, remaining));
@@ -173,7 +173,7 @@ export class ImpriClient {
 
   private resolveDecision(action: Action): ApprovedAction {
     if (action.status === "expired") {
-      throw new ImpriExpired(
+      throw new AirlockExpired(
         `Action ${action.id} expired — the approval window closed before a decision was made.`,
         action,
       );
@@ -182,7 +182,7 @@ export class ImpriClient {
     const decision = action.decision;
 
     if (!decision || decision.verdict === "reject") {
-      throw new ImpriRejected(
+      throw new AirlockRejected(
         action.id,
         decision,
         decision?.final_preview ?? action.preview,
@@ -296,7 +296,7 @@ export class ImpriClient {
    * Creates an action, waits for decision, and returns the approved state.
    * You are responsible for calling reportResult afterwards.
    *
-   * Throws ImpriRejected, ImpriExpired, or ImpriTimeout — handle them
+   * Throws AirlockRejected, AirlockExpired, or AirlockTimeout — handle them
    * before executing any side-effecting code.
    *
    * @example
@@ -337,15 +337,15 @@ export class ImpriClient {
   }
 
   /**
-   * Higher-order wrapper that gates an async function behind Impri approval.
+   * Higher-order wrapper that gates an async function behind Airlock approval.
    *
    * Every call to the returned function will:
-   *   1. Submit the proposed call to Impri as a pending action.
+   *   1. Submit the proposed call to Airlock as a pending action.
    *   2. Block until a human approves or rejects.
    *   3. On approval: call the original function (using decision.finalPreview
    *      when editable fields may have been modified by the reviewer).
-   *   4. Report the execution outcome to Impri.
-   *   5. On rejection: throw ImpriRejected without calling the function.
+   *   4. Report the execution outcome to Airlock.
+   *   5. On rejection: throw AirlockRejected without calling the function.
    *
    * @example
    * const safeSend = client.requiresApproval(
@@ -379,7 +379,7 @@ export class ImpriClient {
         ...(rest as Partial<CreateActionParams>),
       });
 
-      // Raises ImpriRejected / ImpriExpired / ImpriTimeout on non-approval.
+      // Raises AirlockRejected / AirlockExpired / AirlockTimeout on non-approval.
       const approved = await this.awaitDecision(created.id, { timeoutS });
 
       // When editable fields were set, the reviewer may have changed preview.body.

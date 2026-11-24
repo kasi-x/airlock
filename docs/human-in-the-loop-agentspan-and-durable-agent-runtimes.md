@@ -16,9 +16,9 @@ The mistake is treating the wait as a loop that has to run somewhere. It doesn't
 
 Instead of a worker sitting in a poll loop for two days, the pattern is:
 
-1. Push the action to Impri, including a `callback_url` that points at your resume endpoint.
+1. Push the action to Airlock, including a `callback_url` that points at your resume endpoint.
 2. Checkpoint the run with the `action_id` as its resume key, then let the step finish — the worker is free to shut down.
-3. When Impri POSTs the decision to `callback_url`, your handler resumes the durable function from that checkpoint.
+3. When Airlock POSTs the decision to `callback_url`, your handler resumes the durable function from that checkpoint.
 4. The resumed run executes the side effect (if approved) and reports the result.
 
 No process is billed or held open for the gap between step 2 and step 3, whether that gap is ninety seconds or the full 30-day maximum on `expires_in`.
@@ -40,10 +40,10 @@ import (
 	"os"
 )
 
-const base = "https://api.impri.dev"
+const base = "https://api.airlock.dev"
 
 func authHeader(req *http.Request) {
-	req.Header.Set("Authorization", "Bearer "+os.Getenv("IMPRI_API_KEY"))
+	req.Header.Set("Authorization", "Bearer "+os.Getenv("AIRLOCK_API_KEY"))
 	req.Header.Set("Content-Type", "application/json")
 }
 
@@ -53,7 +53,7 @@ func ProposeDNSChange(rec DNSRecord) (string, error) {
 		"kind":        "dns.record_update",
 		"title":       fmt.Sprintf("Update %s -> %s", rec.Name, rec.Value),
 		"preview":     map[string]string{"format": "plain", "body": fmt.Sprintf("%s %s -> %s", rec.Type, rec.Name, rec.Value)},
-		"callback_url": "https://agent.example.com/impri/resume",
+		"callback_url": "https://agent.example.com/airlock/resume",
 		"expires_in":  259200, // 72h — plenty for an on-call engineer to notice
 		"undo":        fmt.Sprintf("Revert %s to its previous value in the zone file", rec.Name),
 	})
@@ -71,7 +71,7 @@ func ProposeDNSChange(rec DNSRecord) (string, error) {
 	return out.ID, nil
 }
 
-// OnDecision is the webhook handler Impri calls when the human decides.
+// OnDecision is the webhook handler Airlock calls when the human decides.
 // It resumes the suspended run identified by the action ID.
 func OnDecision(w http.ResponseWriter, r *http.Request) {
 	var payload struct {
@@ -98,7 +98,7 @@ func OnDecision(w http.ResponseWriter, r *http.Request) {
 }
 ```
 
-The webhook payload's `status` and `final_preview` are exactly what `GET /v1/actions/:id` would return — see [webhooks](webhooks.md) for the full payload shape. If webhook delivery ever fails, the durable run isn't stuck: a scheduled reconciliation step can call `GET /v1/actions/:id` for any checkpoint older than a few minutes and resume it manually, since the action's status in Impri is the source of truth regardless of whether the callback arrived.
+The webhook payload's `status` and `final_preview` are exactly what `GET /v1/actions/:id` would return — see [webhooks](webhooks.md) for the full payload shape. If webhook delivery ever fails, the durable run isn't stuck: a scheduled reconciliation step can call `GET /v1/actions/:id` for any checkpoint older than a few minutes and resume it manually, since the action's status in Airlock is the source of truth regardless of whether the callback arrived.
 
 ---
 
@@ -108,8 +108,8 @@ You can — a durable `sleep` plus a polling activity is a completely valid vers
 
 ---
 
-## What Impri does and doesn't own here
+## What Airlock does and doesn't own here
 
-Impri stores the proposed action, notifies the human, and holds the decision — it never touches your durable runtime, your checkpoints, or your workers. The suspend/resume mechanics, the choice of resume key, and retry behavior if a checkpoint fails to resume are entirely your framework's responsibility. Impri's only job is to make sure the decision — approved, rejected, or expired — exists and is durable on its own side by the time your webhook fires or your poll checks again.
+Airlock stores the proposed action, notifies the human, and holds the decision — it never touches your durable runtime, your checkpoints, or your workers. The suspend/resume mechanics, the choice of resume key, and retry behavior if a checkpoint fails to resume are entirely your framework's responsibility. Airlock's only job is to make sure the decision — approved, rejected, or expired — exists and is durable on its own side by the time your webhook fires or your poll checks again.
 
 New to the REST/MCP calls themselves? Start with [how to add human approval to an AI agent](how-to-add-human-approval-to-an-ai-agent.md), then [quickstart](quickstart.md) for getting an API key.

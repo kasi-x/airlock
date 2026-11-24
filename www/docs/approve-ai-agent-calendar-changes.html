@@ -3,21 +3,21 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Approve AI Agent Calendar Changes Before They're Sent — Impri Docs</title>
+<title>Approve AI Agent Calendar Changes Before They're Sent — Airlock Docs</title>
 <meta name="description" content="Route AI agent calendar changes through human approval before they reach the calendar API, so a bad reschedule or invite never reaches attendees.">
 <meta name="theme-color" content="#06070d">
-<meta property="og:title" content="Approve AI Agent Calendar Changes Before They're Sent — Impri Docs">
+<meta property="og:title" content="Approve AI Agent Calendar Changes Before They're Sent — Airlock Docs">
 <meta property="og:description" content="Route AI agent calendar changes through human approval before they reach the calendar API, so a bad reschedule or invite never reaches attendees.">
 <meta property="og:type" content="article">
-<meta property="og:url" content="https://impri.dev/docs/approve-ai-agent-calendar-changes">
-<meta property="og:image" content="https://impri.dev/assets/og/og-docs.png">
+<meta property="og:url" content="https://airlock.dev/docs/approve-ai-agent-calendar-changes">
+<meta property="og:image" content="https://airlock.dev/assets/og/og-docs.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
-<meta property="og:image:alt" content="Impri — human-in-the-loop approval inbox for AI agents">
+<meta property="og:image:alt" content="Airlock — human-in-the-loop approval inbox for AI agents">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="https://impri.dev/assets/og/og-docs.png">
-<link rel="canonical" href="https://impri.dev/docs/approve-ai-agent-calendar-changes">
-<script type="application/ld+json">{"@context":"https://schema.org","@type":"TechArticle","headline":"Approve AI Agent Calendar Changes Before They're Sent","description":"Route AI agent calendar changes through human approval before they reach the calendar API, so a bad reschedule or invite never reaches attendees.","url":"https://impri.dev/docs/approve-ai-agent-calendar-changes","inLanguage":"en","author":{"@type":"Organization","name":"Impri","url":"https://impri.dev"},"publisher":{"@type":"Organization","name":"Impri","url":"https://impri.dev"}}</script>
+<meta name="twitter:image" content="https://airlock.dev/assets/og/og-docs.png">
+<link rel="canonical" href="https://airlock.dev/docs/approve-ai-agent-calendar-changes">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"TechArticle","headline":"Approve AI Agent Calendar Changes Before They're Sent","description":"Route AI agent calendar changes through human approval before they reach the calendar API, so a bad reschedule or invite never reaches attendees.","url":"https://airlock.dev/docs/approve-ai-agent-calendar-changes","inLanguage":"en","author":{"@type":"Organization","name":"Airlock","url":"https://airlock.dev"},"publisher":{"@type":"Organization","name":"Airlock","url":"https://airlock.dev"}}</script>
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <link rel="icon" href="/favicon.ico" sizes="32x32">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='9' fill='%236366f1'/%3E%3Cpath d='M9 16.5l4.5 4.5L23 11' stroke='white' stroke-width='3' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
@@ -132,13 +132,13 @@ pre code.hljs{display:block;overflow-x:auto}
 <div class="wrap nav-inner">
   <a class="brand" href="/">
     <span class="mark"><svg viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.5 4.5L19 7.5" stroke="white" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
-    Impri
+    Airlock
   </a>
   <div class="nav-links">
     <a class="link" href="/#how">How it works</a>
     <a class="link" href="/#pricing">Pricing</a>
     <a class="link active-nav" href="../docs">Docs</a>
-    <a class="btn btn-primary btn-sm" href="https://gitlab.com/sekera.radim/impri">GitLab</a>
+    <a class="btn btn-primary btn-sm" href="https://gitlab.com/sekera.radim/airlock">GitLab</a>
   </div>
 </div>
 </nav>
@@ -158,11 +158,11 @@ pre code.hljs{display:block;overflow-x:auto}
 <h2 id="why-calendar-writes-are-riskier-than-they-look">Why calendar writes are riskier than they look</h2>
 <p>A calendar agent looks low-stakes compared to one that sends money or deletes data, but a calendar write has a side effect other people see immediately: an invite lands in a colleague&#39;s or a client&#39;s inbox, a meeting moves without the attendees agreeing to it, or a &quot;helpful&quot; cleanup cancels something that was intentional. There&#39;s also no undo that doesn&#39;t itself require an apology email. The fix is the same one used for any agent action with an external side effect: the agent proposes, a human decides, and only an approved decision reaches the calendar API.</p>
 <h2 id="what-gets-proposed-vs-what-gets-executed">What gets proposed vs. what gets executed</h2>
-<p>The agent never calls the calendar provider&#39;s API directly. It builds the change it wants to make — reschedule, new invite, cancellation — as an Impri action, and a small executor function is the only code path allowed to call the real calendar API, and only after seeing <code>status: &quot;approved&quot;</code>.</p>
-<div class="code-block"><span class="code-lang">typescript</span><pre><code class="hljs"><span class="hljs-keyword">import</span> { <span class="hljs-title class_">ImpriClient</span>, <span class="hljs-title class_">ImpriRejected</span>, <span class="hljs-title class_">ImpriExpired</span> } <span class="hljs-keyword">from</span> <span class="hljs-string">&quot;@impri/sdk&quot;</span>;
+<p>The agent never calls the calendar provider&#39;s API directly. It builds the change it wants to make — reschedule, new invite, cancellation — as an Airlock action, and a small executor function is the only code path allowed to call the real calendar API, and only after seeing <code>status: &quot;approved&quot;</code>.</p>
+<div class="code-block"><span class="code-lang">typescript</span><pre><code class="hljs"><span class="hljs-keyword">import</span> { <span class="hljs-title class_">AirlockClient</span>, <span class="hljs-title class_">AirlockRejected</span>, <span class="hljs-title class_">AirlockExpired</span> } <span class="hljs-keyword">from</span> <span class="hljs-string">&quot;@airlock/sdk&quot;</span>;
 <span class="hljs-keyword">import</span> { google } <span class="hljs-keyword">from</span> <span class="hljs-string">&quot;googleapis&quot;</span>; <span class="hljs-comment">// or your calendar client of choice</span>
 
-<span class="hljs-keyword">const</span> impri = <span class="hljs-keyword">new</span> <span class="hljs-title class_">ImpriClient</span>({ <span class="hljs-attr">apiKey</span>: process.<span class="hljs-property">env</span>.<span class="hljs-property">IMPRI_API_KEY</span>! });
+<span class="hljs-keyword">const</span> airlock = <span class="hljs-keyword">new</span> <span class="hljs-title class_">AirlockClient</span>({ <span class="hljs-attr">apiKey</span>: process.<span class="hljs-property">env</span>.<span class="hljs-property">AIRLOCK_API_KEY</span>! });
 
 <span class="hljs-keyword">interface</span> <span class="hljs-title class_">ProposedReschedule</span> {
   <span class="hljs-attr">eventId</span>: <span class="hljs-built_in">string</span>;
@@ -174,7 +174,7 @@ pre code.hljs{display:block;overflow-x:auto}
 }
 
 <span class="hljs-keyword">async</span> <span class="hljs-keyword">function</span> <span class="hljs-title function_">proposeReschedule</span>(<span class="hljs-params"><span class="hljs-attr">change</span>: <span class="hljs-title class_">ProposedReschedule</span></span>) {
-  <span class="hljs-keyword">const</span> action = <span class="hljs-keyword">await</span> impri.<span class="hljs-title function_">createAction</span>({
+  <span class="hljs-keyword">const</span> action = <span class="hljs-keyword">await</span> airlock.<span class="hljs-title function_">createAction</span>({
     <span class="hljs-attr">kind</span>: <span class="hljs-string">&quot;calendar.reschedule&quot;</span>,
     <span class="hljs-attr">title</span>: <span class="hljs-string">`Reschedule: <span class="hljs-subst">${change.title}</span>`</span>,
     <span class="hljs-attr">preview</span>: {
@@ -195,10 +195,10 @@ pre code.hljs{display:block;overflow-x:auto}
 
 <span class="hljs-keyword">async</span> <span class="hljs-keyword">function</span> <span class="hljs-title function_">applyIfApproved</span>(<span class="hljs-params"><span class="hljs-attr">actionId</span>: <span class="hljs-built_in">string</span>, <span class="hljs-attr">change</span>: <span class="hljs-title class_">ProposedReschedule</span></span>) {
   <span class="hljs-keyword">try</span> {
-    <span class="hljs-keyword">await</span> impri.<span class="hljs-title function_">awaitDecision</span>(actionId, { <span class="hljs-attr">timeoutS</span>: <span class="hljs-number">3600</span> });
+    <span class="hljs-keyword">await</span> airlock.<span class="hljs-title function_">awaitDecision</span>(actionId, { <span class="hljs-attr">timeoutS</span>: <span class="hljs-number">3600</span> });
   } <span class="hljs-keyword">catch</span> (e) {
-    <span class="hljs-keyword">if</span> (e <span class="hljs-keyword">instanceof</span> <span class="hljs-title class_">ImpriRejected</span> || e <span class="hljs-keyword">instanceof</span> <span class="hljs-title class_">ImpriExpired</span>) {
-      <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-string">`Reschedule not applied: <span class="hljs-subst">${e <span class="hljs-keyword">instanceof</span> ImpriRejected ? <span class="hljs-string">&quot;rejected&quot;</span> : <span class="hljs-string">&quot;expired&quot;</span>}</span>`</span>);
+    <span class="hljs-keyword">if</span> (e <span class="hljs-keyword">instanceof</span> <span class="hljs-title class_">AirlockRejected</span> || e <span class="hljs-keyword">instanceof</span> <span class="hljs-title class_">AirlockExpired</span>) {
+      <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-string">`Reschedule not applied: <span class="hljs-subst">${e <span class="hljs-keyword">instanceof</span> AirlockRejected ? <span class="hljs-string">&quot;rejected&quot;</span> : <span class="hljs-string">&quot;expired&quot;</span>}</span>`</span>);
       <span class="hljs-keyword">return</span>;
     }
     <span class="hljs-keyword">throw</span> e;
@@ -213,7 +213,7 @@ pre code.hljs{display:block;overflow-x:auto}
     <span class="hljs-attr">requestBody</span>: { <span class="hljs-attr">start</span>: { <span class="hljs-attr">dateTime</span>: change.<span class="hljs-property">proposedStart</span> } },
   });
 
-  <span class="hljs-keyword">await</span> impri.<span class="hljs-title function_">reportResult</span>(actionId, <span class="hljs-string">&quot;executed&quot;</span>);
+  <span class="hljs-keyword">await</span> airlock.<span class="hljs-title function_">reportResult</span>(actionId, <span class="hljs-string">&quot;executed&quot;</span>);
 }</code></pre></div>
 <p>The <code>target_url</code> field is doing real work here: it points the reviewer straight at the existing event in their own calendar, so they can check the current state before approving a change to it instead of trusting the agent&#39;s summary alone.</p>
 <hr>
@@ -224,14 +224,14 @@ pre code.hljs{display:block;overflow-x:auto}
 <p>A reschedule proposal that sits unapproved for a day is usually wrong by the time someone gets to it — the meeting may have already happened, or someone else already moved it. Keep <code>expires_in</code> short (the example above uses one hour) and treat an <code>expired</code> action the same as a <code>rejected</code> one: don&#39;t apply it, and have the agent re-check the event&#39;s current state before proposing again.</p>
 <hr>
 <h2 id="what-this-doesn39t-cover">What this doesn&#39;t cover</h2>
-<p>Impri gates the write — it doesn&#39;t understand calendar semantics, detect double-bookings, or know which attendees are important enough to warrant extra caution. That logic stays in your agent or a rules layer in front of it; see <a href="rules">rules</a> for filtering which actions need approval at all versus which can auto-approve. For agents that also draft the invite email itself, <a href="approve-emails-before-your-ai-agent-sends-them">approve emails before your AI agent sends them</a> covers that adjacent gate.</p>
+<p>Airlock gates the write — it doesn&#39;t understand calendar semantics, detect double-bookings, or know which attendees are important enough to warrant extra caution. That logic stays in your agent or a rules layer in front of it; see <a href="rules">rules</a> for filtering which actions need approval at all versus which can auto-approve. For agents that also draft the invite email itself, <a href="approve-emails-before-your-ai-agent-sends-them">approve emails before your AI agent sends them</a> covers that adjacent gate.</p>
 <p><strong>Next step:</strong> <a href="quickstart">quickstart</a> to create a key, then swap the calendar client above for your own — the <a href="sdk-typescript">TypeScript SDK</a> covers the full action/decision API surface used here.</p>
 
-    <aside class="doc-cta" aria-label="Try Impri">
+    <aside class="doc-cta" aria-label="Try Airlock">
   <p class="doc-cta-title">Add an approval step to your own agent</p>
-  <p>Start on Impri Cloud: the Free tier includes 100 approvals a month. Or self-host the MIT-licensed core with Docker Compose, with no tier limits.</p>
+  <p>Start on Airlock Cloud: the Free tier includes 100 approvals a month. Or self-host the MIT-licensed core with Docker Compose, with no tier limits.</p>
   <div class="doc-cta-actions">
-    <a class="btn btn-primary btn-sm" href="https://app.impri.dev/?signup=1">Start free on Impri Cloud</a>
+    <a class="btn btn-primary btn-sm" href="https://app.airlock.dev/?signup=1">Start free on Airlock Cloud</a>
     <a class="btn btn-ghost btn-sm" href="../docs/quickstart">Quick start</a>
     <a class="btn btn-ghost btn-sm" href="../docs/self-hosting">Self-host guide</a>
   </div>
@@ -326,19 +326,19 @@ pre code.hljs{display:block;overflow-x:auto}
 <footer class="footer">
 <div class="wrap footer-inner">
   <a class="brand" href="/">
-    <span class="mark"><svg viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.5 4.5L19 7.5" stroke="white" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Impri
+    <span class="mark"><svg viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.5 4.5L19 7.5" stroke="white" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Airlock
   </a>
   <div>
-    <a href="https://gitlab.com/sekera.radim/impri">GitLab</a>
+    <a href="https://gitlab.com/sekera.radim/airlock">GitLab</a>
     <a href="/docs">Docs</a>
-    <a href="https://gitlab.com/sekera.radim/impri/-/blob/main/LICENSE">MIT License</a>
-    <a href="https://www.npmjs.com/package/@impri/mcp">@impri/mcp</a>
+    <a href="https://gitlab.com/sekera.radim/airlock/-/blob/main/LICENSE">MIT License</a>
+    <a href="https://www.npmjs.com/package/@airlock/mcp">@airlock/mcp</a>
     <a href="/docs/privacy">Privacy</a>
     <a href="/docs/terms">Terms</a>
     <a href="https://sekera.dev">Contact</a>
   </div>
 </div>
-<div class="wrap" style="margin-top:18px"><span class="muted">© 2026 Impri · The imprimatur for your AI agents · Built by <a href="https://sekera.dev" style="color:inherit">Radim Sekera</a>. Also by the same maker: <a href="https://briefgate.dev/?utm_source=impri.dev&amp;utm_medium=referral" style="color:inherit">BriefGate</a> — client intake for agencies and AI agents.</span></div>
+<div class="wrap" style="margin-top:18px"><span class="muted">© 2026 Airlock · The airlockmatur for your AI agents · Built by <a href="https://sekera.dev" style="color:inherit">Radim Sekera</a>. Also by the same maker: <a href="https://briefgate.dev/?utm_source=airlock.dev&amp;utm_medium=referral" style="color:inherit">BriefGate</a> — client intake for agencies and AI agents.</span></div>
 </footer>
 </body>
 </html>

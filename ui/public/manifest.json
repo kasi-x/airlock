@@ -1,6 +1,6 @@
 {
-  "name": "Impri — Approval Inbox",
-  "short_name": "Impri",
+  "name": "Airlock — Approval Inbox",
+  "short_name": "Airlock",
   "description": "Approval inbox for AI agents",
   "start_url": "/",
   "display": "standalone",

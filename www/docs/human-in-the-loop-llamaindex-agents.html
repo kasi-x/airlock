@@ -3,21 +3,21 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>LlamaIndex Human-in-the-Loop: Pause a Tool for Approval — Impri Docs</title>
-<meta name="description" content="LlamaIndex pauses a tool with ctx.wait_for_event until a HumanResponseEvent arrives. Open an Impri card there, save the run, and resume it after the decision.">
+<title>LlamaIndex Human-in-the-Loop: Pause a Tool for Approval — Airlock Docs</title>
+<meta name="description" content="LlamaIndex pauses a tool with ctx.wait_for_event until a HumanResponseEvent arrives. Open an Airlock card there, save the run, and resume it after the decision.">
 <meta name="theme-color" content="#06070d">
-<meta property="og:title" content="LlamaIndex Human-in-the-Loop: Pause a Tool for Approval — Impri Docs">
-<meta property="og:description" content="LlamaIndex pauses a tool with ctx.wait_for_event until a HumanResponseEvent arrives. Open an Impri card there, save the run, and resume it after the decision.">
+<meta property="og:title" content="LlamaIndex Human-in-the-Loop: Pause a Tool for Approval — Airlock Docs">
+<meta property="og:description" content="LlamaIndex pauses a tool with ctx.wait_for_event until a HumanResponseEvent arrives. Open an Airlock card there, save the run, and resume it after the decision.">
 <meta property="og:type" content="article">
-<meta property="og:url" content="https://impri.dev/docs/human-in-the-loop-llamaindex-agents">
-<meta property="og:image" content="https://impri.dev/assets/og/og-docs.png">
+<meta property="og:url" content="https://airlock.dev/docs/human-in-the-loop-llamaindex-agents">
+<meta property="og:image" content="https://airlock.dev/assets/og/og-docs.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
-<meta property="og:image:alt" content="Impri — human-in-the-loop approval inbox for AI agents">
+<meta property="og:image:alt" content="Airlock — human-in-the-loop approval inbox for AI agents">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="https://impri.dev/assets/og/og-docs.png">
-<link rel="canonical" href="https://impri.dev/docs/human-in-the-loop-llamaindex-agents">
-<script type="application/ld+json">{"@context":"https://schema.org","@type":"TechArticle","headline":"LlamaIndex Human-in-the-Loop: Pause a Tool for Approval","description":"LlamaIndex pauses a tool with ctx.wait_for_event until a HumanResponseEvent arrives. Open an Impri card there, save the run, and resume it after the decision.","url":"https://impri.dev/docs/human-in-the-loop-llamaindex-agents","inLanguage":"en","author":{"@type":"Organization","name":"Impri","url":"https://impri.dev"},"publisher":{"@type":"Organization","name":"Impri","url":"https://impri.dev"}}</script>
+<meta name="twitter:image" content="https://airlock.dev/assets/og/og-docs.png">
+<link rel="canonical" href="https://airlock.dev/docs/human-in-the-loop-llamaindex-agents">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"TechArticle","headline":"LlamaIndex Human-in-the-Loop: Pause a Tool for Approval","description":"LlamaIndex pauses a tool with ctx.wait_for_event until a HumanResponseEvent arrives. Open an Airlock card there, save the run, and resume it after the decision.","url":"https://airlock.dev/docs/human-in-the-loop-llamaindex-agents","inLanguage":"en","author":{"@type":"Organization","name":"Airlock","url":"https://airlock.dev"},"publisher":{"@type":"Organization","name":"Airlock","url":"https://airlock.dev"}}</script>
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <link rel="icon" href="/favicon.ico" sizes="32x32">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='9' fill='%236366f1'/%3E%3Cpath d='M9 16.5l4.5 4.5L23 11' stroke='white' stroke-width='3' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
@@ -132,13 +132,13 @@ pre code.hljs{display:block;overflow-x:auto}
 <div class="wrap nav-inner">
   <a class="brand" href="/">
     <span class="mark"><svg viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.5 4.5L19 7.5" stroke="white" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
-    Impri
+    Airlock
   </a>
   <div class="nav-links">
     <a class="link" href="/#how">How it works</a>
     <a class="link" href="/#pricing">Pricing</a>
     <a class="link active-nav" href="../docs">Docs</a>
-    <a class="btn btn-primary btn-sm" href="https://gitlab.com/sekera.radim/impri">GitLab</a>
+    <a class="btn btn-primary btn-sm" href="https://gitlab.com/sekera.radim/airlock">GitLab</a>
   </div>
 </div>
 </nav>
@@ -153,13 +153,13 @@ pre code.hljs{display:block;overflow-x:auto}
       <span>LlamaIndex Human-in-the-Loop: Pause a Tool for Approval</span>
     </nav>
     <h1>LlamaIndex Human-in-the-Loop: Pause a Tool for Approval</h1>
-<p>LlamaIndex pauses a tool with ctx.wait_for_event until a HumanResponseEvent arrives. Open an Impri card there, save the run, and resume it after the decision.</p>
+<p>LlamaIndex pauses a tool with ctx.wait_for_event until a HumanResponseEvent arrives. Open an Airlock card there, save the run, and resume it after the decision.</p>
 <hr>
 <h2 id="how-llamaindex-pauses-a-tool">How LlamaIndex pauses a tool</h2>
 <p>A <code>FunctionAgent</code> tool that takes <code>ctx: Context</code> can stop in the middle and wait: <code>ctx.wait_for_event(HumanResponseEvent, waiter_event=InputRequiredEvent(...))</code> writes the <code>InputRequiredEvent</code> to the event stream, and the caller answers with <code>send_event(HumanResponseEvent(...))</code> (<a href="https://developers.llamaindex.ai/python/framework/understanding/agent/human_in_the_loop/" target="_blank" rel="noopener">LlamaIndex human in the loop</a>). Two lines in the <a href="https://developers.llamaindex.ai/python/workflows-api-reference/context/" target="_blank" rel="noopener">`wait_for_event` reference</a> shape everything below. The runtime &quot;replays the entire step when the event arrives&quot;, so your tool runs again from its first line. And the default timeout is 2000 seconds, about 33 minutes.</p>
-<p>A wiki correction or a refund can wait a day for its reviewer, so don&#39;t keep the process alive. Do what the <a href="https://developers.llamaindex.ai/python/llamaagents/workflows/human_in_the_loop/" target="_blank" rel="noopener">workflows docs</a> suggest: snapshot the run with <code>handler.ctx.to_dict()</code>, cancel it, and restore it with <code>Context.from_dict()</code> when the answer comes. Impri holds the question in between: the tool opens a card, a person approves, edits or rejects it in the inbox, and a second process resumes the run.</p>
+<p>A wiki correction or a refund can wait a day for its reviewer, so don&#39;t keep the process alive. Do what the <a href="https://developers.llamaindex.ai/python/llamaagents/workflows/human_in_the_loop/" target="_blank" rel="noopener">workflows docs</a> suggest: snapshot the run with <code>handler.ctx.to_dict()</code>, cancel it, and restore it with <code>Context.from_dict()</code> when the answer comes. Airlock holds the question in between: the tool opens a card, a person approves, edits or rejects it in the inbox, and a second process resumes the run.</p>
 <h2 id="the-tool-one-card-per-proposed-change">The tool: one card per proposed change</h2>
-<p>The agent below fixes stale wiki pages. Retrieval stays ungated; only the write goes through Impri.</p>
+<p>The agent below fixes stale wiki pages. Retrieval stays ungated; only the write goes through Airlock.</p>
 <div class="code-block"><span class="code-lang">python</span><pre><code class="hljs"><span class="hljs-keyword">import</span> hashlib
 <span class="hljs-keyword">import</span> os
 
@@ -168,8 +168,8 @@ pre code.hljs{display:block;overflow-x:auto}
 <span class="hljs-keyword">from</span> llama_index.core.workflow <span class="hljs-keyword">import</span> Context, HumanResponseEvent, InputRequiredEvent
 <span class="hljs-keyword">from</span> llama_index.llms.openai <span class="hljs-keyword">import</span> OpenAI
 
-IMPRI = os.environ.get(<span class="hljs-string">&quot;IMPRI_BASE_URL&quot;</span>, <span class="hljs-string">&quot;https://api.impri.dev&quot;</span>)
-HEADERS = {<span class="hljs-string">&quot;Authorization&quot;</span>: <span class="hljs-string">f&quot;Bearer <span class="hljs-subst">{os.environ[<span class="hljs-string">&#x27;IMPRI_API_KEY&#x27;</span>]}</span>&quot;</span>}
+AIRLOCK = os.environ.get(<span class="hljs-string">&quot;AIRLOCK_BASE_URL&quot;</span>, <span class="hljs-string">&quot;https://api.airlock.dev&quot;</span>)
+HEADERS = {<span class="hljs-string">&quot;Authorization&quot;</span>: <span class="hljs-string">f&quot;Bearer <span class="hljs-subst">{os.environ[<span class="hljs-string">&#x27;AIRLOCK_API_KEY&#x27;</span>]}</span>&quot;</span>}
 
 
 <span class="hljs-keyword">async</span> <span class="hljs-keyword">def</span> <span class="hljs-title function_">publish_to_wiki</span>(<span class="hljs-params">page_id: <span class="hljs-built_in">str</span>, body: <span class="hljs-built_in">str</span></span>) -&gt; <span class="hljs-built_in">int</span>:
@@ -181,8 +181,8 @@ HEADERS = {<span class="hljs-string">&quot;Authorization&quot;</span>: <span cla
     <span class="hljs-comment"># LlamaIndex replays this whole function when the wait ends, so the POST runs</span>
     <span class="hljs-comment"># twice. The idempotency key makes the second POST return the same card.</span>
     key = <span class="hljs-string">&quot;wiki:&quot;</span> + hashlib.sha256(<span class="hljs-string">f&quot;<span class="hljs-subst">{page_id}</span>\n<span class="hljs-subst">{new_body}</span>&quot;</span>.encode()).hexdigest()
-    <span class="hljs-keyword">async</span> <span class="hljs-keyword">with</span> httpx.AsyncClient(base_url=IMPRI, headers=HEADERS, timeout=<span class="hljs-number">30</span>) <span class="hljs-keyword">as</span> impri:
-        r = <span class="hljs-keyword">await</span> impri.post(<span class="hljs-string">&quot;/v1/actions&quot;</span>, json={
+    <span class="hljs-keyword">async</span> <span class="hljs-keyword">with</span> httpx.AsyncClient(base_url=AIRLOCK, headers=HEADERS, timeout=<span class="hljs-number">30</span>) <span class="hljs-keyword">as</span> airlock:
+        r = <span class="hljs-keyword">await</span> airlock.post(<span class="hljs-string">&quot;/v1/actions&quot;</span>, json={
             <span class="hljs-string">&quot;kind&quot;</span>: <span class="hljs-string">&quot;wiki.page.update&quot;</span>,
             <span class="hljs-string">&quot;title&quot;</span>: <span class="hljs-string">f&quot;Update wiki page <span class="hljs-subst">{page_id}</span>&quot;</span>,
             <span class="hljs-string">&quot;preview&quot;</span>: {<span class="hljs-string">&quot;format&quot;</span>: <span class="hljs-string">&quot;markdown&quot;</span>, <span class="hljs-string">&quot;body&quot;</span>: new_body},
@@ -194,16 +194,16 @@ HEADERS = {<span class="hljs-string">&quot;Authorization&quot;</span>: <span cla
         r.raise_for_status()
         action_id = r.json()[<span class="hljs-string">&quot;id&quot;</span>]
 
-        <span class="hljs-comment"># Pause here. The event only wakes the tool; the verdict comes from Impri.</span>
+        <span class="hljs-comment"># Pause here. The event only wakes the tool; the verdict comes from Airlock.</span>
         <span class="hljs-keyword">await</span> ctx.wait_for_event(
             HumanResponseEvent,
             waiter_id=action_id,
-            waiter_event=InputRequiredEvent(prefix=<span class="hljs-string">&quot;Waiting for Impri&quot;</span>, action_id=action_id),
+            waiter_event=InputRequiredEvent(prefix=<span class="hljs-string">&quot;Waiting for Airlock&quot;</span>, action_id=action_id),
             requirements={<span class="hljs-string">&quot;action_id&quot;</span>: action_id},
             timeout=<span class="hljs-literal">None</span>,
         )
 
-        r = <span class="hljs-keyword">await</span> impri.get(<span class="hljs-string">f&quot;/v1/actions/<span class="hljs-subst">{action_id}</span>&quot;</span>)
+        r = <span class="hljs-keyword">await</span> airlock.get(<span class="hljs-string">f&quot;/v1/actions/<span class="hljs-subst">{action_id}</span>&quot;</span>)
         r.raise_for_status()
         action = r.json()
         <span class="hljs-keyword">if</span> action[<span class="hljs-string">&quot;status&quot;</span>] == <span class="hljs-string">&quot;executed&quot;</span>:
@@ -213,7 +213,7 @@ HEADERS = {<span class="hljs-string">&quot;Authorization&quot;</span>: <span cla
 
         body = action[<span class="hljs-string">&quot;decision&quot;</span>][<span class="hljs-string">&quot;final_preview&quot;</span>][<span class="hljs-string">&quot;body&quot;</span>]  <span class="hljs-comment"># the reviewer&#x27;s edit, if any</span>
         revision = <span class="hljs-keyword">await</span> publish_to_wiki(page_id, body)
-        <span class="hljs-keyword">await</span> impri.post(<span class="hljs-string">f&quot;/v1/actions/<span class="hljs-subst">{action_id}</span>/result&quot;</span>, json={
+        <span class="hljs-keyword">await</span> airlock.post(<span class="hljs-string">f&quot;/v1/actions/<span class="hljs-subst">{action_id}</span>/result&quot;</span>, json={
             <span class="hljs-string">&quot;status&quot;</span>: <span class="hljs-string">&quot;executed&quot;</span>,
             <span class="hljs-string">&quot;payload&quot;</span>: {<span class="hljs-string">&quot;page_id&quot;</span>: page_id, <span class="hljs-string">&quot;revision&quot;</span>: revision},
         })
@@ -231,8 +231,8 @@ agent = FunctionAgent(
 )</code></pre></div>
 <p>What each part is for:</p>
 <ul>
-<li><strong>The idempotency key.</strong> In our runs the POST went out three times per approval: once at the start, once when the restored run replayed the step to rebuild its waiter, once after the event. Impri returns the existing card for a known <code>idempotency_key</code> (200 instead of 201) whatever its status. Without the key, the replay after approval opened a second card and the run waited on that one.</li>
-<li><strong>The verdict comes from Impri, not from the event.</strong> Whoever sends <code>HumanResponseEvent</code> only wakes the tool. <code>GET /v1/actions/:id</code> says whether the card was approved, and <code>decision.final_preview.body</code> holds the text the reviewer signed off on, including their edit (<code>editable: [&quot;preview.body&quot;]</code>).</li>
+<li><strong>The idempotency key.</strong> In our runs the POST went out three times per approval: once at the start, once when the restored run replayed the step to rebuild its waiter, once after the event. Airlock returns the existing card for a known <code>idempotency_key</code> (200 instead of 201) whatever its status. Without the key, the replay after approval opened a second card and the run waited on that one.</li>
+<li><strong>The verdict comes from Airlock, not from the event.</strong> Whoever sends <code>HumanResponseEvent</code> only wakes the tool. <code>GET /v1/actions/:id</code> says whether the card was approved, and <code>decision.final_preview.body</code> holds the text the reviewer signed off on, including their edit (<code>editable: [&quot;preview.body&quot;]</code>).</li>
 <li><strong><code>timeout=None</code>.</strong> With the default, an in-process wait gives up after 2000 seconds and the model gets the tool error &quot;Timed out waiting for HumanResponseEvent&quot; while the card stays pending in the inbox. The card&#39;s own expiry (<code>expires_in</code>, here 3 days, at most 30) is the deadline that counts.</li>
 <li><strong>The result report.</strong> <code>POST /v1/actions/:id/result</code> with <code>executed</code> and a <code>payload</code> puts the revision on the card as <code>result_payload</code>, so the reviewer sees what was written.</li>
 </ul>
@@ -247,7 +247,7 @@ agent = FunctionAgent(
 <span class="hljs-keyword">from</span> llama_index.core.memory <span class="hljs-keyword">import</span> ChatMemoryBuffer
 <span class="hljs-keyword">from</span> llama_index.core.workflow <span class="hljs-keyword">import</span> Context, HumanResponseEvent, InputRequiredEvent
 
-<span class="hljs-keyword">from</span> wiki_agent <span class="hljs-keyword">import</span> HEADERS, IMPRI, agent
+<span class="hljs-keyword">from</span> wiki_agent <span class="hljs-keyword">import</span> HEADERS, AIRLOCK, agent
 
 RUNS = Path(<span class="hljs-string">&quot;runs&quot;</span>)
 RUNS.mkdir(exist_ok=<span class="hljs-literal">True</span>)
@@ -270,10 +270,10 @@ RUNS.mkdir(exist_ok=<span class="hljs-literal">True</span>)
 
 
 <span class="hljs-keyword">async</span> <span class="hljs-keyword">def</span> <span class="hljs-title function_">resume_decided</span>() -&gt; <span class="hljs-literal">None</span>:
-    <span class="hljs-keyword">async</span> <span class="hljs-keyword">with</span> httpx.AsyncClient(base_url=IMPRI, headers=HEADERS, timeout=<span class="hljs-number">30</span>) <span class="hljs-keyword">as</span> impri:
+    <span class="hljs-keyword">async</span> <span class="hljs-keyword">with</span> httpx.AsyncClient(base_url=AIRLOCK, headers=HEADERS, timeout=<span class="hljs-number">30</span>) <span class="hljs-keyword">as</span> airlock:
         <span class="hljs-keyword">for</span> saved <span class="hljs-keyword">in</span> RUNS.glob(<span class="hljs-string">&quot;*.json&quot;</span>):
             action_id = saved.stem
-            r = <span class="hljs-keyword">await</span> impri.get(<span class="hljs-string">f&quot;/v1/actions/<span class="hljs-subst">{action_id}</span>&quot;</span>)
+            r = <span class="hljs-keyword">await</span> airlock.get(<span class="hljs-string">f&quot;/v1/actions/<span class="hljs-subst">{action_id}</span>&quot;</span>)
             r.raise_for_status()
             status = r.json()[<span class="hljs-string">&quot;status&quot;</span>]
             <span class="hljs-keyword">if</span> status == <span class="hljs-string">&quot;pending&quot;</span>:
@@ -294,10 +294,10 @@ RUNS.mkdir(exist_ok=<span class="hljs-literal">True</span>)
         asyncio.run(start(sys.argv[<span class="hljs-number">2</span>]))
     <span class="hljs-keyword">else</span>:
         asyncio.run(resume_decided())</code></pre></div>
-<p><code>python run.py start &quot;Is the on-call doc still accurate?&quot;</code> prints <code>waiting for approval: act_…</code> and exits. Run <code>python run.py resume</code> from cron every minute, or from your webhook handler: set <code>callback_url</code> on the card and Impri posts a signed request when it is decided or expires (see <a href="webhooks">webhooks</a> for the <code>X-Impri-Signature</code> check). A run whose card is still pending is left alone; an expired or rejected one resumes and the tool reports that nothing was published.</p>
+<p><code>python run.py start &quot;Is the on-call doc still accurate?&quot;</code> prints <code>waiting for approval: act_…</code> and exits. Run <code>python run.py resume</code> from cron every minute, or from your webhook handler: set <code>callback_url</code> on the card and Airlock posts a signed request when it is decided or expires (see <a href="webhooks">webhooks</a> for the <code>X-Airlock-Signature</code> check). A run whose card is still pending is left alone; an expired or rejected one resumes and the tool reports that nothing was published.</p>
 <p><strong>The memory step is not optional.</strong> On llama-index-core 0.14.26 with llama-index-workflows 2.26.1, <code>to_dict()</code> skips the agent&#39;s chat memory with an <code>UnserializableKeyWarning</code>. Resumed without it, as in the documented pattern, the run crashed with <code>ValueError: Path &#39;memory&#39; not found in state</code>, after the tool had already published and marked the card <code>executed</code>. <code>ChatMemoryBuffer.to_dict()</code> failed on its messages too, so the runner saves the messages with <code>model_dump(mode=&quot;json&quot;)</code>. It sets the memory on <code>handler.ctx.store</code> after <code>run(ctx=...)</code>: set on the restored context before <code>run()</code>, it was lost.</p>
 <h2 id="what-we-ran">What we ran</h2>
-<p>Both files verbatim, each start and each resume a separate Python process, against a local Impri server. The OpenAI model was swapped for LlamaIndex&#39;s <code>MockFunctionCallingLLM</code> with a scripted tool call, and <code>publish_to_wiki</code> for a stub that records its input.</p>
+<p>Both files verbatim, each start and each resume a separate Python process, against a local Airlock server. The OpenAI model was swapped for LlamaIndex&#39;s <code>MockFunctionCallingLLM</code> with a scripted tool call, and <code>publish_to_wiki</code> for a stub that records its input.</p>
 <div class="table-wrap"><table>
 <thead>
 <tr>
@@ -358,17 +358,17 @@ RUNS.mkdir(exist_ok=<span class="hljs-literal">True</span>)
 </tbody></table>
 </div>
 <h2 id="one-card-at-a-time">One card at a time</h2>
-<p>The last row is why the agent sets <code>allow_parallel_tool_calls=False</code>. When the model proposed two pages in one turn, both cards opened before the runner saw the first <code>InputRequiredEvent</code>, and the snapshot was filed under one of them. On resume, the one event we sent for the first card also released the second waiting call. Because the tool reads its verdict from Impri, it published nothing, but its card stayed in the inbox with no run behind it. With the flag, <code>llama_index.llms.openai</code> sends <code>parallel_tool_calls: false</code>, which asks the model for one tool call per turn. Our scripted model ignores that flag, so we checked the request code, not a live model.</p>
-<h2 id="what-impri-does-here">What Impri does here</h2>
-<p>Impri stores the card, notifies your reviewers, keeps their edit and decision, and records the result. It never reads or writes your wiki: <code>publish_to_wiki</code> is your code and runs only after the tool has read <code>approved</code> from Impri. An agent key needs only the <code>actions</code> scope. Replayed POSTs pass the same checks as new cards: they count toward the 60 requests per minute per key, and on Impri Cloud, once a project has used its plan&#39;s monthly approvals, they get a 402, which the tool raises as an error instead of publishing.</p>
+<p>The last row is why the agent sets <code>allow_parallel_tool_calls=False</code>. When the model proposed two pages in one turn, both cards opened before the runner saw the first <code>InputRequiredEvent</code>, and the snapshot was filed under one of them. On resume, the one event we sent for the first card also released the second waiting call. Because the tool reads its verdict from Airlock, it published nothing, but its card stayed in the inbox with no run behind it. With the flag, <code>llama_index.llms.openai</code> sends <code>parallel_tool_calls: false</code>, which asks the model for one tool call per turn. Our scripted model ignores that flag, so we checked the request code, not a live model.</p>
+<h2 id="what-airlock-does-here">What Airlock does here</h2>
+<p>Airlock stores the card, notifies your reviewers, keeps their edit and decision, and records the result. It never reads or writes your wiki: <code>publish_to_wiki</code> is your code and runs only after the tool has read <code>approved</code> from Airlock. An agent key needs only the <code>actions</code> scope. Replayed POSTs pass the same checks as new cards: they count toward the 60 requests per minute per key, and on Airlock Cloud, once a project has used its plan&#39;s monthly approvals, they get a 402, which the tool raises as an error instead of publishing.</p>
 <h2 id="next-step">Next step</h2>
-<p><a href="https://app.impri.dev/?signup=1" target="_blank" rel="noopener">Start free on Impri Cloud</a>, create an API key, put a harmless <code>publish_to_wiki</code> in place and run <code>start</code>: the card appears in your inbox. To keep everything on your machine, follow <a href="self-hosting">Self-hosting</a> and set <code>IMPRI_BASE_URL=http://localhost:8484</code>. On LangGraph instead? The same pattern with <code>interrupt()</code> is in <a href="human-in-the-loop-langgraph">Human-in-the-loop for LangGraph</a>.</p>
+<p><a href="https://app.airlock.dev/?signup=1" target="_blank" rel="noopener">Start free on Airlock Cloud</a>, create an API key, put a harmless <code>publish_to_wiki</code> in place and run <code>start</code>: the card appears in your inbox. To keep everything on your machine, follow <a href="self-hosting">Self-hosting</a> and set <code>AIRLOCK_BASE_URL=http://localhost:8484</code>. On LangGraph instead? The same pattern with <code>interrupt()</code> is in <a href="human-in-the-loop-langgraph">Human-in-the-loop for LangGraph</a>.</p>
 
-    <aside class="doc-cta" aria-label="Try Impri">
+    <aside class="doc-cta" aria-label="Try Airlock">
   <p class="doc-cta-title">Add an approval step to your own agent</p>
-  <p>Start on Impri Cloud: the Free tier includes 100 approvals a month. Or self-host the MIT-licensed core with Docker Compose, with no tier limits.</p>
+  <p>Start on Airlock Cloud: the Free tier includes 100 approvals a month. Or self-host the MIT-licensed core with Docker Compose, with no tier limits.</p>
   <div class="doc-cta-actions">
-    <a class="btn btn-primary btn-sm" href="https://app.impri.dev/?signup=1">Start free on Impri Cloud</a>
+    <a class="btn btn-primary btn-sm" href="https://app.airlock.dev/?signup=1">Start free on Airlock Cloud</a>
     <a class="btn btn-ghost btn-sm" href="../docs/quickstart">Quick start</a>
     <a class="btn btn-ghost btn-sm" href="../docs/self-hosting">Self-host guide</a>
   </div>
@@ -456,7 +456,7 @@ RUNS.mkdir(exist_ok=<span class="hljs-literal">True</span>)
 <li class="ptoc-h2"><a href="#save-the-run-resume-after-the-decision">Save the run, resume after the decision</a></li>
 <li class="ptoc-h2"><a href="#what-we-ran">What we ran</a></li>
 <li class="ptoc-h2"><a href="#one-card-at-a-time">One card at a time</a></li>
-<li class="ptoc-h2"><a href="#what-impri-does-here">What Impri does here</a></li>
+<li class="ptoc-h2"><a href="#what-airlock-does-here">What Airlock does here</a></li>
 <li class="ptoc-h2"><a href="#next-step">Next step</a></li></ul>
 </nav>
   </aside>
@@ -465,19 +465,19 @@ RUNS.mkdir(exist_ok=<span class="hljs-literal">True</span>)
 <footer class="footer">
 <div class="wrap footer-inner">
   <a class="brand" href="/">
-    <span class="mark"><svg viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.5 4.5L19 7.5" stroke="white" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Impri
+    <span class="mark"><svg viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.5 4.5L19 7.5" stroke="white" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Airlock
   </a>
   <div>
-    <a href="https://gitlab.com/sekera.radim/impri">GitLab</a>
+    <a href="https://gitlab.com/sekera.radim/airlock">GitLab</a>
     <a href="/docs">Docs</a>
-    <a href="https://gitlab.com/sekera.radim/impri/-/blob/main/LICENSE">MIT License</a>
-    <a href="https://www.npmjs.com/package/@impri/mcp">@impri/mcp</a>
+    <a href="https://gitlab.com/sekera.radim/airlock/-/blob/main/LICENSE">MIT License</a>
+    <a href="https://www.npmjs.com/package/@airlock/mcp">@airlock/mcp</a>
     <a href="/docs/privacy">Privacy</a>
     <a href="/docs/terms">Terms</a>
     <a href="https://sekera.dev">Contact</a>
   </div>
 </div>
-<div class="wrap" style="margin-top:18px"><span class="muted">© 2026 Impri · The imprimatur for your AI agents · Built by <a href="https://sekera.dev" style="color:inherit">Radim Sekera</a>. Also by the same maker: <a href="https://briefgate.dev/?utm_source=impri.dev&amp;utm_medium=referral" style="color:inherit">BriefGate</a> — client intake for agencies and AI agents.</span></div>
+<div class="wrap" style="margin-top:18px"><span class="muted">© 2026 Airlock · The airlockmatur for your AI agents · Built by <a href="https://sekera.dev" style="color:inherit">Radim Sekera</a>. Also by the same maker: <a href="https://briefgate.dev/?utm_source=airlock.dev&amp;utm_medium=referral" style="color:inherit">BriefGate</a> — client intake for agencies and AI agents.</span></div>
 </footer>
 </body>
 </html>

@@ -25,17 +25,17 @@ CI pipeline builds + pushes image
 ## Requirements
 
 - Node 18+ (no npm install)
-- Impri API key with `actions` scope
-- Running Impri instance
+- Airlock API key with `actions` scope
+- Running Airlock instance
 
 ## Quick start
 
 ```bash
 # Simulate a deploy
-IMPRI_API_KEY=im_your_key node agent.mjs
+AIRLOCK_API_KEY=im_your_key node agent.mjs
 
 # With real CI context
-IMPRI_API_KEY=im_your_key \
+AIRLOCK_API_KEY=im_your_key \
   GIT_SHA=a3f8c91d \
   GIT_BRANCH=main \
   DEPLOY_ENV=production \
@@ -48,7 +48,7 @@ IMPRI_API_KEY=im_your_key \
 # .github/workflows/deploy.yml (GitHub Actions)
 - name: Gate production deploy
   env:
-    IMPRI_API_KEY: ${{ secrets.IMPRI_API_KEY }}
+    AIRLOCK_API_KEY: ${{ secrets.AIRLOCK_API_KEY }}
     GIT_SHA: ${{ github.sha }}
     GIT_BRANCH: ${{ github.ref_name }}
     DEPLOY_ENV: production
@@ -72,5 +72,5 @@ if (deploy.env !== 'production') {
   await runDeploy(deploy);
   process.exit(0);
 }
-// Production: gate via Impri
+// Production: gate via Airlock
 ```

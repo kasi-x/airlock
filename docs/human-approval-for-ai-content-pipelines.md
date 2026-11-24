@@ -8,7 +8,7 @@ An AI content pipeline that drafts, schedules, and publishes without a human che
 
 Most content pipelines are already multi-stage: an agent researches a topic, drafts a blog post, generates social snippets from it, and pushes everything live on a schedule. The drafting stages are low-risk — nobody sees a bad draft sitting in a database. The risk concentrates entirely at the **publish** step, because that's the one with an audience.
 
-The mistake teams make is putting the review in the wrong place: a Slack message that says "reply 👍 to approve" with no real enforcement behind it, or a cron job that publishes automatically after a fixed delay "in case nobody objects." Neither actually blocks execution. What blocks execution is a status field the publish code checks before it runs — which is what Impri's `/v1/actions` gate gives you.
+The mistake teams make is putting the review in the wrong place: a Slack message that says "reply 👍 to approve" with no real enforcement behind it, or a cron job that publishes automatically after a fixed delay "in case nobody objects." Neither actually blocks execution. What blocks execution is a status field the publish code checks before it runs — which is what Airlock's `/v1/actions` gate gives you.
 
 ## Wiring it into a content pipeline (Python)
 
@@ -18,11 +18,11 @@ The publish function is the only place that touches the CMS API, so it's the onl
 import time
 import httpx
 
-IMPRI_BASE = "https://api.impri.dev"
-HEADERS = {"Authorization": f"Bearer {IMPRI_API_KEY}"}
+AIRLOCK_BASE = "https://api.airlock.dev"
+HEADERS = {"Authorization": f"Bearer {AIRLOCK_API_KEY}"}
 
 def request_publish_approval(post):
-    resp = httpx.post(f"{IMPRI_BASE}/v1/actions", headers=HEADERS, json={
+    resp = httpx.post(f"{AIRLOCK_BASE}/v1/actions", headers=HEADERS, json={
         "kind": "blog.publish",
         "title": f"Publish: {post['title']}",
         "preview": {"format": "markdown", "body": post["body"]},
@@ -35,7 +35,7 @@ def request_publish_approval(post):
 
 def wait_and_publish(action_id, post):
     while True:
-        r = httpx.get(f"{IMPRI_BASE}/v1/actions/{action_id}", headers=HEADERS).json()
+        r = httpx.get(f"{AIRLOCK_BASE}/v1/actions/{action_id}", headers=HEADERS).json()
         if r["status"] != "pending":
             break
         time.sleep(15)
@@ -46,7 +46,7 @@ def wait_and_publish(action_id, post):
     final_body = r["decision"]["final_preview"]["body"]  # carries any human edits
     cms_publish(post["id"], final_body)
 
-    httpx.post(f"{IMPRI_BASE}/v1/actions/{action_id}/result", headers=HEADERS,
+    httpx.post(f"{AIRLOCK_BASE}/v1/actions/{action_id}/result", headers=HEADERS,
                json={"status": "executed"})
 ```
 
@@ -73,6 +73,6 @@ Content reviewers are rarely at a desk when a draft is ready. Route the notifica
 
 ## What this doesn't cover
 
-Impri doesn't review content quality — it surfaces the draft to whichever human you've routed it to and trusts their judgment. It also isn't a scheduling engine; if your pipeline needs "publish at 9am on the day with the most engagement," that logic stays in your pipeline and only the final publish call goes through the gate. And expiry is real: a draft that sits unreviewed past `expires_in` moves to `expired` and won't publish, by design — stale drafts about a news cycle that's already passed shouldn't go out just because someone finally checked the inbox.
+Airlock doesn't review content quality — it surfaces the draft to whichever human you've routed it to and trusts their judgment. It also isn't a scheduling engine; if your pipeline needs "publish at 9am on the day with the most engagement," that logic stays in your pipeline and only the final publish call goes through the gate. And expiry is real: a draft that sits unreviewed past `expires_in` moves to `expired` and won't publish, by design — stale drafts about a news cycle that's already passed shouldn't go out just because someone finally checked the inbox.
 
 Next: [quickstart](quickstart.md) to get an API key, or [the Python SDK reference](sdk-python.md) if you'd rather not hand-roll the `httpx` calls above.

@@ -3,21 +3,21 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Add a Human Approval Step to Any MCP Tool — Impri Docs</title>
+<title>Add a Human Approval Step to Any MCP Tool — Airlock Docs</title>
 <meta name="description" content="Wrap any MCP tool's execute handler so it pauses for human approval before running, turning a one-shot agent action into a reviewable, auditable one.">
 <meta name="theme-color" content="#06070d">
-<meta property="og:title" content="Add a Human Approval Step to Any MCP Tool — Impri Docs">
+<meta property="og:title" content="Add a Human Approval Step to Any MCP Tool — Airlock Docs">
 <meta property="og:description" content="Wrap any MCP tool's execute handler so it pauses for human approval before running, turning a one-shot agent action into a reviewable, auditable one.">
 <meta property="og:type" content="article">
-<meta property="og:url" content="https://impri.dev/docs/how-to-add-a-review-step-to-an-mcp-tool">
-<meta property="og:image" content="https://impri.dev/assets/og/og-docs.png">
+<meta property="og:url" content="https://airlock.dev/docs/how-to-add-a-review-step-to-an-mcp-tool">
+<meta property="og:image" content="https://airlock.dev/assets/og/og-docs.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
-<meta property="og:image:alt" content="Impri — human-in-the-loop approval inbox for AI agents">
+<meta property="og:image:alt" content="Airlock — human-in-the-loop approval inbox for AI agents">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="https://impri.dev/assets/og/og-docs.png">
-<link rel="canonical" href="https://impri.dev/docs/how-to-add-a-review-step-to-an-mcp-tool">
-<script type="application/ld+json">{"@context":"https://schema.org","@type":"TechArticle","headline":"Add a Human Approval Step to Any MCP Tool","description":"Wrap any MCP tool's execute handler so it pauses for human approval before running, turning a one-shot agent action into a reviewable, auditable one.","url":"https://impri.dev/docs/how-to-add-a-review-step-to-an-mcp-tool","inLanguage":"en","author":{"@type":"Organization","name":"Impri","url":"https://impri.dev"},"publisher":{"@type":"Organization","name":"Impri","url":"https://impri.dev"}}</script>
+<meta name="twitter:image" content="https://airlock.dev/assets/og/og-docs.png">
+<link rel="canonical" href="https://airlock.dev/docs/how-to-add-a-review-step-to-an-mcp-tool">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"TechArticle","headline":"Add a Human Approval Step to Any MCP Tool","description":"Wrap any MCP tool's execute handler so it pauses for human approval before running, turning a one-shot agent action into a reviewable, auditable one.","url":"https://airlock.dev/docs/how-to-add-a-review-step-to-an-mcp-tool","inLanguage":"en","author":{"@type":"Organization","name":"Airlock","url":"https://airlock.dev"},"publisher":{"@type":"Organization","name":"Airlock","url":"https://airlock.dev"}}</script>
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <link rel="icon" href="/favicon.ico" sizes="32x32">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='9' fill='%236366f1'/%3E%3Cpath d='M9 16.5l4.5 4.5L23 11' stroke='white' stroke-width='3' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
@@ -132,13 +132,13 @@ pre code.hljs{display:block;overflow-x:auto}
 <div class="wrap nav-inner">
   <a class="brand" href="/">
     <span class="mark"><svg viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.5 4.5L19 7.5" stroke="white" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
-    Impri
+    Airlock
   </a>
   <div class="nav-links">
     <a class="link" href="/#how">How it works</a>
     <a class="link" href="/#pricing">Pricing</a>
     <a class="link active-nav" href="../docs">Docs</a>
-    <a class="btn btn-primary btn-sm" href="https://gitlab.com/sekera.radim/impri">GitLab</a>
+    <a class="btn btn-primary btn-sm" href="https://gitlab.com/sekera.radim/airlock">GitLab</a>
   </div>
 </div>
 </nav>
@@ -157,7 +157,7 @@ pre code.hljs{display:block;overflow-x:auto}
 <hr>
 <h2 id="the-problem-mcp-tools-execute-the-moment-they39re-called">The problem: MCP tools execute the moment they&#39;re called</h2>
 <p>Model Context Protocol tools are designed to run as soon as the client invokes them. That&#39;s fine for a <code>read_file</code> or <code>search_docs</code> tool. It&#39;s a problem for a tool like <code>send_invoice</code>, <code>delete_repo_branch</code>, or <code>post_to_crm</code> — the MCP client (Claude Code, Claude Desktop, a custom agent runtime) calls the tool, the tool&#39;s <code>execute</code> function runs, and the side effect happens. There is no built-in pause in the protocol.</p>
-<p>If you own the MCP server, you can add that pause yourself: wrap the tool&#39;s handler so it pushes an Impri action first and only calls the real handler after approval.</p>
+<p>If you own the MCP server, you can add that pause yourself: wrap the tool&#39;s handler so it pushes an Airlock action first and only calls the real handler after approval.</p>
 <hr>
 <h2 id="wrapping-a-tool-handler">Wrapping a tool handler</h2>
 <p>Say your MCP server exposes a <code>send_invoice</code> tool, implemented with the TypeScript MCP SDK. The unguarded version looks like this:</p>
@@ -169,16 +169,16 @@ pre code.hljs{display:block;overflow-x:auto}
     <span class="hljs-keyword">return</span> { <span class="hljs-attr">content</span>: [{ <span class="hljs-attr">type</span>: <span class="hljs-string">&quot;text&quot;</span>, <span class="hljs-attr">text</span>: <span class="hljs-string">&quot;Invoice sent.&quot;</span> }] };
   }
 );</code></pre></div>
-<p>Add a gate by pushing an Impri action before the real call, and blocking on the decision:</p>
-<div class="code-block"><span class="code-lang">typescript</span><pre><code class="hljs"><span class="hljs-keyword">import</span> { <span class="hljs-title class_">ImpriClient</span> } <span class="hljs-keyword">from</span> <span class="hljs-string">&quot;@impri/sdk&quot;</span>;
+<p>Add a gate by pushing an Airlock action before the real call, and blocking on the decision:</p>
+<div class="code-block"><span class="code-lang">typescript</span><pre><code class="hljs"><span class="hljs-keyword">import</span> { <span class="hljs-title class_">AirlockClient</span> } <span class="hljs-keyword">from</span> <span class="hljs-string">&quot;@airlock/sdk&quot;</span>;
 
-<span class="hljs-keyword">const</span> impri = <span class="hljs-keyword">new</span> <span class="hljs-title class_">ImpriClient</span>({ <span class="hljs-attr">apiKey</span>: process.<span class="hljs-property">env</span>.<span class="hljs-property">IMPRI_API_KEY</span> });
+<span class="hljs-keyword">const</span> airlock = <span class="hljs-keyword">new</span> <span class="hljs-title class_">AirlockClient</span>({ <span class="hljs-attr">apiKey</span>: process.<span class="hljs-property">env</span>.<span class="hljs-property">AIRLOCK_API_KEY</span> });
 
 server.<span class="hljs-title function_">tool</span>(
   <span class="hljs-string">&quot;send_invoice&quot;</span>,
   { <span class="hljs-attr">customerId</span>: z.<span class="hljs-title function_">string</span>(), <span class="hljs-attr">amountCents</span>: z.<span class="hljs-title function_">number</span>() },
   <span class="hljs-title function_">async</span> ({ customerId, amountCents }) =&gt; {
-    <span class="hljs-keyword">const</span> action = <span class="hljs-keyword">await</span> impri.<span class="hljs-title function_">createAction</span>({
+    <span class="hljs-keyword">const</span> action = <span class="hljs-keyword">await</span> airlock.<span class="hljs-title function_">createAction</span>({
       <span class="hljs-attr">kind</span>: <span class="hljs-string">&quot;invoice.send&quot;</span>,
       <span class="hljs-attr">title</span>: <span class="hljs-string">`Send invoice: customer <span class="hljs-subst">${customerId}</span>, $<span class="hljs-subst">${amountCents / <span class="hljs-number">100</span>}</span>`</span>,
       <span class="hljs-attr">preview</span>: {
@@ -188,18 +188,18 @@ server.<span class="hljs-title function_">tool</span>(
       <span class="hljs-attr">expires_in</span>: <span class="hljs-number">3600</span>,
     });
 
-    <span class="hljs-keyword">const</span> decision = <span class="hljs-keyword">await</span> impri.<span class="hljs-title function_">awaitDecision</span>(action.<span class="hljs-property">id</span>, { <span class="hljs-attr">timeoutS</span>: <span class="hljs-number">1800</span> });
+    <span class="hljs-keyword">const</span> decision = <span class="hljs-keyword">await</span> airlock.<span class="hljs-title function_">awaitDecision</span>(action.<span class="hljs-property">id</span>, { <span class="hljs-attr">timeoutS</span>: <span class="hljs-number">1800</span> });
 
     <span class="hljs-keyword">if</span> (decision.<span class="hljs-property">status</span> !== <span class="hljs-string">&quot;approved&quot;</span>) {
       <span class="hljs-keyword">return</span> { <span class="hljs-attr">content</span>: [{ <span class="hljs-attr">type</span>: <span class="hljs-string">&quot;text&quot;</span>, <span class="hljs-attr">text</span>: <span class="hljs-string">`Not sent: <span class="hljs-subst">${decision.status}</span>`</span> }] };
     }
 
     <span class="hljs-keyword">await</span> billingApi.<span class="hljs-title function_">sendInvoice</span>(customerId, amountCents);
-    <span class="hljs-keyword">await</span> impri.<span class="hljs-title function_">reportResult</span>(action.<span class="hljs-property">id</span>, <span class="hljs-string">&quot;executed&quot;</span>);
+    <span class="hljs-keyword">await</span> airlock.<span class="hljs-title function_">reportResult</span>(action.<span class="hljs-property">id</span>, <span class="hljs-string">&quot;executed&quot;</span>);
     <span class="hljs-keyword">return</span> { <span class="hljs-attr">content</span>: [{ <span class="hljs-attr">type</span>: <span class="hljs-string">&quot;text&quot;</span>, <span class="hljs-attr">text</span>: <span class="hljs-string">&quot;Invoice sent after approval.&quot;</span> }] };
   }
 );</code></pre></div>
-<p>The <code>billingApi.sendInvoice</code> call only appears once, inside the <code>approved</code> branch. There is no code path where the tool executes without first getting back <code>status: &quot;approved&quot;</code> from Impri. (The REST API also accepts optional <code>idempotent</code> and <code>undo</code> hints on <code>POST /v1/actions</code>; the TypeScript SDK&#39;s <code>createAction</code> params don&#39;t expose them yet — use a raw <code>fetch</code> call if you need them today.)</p>
+<p>The <code>billingApi.sendInvoice</code> call only appears once, inside the <code>approved</code> branch. There is no code path where the tool executes without first getting back <code>status: &quot;approved&quot;</code> from Airlock. (The REST API also accepts optional <code>idempotent</code> and <code>undo</code> hints on <code>POST /v1/actions</code>; the TypeScript SDK&#39;s <code>createAction</code> params don&#39;t expose them yet — use a raw <code>fetch</code> call if you need them today.)</p>
 <hr>
 <h2 id="why-wrap-the-handler-instead-of-the-agent39s-prompt">Why wrap the handler instead of the agent&#39;s prompt</h2>
 <p>You could instead tell the agent in its system prompt &quot;always ask before calling send_invoice.&quot; That relies on the model choosing to comply every time, and gives you no record of what was actually approved. Wrapping the handler moves the check into code the agent can&#39;t skip: the MCP client can only get a result back from <code>send_invoice</code> by going through the wrapped function, and that function&#39;s only path to <code>billingApi.sendInvoice</code> runs after the approval check.</p>
@@ -211,7 +211,7 @@ server.<span class="hljs-title function_">tool</span>(
 <thead>
 <tr>
 <th>Tool type</th>
-<th>Wrap with Impri?</th>
+<th>Wrap with Airlock?</th>
 </tr>
 </thead>
 <tbody><tr>
@@ -239,16 +239,16 @@ server.<span class="hljs-title function_">tool</span>(
 <li>Set <code>timeoutS</code> in <code>awaitDecision</code> well under any client-side request timeout, and treat a timeout as &quot;not yet decided&quot; rather than &quot;rejected&quot; — check <code>GET /v1/actions/:id</code> later instead of re-pushing.</li>
 <li>For tools where the human might take hours, don&#39;t block synchronously at all: push the action, return an &quot;awaiting approval, action id <code>act_xyz</code>&quot; message to the agent, and let a follow-up tool call (or a webhook — see <a href="webhooks">webhooks</a>) resolve it later.</li>
 </ul>
-<p>For the full server setup — configuring <code>@impri/mcp</code> as a standalone process versus building the gate directly into your own server as shown above — see the <a href="mcp">MCP integration guide</a>. If your agent runs on the Claude Agent SDK rather than a raw MCP client, <a href="human-approval-claude-agent-sdk">the Claude Agent SDK guide</a> puts the same review step in the SDK&#39;s permission callback.</p>
+<p>For the full server setup — configuring <code>@airlock/mcp</code> as a standalone process versus building the gate directly into your own server as shown above — see the <a href="mcp">MCP integration guide</a>. If your agent runs on the Claude Agent SDK rather than a raw MCP client, <a href="human-approval-claude-agent-sdk">the Claude Agent SDK guide</a> puts the same review step in the SDK&#39;s permission callback.</p>
 <hr>
 <h2 id="next-step">Next step</h2>
 <p>Start with <a href="quickstart">the quickstart</a> to get an API key, then wrap your first tool handler using the pattern above.</p>
 
-    <aside class="doc-cta" aria-label="Try Impri">
+    <aside class="doc-cta" aria-label="Try Airlock">
   <p class="doc-cta-title">Add an approval step to your own agent</p>
-  <p>Start on Impri Cloud: the Free tier includes 100 approvals a month. Or self-host the MIT-licensed core with Docker Compose, with no tier limits.</p>
+  <p>Start on Airlock Cloud: the Free tier includes 100 approvals a month. Or self-host the MIT-licensed core with Docker Compose, with no tier limits.</p>
   <div class="doc-cta-actions">
-    <a class="btn btn-primary btn-sm" href="https://app.impri.dev/?signup=1">Start free on Impri Cloud</a>
+    <a class="btn btn-primary btn-sm" href="https://app.airlock.dev/?signup=1">Start free on Airlock Cloud</a>
     <a class="btn btn-ghost btn-sm" href="../docs/quickstart">Quick start</a>
     <a class="btn btn-ghost btn-sm" href="../docs/self-hosting">Self-host guide</a>
   </div>
@@ -344,19 +344,19 @@ server.<span class="hljs-title function_">tool</span>(
 <footer class="footer">
 <div class="wrap footer-inner">
   <a class="brand" href="/">
-    <span class="mark"><svg viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.5 4.5L19 7.5" stroke="white" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Impri
+    <span class="mark"><svg viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.5 4.5L19 7.5" stroke="white" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Airlock
   </a>
   <div>
-    <a href="https://gitlab.com/sekera.radim/impri">GitLab</a>
+    <a href="https://gitlab.com/sekera.radim/airlock">GitLab</a>
     <a href="/docs">Docs</a>
-    <a href="https://gitlab.com/sekera.radim/impri/-/blob/main/LICENSE">MIT License</a>
-    <a href="https://www.npmjs.com/package/@impri/mcp">@impri/mcp</a>
+    <a href="https://gitlab.com/sekera.radim/airlock/-/blob/main/LICENSE">MIT License</a>
+    <a href="https://www.npmjs.com/package/@airlock/mcp">@airlock/mcp</a>
     <a href="/docs/privacy">Privacy</a>
     <a href="/docs/terms">Terms</a>
     <a href="https://sekera.dev">Contact</a>
   </div>
 </div>
-<div class="wrap" style="margin-top:18px"><span class="muted">© 2026 Impri · The imprimatur for your AI agents · Built by <a href="https://sekera.dev" style="color:inherit">Radim Sekera</a>. Also by the same maker: <a href="https://briefgate.dev/?utm_source=impri.dev&amp;utm_medium=referral" style="color:inherit">BriefGate</a> — client intake for agencies and AI agents.</span></div>
+<div class="wrap" style="margin-top:18px"><span class="muted">© 2026 Airlock · The airlockmatur for your AI agents · Built by <a href="https://sekera.dev" style="color:inherit">Radim Sekera</a>. Also by the same maker: <a href="https://briefgate.dev/?utm_source=airlock.dev&amp;utm_medium=referral" style="color:inherit">BriefGate</a> — client intake for agencies and AI agents.</span></div>
 </footer>
 </body>
 </html>

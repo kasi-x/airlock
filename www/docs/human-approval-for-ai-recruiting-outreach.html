@@ -3,21 +3,21 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Human Approval for AI Recruiting Outreach — Impri Docs</title>
+<title>Human Approval for AI Recruiting Outreach — Airlock Docs</title>
 <meta name="description" content="A sourcing agent that drafts and sends candidate messages unsupervised will eventually send something a recruiter would never sign their name to — this shows…">
 <meta name="theme-color" content="#06070d">
-<meta property="og:title" content="Human Approval for AI Recruiting Outreach — Impri Docs">
+<meta property="og:title" content="Human Approval for AI Recruiting Outreach — Airlock Docs">
 <meta property="og:description" content="A sourcing agent that drafts and sends candidate messages unsupervised will eventually send something a recruiter would never sign their name to — this shows…">
 <meta property="og:type" content="article">
-<meta property="og:url" content="https://impri.dev/docs/human-approval-for-ai-recruiting-outreach">
-<meta property="og:image" content="https://impri.dev/assets/og/og-docs.png">
+<meta property="og:url" content="https://airlock.dev/docs/human-approval-for-ai-recruiting-outreach">
+<meta property="og:image" content="https://airlock.dev/assets/og/og-docs.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
-<meta property="og:image:alt" content="Impri — human-in-the-loop approval inbox for AI agents">
+<meta property="og:image:alt" content="Airlock — human-in-the-loop approval inbox for AI agents">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="https://impri.dev/assets/og/og-docs.png">
-<link rel="canonical" href="https://impri.dev/docs/human-approval-for-ai-recruiting-outreach">
-<script type="application/ld+json">{"@context":"https://schema.org","@type":"TechArticle","headline":"Human Approval for AI Recruiting Outreach","description":"A sourcing agent that drafts and sends candidate messages unsupervised will eventually send something a recruiter would never sign their name to — this shows…","url":"https://impri.dev/docs/human-approval-for-ai-recruiting-outreach","inLanguage":"en","author":{"@type":"Organization","name":"Impri","url":"https://impri.dev"},"publisher":{"@type":"Organization","name":"Impri","url":"https://impri.dev"}}</script>
+<meta name="twitter:image" content="https://airlock.dev/assets/og/og-docs.png">
+<link rel="canonical" href="https://airlock.dev/docs/human-approval-for-ai-recruiting-outreach">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"TechArticle","headline":"Human Approval for AI Recruiting Outreach","description":"A sourcing agent that drafts and sends candidate messages unsupervised will eventually send something a recruiter would never sign their name to — this shows…","url":"https://airlock.dev/docs/human-approval-for-ai-recruiting-outreach","inLanguage":"en","author":{"@type":"Organization","name":"Airlock","url":"https://airlock.dev"},"publisher":{"@type":"Organization","name":"Airlock","url":"https://airlock.dev"}}</script>
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <link rel="icon" href="/favicon.ico" sizes="32x32">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='9' fill='%236366f1'/%3E%3Cpath d='M9 16.5l4.5 4.5L23 11' stroke='white' stroke-width='3' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
@@ -132,13 +132,13 @@ pre code.hljs{display:block;overflow-x:auto}
 <div class="wrap nav-inner">
   <a class="brand" href="/">
     <span class="mark"><svg viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.5 4.5L19 7.5" stroke="white" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
-    Impri
+    Airlock
   </a>
   <div class="nav-links">
     <a class="link" href="/#how">How it works</a>
     <a class="link" href="/#pricing">Pricing</a>
     <a class="link active-nav" href="../docs">Docs</a>
-    <a class="btn btn-primary btn-sm" href="https://gitlab.com/sekera.radim/impri">GitLab</a>
+    <a class="btn btn-primary btn-sm" href="https://gitlab.com/sekera.radim/airlock">GitLab</a>
   </div>
 </div>
 </nav>
@@ -165,13 +165,13 @@ pre code.hljs{display:block;overflow-x:auto}
 <span class="hljs-keyword">import</span> time
 <span class="hljs-keyword">import</span> requests
 
-IMPRI_KEY = os.environ[<span class="hljs-string">&quot;IMPRI_API_KEY&quot;</span>]
-BASE = <span class="hljs-string">&quot;https://api.impri.dev&quot;</span>
+AIRLOCK_KEY = os.environ[<span class="hljs-string">&quot;AIRLOCK_API_KEY&quot;</span>]
+BASE = <span class="hljs-string">&quot;https://api.airlock.dev&quot;</span>
 
 <span class="hljs-keyword">def</span> <span class="hljs-title function_">request_approval</span>(<span class="hljs-params">candidate, role, draft_message, source_url</span>):
     resp = requests.post(
         <span class="hljs-string">f&quot;<span class="hljs-subst">{BASE}</span>/v1/actions&quot;</span>,
-        headers={<span class="hljs-string">&quot;Authorization&quot;</span>: <span class="hljs-string">f&quot;Bearer <span class="hljs-subst">{IMPRI_KEY}</span>&quot;</span>},
+        headers={<span class="hljs-string">&quot;Authorization&quot;</span>: <span class="hljs-string">f&quot;Bearer <span class="hljs-subst">{AIRLOCK_KEY}</span>&quot;</span>},
         json={
             <span class="hljs-string">&quot;kind&quot;</span>: <span class="hljs-string">&quot;recruiting.outreach&quot;</span>,
             <span class="hljs-string">&quot;title&quot;</span>: <span class="hljs-string">f&quot;Outreach to <span class="hljs-subst">{candidate[<span class="hljs-string">&#x27;name&#x27;</span>]}</span> — <span class="hljs-subst">{role}</span>&quot;</span>,
@@ -196,7 +196,7 @@ BASE = <span class="hljs-string">&quot;https://api.impri.dev&quot;</span>
     <span class="hljs-keyword">while</span> time.time() &lt; deadline:
         r = requests.get(
             <span class="hljs-string">f&quot;<span class="hljs-subst">{BASE}</span>/v1/actions/<span class="hljs-subst">{action_id}</span>&quot;</span>,
-            headers={<span class="hljs-string">&quot;Authorization&quot;</span>: <span class="hljs-string">f&quot;Bearer <span class="hljs-subst">{IMPRI_KEY}</span>&quot;</span>},
+            headers={<span class="hljs-string">&quot;Authorization&quot;</span>: <span class="hljs-string">f&quot;Bearer <span class="hljs-subst">{AIRLOCK_KEY}</span>&quot;</span>},
         ).json()
         <span class="hljs-keyword">if</span> r[<span class="hljs-string">&quot;status&quot;</span>] != <span class="hljs-string">&quot;pending&quot;</span>:
             <span class="hljs-keyword">return</span> r
@@ -210,7 +210,7 @@ result = await_decision(action_id)
     send_linkedin_message(candidate[<span class="hljs-string">&quot;profile_url&quot;</span>], result[<span class="hljs-string">&quot;decision&quot;</span>][<span class="hljs-string">&quot;final_preview&quot;</span>][<span class="hljs-string">&quot;body&quot;</span>])
     requests.post(
         <span class="hljs-string">f&quot;<span class="hljs-subst">{BASE}</span>/v1/actions/<span class="hljs-subst">{action_id}</span>/result&quot;</span>,
-        headers={<span class="hljs-string">&quot;Authorization&quot;</span>: <span class="hljs-string">f&quot;Bearer <span class="hljs-subst">{IMPRI_KEY}</span>&quot;</span>},
+        headers={<span class="hljs-string">&quot;Authorization&quot;</span>: <span class="hljs-string">f&quot;Bearer <span class="hljs-subst">{AIRLOCK_KEY}</span>&quot;</span>},
         json={<span class="hljs-string">&quot;status&quot;</span>: <span class="hljs-string">&quot;executed&quot;</span>},
     )</code></pre></div>
 <p>The recruiter sees a card with the candidate&#39;s name, the claim the agent is making about them, and the exact message text — editable before it goes out. <code>idempotent: false</code> shows a warning badge on the card, since re-sending outreach to a candidate who already replied is its own kind of mistake.</p>
@@ -241,20 +241,20 @@ result = await_decision(action_id)
 </tr>
 </tbody></table>
 </div>
-<p>None of this requires Impri to understand recruiting — it only needs to hold the message and the decision. The judgment stays with the recruiter, same as it would reviewing a draft in their own outbox.</p>
+<p>None of this requires Airlock to understand recruiting — it only needs to hold the message and the decision. The judgment stays with the recruiter, same as it would reviewing a draft in their own outbox.</p>
 <hr>
 <h2 id="batches-and-multi-touch-sequences">Batches and multi-touch sequences</h2>
-<p>Sourcing agents typically queue outreach in batches — 20 candidates for one req, sent over a morning. Push one action per candidate rather than one action for the batch; a recruiter approving or editing message 3 shouldn&#39;t block a decision on message 17. For a second-touch follow-up, treat it as its own action referencing the same candidate — Impri doesn&#39;t model sequences itself, so any &quot;wait 4 days, then follow up&quot; logic lives in your agent, with each follow-up message gated the same way as the first.</p>
+<p>Sourcing agents typically queue outreach in batches — 20 candidates for one req, sent over a morning. Push one action per candidate rather than one action for the batch; a recruiter approving or editing message 3 shouldn&#39;t block a decision on message 17. For a second-touch follow-up, treat it as its own action referencing the same candidate — Airlock doesn&#39;t model sequences itself, so any &quot;wait 4 days, then follow up&quot; logic lives in your agent, with each follow-up message gated the same way as the first.</p>
 <hr>
 <h2 id="where-this-stops">Where this stops</h2>
-<p>Impri holds the message and the decision; it doesn&#39;t know your ATS, doesn&#39;t check compliance rules, and doesn&#39;t verify the candidate data is accurate — that&#39;s still your agent&#39;s and your recruiter&#39;s job. It&#39;s a real gate only if the agent has no other path to LinkedIn or your outreach tool; wrap the sending call itself so it can&#39;t run without an approved decision, per <a href="how-to-add-human-approval-to-an-ai-agent">the integration pattern</a>.</p>
-<p>New to Impri? Start with the <a href="quickstart">quickstart</a> to get an API key, or see the <a href="sdk-python">Python SDK</a> if you&#39;d rather not hand-roll the REST calls above.</p>
+<p>Airlock holds the message and the decision; it doesn&#39;t know your ATS, doesn&#39;t check compliance rules, and doesn&#39;t verify the candidate data is accurate — that&#39;s still your agent&#39;s and your recruiter&#39;s job. It&#39;s a real gate only if the agent has no other path to LinkedIn or your outreach tool; wrap the sending call itself so it can&#39;t run without an approved decision, per <a href="how-to-add-human-approval-to-an-ai-agent">the integration pattern</a>.</p>
+<p>New to Airlock? Start with the <a href="quickstart">quickstart</a> to get an API key, or see the <a href="sdk-python">Python SDK</a> if you&#39;d rather not hand-roll the REST calls above.</p>
 
-    <aside class="doc-cta" aria-label="Try Impri">
+    <aside class="doc-cta" aria-label="Try Airlock">
   <p class="doc-cta-title">Add an approval step to your own agent</p>
-  <p>Start on Impri Cloud: the Free tier includes 100 approvals a month. Or self-host the MIT-licensed core with Docker Compose, with no tier limits.</p>
+  <p>Start on Airlock Cloud: the Free tier includes 100 approvals a month. Or self-host the MIT-licensed core with Docker Compose, with no tier limits.</p>
   <div class="doc-cta-actions">
-    <a class="btn btn-primary btn-sm" href="https://app.impri.dev/?signup=1">Start free on Impri Cloud</a>
+    <a class="btn btn-primary btn-sm" href="https://app.airlock.dev/?signup=1">Start free on Airlock Cloud</a>
     <a class="btn btn-ghost btn-sm" href="../docs/quickstart">Quick start</a>
     <a class="btn btn-ghost btn-sm" href="../docs/self-hosting">Self-host guide</a>
   </div>
@@ -349,19 +349,19 @@ result = await_decision(action_id)
 <footer class="footer">
 <div class="wrap footer-inner">
   <a class="brand" href="/">
-    <span class="mark"><svg viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.5 4.5L19 7.5" stroke="white" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Impri
+    <span class="mark"><svg viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.5 4.5L19 7.5" stroke="white" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Airlock
   </a>
   <div>
-    <a href="https://gitlab.com/sekera.radim/impri">GitLab</a>
+    <a href="https://gitlab.com/sekera.radim/airlock">GitLab</a>
     <a href="/docs">Docs</a>
-    <a href="https://gitlab.com/sekera.radim/impri/-/blob/main/LICENSE">MIT License</a>
-    <a href="https://www.npmjs.com/package/@impri/mcp">@impri/mcp</a>
+    <a href="https://gitlab.com/sekera.radim/airlock/-/blob/main/LICENSE">MIT License</a>
+    <a href="https://www.npmjs.com/package/@airlock/mcp">@airlock/mcp</a>
     <a href="/docs/privacy">Privacy</a>
     <a href="/docs/terms">Terms</a>
     <a href="https://sekera.dev">Contact</a>
   </div>
 </div>
-<div class="wrap" style="margin-top:18px"><span class="muted">© 2026 Impri · The imprimatur for your AI agents · Built by <a href="https://sekera.dev" style="color:inherit">Radim Sekera</a>. Also by the same maker: <a href="https://briefgate.dev/?utm_source=impri.dev&amp;utm_medium=referral" style="color:inherit">BriefGate</a> — client intake for agencies and AI agents.</span></div>
+<div class="wrap" style="margin-top:18px"><span class="muted">© 2026 Airlock · The airlockmatur for your AI agents · Built by <a href="https://sekera.dev" style="color:inherit">Radim Sekera</a>. Also by the same maker: <a href="https://briefgate.dev/?utm_source=airlock.dev&amp;utm_medium=referral" style="color:inherit">BriefGate</a> — client intake for agencies and AI agents.</span></div>
 </footer>
 </body>
 </html>

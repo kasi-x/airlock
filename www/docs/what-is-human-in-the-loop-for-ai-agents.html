@@ -3,21 +3,21 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>What Is Human-in-the-Loop for AI Agents? — Impri Docs</title>
+<title>What Is Human-in-the-Loop for AI Agents? — Airlock Docs</title>
 <meta name="description" content="Human-in-the-loop for AI agents means a required human decision before any side effect runs — learn what it is, when you need it, and how to wire the pattern…">
 <meta name="theme-color" content="#06070d">
-<meta property="og:title" content="What Is Human-in-the-Loop for AI Agents? — Impri Docs">
+<meta property="og:title" content="What Is Human-in-the-Loop for AI Agents? — Airlock Docs">
 <meta property="og:description" content="Human-in-the-loop for AI agents means a required human decision before any side effect runs — learn what it is, when you need it, and how to wire the pattern…">
 <meta property="og:type" content="article">
-<meta property="og:url" content="https://impri.dev/docs/what-is-human-in-the-loop-for-ai-agents">
-<meta property="og:image" content="https://impri.dev/assets/og/og-docs.png">
+<meta property="og:url" content="https://airlock.dev/docs/what-is-human-in-the-loop-for-ai-agents">
+<meta property="og:image" content="https://airlock.dev/assets/og/og-docs.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
-<meta property="og:image:alt" content="Impri — human-in-the-loop approval inbox for AI agents">
+<meta property="og:image:alt" content="Airlock — human-in-the-loop approval inbox for AI agents">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="https://impri.dev/assets/og/og-docs.png">
-<link rel="canonical" href="https://impri.dev/docs/what-is-human-in-the-loop-for-ai-agents">
-<script type="application/ld+json">{"@context":"https://schema.org","@type":"TechArticle","headline":"What Is Human-in-the-Loop for AI Agents?","description":"Human-in-the-loop for AI agents means a required human decision before any side effect runs — learn what it is, when you need it, and how to wire the pattern…","url":"https://impri.dev/docs/what-is-human-in-the-loop-for-ai-agents","inLanguage":"en","author":{"@type":"Organization","name":"Impri","url":"https://impri.dev"},"publisher":{"@type":"Organization","name":"Impri","url":"https://impri.dev"}}</script>
+<meta name="twitter:image" content="https://airlock.dev/assets/og/og-docs.png">
+<link rel="canonical" href="https://airlock.dev/docs/what-is-human-in-the-loop-for-ai-agents">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"TechArticle","headline":"What Is Human-in-the-Loop for AI Agents?","description":"Human-in-the-loop for AI agents means a required human decision before any side effect runs — learn what it is, when you need it, and how to wire the pattern…","url":"https://airlock.dev/docs/what-is-human-in-the-loop-for-ai-agents","inLanguage":"en","author":{"@type":"Organization","name":"Airlock","url":"https://airlock.dev"},"publisher":{"@type":"Organization","name":"Airlock","url":"https://airlock.dev"}}</script>
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <link rel="icon" href="/favicon.ico" sizes="32x32">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='9' fill='%236366f1'/%3E%3Cpath d='M9 16.5l4.5 4.5L23 11' stroke='white' stroke-width='3' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
@@ -132,13 +132,13 @@ pre code.hljs{display:block;overflow-x:auto}
 <div class="wrap nav-inner">
   <a class="brand" href="/">
     <span class="mark"><svg viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.5 4.5L19 7.5" stroke="white" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
-    Impri
+    Airlock
   </a>
   <div class="nav-links">
     <a class="link" href="/#how">How it works</a>
     <a class="link" href="/#pricing">Pricing</a>
     <a class="link active-nav" href="../docs">Docs</a>
-    <a class="btn btn-primary btn-sm" href="https://gitlab.com/sekera.radim/impri">GitLab</a>
+    <a class="btn btn-primary btn-sm" href="https://gitlab.com/sekera.radim/airlock">GitLab</a>
   </div>
 </div>
 </nav>
@@ -202,8 +202,8 @@ pre code.hljs{display:block;overflow-x:auto}
 <p>The standard pattern is three steps. The agent proposes the action by pushing it to a queue; a human reviews and decides; the agent reads the decision and either executes or discards.</p>
 <div class="code-block"><span class="code-lang">python</span><pre><code class="hljs"><span class="hljs-keyword">import</span> httpx, time, os
 
-HEADERS = {<span class="hljs-string">&quot;Authorization&quot;</span>: <span class="hljs-string">f&quot;Bearer <span class="hljs-subst">{os.environ[<span class="hljs-string">&#x27;IMPRI_API_KEY&#x27;</span>]}</span>&quot;</span>}
-BASE = <span class="hljs-string">&quot;https://api.impri.dev&quot;</span>
+HEADERS = {<span class="hljs-string">&quot;Authorization&quot;</span>: <span class="hljs-string">f&quot;Bearer <span class="hljs-subst">{os.environ[<span class="hljs-string">&#x27;AIRLOCK_API_KEY&#x27;</span>]}</span>&quot;</span>}
+BASE = <span class="hljs-string">&quot;https://api.airlock.dev&quot;</span>
 
 <span class="hljs-keyword">def</span> <span class="hljs-title function_">push_action</span>(<span class="hljs-params">kind, title, body</span>):
     r = httpx.post(
@@ -238,10 +238,10 @@ result = await_decision(action_id)
     body = result[<span class="hljs-string">&quot;decision&quot;</span>][<span class="hljs-string">&quot;final_preview&quot;</span>][<span class="hljs-string">&quot;body&quot;</span>]
     send_to_slack(body)  <span class="hljs-comment"># your Slack call, using the human-approved text</span></code></pre></div>
 <p>The key property: <code>send_to_slack</code> can only be reached after <code>status == &quot;approved&quot;</code>. The execution block is never reached on rejection or expiry — there is no branch to skip around the gate.</p>
-<p>This is a real gate only as long as <code>send_to_slack</code> is the agent&#39;s sole path to Slack. If the agent still holds the raw credential to call Slack directly, it can route around the gate. Impri is a chokepoint you confine the agent to, not a network-level interceptor.</p>
+<p>This is a real gate only as long as <code>send_to_slack</code> is the agent&#39;s sole path to Slack. If the agent still holds the raw credential to call Slack directly, it can route around the gate. Airlock is a chokepoint you confine the agent to, not a network-level interceptor.</p>
 <hr>
 <h2 id="what-hitl-is-not">What HITL is not</h2>
-<p><strong>Not content moderation.</strong> Impri does not read or judge the content itself. It surfaces the proposed action to a specific human — you — who makes the call.</p>
+<p><strong>Not content moderation.</strong> Airlock does not read or judge the content itself. It surfaces the proposed action to a specific human — you — who makes the call.</p>
 <p><strong>Not a workflow engine.</strong> There is no branching logic, retry scheduling, or multi-step orchestration built into the gate. If you need those, use a workflow tool (n8n, Temporal, Inngest) and put the HITL gate as one step inside it.</p>
 <p><strong>Not agent-to-agent coordination.</strong> HITL is a human decision point, not a handoff between agents. If you need agents to coordinate with each other, that is a separate concern.</p>
 <hr>
@@ -337,19 +337,19 @@ result = await_decision(action_id)
 <footer class="footer">
 <div class="wrap footer-inner">
   <a class="brand" href="/">
-    <span class="mark"><svg viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.5 4.5L19 7.5" stroke="white" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Impri
+    <span class="mark"><svg viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.5 4.5L19 7.5" stroke="white" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Airlock
   </a>
   <div>
-    <a href="https://gitlab.com/sekera.radim/impri">GitLab</a>
+    <a href="https://gitlab.com/sekera.radim/airlock">GitLab</a>
     <a href="/docs">Docs</a>
-    <a href="https://gitlab.com/sekera.radim/impri/-/blob/main/LICENSE">MIT License</a>
-    <a href="https://www.npmjs.com/package/@impri/mcp">@impri/mcp</a>
+    <a href="https://gitlab.com/sekera.radim/airlock/-/blob/main/LICENSE">MIT License</a>
+    <a href="https://www.npmjs.com/package/@airlock/mcp">@airlock/mcp</a>
     <a href="/docs/privacy">Privacy</a>
     <a href="/docs/terms">Terms</a>
     <a href="https://sekera.dev">Contact</a>
   </div>
 </div>
-<div class="wrap" style="margin-top:18px"><span class="muted">© 2026 Impri · The imprimatur for your AI agents · Built by <a href="https://sekera.dev" style="color:inherit">Radim Sekera</a>. Also by the same maker: <a href="https://briefgate.dev/?utm_source=impri.dev&amp;utm_medium=referral" style="color:inherit">BriefGate</a> — client intake for agencies and AI agents.</span></div>
+<div class="wrap" style="margin-top:18px"><span class="muted">© 2026 Airlock · The airlockmatur for your AI agents · Built by <a href="https://sekera.dev" style="color:inherit">Radim Sekera</a>. Also by the same maker: <a href="https://briefgate.dev/?utm_source=airlock.dev&amp;utm_medium=referral" style="color:inherit">BriefGate</a> — client intake for agencies and AI agents.</span></div>
 </footer>
 </body>
 </html>

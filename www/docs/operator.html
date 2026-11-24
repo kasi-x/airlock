@@ -3,21 +3,21 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Operator / Multi-tenant Self-hosting — Impri Docs</title>
-<meta name="description" content="When you run Impri as a shared platform for multiple teams or users, you need visibility into the whole instance — not just your own project. The operator…">
+<title>Operator / Multi-tenant Self-hosting — Airlock Docs</title>
+<meta name="description" content="When you run Airlock as a shared platform for multiple teams or users, you need visibility into the whole instance — not just your own project. The operator…">
 <meta name="theme-color" content="#06070d">
-<meta property="og:title" content="Operator / Multi-tenant Self-hosting — Impri Docs">
-<meta property="og:description" content="When you run Impri as a shared platform for multiple teams or users, you need visibility into the whole instance — not just your own project. The operator…">
+<meta property="og:title" content="Operator / Multi-tenant Self-hosting — Airlock Docs">
+<meta property="og:description" content="When you run Airlock as a shared platform for multiple teams or users, you need visibility into the whole instance — not just your own project. The operator…">
 <meta property="og:type" content="article">
-<meta property="og:url" content="https://impri.dev/docs/operator">
-<meta property="og:image" content="https://impri.dev/assets/og/og-docs.png">
+<meta property="og:url" content="https://airlock.dev/docs/operator">
+<meta property="og:image" content="https://airlock.dev/assets/og/og-docs.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
-<meta property="og:image:alt" content="Impri — human-in-the-loop approval inbox for AI agents">
+<meta property="og:image:alt" content="Airlock — human-in-the-loop approval inbox for AI agents">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="https://impri.dev/assets/og/og-docs.png">
-<link rel="canonical" href="https://impri.dev/docs/operator">
-<script type="application/ld+json">{"@context":"https://schema.org","@type":"TechArticle","headline":"Operator / Multi-tenant Self-hosting","description":"When you run Impri as a shared platform for multiple teams or users, you need visibility into the whole instance — not just your own project. The operator…","url":"https://impri.dev/docs/operator","inLanguage":"en","author":{"@type":"Organization","name":"Impri","url":"https://impri.dev"},"publisher":{"@type":"Organization","name":"Impri","url":"https://impri.dev"}}</script>
+<meta name="twitter:image" content="https://airlock.dev/assets/og/og-docs.png">
+<link rel="canonical" href="https://airlock.dev/docs/operator">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"TechArticle","headline":"Operator / Multi-tenant Self-hosting","description":"When you run Airlock as a shared platform for multiple teams or users, you need visibility into the whole instance — not just your own project. The operator…","url":"https://airlock.dev/docs/operator","inLanguage":"en","author":{"@type":"Organization","name":"Airlock","url":"https://airlock.dev"},"publisher":{"@type":"Organization","name":"Airlock","url":"https://airlock.dev"}}</script>
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <link rel="icon" href="/favicon.ico" sizes="32x32">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='9' fill='%236366f1'/%3E%3Cpath d='M9 16.5l4.5 4.5L23 11' stroke='white' stroke-width='3' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
@@ -132,13 +132,13 @@ pre code.hljs{display:block;overflow-x:auto}
 <div class="wrap nav-inner">
   <a class="brand" href="/">
     <span class="mark"><svg viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.5 4.5L19 7.5" stroke="white" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
-    Impri
+    Airlock
   </a>
   <div class="nav-links">
     <a class="link" href="/#how">How it works</a>
     <a class="link" href="/#pricing">Pricing</a>
     <a class="link active-nav" href="../docs">Docs</a>
-    <a class="btn btn-primary btn-sm" href="https://gitlab.com/sekera.radim/impri">GitLab</a>
+    <a class="btn btn-primary btn-sm" href="https://gitlab.com/sekera.radim/airlock">GitLab</a>
   </div>
 </div>
 </nav>
@@ -153,7 +153,7 @@ pre code.hljs{display:block;overflow-x:auto}
       <span>Operator / Multi-tenant Self-hosting</span>
     </nav>
     <h1>Operator / Multi-tenant Self-hosting</h1>
-<p>When you run Impri as a shared platform for multiple teams or users, you need visibility into the whole instance — not just your own project. The operator endpoint provides platform-wide stats without exposing individual project data.</p>
+<p>When you run Airlock as a shared platform for multiple teams or users, you need visibility into the whole instance — not just your own project. The operator endpoint provides platform-wide stats without exposing individual project data.</p>
 <hr>
 <h2 id="setup">Setup</h2>
 <p>Set the <code>OPERATOR_PROJECT_ID</code> environment variable to the ID of the project whose admin key you will use for operator calls:</p>
@@ -293,7 +293,7 @@ could have reached the previous one — so two definitions are narrower than
 <li><strong>&quot;Real&quot; action</strong> (<code>first_action</code>, and the action side of <code>first_decision</code>/
 <code>activated_last_7d/30d</code>) excludes the built-in demo/test actions — the
 onboarding &quot;Send a test approval&quot; button (<code>ui/src/components/GettingStarted.vue</code>)
-creates an action with <code>kind = &#39;demo&#39;</code>, and <code>impri init --demo</code> (the CLI onboarding
+creates an action with <code>kind = &#39;demo&#39;</code>, and <code>airlock init --demo</code> (the CLI onboarding
 wizard) creates <code>kind = &#39;demo.email&#39;</code> / <code>kind = &#39;demo.publish&#39;</code>. Both are excluded by
 a <code>kind = &#39;demo&#39; OR kind LIKE &#39;demo.%&#39;</code> filter so clicking the onboarding button once
 doesn&#39;t count as activation. This kind is reliably distinguishable, so there is no
@@ -367,10 +367,10 @@ and when.</p>
 <hr>
 <h2 id="usage-example-python">Usage example (Python)</h2>
 <div class="code-block"><span class="code-lang">python</span><pre><code class="hljs"><span class="hljs-keyword">import</span> os
-<span class="hljs-keyword">from</span> impri <span class="hljs-keyword">import</span> ImpriClient
+<span class="hljs-keyword">from</span> airlock <span class="hljs-keyword">import</span> AirlockClient
 
 operator_key = os.environ[<span class="hljs-string">&quot;OPERATOR_API_KEY&quot;</span>]  <span class="hljs-comment"># admin key for OPERATOR_PROJECT_ID</span>
-client = ImpriClient(api_key=operator_key, base_url=<span class="hljs-string">&quot;http://localhost:8484&quot;</span>)
+client = AirlockClient(api_key=operator_key, base_url=<span class="hljs-string">&quot;http://localhost:8484&quot;</span>)
 
 <span class="hljs-comment"># The SDK doesn&#x27;t have a dedicated method — call the raw endpoint</span>
 <span class="hljs-keyword">import</span> urllib.request, json, os
@@ -404,7 +404,7 @@ req = urllib.request.Request(
 </tr>
 <tr>
 <td><code>DB_PATH</code></td>
-<td>SQLite database path (default: <code>data/impri.db</code>)</td>
+<td>SQLite database path (default: <code>data/airlock.db</code>)</td>
 </tr>
 <tr>
 <td><code>BASE_URL</code></td>
@@ -499,19 +499,19 @@ req = urllib.request.Request(
 <footer class="footer">
 <div class="wrap footer-inner">
   <a class="brand" href="/">
-    <span class="mark"><svg viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.5 4.5L19 7.5" stroke="white" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Impri
+    <span class="mark"><svg viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.5 4.5L19 7.5" stroke="white" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Airlock
   </a>
   <div>
-    <a href="https://gitlab.com/sekera.radim/impri">GitLab</a>
+    <a href="https://gitlab.com/sekera.radim/airlock">GitLab</a>
     <a href="/docs">Docs</a>
-    <a href="https://gitlab.com/sekera.radim/impri/-/blob/main/LICENSE">MIT License</a>
-    <a href="https://www.npmjs.com/package/@impri/mcp">@impri/mcp</a>
+    <a href="https://gitlab.com/sekera.radim/airlock/-/blob/main/LICENSE">MIT License</a>
+    <a href="https://www.npmjs.com/package/@airlock/mcp">@airlock/mcp</a>
     <a href="/docs/privacy">Privacy</a>
     <a href="/docs/terms">Terms</a>
     <a href="https://sekera.dev">Contact</a>
   </div>
 </div>
-<div class="wrap" style="margin-top:18px"><span class="muted">© 2026 Impri · The imprimatur for your AI agents · Built by <a href="https://sekera.dev" style="color:inherit">Radim Sekera</a>. Also by the same maker: <a href="https://briefgate.dev/?utm_source=impri.dev&amp;utm_medium=referral" style="color:inherit">BriefGate</a> — client intake for agencies and AI agents.</span></div>
+<div class="wrap" style="margin-top:18px"><span class="muted">© 2026 Airlock · The airlockmatur for your AI agents · Built by <a href="https://sekera.dev" style="color:inherit">Radim Sekera</a>. Also by the same maker: <a href="https://briefgate.dev/?utm_source=airlock.dev&amp;utm_medium=referral" style="color:inherit">BriefGate</a> — client intake for agencies and AI agents.</span></div>
 </footer>
 </body>
 </html>

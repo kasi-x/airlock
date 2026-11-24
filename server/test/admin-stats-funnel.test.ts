@@ -3,7 +3,7 @@
  *
  * Covers:
  * - Every step excludes the operator's own project (dogfooding must not count as a signup)
- * - first_action ignores the onboarding "Send a test approval" / `impri init --demo` actions
+ * - first_action ignores the onboarding "Send a test approval" / `airlock init --demo` actions
  *   (kind 'demo' or 'demo.*') so clicking the onboarding button doesn't count as activation
  * - first_decision / activated_* only count HUMAN decisions (channel != 'auto'); rule-engine
  *   auto_approve/auto_reject decisions (channel = 'auto') are not a person doing anything
@@ -131,7 +131,7 @@ describe('GET /v1/admin/stats — funnel', () => {
     const aDemo = addAction(db, 'a-demo', 'p-demo-only', 'demo');
     addDecision(db, aDemo, 'api', nowSec());
 
-    // Same for the CLI's `impri init --demo` seeded actions.
+    // Same for the CLI's `airlock init --demo` seeded actions.
     addProject(db, 'p-cli-demo');
     const aCliDemo = addAction(db, 'a-cli-demo', 'p-cli-demo', 'demo.email');
     addDecision(db, aCliDemo, 'web', nowSec());

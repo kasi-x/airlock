@@ -3,21 +3,21 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Human-in-the-Loop for AI in SaaS Operations — Impri Docs</title>
+<title>Human-in-the-Loop for AI in SaaS Operations — Airlock Docs</title>
 <meta name="description" content="Human-in-the-loop for AI in SaaS operations means gating tenant-level admin actions — plan overrides, quota bumps, account suspensions — behind a human tap…">
 <meta name="theme-color" content="#06070d">
-<meta property="og:title" content="Human-in-the-Loop for AI in SaaS Operations — Impri Docs">
+<meta property="og:title" content="Human-in-the-Loop for AI in SaaS Operations — Airlock Docs">
 <meta property="og:description" content="Human-in-the-loop for AI in SaaS operations means gating tenant-level admin actions — plan overrides, quota bumps, account suspensions — behind a human tap…">
 <meta property="og:type" content="article">
-<meta property="og:url" content="https://impri.dev/docs/human-in-the-loop-for-ai-in-saas-operations">
-<meta property="og:image" content="https://impri.dev/assets/og/og-docs.png">
+<meta property="og:url" content="https://airlock.dev/docs/human-in-the-loop-for-ai-in-saas-operations">
+<meta property="og:image" content="https://airlock.dev/assets/og/og-docs.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
-<meta property="og:image:alt" content="Impri — human-in-the-loop approval inbox for AI agents">
+<meta property="og:image:alt" content="Airlock — human-in-the-loop approval inbox for AI agents">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="https://impri.dev/assets/og/og-docs.png">
-<link rel="canonical" href="https://impri.dev/docs/human-in-the-loop-for-ai-in-saas-operations">
-<script type="application/ld+json">{"@context":"https://schema.org","@type":"TechArticle","headline":"Human-in-the-Loop for AI in SaaS Operations","description":"Human-in-the-loop for AI in SaaS operations means gating tenant-level admin actions — plan overrides, quota bumps, account suspensions — behind a human tap…","url":"https://impri.dev/docs/human-in-the-loop-for-ai-in-saas-operations","inLanguage":"en","author":{"@type":"Organization","name":"Impri","url":"https://impri.dev"},"publisher":{"@type":"Organization","name":"Impri","url":"https://impri.dev"}}</script>
+<meta name="twitter:image" content="https://airlock.dev/assets/og/og-docs.png">
+<link rel="canonical" href="https://airlock.dev/docs/human-in-the-loop-for-ai-in-saas-operations">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"TechArticle","headline":"Human-in-the-Loop for AI in SaaS Operations","description":"Human-in-the-loop for AI in SaaS operations means gating tenant-level admin actions — plan overrides, quota bumps, account suspensions — behind a human tap…","url":"https://airlock.dev/docs/human-in-the-loop-for-ai-in-saas-operations","inLanguage":"en","author":{"@type":"Organization","name":"Airlock","url":"https://airlock.dev"},"publisher":{"@type":"Organization","name":"Airlock","url":"https://airlock.dev"}}</script>
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <link rel="icon" href="/favicon.ico" sizes="32x32">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='9' fill='%236366f1'/%3E%3Cpath d='M9 16.5l4.5 4.5L23 11' stroke='white' stroke-width='3' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
@@ -132,13 +132,13 @@ pre code.hljs{display:block;overflow-x:auto}
 <div class="wrap nav-inner">
   <a class="brand" href="/">
     <span class="mark"><svg viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.5 4.5L19 7.5" stroke="white" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
-    Impri
+    Airlock
   </a>
   <div class="nav-links">
     <a class="link" href="/#how">How it works</a>
     <a class="link" href="/#pricing">Pricing</a>
     <a class="link active-nav" href="../docs">Docs</a>
-    <a class="btn btn-primary btn-sm" href="https://gitlab.com/sekera.radim/impri">GitLab</a>
+    <a class="btn btn-primary btn-sm" href="https://gitlab.com/sekera.radim/airlock">GitLab</a>
   </div>
 </div>
 </nav>
@@ -199,14 +199,14 @@ pre code.hljs{display:block;overflow-x:auto}
 </tr>
 </tbody></table>
 </div>
-<p>The bottom three go through Impri as pending actions. A capped, self-service trial extension can stay automated — the moment &quot;N days&quot; is unbounded or touches an invoice, it moves up a row.</p>
+<p>The bottom three go through Airlock as pending actions. A capped, self-service trial extension can stay automated — the moment &quot;N days&quot; is unbounded or touches an invoice, it moves up a row.</p>
 <h2 id="gating-a-plan-override-from-a-typescript-ops-bot">Gating a plan override from a TypeScript ops bot</h2>
-<p>The agent still decides what change is warranted; Impri sits between that decision and the admin API call that makes it real.</p>
+<p>The agent still decides what change is warranted; Airlock sits between that decision and the admin API call that makes it real.</p>
 <div class="code-block"><span class="code-lang">typescript</span><pre><code class="hljs"><span class="hljs-keyword">import</span> { <span class="hljs-built_in">setTimeout</span> <span class="hljs-keyword">as</span> sleep } <span class="hljs-keyword">from</span> <span class="hljs-string">&quot;node:timers/promises&quot;</span>;
 
-<span class="hljs-keyword">const</span> <span class="hljs-variable constant_">API</span> = <span class="hljs-string">&quot;https://api.impri.dev/v1&quot;</span>;
+<span class="hljs-keyword">const</span> <span class="hljs-variable constant_">API</span> = <span class="hljs-string">&quot;https://api.airlock.dev/v1&quot;</span>;
 <span class="hljs-keyword">const</span> <span class="hljs-variable constant_">HEADERS</span> = {
-  <span class="hljs-title class_">Authorization</span>: <span class="hljs-string">`Bearer <span class="hljs-subst">${process.env.IMPRI_API_KEY}</span>`</span>,
+  <span class="hljs-title class_">Authorization</span>: <span class="hljs-string">`Bearer <span class="hljs-subst">${process.env.AIRLOCK_API_KEY}</span>`</span>,
   <span class="hljs-string">&quot;Content-Type&quot;</span>: <span class="hljs-string">&quot;application/json&quot;</span>,
 };
 
@@ -258,16 +258,16 @@ pre code.hljs{display:block;overflow-x:auto}
 <p>Tenant suspension and deletion use the same three-call shape with <code>kind: &quot;tenant.suspend&quot;</code> or <code>&quot;tenant.delete&quot;</code> — the preview should show current MRR, seat count, and last-login so whoever&#39;s on call isn&#39;t approving a delete blind.</p>
 <h2 id="why-the-undo-field-matters-more-here-than-anywhere-else">Why the <code>undo</code> field matters more here than anywhere else</h2>
 <p>Most ops mistakes are fixable if someone knows how fast. A wrong plan override is a two-minute PATCH; a wrong tenant deletion, without a backup step described somewhere, is not. Writing the <code>undo</code> string at proposal time forces the agent&#39;s author to have already thought through reversibility before the human is asked to trust the change — see <a href="how-to-add-human-approval-to-an-ai-agent">handling edits and the undo field</a> for the full field reference.</p>
-<h2 id="what-impri-does-not-do-here">What Impri does not do here</h2>
-<p>Impri stores the proposed override or suspension, notifies whoever&#39;s on ops duty, and holds the decision — it doesn&#39;t know your pricing rules, doesn&#39;t call your admin API, and doesn&#39;t decide whether a 3x rate-limit bump for a customer is generous or reasonable. That judgment stays with the human, and <code>applyPlanOverrideInAdmin</code> is still your code to write and to wrap so it&#39;s unreachable without the approved decision. Every approved and rejected override is still worth checking against <a href="audit-log">the audit log</a> later, especially for tenants that file a dispute months after a plan change.</p>
+<h2 id="what-airlock-does-not-do-here">What Airlock does not do here</h2>
+<p>Airlock stores the proposed override or suspension, notifies whoever&#39;s on ops duty, and holds the decision — it doesn&#39;t know your pricing rules, doesn&#39;t call your admin API, and doesn&#39;t decide whether a 3x rate-limit bump for a customer is generous or reasonable. That judgment stays with the human, and <code>applyPlanOverrideInAdmin</code> is still your code to write and to wrap so it&#39;s unreachable without the approved decision. Every approved and rejected override is still worth checking against <a href="audit-log">the audit log</a> later, especially for tenants that file a dispute months after a plan change.</p>
 <hr>
 <p>Next: <a href="approve-database-writes-from-an-ai-agent">approve database writes from an AI agent</a> if your ops agent is closer to the data layer than the admin panel, and <a href="the-propose-approve-execute-pattern">the propose-approve-execute pattern</a> for the underlying design this is built on.</p>
 
-    <aside class="doc-cta" aria-label="Try Impri">
+    <aside class="doc-cta" aria-label="Try Airlock">
   <p class="doc-cta-title">Add an approval step to your own agent</p>
-  <p>Start on Impri Cloud: the Free tier includes 100 approvals a month. Or self-host the MIT-licensed core with Docker Compose, with no tier limits.</p>
+  <p>Start on Airlock Cloud: the Free tier includes 100 approvals a month. Or self-host the MIT-licensed core with Docker Compose, with no tier limits.</p>
   <div class="doc-cta-actions">
-    <a class="btn btn-primary btn-sm" href="https://app.impri.dev/?signup=1">Start free on Impri Cloud</a>
+    <a class="btn btn-primary btn-sm" href="https://app.airlock.dev/?signup=1">Start free on Airlock Cloud</a>
     <a class="btn btn-ghost btn-sm" href="../docs/quickstart">Quick start</a>
     <a class="btn btn-ghost btn-sm" href="../docs/self-hosting">Self-host guide</a>
   </div>
@@ -354,7 +354,7 @@ pre code.hljs{display:block;overflow-x:auto}
 <li class="ptoc-h2"><a href="#sorting-ops-actions-by-blast-radius">Sorting ops actions by blast radius</a></li>
 <li class="ptoc-h2"><a href="#gating-a-plan-override-from-a-typescript-ops-bot">Gating a plan override from a TypeScript ops bot</a></li>
 <li class="ptoc-h2"><a href="#why-the-undo-field-matters-more-here-than-anywhere-else">Why the undo field matters more here than anywhere else</a></li>
-<li class="ptoc-h2"><a href="#what-impri-does-not-do-here">What Impri does not do here</a></li></ul>
+<li class="ptoc-h2"><a href="#what-airlock-does-not-do-here">What Airlock does not do here</a></li></ul>
 </nav>
   </aside>
 </div>
@@ -362,19 +362,19 @@ pre code.hljs{display:block;overflow-x:auto}
 <footer class="footer">
 <div class="wrap footer-inner">
   <a class="brand" href="/">
-    <span class="mark"><svg viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.5 4.5L19 7.5" stroke="white" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Impri
+    <span class="mark"><svg viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.5 4.5L19 7.5" stroke="white" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Airlock
   </a>
   <div>
-    <a href="https://gitlab.com/sekera.radim/impri">GitLab</a>
+    <a href="https://gitlab.com/sekera.radim/airlock">GitLab</a>
     <a href="/docs">Docs</a>
-    <a href="https://gitlab.com/sekera.radim/impri/-/blob/main/LICENSE">MIT License</a>
-    <a href="https://www.npmjs.com/package/@impri/mcp">@impri/mcp</a>
+    <a href="https://gitlab.com/sekera.radim/airlock/-/blob/main/LICENSE">MIT License</a>
+    <a href="https://www.npmjs.com/package/@airlock/mcp">@airlock/mcp</a>
     <a href="/docs/privacy">Privacy</a>
     <a href="/docs/terms">Terms</a>
     <a href="https://sekera.dev">Contact</a>
   </div>
 </div>
-<div class="wrap" style="margin-top:18px"><span class="muted">© 2026 Impri · The imprimatur for your AI agents · Built by <a href="https://sekera.dev" style="color:inherit">Radim Sekera</a>. Also by the same maker: <a href="https://briefgate.dev/?utm_source=impri.dev&amp;utm_medium=referral" style="color:inherit">BriefGate</a> — client intake for agencies and AI agents.</span></div>
+<div class="wrap" style="margin-top:18px"><span class="muted">© 2026 Airlock · The airlockmatur for your AI agents · Built by <a href="https://sekera.dev" style="color:inherit">Radim Sekera</a>. Also by the same maker: <a href="https://briefgate.dev/?utm_source=airlock.dev&amp;utm_medium=referral" style="color:inherit">BriefGate</a> — client intake for agencies and AI agents.</span></div>
 </footer>
 </body>
 </html>

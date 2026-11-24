@@ -1,7 +1,7 @@
-// @impri/sdk — TypeScript SDK for the Impri human-in-the-loop approval API
+// @airlock/sdk — TypeScript SDK for the Airlock human-in-the-loop approval API
 
-export { ImpriClient } from './client.js'
-export type { ImpriClientOptions } from './client.js'
+export { AirlockClient } from './client.js'
+export type { AirlockClientOptions } from './client.js'
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -62,19 +62,19 @@ export type {
 // ─── Errors ───────────────────────────────────────────────────────────────────
 
 export {
-  ImpriError,
-  ImpriConfigError,
-  ImpriUnauthorized,
-  ImpriNotFound,
-  ImpriConflict,
-  ImpriExpired,
-  ImpriRateLimited,
-  ImpriQuotaExceeded,
-  ImpriRejected,
-  ImpriTimeout,
-  ImpriValidationError,
-  ImpriApiError,
-  ImpriWebhookSignatureError,
+  AirlockError,
+  AirlockConfigError,
+  AirlockUnauthorized,
+  AirlockNotFound,
+  AirlockConflict,
+  AirlockExpired,
+  AirlockRateLimited,
+  AirlockQuotaExceeded,
+  AirlockRejected,
+  AirlockTimeout,
+  AirlockValidationError,
+  AirlockApiError,
+  AirlockWebhookSignatureError,
 } from './errors.js'
 
 // ─── Webhook ──────────────────────────────────────────────────────────────────

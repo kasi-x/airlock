@@ -5,30 +5,30 @@ import {
   CallToolRequestSchema,
   ListToolsRequestSchema,
 } from "@modelcontextprotocol/sdk/types.js";
-import { type ImpriConfig } from "./client.js";
+import { type AirlockConfig } from "./client.js";
 import { callTool } from "./dispatch.js";
 import { INSTRUCTIONS, SERVER_NAME, SERVER_TITLE, VERSION } from "./serverInfo.js";
 import { TOOLS } from "./toolDefs.js";
 
 // ─── Config ───────────────────────────────────────────────────────────────────
 
-const apiKey = process.env["IMPRI_API_KEY"];
+const apiKey = process.env["AIRLOCK_API_KEY"];
 if (!apiKey) {
   // Don't exit — start anyway so clients and registries (e.g. Glama) can
   // introspect the tool list before a key is configured. Tool *calls* return
-  // a clear error until IMPRI_API_KEY is set (see the CallTool handler).
+  // a clear error until AIRLOCK_API_KEY is set (see the CallTool handler).
   process.stderr.write(
     [
-      "Warning: IMPRI_API_KEY is not set — tool calls will fail until it is.",
+      "Warning: AIRLOCK_API_KEY is not set — tool calls will fail until it is.",
       "Obtain an API key from your server operator (self-host: the bootstrap admin key in the first-run server logs, or POST /v1/signup when ALLOW_SIGNUP=1) and pass it via environment variable.",
-      "Example: IMPRI_API_KEY=im_... npx @impri/mcp",
+      "Example: AIRLOCK_API_KEY=im_... npx @airlock/mcp",
     ].join("\n") + "\n",
   );
 }
 
-const config: ImpriConfig = {
+const config: AirlockConfig = {
   apiKey: apiKey ?? "",
-  baseUrl: process.env["IMPRI_BASE_URL"] ?? "http://localhost:8484",
+  baseUrl: process.env["AIRLOCK_BASE_URL"] ?? "http://localhost:8484",
 };
 
 // ─── MCP server ───────────────────────────────────────────────────────────────
@@ -56,7 +56,7 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
       content: [
         {
           type: "text" as const,
-          text: "Error: IMPRI_API_KEY is not set. Get a key from your server operator (self-host: the bootstrap admin key in the first-run server logs) and set it in your MCP client config for this server.",
+          text: "Error: AIRLOCK_API_KEY is not set. Get a key from your server operator (self-host: the bootstrap admin key in the first-run server logs) and set it in your MCP client config for this server.",
         },
       ],
       isError: true,

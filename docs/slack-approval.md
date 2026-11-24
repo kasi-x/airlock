@@ -1,14 +1,14 @@
 # Slack Approval Bot
 
-Impri can send pending-action notifications to a Slack channel with
+Airlock can send pending-action notifications to a Slack channel with
 **Approve** and **Reject** buttons that let your team decide without
-ever opening a browser. The decision is recorded in Impri with the same
+ever opening a browser. The decision is recorded in Airlock with the same
 integrity guarantees as a web-inbox decision.
 
 This is an extension of the existing `slack` notification channel
 (see [Notification channels](notifications.md)). When `approval_mode`
 is `false` (the default), the channel behaves exactly as before —
-a plain Block Kit message with a "Review in Impri" link. Setting
+a plain Block Kit message with a "Review in Airlock" link. Setting
 `approval_mode: true` enables the inline-button approval flow
 described here.
 
@@ -16,15 +16,15 @@ described here.
 
 ## How it works
 
-1. An action lands in Impri as `pending`.
-2. Impri posts a Slack message to the configured channel with two
+1. An action lands in Airlock as `pending`.
+2. Airlock posts a Slack message to the configured channel with two
    interactive buttons: **✅ Approve** and **❌ Reject**.
 3. An authorized team member clicks a button. Slack delivers an
-   interaction payload to Impri's interaction endpoint.
-4. Impri verifies the Slack request signature (HMAC-SHA256), the HMAC
+   interaction payload to Airlock's interaction endpoint.
+4. Airlock verifies the Slack request signature (HMAC-SHA256), the HMAC
    on the button value, and the clicker's Slack user ID against the
    allow-list.
-5. If all checks pass, Impri records the decision (same transaction as
+5. If all checks pass, Airlock records the decision (same transaction as
    `POST /v1/actions/:id/decision`), fires any `callback_url` webhook,
    and updates the Slack message to show the outcome and remove the
    buttons.
@@ -37,32 +37,32 @@ are only meaningful for a single action.
 
 ## Cloud: Add to Slack (one click)
 
-If you are using the hosted Impri cloud (impri.dev), you can connect your
+If you are using the hosted Airlock cloud (airlock.dev), you can connect your
 Slack workspace in seconds without creating a Slack app yourself.
 
-1. In the Impri UI → **Notifications** → **Add channel** → select **Slack**.
+1. In the Airlock UI → **Notifications** → **Add channel** → select **Slack**.
 2. Click **Add to Slack**. You are redirected to Slack's OAuth consent screen.
 3. Choose the channel where approval messages should appear.
-4. Click **Allow**. Slack redirects you back to Impri and the channel is ready.
+4. Click **Allow**. Slack redirects you back to Airlock and the channel is ready.
 
-The Impri cloud app already has `chat:write` and `incoming-webhook` permissions
+The Airlock cloud app already has `chat:write` and `incoming-webhook` permissions
 and handles all Interactivity plumbing for you. Approve and Reject buttons work
 immediately — no signing secrets, no interactivity URL to configure.
 
 **Who can approve?**
 
 After the OAuth connection, the channel's `allowed_approver_slack_user_ids`
-is empty by default (no one can approve yet). Update it via the Impri UI
+is empty by default (no one can approve yet). Update it via the Airlock UI
 (edit the channel and add Slack user IDs) or via the API:
 
 ```bash
-curl -X PATCH https://api.impri.dev/v1/notification-channels/{channelId} \
+curl -X PATCH https://api.airlock.dev/v1/notification-channels/{channelId} \
   -H "Authorization: Bearer im_..." \
   -H "Content-Type: application/json" \
   -d '{"config": {"allowed_approver_slack_user_ids": ["U0XXXXXXXX"]}}'
 ```
 
-**Self-hosted Impri** does not provide a shared Slack app — follow the
+**Self-hosted Airlock** does not provide a shared Slack app — follow the
 [manual setup](#setup-one-time-15-minutes) below to create your own.
 
 ---
@@ -73,7 +73,7 @@ curl -X PATCH https://api.impri.dev/v1/notification-channels/{channelId} \
 
 Go to [https://api.slack.com/apps](https://api.slack.com/apps) and
 click **Create New App → From Scratch**. Give it a name (e.g.
-"Impri Approvals") and choose your workspace.
+"Airlock Approvals") and choose your workspace.
 
 ### Step 2 — Add bot permissions and install
 
@@ -88,7 +88,7 @@ Click **Install to Workspace** and confirm. Slack shows the
 
 Open **Basic Information → App Credentials**. Copy the value under
 **Signing Secret** (32 lowercase hex characters). This is
-`signing_secret` — it lets Impri verify that every interaction request
+`signing_secret` — it lets Airlock verify that every interaction request
 genuinely came from Slack.
 
 ### Step 4 — Invite the bot and get the channel ID
@@ -114,10 +114,10 @@ To find a user ID: open any message from that person, click
 
 Collect all IDs you want to authorize.
 
-### Step 6 — Create the approval channel via the Impri API
+### Step 6 — Create the approval channel via the Airlock API
 
 ```bash
-curl -X POST https://api.impri.dev/v1/notification-channels \
+curl -X POST https://api.airlock.dev/v1/notification-channels \
   -H "Authorization: Bearer im_..." \
   -H "Content-Type: application/json" \
   -d '{
@@ -142,17 +142,17 @@ In the Slack app dashboard, go to **Interactivity & Shortcuts** and
 toggle **Interactivity** on. Set the **Request URL** to:
 
 ```
-https://your-impri-host/v1/integrations/slack/interactions/nchan_...
+https://your-airlock-host/v1/integrations/slack/interactions/nchan_...
 ```
 
-Replace `your-impri-host` with your Impri server's public hostname and
+Replace `your-airlock-host` with your Airlock server's public hostname and
 `nchan_...` with the channel ID from Step 6. Click **Save Changes**.
-Slack immediately sends a verification request; Impri verifies the
+Slack immediately sends a verification request; Airlock verifies the
 Slack signature and responds 200.
 
 **Local dev:** Slack requires a publicly reachable HTTPS URL. Use
 `ngrok http 8484` or `cloudflared tunnel --url http://localhost:8484`,
-set `BASE_URL=https://your-tunnel-url`, restart Impri, then enter the
+set `BASE_URL=https://your-tunnel-url`, restart Airlock, then enter the
 tunnel URL in the Slack dashboard.
 
 ### Step 8 — Verify
@@ -251,7 +251,7 @@ the request body is parsed. Operators do not call this endpoint directly
 — Slack does.
 
 **Signature verification:** Slack attaches `X-Slack-Signature` and
-`X-Slack-Request-Timestamp` headers. Impri:
+`X-Slack-Request-Timestamp` headers. Airlock:
 
 1. Rejects requests whose timestamp deviates from the server clock by
    more than 5 minutes (replay defense).
@@ -279,7 +279,7 @@ An attacker must bypass **all five** simultaneously to forge an approval.
 **1. Slack request signature (HMAC-SHA256 with timestamp)**
 
 Every interaction request from Slack carries `X-Slack-Signature` (value:
-`v0={64-char hex}`) and `X-Slack-Request-Timestamp`. Impri re-derives
+`v0={64-char hex}`) and `X-Slack-Request-Timestamp`. Airlock re-derives
 the expected value using `signing_secret` and compares with
 `timingSafeEqual`. A missing header, wrong signature, or timestamp more
 than 5 minutes old is rejected with 403.
@@ -310,7 +310,7 @@ Comparison uses `timingSafeEqual`.
 
 Slack sets `payload.user.id` in its own infrastructure. After the
 platform signature passes (Layer 1), this field is authoritative — other
-workspace members cannot spoof it. Impri checks it against
+workspace members cannot spoof it. Airlock checks it against
 `allowed_approver_slack_user_ids`. On failure, an ephemeral "Not
 authorized" message is posted via `response_url` (visible only to the
 clicker); HTTP 200 is returned so Slack does not retry. No action data
@@ -334,7 +334,7 @@ by the constraint violation, answered with "Already decided," and return
 
 ### `response_url` SSRF defense
 
-Before posting the confirmation back to Slack's `response_url`, Impri
+Before posting the confirmation back to Slack's `response_url`, Airlock
 validates that the URL matches `^https://hooks\.slack\.com/`. Because
 the interaction payload is Slack-signed (Layer 1 already verified), a
 tampered `response_url` would require forging the Slack signature —
@@ -369,9 +369,9 @@ stored in logs or `audit_log`. All outbound Slack API calls go through
 
 The Interactivity Request URL in the Slack app dashboard is not set, is
 pointing to an unreachable URL, or the `channelId` in the URL does not
-match the channel in Impri. Verify the URL in **Interactivity &
+match the channel in Airlock. Verify the URL in **Interactivity &
 Shortcuts** matches
-`https://your-impri-host/v1/integrations/slack/interactions/{channelId}`.
+`https://your-airlock-host/v1/integrations/slack/interactions/{channelId}`.
 
 **"Not authorized to approve in this project" when clicking a button.**
 
@@ -401,16 +401,16 @@ one to it. The decision is idempotent — nothing went wrong.
 
 The `response_url` update call failed (expired — `response_url` is
 valid for 5 updates within 30 minutes of the interaction). The decision
-was still recorded in Impri. The buttons are cosmetically stale; any
+was still recorded in Airlock. The buttons are cosmetically stale; any
 additional click is answered with "Already decided" and is a no-op.
 
 **Slack dashboard rejects the Interactions Endpoint URL.**
 
 Slack verifies the URL by sending a test request signed with your app's
-`signing_secret`. Make sure the Impri server is publicly reachable over
+`signing_secret`. Make sure the Airlock server is publicly reachable over
 HTTPS, the URL is correct (including the `channelId` suffix), and the
 `signing_secret` in the channel config matches the one in the Slack app
-dashboard. Check Impri logs for a 403 or signature mismatch error.
+dashboard. Check Airlock logs for a 403 or signature mismatch error.
 
 **The channel was auto-disabled (fail_count reached 5).**
 

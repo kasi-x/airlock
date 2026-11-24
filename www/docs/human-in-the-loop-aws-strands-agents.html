@@ -3,21 +3,21 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Human-in-the-Loop for AWS Strands Agents — Impri Docs</title>
-<meta name="description" content="AWS Strands Agents call a @tool the moment the model decides to — this shows how to gate one with Impri so it pauses for a human before touching real AWS…">
+<title>Human-in-the-Loop for AWS Strands Agents — Airlock Docs</title>
+<meta name="description" content="AWS Strands Agents call a @tool the moment the model decides to — this shows how to gate one with Airlock so it pauses for a human before touching real AWS…">
 <meta name="theme-color" content="#06070d">
-<meta property="og:title" content="Human-in-the-Loop for AWS Strands Agents — Impri Docs">
-<meta property="og:description" content="AWS Strands Agents call a @tool the moment the model decides to — this shows how to gate one with Impri so it pauses for a human before touching real AWS…">
+<meta property="og:title" content="Human-in-the-Loop for AWS Strands Agents — Airlock Docs">
+<meta property="og:description" content="AWS Strands Agents call a @tool the moment the model decides to — this shows how to gate one with Airlock so it pauses for a human before touching real AWS…">
 <meta property="og:type" content="article">
-<meta property="og:url" content="https://impri.dev/docs/human-in-the-loop-aws-strands-agents">
-<meta property="og:image" content="https://impri.dev/assets/og/og-docs.png">
+<meta property="og:url" content="https://airlock.dev/docs/human-in-the-loop-aws-strands-agents">
+<meta property="og:image" content="https://airlock.dev/assets/og/og-docs.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
-<meta property="og:image:alt" content="Impri — human-in-the-loop approval inbox for AI agents">
+<meta property="og:image:alt" content="Airlock — human-in-the-loop approval inbox for AI agents">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="https://impri.dev/assets/og/og-docs.png">
-<link rel="canonical" href="https://impri.dev/docs/human-in-the-loop-aws-strands-agents">
-<script type="application/ld+json">{"@context":"https://schema.org","@type":"TechArticle","headline":"Human-in-the-Loop for AWS Strands Agents","description":"AWS Strands Agents call a @tool the moment the model decides to — this shows how to gate one with Impri so it pauses for a human before touching real AWS…","url":"https://impri.dev/docs/human-in-the-loop-aws-strands-agents","inLanguage":"en","author":{"@type":"Organization","name":"Impri","url":"https://impri.dev"},"publisher":{"@type":"Organization","name":"Impri","url":"https://impri.dev"}}</script>
+<meta name="twitter:image" content="https://airlock.dev/assets/og/og-docs.png">
+<link rel="canonical" href="https://airlock.dev/docs/human-in-the-loop-aws-strands-agents">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"TechArticle","headline":"Human-in-the-Loop for AWS Strands Agents","description":"AWS Strands Agents call a @tool the moment the model decides to — this shows how to gate one with Airlock so it pauses for a human before touching real AWS…","url":"https://airlock.dev/docs/human-in-the-loop-aws-strands-agents","inLanguage":"en","author":{"@type":"Organization","name":"Airlock","url":"https://airlock.dev"},"publisher":{"@type":"Organization","name":"Airlock","url":"https://airlock.dev"}}</script>
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <link rel="icon" href="/favicon.ico" sizes="32x32">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='9' fill='%236366f1'/%3E%3Cpath d='M9 16.5l4.5 4.5L23 11' stroke='white' stroke-width='3' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
@@ -132,13 +132,13 @@ pre code.hljs{display:block;overflow-x:auto}
 <div class="wrap nav-inner">
   <a class="brand" href="/">
     <span class="mark"><svg viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.5 4.5L19 7.5" stroke="white" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
-    Impri
+    Airlock
   </a>
   <div class="nav-links">
     <a class="link" href="/#how">How it works</a>
     <a class="link" href="/#pricing">Pricing</a>
     <a class="link active-nav" href="../docs">Docs</a>
-    <a class="btn btn-primary btn-sm" href="https://gitlab.com/sekera.radim/impri">GitLab</a>
+    <a class="btn btn-primary btn-sm" href="https://gitlab.com/sekera.radim/airlock">GitLab</a>
   </div>
 </div>
 </nav>
@@ -153,20 +153,20 @@ pre code.hljs{display:block;overflow-x:auto}
       <span>Human-in-the-Loop for AWS Strands Agents</span>
     </nav>
     <h1>Human-in-the-Loop for AWS Strands Agents</h1>
-<p>AWS Strands Agents call a <code>@tool</code> the moment the model decides to — this shows how to gate one with Impri so it pauses for a human before touching real AWS resources.</p>
+<p>AWS Strands Agents call a <code>@tool</code> the moment the model decides to — this shows how to gate one with Airlock so it pauses for a human before touching real AWS resources.</p>
 <hr>
 <h2 id="strands-agents-call-tools-directly">Strands agents call tools directly</h2>
 <p>Strands&#39; model is deliberately thin: you write plain Python functions, decorate them with <code>@tool</code>, hand them to an <code>Agent</code>, and the model decides when to call them. That simplicity is also the risk. A tool that deletes S3 objects, terminates an EC2 instance, or rotates an IAM credential runs the instant the model&#39;s reasoning loop reaches it — there&#39;s no framework-level pause unless you build one into the tool itself.</p>
 <p>Strands does ship interrupt primitives for pausing mid-run, and AWS&#39;s own docs and community examples cover using them for approval flows. That works well if you&#39;re already invested in Strands&#39; resume/checkpoint machinery. The approach below is simpler and framework-agnostic: the tool function itself blocks on an external decision, so the gate survives even if you later swap Strands for something else.</p>
 <hr>
-<h2 id="wrapping-a-strands-tool-with-impri">Wrapping a Strands tool with Impri</h2>
-<p>The pattern: the tool proposes the action to Impri, waits for a human decision, and only calls the AWS SDK once that decision is <code>approved</code>.</p>
+<h2 id="wrapping-a-strands-tool-with-airlock">Wrapping a Strands tool with Airlock</h2>
+<p>The pattern: the tool proposes the action to Airlock, waits for a human decision, and only calls the AWS SDK once that decision is <code>approved</code>.</p>
 <div class="code-block"><span class="code-lang">python</span><pre><code class="hljs"><span class="hljs-keyword">import</span> os, time, boto3, requests
 <span class="hljs-keyword">from</span> strands <span class="hljs-keyword">import</span> Agent, tool
 
-IMPRI = <span class="hljs-string">&quot;https://api.impri.dev&quot;</span>
+AIRLOCK = <span class="hljs-string">&quot;https://api.airlock.dev&quot;</span>
 HEADERS = {
-    <span class="hljs-string">&quot;Authorization&quot;</span>: <span class="hljs-string">f&quot;Bearer <span class="hljs-subst">{os.environ[<span class="hljs-string">&#x27;IMPRI_API_KEY&#x27;</span>]}</span>&quot;</span>,
+    <span class="hljs-string">&quot;Authorization&quot;</span>: <span class="hljs-string">f&quot;Bearer <span class="hljs-subst">{os.environ[<span class="hljs-string">&#x27;AIRLOCK_API_KEY&#x27;</span>]}</span>&quot;</span>,
     <span class="hljs-string">&quot;Content-Type&quot;</span>: <span class="hljs-string">&quot;application/json&quot;</span>,
 }
 s3 = boto3.client(<span class="hljs-string">&quot;s3&quot;</span>)
@@ -176,7 +176,7 @@ s3 = boto3.client(<span class="hljs-string">&quot;s3&quot;</span>)
     <span class="hljs-string">&quot;&quot;&quot;Apply an S3 lifecycle rule that expires objects under a prefix after N days.&quot;&quot;&quot;</span>
     rule_summary = <span class="hljs-string">f&quot;Bucket **<span class="hljs-subst">{bucket}</span>**, prefix `<span class="hljs-subst">{prefix}</span>`, expire after **<span class="hljs-subst">{expire_after_days}</span> days**&quot;</span>
 
-    action = requests.post(<span class="hljs-string">f&quot;<span class="hljs-subst">{IMPRI}</span>/v1/actions&quot;</span>, headers=HEADERS, json={
+    action = requests.post(<span class="hljs-string">f&quot;<span class="hljs-subst">{AIRLOCK}</span>/v1/actions&quot;</span>, headers=HEADERS, json={
         <span class="hljs-string">&quot;kind&quot;</span>: <span class="hljs-string">&quot;aws.s3.lifecycle_rule&quot;</span>,
         <span class="hljs-string">&quot;title&quot;</span>: <span class="hljs-string">f&quot;Apply lifecycle rule: <span class="hljs-subst">{bucket}</span>/<span class="hljs-subst">{prefix}</span>&quot;</span>,
         <span class="hljs-string">&quot;preview&quot;</span>: {<span class="hljs-string">&quot;format&quot;</span>: <span class="hljs-string">&quot;markdown&quot;</span>, <span class="hljs-string">&quot;body&quot;</span>: rule_summary},
@@ -187,7 +187,7 @@ s3 = boto3.client(<span class="hljs-string">&quot;s3&quot;</span>)
 
     <span class="hljs-keyword">while</span> <span class="hljs-literal">True</span>:
         time.sleep(<span class="hljs-number">10</span>)
-        state = requests.get(<span class="hljs-string">f&quot;<span class="hljs-subst">{IMPRI}</span>/v1/actions/<span class="hljs-subst">{action[<span class="hljs-string">&#x27;id&#x27;</span>]}</span>&quot;</span>, headers=HEADERS).json()
+        state = requests.get(<span class="hljs-string">f&quot;<span class="hljs-subst">{AIRLOCK}</span>/v1/actions/<span class="hljs-subst">{action[<span class="hljs-string">&#x27;id&#x27;</span>]}</span>&quot;</span>, headers=HEADERS).json()
         <span class="hljs-keyword">if</span> state[<span class="hljs-string">&quot;status&quot;</span>] != <span class="hljs-string">&quot;pending&quot;</span>:
             <span class="hljs-keyword">break</span>
 
@@ -203,7 +203,7 @@ s3 = boto3.client(<span class="hljs-string">&quot;s3&quot;</span>)
             <span class="hljs-string">&quot;Expiration&quot;</span>: {<span class="hljs-string">&quot;Days&quot;</span>: expire_after_days},
         }]},
     )
-    requests.post(<span class="hljs-string">f&quot;<span class="hljs-subst">{IMPRI}</span>/v1/actions/<span class="hljs-subst">{action[<span class="hljs-string">&#x27;id&#x27;</span>]}</span>/result&quot;</span>,
+    requests.post(<span class="hljs-string">f&quot;<span class="hljs-subst">{AIRLOCK}</span>/v1/actions/<span class="hljs-subst">{action[<span class="hljs-string">&#x27;id&#x27;</span>]}</span>/result&quot;</span>,
                    headers=HEADERS, json={<span class="hljs-string">&quot;status&quot;</span>: <span class="hljs-string">&quot;executed&quot;</span>})
     <span class="hljs-keyword">return</span> <span class="hljs-string">&quot;Lifecycle rule applied after human approval.&quot;</span>
 
@@ -214,19 +214,19 @@ agent = Agent(tools=[apply_lifecycle_rule])</code></pre></div>
 <p>This only works if <code>apply_lifecycle_rule</code> is the agent&#39;s <em>only</em> route to that AWS call. If the agent (or another tool in the same <code>Agent</code>) also has raw <code>boto3</code> access, it can route around the gate entirely.</p>
 <hr>
 <h2 id="unattended-agents-don39t-hold-the-thread-open">Unattended agents: don&#39;t hold the thread open</h2>
-<p>The <code>time.sleep(10)</code> loop above is fine for a Strands agent you&#39;re actively watching run. For a Strands agent triggered by EventBridge or running as a long-lived Lambda-backed process, polling ties up billed compute time for however long the approval takes. Prefer the <a href="mcp">MCP server</a> if the agent runs inside an MCP client, or have a separate Lambda resume the workflow once Impri&#39;s decision lands via a webhook instead of polling.</p>
+<p>The <code>time.sleep(10)</code> loop above is fine for a Strands agent you&#39;re actively watching run. For a Strands agent triggered by EventBridge or running as a long-lived Lambda-backed process, polling ties up billed compute time for however long the approval takes. Prefer the <a href="mcp">MCP server</a> if the agent runs inside an MCP client, or have a separate Lambda resume the workflow once Airlock&#39;s decision lands via a webhook instead of polling.</p>
 <hr>
-<h2 id="what-impri-does-and-doesn39t-do-here">What Impri does and doesn&#39;t do here</h2>
-<p>Impri stores the proposed lifecycle change, notifies you, and holds the decision — it has no idea what S3 is, doesn&#39;t validate the rule, and doesn&#39;t call AWS on your behalf. <code>apply_lifecycle_rule</code> still owns the AWS call; Impri only owns the yes/no. For the general propose → approve → execute contract this builds on, see <a href="how-to-add-human-approval-to-an-ai-agent">how to add human approval to an AI agent</a>.</p>
+<h2 id="what-airlock-does-and-doesn39t-do-here">What Airlock does and doesn&#39;t do here</h2>
+<p>Airlock stores the proposed lifecycle change, notifies you, and holds the decision — it has no idea what S3 is, doesn&#39;t validate the rule, and doesn&#39;t call AWS on your behalf. <code>apply_lifecycle_rule</code> still owns the AWS call; Airlock only owns the yes/no. For the general propose → approve → execute contract this builds on, see <a href="how-to-add-human-approval-to-an-ai-agent">how to add human approval to an AI agent</a>.</p>
 <hr>
 <h2 id="next-step">Next step</h2>
 <p>Start with the <a href="quickstart">quickstart</a> to get an <code>actions</code>-scope API key.</p>
 
-    <aside class="doc-cta" aria-label="Try Impri">
+    <aside class="doc-cta" aria-label="Try Airlock">
   <p class="doc-cta-title">Add an approval step to your own agent</p>
-  <p>Start on Impri Cloud: the Free tier includes 100 approvals a month. Or self-host the MIT-licensed core with Docker Compose, with no tier limits.</p>
+  <p>Start on Airlock Cloud: the Free tier includes 100 approvals a month. Or self-host the MIT-licensed core with Docker Compose, with no tier limits.</p>
   <div class="doc-cta-actions">
-    <a class="btn btn-primary btn-sm" href="https://app.impri.dev/?signup=1">Start free on Impri Cloud</a>
+    <a class="btn btn-primary btn-sm" href="https://app.airlock.dev/?signup=1">Start free on Airlock Cloud</a>
     <a class="btn btn-ghost btn-sm" href="../docs/quickstart">Quick start</a>
     <a class="btn btn-ghost btn-sm" href="../docs/self-hosting">Self-host guide</a>
   </div>
@@ -310,10 +310,10 @@ agent = Agent(tools=[apply_lifecycle_rule])</code></pre></div>
     <nav class="ptoc" aria-label="On this page">
 <div class="ptoc-label">On this page</div>
 <ul><li class="ptoc-h2"><a href="#strands-agents-call-tools-directly">Strands agents call tools directly</a></li>
-<li class="ptoc-h2"><a href="#wrapping-a-strands-tool-with-impri">Wrapping a Strands tool with Impri</a></li>
+<li class="ptoc-h2"><a href="#wrapping-a-strands-tool-with-airlock">Wrapping a Strands tool with Airlock</a></li>
 <li class="ptoc-h2"><a href="#why-the-wrapper-not-a-prompt-instruction">Why the wrapper, not a prompt instruction</a></li>
 <li class="ptoc-h2"><a href="#unattended-agents-don39t-hold-the-thread-open">Unattended agents: don't hold the thread open</a></li>
-<li class="ptoc-h2"><a href="#what-impri-does-and-doesn39t-do-here">What Impri does and doesn't do here</a></li>
+<li class="ptoc-h2"><a href="#what-airlock-does-and-doesn39t-do-here">What Airlock does and doesn't do here</a></li>
 <li class="ptoc-h2"><a href="#next-step">Next step</a></li></ul>
 </nav>
   </aside>
@@ -322,19 +322,19 @@ agent = Agent(tools=[apply_lifecycle_rule])</code></pre></div>
 <footer class="footer">
 <div class="wrap footer-inner">
   <a class="brand" href="/">
-    <span class="mark"><svg viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.5 4.5L19 7.5" stroke="white" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Impri
+    <span class="mark"><svg viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.5 4.5L19 7.5" stroke="white" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Airlock
   </a>
   <div>
-    <a href="https://gitlab.com/sekera.radim/impri">GitLab</a>
+    <a href="https://gitlab.com/sekera.radim/airlock">GitLab</a>
     <a href="/docs">Docs</a>
-    <a href="https://gitlab.com/sekera.radim/impri/-/blob/main/LICENSE">MIT License</a>
-    <a href="https://www.npmjs.com/package/@impri/mcp">@impri/mcp</a>
+    <a href="https://gitlab.com/sekera.radim/airlock/-/blob/main/LICENSE">MIT License</a>
+    <a href="https://www.npmjs.com/package/@airlock/mcp">@airlock/mcp</a>
     <a href="/docs/privacy">Privacy</a>
     <a href="/docs/terms">Terms</a>
     <a href="https://sekera.dev">Contact</a>
   </div>
 </div>
-<div class="wrap" style="margin-top:18px"><span class="muted">© 2026 Impri · The imprimatur for your AI agents · Built by <a href="https://sekera.dev" style="color:inherit">Radim Sekera</a>. Also by the same maker: <a href="https://briefgate.dev/?utm_source=impri.dev&amp;utm_medium=referral" style="color:inherit">BriefGate</a> — client intake for agencies and AI agents.</span></div>
+<div class="wrap" style="margin-top:18px"><span class="muted">© 2026 Airlock · The airlockmatur for your AI agents · Built by <a href="https://sekera.dev" style="color:inherit">Radim Sekera</a>. Also by the same maker: <a href="https://briefgate.dev/?utm_source=airlock.dev&amp;utm_medium=referral" style="color:inherit">BriefGate</a> — client intake for agencies and AI agents.</span></div>
 </footer>
 </body>
 </html>

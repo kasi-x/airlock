@@ -1,4 +1,4 @@
-# Production Docker Compose for Impri
+# Production Docker Compose for Airlock
 #
 # Usage (from repo root):
 #   docker compose -f deploy/docker-compose.prod.yml --env-file deploy/.env up -d
@@ -19,9 +19,9 @@ services:
       context: ..
       dockerfile: docker/server.Dockerfile
     volumes:
-      - impri-data:/app/data
+      - airlock-data:/app/data
     environment:
-      DB_PATH: /app/data/impri.db
+      DB_PATH: /app/data/airlock.db
       PORT: "8484"
       HOST: "0.0.0.0"
       # Public URL of the web inbox — used to construct inbox_url in API responses.
@@ -50,7 +50,7 @@ services:
       STRIPE_PRICE_TEAM: "${STRIPE_PRICE_TEAM:-}"
 
       # Set to 1 only on isolated intranet deployments (bypasses SSRF guard).
-      IMPRI_ALLOW_PRIVATE_TARGETS: "${IMPRI_ALLOW_PRIVATE_TARGETS:-}"
+      AIRLOCK_ALLOW_PRIVATE_TARGETS: "${AIRLOCK_ALLOW_PRIVATE_TARGETS:-}"
 
       # Set to 1 to disable the watcher scheduler (approval inbox only mode).
       DISABLE_WATCHER_SCHEDULER: "${DISABLE_WATCHER_SCHEDULER:-}"
@@ -108,7 +108,7 @@ services:
       - internal
 
 volumes:
-  impri-data:
+  airlock-data:
     # SQLite database. Back this up daily — see deploy/backup.sh.
   caddy-data:
     # Let's Encrypt certificates. Losing this means rate-limit delays on next boot.

@@ -29,7 +29,7 @@ The interesting design work isn't "should this agent have human-in-the-loop" as 
 
 ## Where the block actually happens
 
-For the "block-until-approved" tier, the mechanism is the same three-step shape regardless of framework: propose an action to a store outside the agent's process, wait for a decision, execute only on approval. Impri implements that store — see [the propose, approve, execute pattern](the-propose-approve-execute-pattern.md) for the general shape before looking at a specific integration.
+For the "block-until-approved" tier, the mechanism is the same three-step shape regardless of framework: propose an action to a store outside the agent's process, wait for a decision, execute only on approval. Airlock implements that store — see [the propose, approve, execute pattern](the-propose-approve-execute-pattern.md) for the general shape before looking at a specific integration.
 
 ## A deploy-agent example
 
@@ -46,10 +46,10 @@ interface DeployRequest {
 }
 
 async function requestDeployApproval(req: Omit<DeployRequest, "actionId">) {
-  // impri_push_action is exposed by the @impri/mcp server the agent has configured.
+  // airlock_push_action is exposed by the @airlock/mcp server the agent has configured.
   // `mcp.call` is pseudocode for your MCP client's tool call; a real client
   // (@modelcontextprotocol/sdk) returns the tool's JSON under `.structuredContent`.
-  const pushedResult = await mcp.call("impri_push_action", {
+  const pushedResult = await mcp.call("airlock_push_action", {
     kind: "infra.deploy",
     title: `Deploy to ${req.targetEnv}: ${req.planSummary}`,
     preview: { format: "markdown", body: req.planSummary },
@@ -57,7 +57,7 @@ async function requestDeployApproval(req: Omit<DeployRequest, "actionId">) {
   });
   const pushed = pushedResult.structuredContent;
 
-  const decisionResult = await mcp.call("impri_await_decision", {
+  const decisionResult = await mcp.call("airlock_await_decision", {
     action_id: pushed.action_id,
     timeout_s: 1800,
   });
@@ -68,7 +68,7 @@ async function requestDeployApproval(req: Omit<DeployRequest, "actionId">) {
   }
 
   const result = spawnSync("terraform", ["apply", "-auto-approve"], { encoding: "utf8" });
-  await mcp.call("impri_report_result", {
+  await mcp.call("airlock_report_result", {
     action_id: pushed.action_id,
     status: result.status === 0 ? "executed" : "execute_failed",
   });
@@ -82,7 +82,7 @@ async function requestDeployApproval(req: Omit<DeployRequest, "actionId">) {
 
 ## Choosing where to put the gate
 
-A gate is only real if the wrapped call is the agent's *only* route to the side effect. If the agent also holds a raw cloud credential it could use directly, wrapping one tool with `impri_push_action` doesn't stop it from going around your gate through a different one. Put the approval wrapper at the boundary the agent cannot bypass — ideally the same function that holds the API key or shell access — not at a layer the agent could choose to skip.
+A gate is only real if the wrapped call is the agent's *only* route to the side effect. If the agent also holds a raw cloud credential it could use directly, wrapping one tool with `airlock_push_action` doesn't stop it from going around your gate through a different one. Put the approval wrapper at the boundary the agent cannot bypass — ideally the same function that holds the API key or shell access — not at a layer the agent could choose to skip.
 
 ---
 

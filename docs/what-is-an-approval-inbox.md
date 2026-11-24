@@ -52,8 +52,8 @@ Say you have an agent that watches issues and drafts comments in response. Inste
 ```python
 import os, time, requests
 
-API = "https://api.impri.dev"
-HEADERS = {"Authorization": f"Bearer {os.environ['IMPRI_API_KEY']}"}
+API = "https://api.airlock.dev"
+HEADERS = {"Authorization": f"Bearer {os.environ['AIRLOCK_API_KEY']}"}
 
 def propose_comment(issue_number: int, body: str) -> str:
     resp = requests.post(f"{API}/v1/actions", headers=HEADERS, json={

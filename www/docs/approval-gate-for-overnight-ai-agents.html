@@ -3,21 +3,21 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>An Approval Gate for Agents That Run While You Sleep — Impri Docs</title>
+<title>An Approval Gate for Agents That Run While You Sleep — Airlock Docs</title>
 <meta name="description" content="Overnight AI agents draft emails, tickets, and posts while you're asleep — this shows how to queue their actions for a morning approval pass instead of firing…">
 <meta name="theme-color" content="#06070d">
-<meta property="og:title" content="An Approval Gate for Agents That Run While You Sleep — Impri Docs">
+<meta property="og:title" content="An Approval Gate for Agents That Run While You Sleep — Airlock Docs">
 <meta property="og:description" content="Overnight AI agents draft emails, tickets, and posts while you're asleep — this shows how to queue their actions for a morning approval pass instead of firing…">
 <meta property="og:type" content="article">
-<meta property="og:url" content="https://impri.dev/docs/approval-gate-for-overnight-ai-agents">
-<meta property="og:image" content="https://impri.dev/assets/og/og-docs.png">
+<meta property="og:url" content="https://airlock.dev/docs/approval-gate-for-overnight-ai-agents">
+<meta property="og:image" content="https://airlock.dev/assets/og/og-docs.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
-<meta property="og:image:alt" content="Impri — human-in-the-loop approval inbox for AI agents">
+<meta property="og:image:alt" content="Airlock — human-in-the-loop approval inbox for AI agents">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="https://impri.dev/assets/og/og-docs.png">
-<link rel="canonical" href="https://impri.dev/docs/approval-gate-for-overnight-ai-agents">
-<script type="application/ld+json">{"@context":"https://schema.org","@type":"TechArticle","headline":"An Approval Gate for Agents That Run While You Sleep","description":"Overnight AI agents draft emails, tickets, and posts while you're asleep — this shows how to queue their actions for a morning approval pass instead of firing…","url":"https://impri.dev/docs/approval-gate-for-overnight-ai-agents","inLanguage":"en","author":{"@type":"Organization","name":"Impri","url":"https://impri.dev"},"publisher":{"@type":"Organization","name":"Impri","url":"https://impri.dev"}}</script>
+<meta name="twitter:image" content="https://airlock.dev/assets/og/og-docs.png">
+<link rel="canonical" href="https://airlock.dev/docs/approval-gate-for-overnight-ai-agents">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"TechArticle","headline":"An Approval Gate for Agents That Run While You Sleep","description":"Overnight AI agents draft emails, tickets, and posts while you're asleep — this shows how to queue their actions for a morning approval pass instead of firing…","url":"https://airlock.dev/docs/approval-gate-for-overnight-ai-agents","inLanguage":"en","author":{"@type":"Organization","name":"Airlock","url":"https://airlock.dev"},"publisher":{"@type":"Organization","name":"Airlock","url":"https://airlock.dev"}}</script>
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <link rel="icon" href="/favicon.ico" sizes="32x32">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='9' fill='%236366f1'/%3E%3Cpath d='M9 16.5l4.5 4.5L23 11' stroke='white' stroke-width='3' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
@@ -132,13 +132,13 @@ pre code.hljs{display:block;overflow-x:auto}
 <div class="wrap nav-inner">
   <a class="brand" href="/">
     <span class="mark"><svg viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.5 4.5L19 7.5" stroke="white" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
-    Impri
+    Airlock
   </a>
   <div class="nav-links">
     <a class="link" href="/#how">How it works</a>
     <a class="link" href="/#pricing">Pricing</a>
     <a class="link active-nav" href="../docs">Docs</a>
-    <a class="btn btn-primary btn-sm" href="https://gitlab.com/sekera.radim/impri">GitLab</a>
+    <a class="btn btn-primary btn-sm" href="https://gitlab.com/sekera.radim/airlock">GitLab</a>
   </div>
 </div>
 </nav>
@@ -157,19 +157,19 @@ pre code.hljs{display:block;overflow-x:auto}
 <hr>
 <h2 id="the-problem-with-quotruns-overnight-unattendedquot">The problem with &quot;runs overnight, unattended&quot;</h2>
 <p>A cron job that kicks off a Claude Code agent at 2am to triage inbox threads, draft support replies, or scan RSS feeds for content ideas is genuinely useful — until the agent decides one of those drafts should go out immediately. Nobody is watching at 2am. If the draft is wrong, or a scraped page contained an injected instruction, it ships before anyone notices. The fix isn&#39;t &quot;don&#39;t run agents overnight&quot; — it&#39;s separating <strong>drafting</strong> (fine to do unattended) from <strong>sending</strong> (needs a human awake to look at it).</p>
-<p>Impri sits at that boundary. The overnight agent pushes every side-effecting action to Impri and stops. It doesn&#39;t wait around — there&#39;s no one to notify at 2am anyway. You review the stack when you wake up.</p>
+<p>Airlock sits at that boundary. The overnight agent pushes every side-effecting action to Airlock and stops. It doesn&#39;t wait around — there&#39;s no one to notify at 2am anyway. You review the stack when you wake up.</p>
 <hr>
 <h2 id="setting-a-long-expiry-for-the-wake-up-window">Setting a long expiry for the wake-up window</h2>
 <p>The default <code>expires_in</code> (72 hours) is fine, but for a nightly batch you want actions to survive until morning without needing to be precise about timing. Set it explicitly and generously — a support-reply batch from a 2am run should still be valid at 9am, and probably still relevant at lunch:</p>
 <div class="code-block"><span class="code-lang">python</span><pre><code class="hljs"><span class="hljs-keyword">import</span> requests
 <span class="hljs-keyword">import</span> os
 
-IMPRI_KEY = os.environ[<span class="hljs-string">&quot;IMPRI_API_KEY&quot;</span>]
+AIRLOCK_KEY = os.environ[<span class="hljs-string">&quot;AIRLOCK_API_KEY&quot;</span>]
 
 <span class="hljs-keyword">def</span> <span class="hljs-title function_">queue_overnight_draft</span>(<span class="hljs-params">kind, title, body, target_url=<span class="hljs-literal">None</span></span>):
     resp = requests.post(
-        <span class="hljs-string">&quot;https://api.impri.dev/v1/actions&quot;</span>,
-        headers={<span class="hljs-string">&quot;Authorization&quot;</span>: <span class="hljs-string">f&quot;Bearer <span class="hljs-subst">{IMPRI_KEY}</span>&quot;</span>},
+        <span class="hljs-string">&quot;https://api.airlock.dev/v1/actions&quot;</span>,
+        headers={<span class="hljs-string">&quot;Authorization&quot;</span>: <span class="hljs-string">f&quot;Bearer <span class="hljs-subst">{AIRLOCK_KEY}</span>&quot;</span>},
         json={
             <span class="hljs-string">&quot;kind&quot;</span>: kind,
             <span class="hljs-string">&quot;title&quot;</span>: title,
@@ -195,31 +195,31 @@ IMPRI_KEY = os.environ[<span class="hljs-string">&quot;IMPRI_API_KEY&quot;</span
 <h2 id="batch-review-in-the-morning-not-one-card-at-a-time">Batch review in the morning, not one card at a time</h2>
 <p>A single overnight run can produce a dozen drafts. Reviewing them one by one on your phone before coffee is tedious enough that people start rubber-stamping — which defeats the point. Use the bulk-decision endpoint from a morning review pass to approve the obvious ones together and open only the ones that need a closer read:</p>
 <div class="code-block"><span class="code-lang">bash</span><pre><code class="hljs"><span class="hljs-comment"># Check one action&#x27;s status before deciding</span>
-curl -s https://api.impri.dev/v1/actions/act_101 \
-  -H <span class="hljs-string">&quot;Authorization: Bearer <span class="hljs-variable">$IMPRI_API_KEY</span>&quot;</span>
+curl -s https://api.airlock.dev/v1/actions/act_101 \
+  -H <span class="hljs-string">&quot;Authorization: Bearer <span class="hljs-variable">$AIRLOCK_API_KEY</span>&quot;</span>
 
 <span class="hljs-comment"># Decide on several at once via the bulk endpoint, rather than</span>
 <span class="hljs-comment"># one API call (or one inbox tap) per drafted reply</span>
-curl -s -X POST https://api.impri.dev/v1/actions/bulk-decision \
-  -H <span class="hljs-string">&quot;Authorization: Bearer <span class="hljs-variable">$IMPRI_API_KEY</span>&quot;</span> \
+curl -s -X POST https://api.airlock.dev/v1/actions/bulk-decision \
+  -H <span class="hljs-string">&quot;Authorization: Bearer <span class="hljs-variable">$AIRLOCK_API_KEY</span>&quot;</span> \
   -H <span class="hljs-string">&quot;Content-Type: application/json&quot;</span> \
   -d <span class="hljs-string">&#x27;{&quot;ids&quot;: [&quot;act_101&quot;, &quot;act_102&quot;, &quot;act_105&quot;]}&#x27;</span></code></pre></div>
-<p>In practice most people just do this from the inbox web UI on their phone — the bulk endpoint matters when you&#39;re scripting a review pass over a batch you&#39;ve already read, which is a judgment call you make, not something Impri infers on its own.</p>
+<p>In practice most people just do this from the inbox web UI on their phone — the bulk endpoint matters when you&#39;re scripting a review pass over a batch you&#39;ve already read, which is a judgment call you make, not something Airlock infers on its own.</p>
 <hr>
 <h2 id="push-notifications-so-you-don39t-have-to-remember-to-check">Push notifications so you don&#39;t have to remember to check</h2>
 <p>Nobody wants to open an app every morning just in case. Wire a push channel so the overnight batch actually surfaces instead of sitting silently in an inbox: ntfy or web push for a phone buzz, or Telegram if you already triage there. See <a href="notifications">notifications</a> for setup and <a href="telegram-approval">telegram-approval</a> if you want approve/reject buttons directly in a chat thread — useful for a half-asleep glance before getting out of bed.</p>
 <hr>
 <h2 id="what-this-doesn39t-solve">What this doesn&#39;t solve</h2>
-<p>Impri holds the decision; it doesn&#39;t decide anything about <em>when</em> your agent should run or <em>how</em> it should batch work — that scheduling logic is yours (cron, a queue, whatever you already use). It also doesn&#39;t retroactively protect you from an agent that has its own direct credentials to the sending service — the gate only holds if the overnight process&#39;s <em>only</em> path to sending is through the approved action. Wrap the actual send/publish call so it hard-depends on the approved <code>final_preview</code>, as described in <a href="how-to-add-human-approval-to-an-ai-agent">the approval guide</a>.</p>
+<p>Airlock holds the decision; it doesn&#39;t decide anything about <em>when</em> your agent should run or <em>how</em> it should batch work — that scheduling logic is yours (cron, a queue, whatever you already use). It also doesn&#39;t retroactively protect you from an agent that has its own direct credentials to the sending service — the gate only holds if the overnight process&#39;s <em>only</em> path to sending is through the approved action. Wrap the actual send/publish call so it hard-depends on the approved <code>final_preview</code>, as described in <a href="how-to-add-human-approval-to-an-ai-agent">the approval guide</a>.</p>
 <hr>
 <h2 id="next-step">Next step</h2>
 <p>Start with <a href="quickstart">quickstart</a> to get an API key, then wire your nightly job to push actions instead of executing them directly. For a job that runs from cron and must not send twice, follow <a href="gate-a-cron-job-with-human-approval">adding human approval to a cron job</a>.</p>
 
-    <aside class="doc-cta" aria-label="Try Impri">
+    <aside class="doc-cta" aria-label="Try Airlock">
   <p class="doc-cta-title">Add an approval step to your own agent</p>
-  <p>Start on Impri Cloud: the Free tier includes 100 approvals a month. Or self-host the MIT-licensed core with Docker Compose, with no tier limits.</p>
+  <p>Start on Airlock Cloud: the Free tier includes 100 approvals a month. Or self-host the MIT-licensed core with Docker Compose, with no tier limits.</p>
   <div class="doc-cta-actions">
-    <a class="btn btn-primary btn-sm" href="https://app.impri.dev/?signup=1">Start free on Impri Cloud</a>
+    <a class="btn btn-primary btn-sm" href="https://app.airlock.dev/?signup=1">Start free on Airlock Cloud</a>
     <a class="btn btn-ghost btn-sm" href="../docs/quickstart">Quick start</a>
     <a class="btn btn-ghost btn-sm" href="../docs/self-hosting">Self-host guide</a>
   </div>
@@ -315,19 +315,19 @@ curl -s -X POST https://api.impri.dev/v1/actions/bulk-decision \
 <footer class="footer">
 <div class="wrap footer-inner">
   <a class="brand" href="/">
-    <span class="mark"><svg viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.5 4.5L19 7.5" stroke="white" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Impri
+    <span class="mark"><svg viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.5 4.5L19 7.5" stroke="white" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Airlock
   </a>
   <div>
-    <a href="https://gitlab.com/sekera.radim/impri">GitLab</a>
+    <a href="https://gitlab.com/sekera.radim/airlock">GitLab</a>
     <a href="/docs">Docs</a>
-    <a href="https://gitlab.com/sekera.radim/impri/-/blob/main/LICENSE">MIT License</a>
-    <a href="https://www.npmjs.com/package/@impri/mcp">@impri/mcp</a>
+    <a href="https://gitlab.com/sekera.radim/airlock/-/blob/main/LICENSE">MIT License</a>
+    <a href="https://www.npmjs.com/package/@airlock/mcp">@airlock/mcp</a>
     <a href="/docs/privacy">Privacy</a>
     <a href="/docs/terms">Terms</a>
     <a href="https://sekera.dev">Contact</a>
   </div>
 </div>
-<div class="wrap" style="margin-top:18px"><span class="muted">© 2026 Impri · The imprimatur for your AI agents · Built by <a href="https://sekera.dev" style="color:inherit">Radim Sekera</a>. Also by the same maker: <a href="https://briefgate.dev/?utm_source=impri.dev&amp;utm_medium=referral" style="color:inherit">BriefGate</a> — client intake for agencies and AI agents.</span></div>
+<div class="wrap" style="margin-top:18px"><span class="muted">© 2026 Airlock · The airlockmatur for your AI agents · Built by <a href="https://sekera.dev" style="color:inherit">Radim Sekera</a>. Also by the same maker: <a href="https://briefgate.dev/?utm_source=airlock.dev&amp;utm_medium=referral" style="color:inherit">BriefGate</a> — client intake for agencies and AI agents.</span></div>
 </footer>
 </body>
 </html>

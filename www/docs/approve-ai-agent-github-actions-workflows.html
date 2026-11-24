@@ -3,21 +3,21 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Approve GitHub Actions Runs Triggered by an AI Coding… — Impri Docs</title>
+<title>Approve GitHub Actions Runs Triggered by an AI Coding… — Airlock Docs</title>
 <meta name="description" content="When a coding agent holds a GitHub token, it can fire workflow_dispatch directly — gate that call so a human signs off before any workflow actually runs.">
 <meta name="theme-color" content="#06070d">
-<meta property="og:title" content="Approve GitHub Actions Runs Triggered by an AI Coding… — Impri Docs">
+<meta property="og:title" content="Approve GitHub Actions Runs Triggered by an AI Coding… — Airlock Docs">
 <meta property="og:description" content="When a coding agent holds a GitHub token, it can fire workflow_dispatch directly — gate that call so a human signs off before any workflow actually runs.">
 <meta property="og:type" content="article">
-<meta property="og:url" content="https://impri.dev/docs/approve-ai-agent-github-actions-workflows">
-<meta property="og:image" content="https://impri.dev/assets/og/og-docs.png">
+<meta property="og:url" content="https://airlock.dev/docs/approve-ai-agent-github-actions-workflows">
+<meta property="og:image" content="https://airlock.dev/assets/og/og-docs.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
-<meta property="og:image:alt" content="Impri — human-in-the-loop approval inbox for AI agents">
+<meta property="og:image:alt" content="Airlock — human-in-the-loop approval inbox for AI agents">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="https://impri.dev/assets/og/og-docs.png">
-<link rel="canonical" href="https://impri.dev/docs/approve-ai-agent-github-actions-workflows">
-<script type="application/ld+json">{"@context":"https://schema.org","@type":"TechArticle","headline":"Approve GitHub Actions Runs Triggered by an AI Coding Agent","description":"When a coding agent holds a GitHub token, it can fire workflow_dispatch directly — gate that call so a human signs off before any workflow actually runs.","url":"https://impri.dev/docs/approve-ai-agent-github-actions-workflows","inLanguage":"en","author":{"@type":"Organization","name":"Impri","url":"https://impri.dev"},"publisher":{"@type":"Organization","name":"Impri","url":"https://impri.dev"}}</script>
+<meta name="twitter:image" content="https://airlock.dev/assets/og/og-docs.png">
+<link rel="canonical" href="https://airlock.dev/docs/approve-ai-agent-github-actions-workflows">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"TechArticle","headline":"Approve GitHub Actions Runs Triggered by an AI Coding Agent","description":"When a coding agent holds a GitHub token, it can fire workflow_dispatch directly — gate that call so a human signs off before any workflow actually runs.","url":"https://airlock.dev/docs/approve-ai-agent-github-actions-workflows","inLanguage":"en","author":{"@type":"Organization","name":"Airlock","url":"https://airlock.dev"},"publisher":{"@type":"Organization","name":"Airlock","url":"https://airlock.dev"}}</script>
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <link rel="icon" href="/favicon.ico" sizes="32x32">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='9' fill='%236366f1'/%3E%3Cpath d='M9 16.5l4.5 4.5L23 11' stroke='white' stroke-width='3' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
@@ -132,13 +132,13 @@ pre code.hljs{display:block;overflow-x:auto}
 <div class="wrap nav-inner">
   <a class="brand" href="/">
     <span class="mark"><svg viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.5 4.5L19 7.5" stroke="white" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
-    Impri
+    Airlock
   </a>
   <div class="nav-links">
     <a class="link" href="/#how">How it works</a>
     <a class="link" href="/#pricing">Pricing</a>
     <a class="link active-nav" href="../docs">Docs</a>
-    <a class="btn btn-primary btn-sm" href="https://gitlab.com/sekera.radim/impri">GitLab</a>
+    <a class="btn btn-primary btn-sm" href="https://gitlab.com/sekera.radim/airlock">GitLab</a>
   </div>
 </div>
 </nav>
@@ -159,10 +159,10 @@ pre code.hljs{display:block;overflow-x:auto}
 <p>Coding agents like Claude Code or Cursor increasingly carry a GitHub personal access token so they can open PRs, check CI status, and — if the token has <code>actions: write</code> — dispatch workflows directly through the GitHub REST API. That last one is easy to overlook because it doesn&#39;t look like &quot;deploying code.&quot; It looks like the agent being helpful: &quot;let me just kick off the release workflow&quot; or &quot;I&#39;ll trigger the nightly cleanup job now instead of waiting.&quot;</p>
 <p>But <code>workflow_dispatch</code> can run anything a <code>.github/workflows/*.yml</code> file defines — a release, a database migration job, a secret rotation script, a bulk-delete maintenance task. None of that goes through a pull request review. The agent decided the trigger was warranted, and the API call is the only step between that decision and the workflow executing. This is a different problem from gating a deploy that&#39;s already sitting behind a PR-based pipeline — here there&#39;s no PR at all, just an agent with a token calling an endpoint.</p>
 <h2 id="wrapping-the-dispatch-call">Wrapping the dispatch call</h2>
-<p>The fix is to make the agent&#39;s dispatch function a two-step function: propose to Impri, wait for approval, then call GitHub. The agent never gets a code path that reaches the GitHub API without that middle step.</p>
+<p>The fix is to make the agent&#39;s dispatch function a two-step function: propose to Airlock, wait for approval, then call GitHub. The agent never gets a code path that reaches the GitHub API without that middle step.</p>
 <div class="code-block"><span class="code-lang">typescript</span><pre><code class="hljs"><span class="hljs-keyword">import</span> { <span class="hljs-title class_">Octokit</span> } <span class="hljs-keyword">from</span> <span class="hljs-string">&quot;octokit&quot;</span>;
 
-<span class="hljs-keyword">const</span> <span class="hljs-variable constant_">IMPRI_KEY</span> = process.<span class="hljs-property">env</span>.<span class="hljs-property">IMPRI_API_KEY</span>!;
+<span class="hljs-keyword">const</span> <span class="hljs-variable constant_">AIRLOCK_KEY</span> = process.<span class="hljs-property">env</span>.<span class="hljs-property">AIRLOCK_API_KEY</span>!;
 <span class="hljs-keyword">const</span> octokit = <span class="hljs-keyword">new</span> <span class="hljs-title class_">Octokit</span>({ <span class="hljs-attr">auth</span>: process.<span class="hljs-property">env</span>.<span class="hljs-property">GITHUB_TOKEN</span> });
 
 <span class="hljs-keyword">async</span> <span class="hljs-keyword">function</span> <span class="hljs-title function_">dispatchWorkflowWithApproval</span>(<span class="hljs-params">
@@ -172,10 +172,10 @@ pre code.hljs{display:block;overflow-x:auto}
   <span class="hljs-attr">ref</span>: <span class="hljs-built_in">string</span>,
   <span class="hljs-attr">inputs</span>: <span class="hljs-title class_">Record</span>&lt;<span class="hljs-built_in">string</span>, <span class="hljs-built_in">string</span>&gt;,
 </span>) {
-  <span class="hljs-keyword">const</span> res = <span class="hljs-keyword">await</span> <span class="hljs-title function_">fetch</span>(<span class="hljs-string">&quot;https://api.impri.dev/v1/actions&quot;</span>, {
+  <span class="hljs-keyword">const</span> res = <span class="hljs-keyword">await</span> <span class="hljs-title function_">fetch</span>(<span class="hljs-string">&quot;https://api.airlock.dev/v1/actions&quot;</span>, {
     <span class="hljs-attr">method</span>: <span class="hljs-string">&quot;POST&quot;</span>,
     <span class="hljs-attr">headers</span>: {
-      <span class="hljs-title class_">Authorization</span>: <span class="hljs-string">`Bearer <span class="hljs-subst">${IMPRI_KEY}</span>`</span>,
+      <span class="hljs-title class_">Authorization</span>: <span class="hljs-string">`Bearer <span class="hljs-subst">${AIRLOCK_KEY}</span>`</span>,
       <span class="hljs-string">&quot;Content-Type&quot;</span>: <span class="hljs-string">&quot;application/json&quot;</span>,
     },
     <span class="hljs-attr">body</span>: <span class="hljs-title class_">JSON</span>.<span class="hljs-title function_">stringify</span>({
@@ -194,8 +194,8 @@ pre code.hljs{display:block;overflow-x:auto}
   <span class="hljs-keyword">let</span> status = <span class="hljs-string">&quot;pending&quot;</span>;
   <span class="hljs-keyword">while</span> (status === <span class="hljs-string">&quot;pending&quot;</span>) {
     <span class="hljs-keyword">await</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">Promise</span>(<span class="hljs-function">(<span class="hljs-params">r</span>) =&gt;</span> <span class="hljs-built_in">setTimeout</span>(r, <span class="hljs-number">5000</span>));
-    <span class="hljs-keyword">const</span> check = <span class="hljs-keyword">await</span> <span class="hljs-title function_">fetch</span>(<span class="hljs-string">`https://api.impri.dev/v1/actions/<span class="hljs-subst">${id}</span>`</span>, {
-      <span class="hljs-attr">headers</span>: { <span class="hljs-title class_">Authorization</span>: <span class="hljs-string">`Bearer <span class="hljs-subst">${IMPRI_KEY}</span>`</span> },
+    <span class="hljs-keyword">const</span> check = <span class="hljs-keyword">await</span> <span class="hljs-title function_">fetch</span>(<span class="hljs-string">`https://api.airlock.dev/v1/actions/<span class="hljs-subst">${id}</span>`</span>, {
+      <span class="hljs-attr">headers</span>: { <span class="hljs-title class_">Authorization</span>: <span class="hljs-string">`Bearer <span class="hljs-subst">${AIRLOCK_KEY}</span>`</span> },
     });
     status = (<span class="hljs-keyword">await</span> check.<span class="hljs-title function_">json</span>()).<span class="hljs-property">status</span>;
   }
@@ -220,13 +220,13 @@ pre code.hljs{display:block;overflow-x:auto}
 <h2 id="expiry-for-one-off-runs">Expiry for one-off runs</h2>
 <p><code>expires_in</code> matters more here than for a slow-moving action like a blog post. A workflow dispatch tied to &quot;run this now&quot; stops making sense a few hours later — the underlying branch may have moved, or the reason for running it may no longer apply. Thirty minutes to a couple of hours is usually the right window; the default 72-hour expiry is really meant for asynchronous drafts, not time-sensitive triggers.</p>
 <hr>
-<p>New to Impri? Start with the <a href="quickstart">quickstart</a> to get an API key, or read the general <a href="how-to-add-human-approval-to-an-ai-agent">pattern for adding approval to an agent</a> if this is your first gated action. For agents that already use the TypeScript SDK instead of raw <code>fetch</code>, see <a href="sdk-typescript">sdk-typescript</a>.</p>
+<p>New to Airlock? Start with the <a href="quickstart">quickstart</a> to get an API key, or read the general <a href="how-to-add-human-approval-to-an-ai-agent">pattern for adding approval to an agent</a> if this is your first gated action. For agents that already use the TypeScript SDK instead of raw <code>fetch</code>, see <a href="sdk-typescript">sdk-typescript</a>.</p>
 
-    <aside class="doc-cta" aria-label="Try Impri">
+    <aside class="doc-cta" aria-label="Try Airlock">
   <p class="doc-cta-title">Add an approval step to your own agent</p>
-  <p>Start on Impri Cloud: the Free tier includes 100 approvals a month. Or self-host the MIT-licensed core with Docker Compose, with no tier limits.</p>
+  <p>Start on Airlock Cloud: the Free tier includes 100 approvals a month. Or self-host the MIT-licensed core with Docker Compose, with no tier limits.</p>
   <div class="doc-cta-actions">
-    <a class="btn btn-primary btn-sm" href="https://app.impri.dev/?signup=1">Start free on Impri Cloud</a>
+    <a class="btn btn-primary btn-sm" href="https://app.airlock.dev/?signup=1">Start free on Airlock Cloud</a>
     <a class="btn btn-ghost btn-sm" href="../docs/quickstart">Quick start</a>
     <a class="btn btn-ghost btn-sm" href="../docs/self-hosting">Self-host guide</a>
   </div>
@@ -321,19 +321,19 @@ pre code.hljs{display:block;overflow-x:auto}
 <footer class="footer">
 <div class="wrap footer-inner">
   <a class="brand" href="/">
-    <span class="mark"><svg viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.5 4.5L19 7.5" stroke="white" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Impri
+    <span class="mark"><svg viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.5 4.5L19 7.5" stroke="white" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Airlock
   </a>
   <div>
-    <a href="https://gitlab.com/sekera.radim/impri">GitLab</a>
+    <a href="https://gitlab.com/sekera.radim/airlock">GitLab</a>
     <a href="/docs">Docs</a>
-    <a href="https://gitlab.com/sekera.radim/impri/-/blob/main/LICENSE">MIT License</a>
-    <a href="https://www.npmjs.com/package/@impri/mcp">@impri/mcp</a>
+    <a href="https://gitlab.com/sekera.radim/airlock/-/blob/main/LICENSE">MIT License</a>
+    <a href="https://www.npmjs.com/package/@airlock/mcp">@airlock/mcp</a>
     <a href="/docs/privacy">Privacy</a>
     <a href="/docs/terms">Terms</a>
     <a href="https://sekera.dev">Contact</a>
   </div>
 </div>
-<div class="wrap" style="margin-top:18px"><span class="muted">© 2026 Impri · The imprimatur for your AI agents · Built by <a href="https://sekera.dev" style="color:inherit">Radim Sekera</a>. Also by the same maker: <a href="https://briefgate.dev/?utm_source=impri.dev&amp;utm_medium=referral" style="color:inherit">BriefGate</a> — client intake for agencies and AI agents.</span></div>
+<div class="wrap" style="margin-top:18px"><span class="muted">© 2026 Airlock · The airlockmatur for your AI agents · Built by <a href="https://sekera.dev" style="color:inherit">Radim Sekera</a>. Also by the same maker: <a href="https://briefgate.dev/?utm_source=airlock.dev&amp;utm_medium=referral" style="color:inherit">BriefGate</a> — client intake for agencies and AI agents.</span></div>
 </footer>
 </body>
 </html>

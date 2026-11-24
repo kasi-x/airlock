@@ -12,16 +12,16 @@ Twilio, Vonage, and similar providers will happily send whatever string you hand
 
 ## The gate in practice
 
-Say you run a scheduling agent for a dental clinic. It reads tomorrow's appointment list, drafts a reminder text per patient, and used to call the Twilio API directly. Now it pushes each draft to Impri first and only sends after a receptionist approves it:
+Say you run a scheduling agent for a dental clinic. It reads tomorrow's appointment list, drafts a reminder text per patient, and used to call the Twilio API directly. Now it pushes each draft to Airlock first and only sends after a receptionist approves it:
 
 ```python
 import os
 import time
 import requests
 
-IMPRI_KEY = os.environ["IMPRI_API_KEY"]
-BASE = "https://api.impri.dev"
-HEADERS = {"Authorization": f"Bearer {IMPRI_KEY}", "Content-Type": "application/json"}
+AIRLOCK_KEY = os.environ["AIRLOCK_API_KEY"]
+BASE = "https://api.airlock.dev"
+HEADERS = {"Authorization": f"Bearer {AIRLOCK_KEY}", "Content-Type": "application/json"}
 
 def push_sms_for_approval(to_number, body):
     resp = requests.post(f"{BASE}/v1/actions", headers=HEADERS, json={
@@ -58,7 +58,7 @@ The Twilio call is inside the `if approved` branch and nowhere else in the codeb
 
 ## What the receptionist sees, and why editable matters
 
-Setting `editable: ["preview.body"]` means the approval card in the inbox isn't just an approve/reject button — the receptionist can fix a typo, adjust the tone, or correct a name before sending, and Impri returns that edited text as `decision.final_preview.body`. Always send that field, never the original `preview.body`; if a human touched the message, the original is not what should go out.
+Setting `editable: ["preview.body"]` means the approval card in the inbox isn't just an approve/reject button — the receptionist can fix a typo, adjust the tone, or correct a name before sending, and Airlock returns that edited text as `decision.final_preview.body`. Always send that field, never the original `preview.body`; if a human touched the message, the original is not what should go out.
 
 This matters more for SMS than most channels because there's no second chance to clarify. An email with an awkward phrase gets a follow-up. A text that says "your appointment is cancelled" instead of "your appointment is confirmed" because of one autocorrected word gets a phone call from a confused patient.
 
@@ -68,6 +68,6 @@ If your agent processes a full day's appointment list in one run, it might push 
 
 ## Boundaries
 
-Impri stores the drafted message, notifies the reviewer, and holds the decision — it does not read the message content, does not know what "sounds right" for your clinic's tone, and does not talk to Twilio on your behalf. Your agent still owns sending the SMS; Impri owns making sure a human said yes first. For the two other integration paths (MCP tool calls instead of raw HTTP, and wiring the executor so the credential genuinely can't be reached without an approval) see the [main integration guide](how-to-add-human-approval-to-an-ai-agent.md).
+Airlock stores the drafted message, notifies the reviewer, and holds the decision — it does not read the message content, does not know what "sounds right" for your clinic's tone, and does not talk to Twilio on your behalf. Your agent still owns sending the SMS; Airlock owns making sure a human said yes first. For the two other integration paths (MCP tool calls instead of raw HTTP, and wiring the executor so the credential genuinely can't be reached without an approval) see the [main integration guide](how-to-add-human-approval-to-an-ai-agent.md).
 
-If you want the reviewer to approve straight from Slack instead of the web inbox, see [Slack approval](slack-approval.md). New to Impri? Start with the [quickstart](quickstart.md).
+If you want the reviewer to approve straight from Slack instead of the web inbox, see [Slack approval](slack-approval.md). New to Airlock? Start with the [quickstart](quickstart.md).

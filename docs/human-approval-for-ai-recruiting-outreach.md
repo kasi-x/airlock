@@ -21,13 +21,13 @@ import os
 import time
 import requests
 
-IMPRI_KEY = os.environ["IMPRI_API_KEY"]
-BASE = "https://api.impri.dev"
+AIRLOCK_KEY = os.environ["AIRLOCK_API_KEY"]
+BASE = "https://api.airlock.dev"
 
 def request_approval(candidate, role, draft_message, source_url):
     resp = requests.post(
         f"{BASE}/v1/actions",
-        headers={"Authorization": f"Bearer {IMPRI_KEY}"},
+        headers={"Authorization": f"Bearer {AIRLOCK_KEY}"},
         json={
             "kind": "recruiting.outreach",
             "title": f"Outreach to {candidate['name']} — {role}",
@@ -52,7 +52,7 @@ def await_decision(action_id, poll_seconds=15, timeout_s=3600):
     while time.time() < deadline:
         r = requests.get(
             f"{BASE}/v1/actions/{action_id}",
-            headers={"Authorization": f"Bearer {IMPRI_KEY}"},
+            headers={"Authorization": f"Bearer {AIRLOCK_KEY}"},
         ).json()
         if r["status"] != "pending":
             return r
@@ -66,7 +66,7 @@ if result["status"] == "approved":
     send_linkedin_message(candidate["profile_url"], result["decision"]["final_preview"]["body"])
     requests.post(
         f"{BASE}/v1/actions/{action_id}/result",
-        headers={"Authorization": f"Bearer {IMPRI_KEY}"},
+        headers={"Authorization": f"Bearer {AIRLOCK_KEY}"},
         json={"status": "executed"},
     )
 ```
@@ -84,18 +84,18 @@ The recruiter sees a card with the candidate's name, the claim the agent is maki
 | Draft references a skill scraped from the wrong profile section | Caught reading the preview against the source link |
 | Message tone doesn't match how this recruiter actually writes | Edited in place via `editable` |
 
-None of this requires Impri to understand recruiting — it only needs to hold the message and the decision. The judgment stays with the recruiter, same as it would reviewing a draft in their own outbox.
+None of this requires Airlock to understand recruiting — it only needs to hold the message and the decision. The judgment stays with the recruiter, same as it would reviewing a draft in their own outbox.
 
 ---
 
 ## Batches and multi-touch sequences
 
-Sourcing agents typically queue outreach in batches — 20 candidates for one req, sent over a morning. Push one action per candidate rather than one action for the batch; a recruiter approving or editing message 3 shouldn't block a decision on message 17. For a second-touch follow-up, treat it as its own action referencing the same candidate — Impri doesn't model sequences itself, so any "wait 4 days, then follow up" logic lives in your agent, with each follow-up message gated the same way as the first.
+Sourcing agents typically queue outreach in batches — 20 candidates for one req, sent over a morning. Push one action per candidate rather than one action for the batch; a recruiter approving or editing message 3 shouldn't block a decision on message 17. For a second-touch follow-up, treat it as its own action referencing the same candidate — Airlock doesn't model sequences itself, so any "wait 4 days, then follow up" logic lives in your agent, with each follow-up message gated the same way as the first.
 
 ---
 
 ## Where this stops
 
-Impri holds the message and the decision; it doesn't know your ATS, doesn't check compliance rules, and doesn't verify the candidate data is accurate — that's still your agent's and your recruiter's job. It's a real gate only if the agent has no other path to LinkedIn or your outreach tool; wrap the sending call itself so it can't run without an approved decision, per [the integration pattern](how-to-add-human-approval-to-an-ai-agent.md).
+Airlock holds the message and the decision; it doesn't know your ATS, doesn't check compliance rules, and doesn't verify the candidate data is accurate — that's still your agent's and your recruiter's job. It's a real gate only if the agent has no other path to LinkedIn or your outreach tool; wrap the sending call itself so it can't run without an approved decision, per [the integration pattern](how-to-add-human-approval-to-an-ai-agent.md).
 
-New to Impri? Start with the [quickstart](quickstart.md) to get an API key, or see the [Python SDK](sdk-python.md) if you'd rather not hand-roll the REST calls above.
+New to Airlock? Start with the [quickstart](quickstart.md) to get an API key, or see the [Python SDK](sdk-python.md) if you'd rather not hand-roll the REST calls above.

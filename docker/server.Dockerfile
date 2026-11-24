@@ -1,5 +1,5 @@
 # Build context = repo root (see docker-compose.yml) — the npm workspace
-# lockfile lives there, not in server/. server/ now depends on the @impri/mcp
+# lockfile lives there, not in server/. server/ now depends on the @airlock/mcp
 # workspace package (shared MCP tool definitions/logic for the /mcp route —
 # see server/src/routes/mcp.ts), so both workspaces' manifests and sources
 # must be present before `npm ci`/build.
@@ -15,12 +15,12 @@ RUN npm ci --ignore-scripts
 COPY mcp/tsconfig.json mcp/tsconfig.json
 COPY mcp/tsconfig.build.json mcp/tsconfig.build.json
 COPY mcp/src mcp/src
-RUN npm run build --workspace=@impri/mcp
+RUN npm run build --workspace=@airlock/mcp
 
 COPY server/tsconfig.json server/tsconfig.json
 COPY server/src server/src
 
-RUN npm run build --workspace=@impri/server
+RUN npm run build --workspace=@airlock/server
 
 # ---- runtime ----
 FROM node:22-alpine

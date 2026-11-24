@@ -3,21 +3,21 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Add a Kill Switch to Your AI Agent — Impri Docs</title>
-<meta name="description" content="A kill switch for your AI agent that actually holds: wrap every action tool in an Impri approval gate so reject or expiry stops the agent in its tracks.">
+<title>Add a Kill Switch to Your AI Agent — Airlock Docs</title>
+<meta name="description" content="A kill switch for your AI agent that actually holds: wrap every action tool in an Airlock approval gate so reject or expiry stops the agent in its tracks.">
 <meta name="theme-color" content="#06070d">
-<meta property="og:title" content="Add a Kill Switch to Your AI Agent — Impri Docs">
-<meta property="og:description" content="A kill switch for your AI agent that actually holds: wrap every action tool in an Impri approval gate so reject or expiry stops the agent in its tracks.">
+<meta property="og:title" content="Add a Kill Switch to Your AI Agent — Airlock Docs">
+<meta property="og:description" content="A kill switch for your AI agent that actually holds: wrap every action tool in an Airlock approval gate so reject or expiry stops the agent in its tracks.">
 <meta property="og:type" content="article">
-<meta property="og:url" content="https://impri.dev/docs/add-a-kill-switch-to-your-ai-agent">
-<meta property="og:image" content="https://impri.dev/assets/og/og-docs.png">
+<meta property="og:url" content="https://airlock.dev/docs/add-a-kill-switch-to-your-ai-agent">
+<meta property="og:image" content="https://airlock.dev/assets/og/og-docs.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
-<meta property="og:image:alt" content="Impri — human-in-the-loop approval inbox for AI agents">
+<meta property="og:image:alt" content="Airlock — human-in-the-loop approval inbox for AI agents">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="https://impri.dev/assets/og/og-docs.png">
-<link rel="canonical" href="https://impri.dev/docs/add-a-kill-switch-to-your-ai-agent">
-<script type="application/ld+json">{"@context":"https://schema.org","@type":"TechArticle","headline":"Add a Kill Switch to Your AI Agent","description":"A kill switch for your AI agent that actually holds: wrap every action tool in an Impri approval gate so reject or expiry stops the agent in its tracks.","url":"https://impri.dev/docs/add-a-kill-switch-to-your-ai-agent","inLanguage":"en","author":{"@type":"Organization","name":"Impri","url":"https://impri.dev"},"publisher":{"@type":"Organization","name":"Impri","url":"https://impri.dev"}}</script>
+<meta name="twitter:image" content="https://airlock.dev/assets/og/og-docs.png">
+<link rel="canonical" href="https://airlock.dev/docs/add-a-kill-switch-to-your-ai-agent">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"TechArticle","headline":"Add a Kill Switch to Your AI Agent","description":"A kill switch for your AI agent that actually holds: wrap every action tool in an Airlock approval gate so reject or expiry stops the agent in its tracks.","url":"https://airlock.dev/docs/add-a-kill-switch-to-your-ai-agent","inLanguage":"en","author":{"@type":"Organization","name":"Airlock","url":"https://airlock.dev"},"publisher":{"@type":"Organization","name":"Airlock","url":"https://airlock.dev"}}</script>
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <link rel="icon" href="/favicon.ico" sizes="32x32">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='9' fill='%236366f1'/%3E%3Cpath d='M9 16.5l4.5 4.5L23 11' stroke='white' stroke-width='3' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
@@ -132,13 +132,13 @@ pre code.hljs{display:block;overflow-x:auto}
 <div class="wrap nav-inner">
   <a class="brand" href="/">
     <span class="mark"><svg viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.5 4.5L19 7.5" stroke="white" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
-    Impri
+    Airlock
   </a>
   <div class="nav-links">
     <a class="link" href="/#how">How it works</a>
     <a class="link" href="/#pricing">Pricing</a>
     <a class="link active-nav" href="../docs">Docs</a>
-    <a class="btn btn-primary btn-sm" href="https://gitlab.com/sekera.radim/impri">GitLab</a>
+    <a class="btn btn-primary btn-sm" href="https://gitlab.com/sekera.radim/airlock">GitLab</a>
   </div>
 </div>
 </nav>
@@ -153,20 +153,20 @@ pre code.hljs{display:block;overflow-x:auto}
       <span>Add a Kill Switch to Your AI Agent</span>
     </nav>
     <h1>Add a Kill Switch to Your AI Agent</h1>
-<p>A kill switch for your AI agent that actually holds: wrap every action tool in an Impri approval gate so reject or expiry stops the agent in its tracks.</p>
+<p>A kill switch for your AI agent that actually holds: wrap every action tool in an Airlock approval gate so reject or expiry stops the agent in its tracks.</p>
 <hr>
 <h2 id="why-prompt-based-stops-don39t-hold">Why prompt-based stops don&#39;t hold</h2>
 <p>Telling an agent &quot;pause and ask me before taking action&quot; works sometimes. It relies on the model to choose to pause — a model that can also reason its way past the instruction, misread an ambiguous context, or be manipulated by injected text in content it processes.</p>
 <p>A prompt instruction is a soft constraint. What you need for a reliable kill switch is a <em>hard constraint</em>: code that the agent cannot route around. Every execution path to a side effect must require an external approved signal, not just a model decision.</p>
-<p>This is exactly what Impri gives you when you wire it correctly.</p>
+<p>This is exactly what Airlock gives you when you wire it correctly.</p>
 <hr>
 <h2 id="the-approval-gate-as-a-kill-switch">The approval gate as a kill switch</h2>
-<p>The agent&#39;s action tools are where side effects happen — sending messages, calling APIs, posting content, making changes. If you wrap those tools so they cannot execute without an approved Impri decision, the pattern looks like this:</p>
+<p>The agent&#39;s action tools are where side effects happen — sending messages, calling APIs, posting content, making changes. If you wrap those tools so they cannot execute without an approved Airlock decision, the pattern looks like this:</p>
 <div class="code-block"><pre><code class="hljs">agent decides to take action
     │
     ├── calls your wrapped action tool
     │       │
-    │       ├── POST /v1/actions  →  Impri stores it, you are notified
+    │       ├── POST /v1/actions  →  Airlock stores it, you are notified
     │       ├── polls for decision
     │       │
     │       ├─[approved]─  proceeds, executes with final_preview content
@@ -179,9 +179,9 @@ pre code.hljs{display:block;overflow-x:auto}
 <p>Here is a small wrapper that turns a bare &quot;post Slack message&quot; function into a gated one. The agent calls <code>sendSlackMessage</code> — the wrapper adds the approval step, and the underlying Slack credential never reaches the agent&#39;s context.</p>
 <div class="code-block"><span class="code-lang">typescript</span><pre><code class="hljs"><span class="hljs-keyword">import</span> fetch <span class="hljs-keyword">from</span> <span class="hljs-string">&quot;node-fetch&quot;</span>;
 
-<span class="hljs-keyword">const</span> <span class="hljs-variable constant_">API_BASE</span> = <span class="hljs-string">&quot;https://api.impri.dev&quot;</span>;
+<span class="hljs-keyword">const</span> <span class="hljs-variable constant_">API_BASE</span> = <span class="hljs-string">&quot;https://api.airlock.dev&quot;</span>;
 <span class="hljs-keyword">const</span> <span class="hljs-variable constant_">HEADERS</span> = {
-  <span class="hljs-title class_">Authorization</span>: <span class="hljs-string">`Bearer <span class="hljs-subst">${process.env.IMPRI_API_KEY}</span>`</span>,
+  <span class="hljs-title class_">Authorization</span>: <span class="hljs-string">`Bearer <span class="hljs-subst">${process.env.AIRLOCK_API_KEY}</span>`</span>,
   <span class="hljs-string">&quot;Content-Type&quot;</span>: <span class="hljs-string">&quot;application/json&quot;</span>,
 };
 
@@ -282,13 +282,13 @@ pre code.hljs{display:block;overflow-x:auto}
 <p>Short <code>expires_in</code> values (900–3600 seconds) work well for autonomous agents. They bound how long the agent can queue work without attention and automatically stall the agent if you stop responding — no explicit revoke action needed.</p>
 <hr>
 <h2 id="limitations-what-this-does-not-cover">Limitations: what this does not cover</h2>
-<p>Impri is a chokepoint you confine the agent to, not a network-level firewall. The wrapping only holds when the agent has no other path to the side effect. Specifically:</p>
+<p>Airlock is a chokepoint you confine the agent to, not a network-level firewall. The wrapping only holds when the agent has no other path to the side effect. Specifically:</p>
 <ul>
 <li>If the agent also has the raw Slack token in its context, it can call Slack directly and bypass the wrapper.</li>
 <li>If other tools in the agent&#39;s toolkit can achieve the same effect (a different messaging integration, a webhook call, etc.), those also need the same treatment.</li>
-<li>Impri does not intercept egress traffic. It is a data-dependency gate: the execution code can only reach the side-effect call through a branch that requires an approved response.</li>
+<li>Airlock does not intercept egress traffic. It is a data-dependency gate: the execution code can only reach the side-effect call through a branch that requires an approved response.</li>
 </ul>
-<p>The practical setup: give the agent API keys only for your Impri-wrapped tools, never for the underlying services directly. The wrapper holds the real credentials; the agent context does not.</p>
+<p>The practical setup: give the agent API keys only for your Airlock-wrapped tools, never for the underlying services directly. The wrapper holds the real credentials; the agent context does not.</p>
 <hr>
 <h2 id="configuring-notifications-so-you-catch-the-signal">Configuring notifications so you catch the signal</h2>
 <p>A kill switch only works if you see the pending action. For autonomous agents pushing actions at arbitrary times, configure a push notification channel so your phone buzzes when something needs your attention:</p>
@@ -301,15 +301,15 @@ pre code.hljs{display:block;overflow-x:auto}
 <h2 id="next-steps">Next steps</h2>
 <ul>
 <li><a href="quickstart">Quickstart</a> — issue your first API key and push a test action</li>
-<li><a href="mcp">MCP server</a> — if your agent runs inside Claude Code or another MCP client, the <code>impri_push_action</code> and <code>impri_await_decision</code> tools wrap this same pattern without any HTTP code</li>
+<li><a href="mcp">MCP server</a> — if your agent runs inside Claude Code or another MCP client, the <code>airlock_push_action</code> and <code>airlock_await_decision</code> tools wrap this same pattern without any HTTP code</li>
 <li><a href="webhooks">Webhooks</a> — receive a push notification on decision instead of polling, if your infrastructure supports inbound HTTP</li>
 </ul>
 
-    <aside class="doc-cta" aria-label="Try Impri">
+    <aside class="doc-cta" aria-label="Try Airlock">
   <p class="doc-cta-title">Add an approval step to your own agent</p>
-  <p>Start on Impri Cloud: the Free tier includes 100 approvals a month. Or self-host the MIT-licensed core with Docker Compose, with no tier limits.</p>
+  <p>Start on Airlock Cloud: the Free tier includes 100 approvals a month. Or self-host the MIT-licensed core with Docker Compose, with no tier limits.</p>
   <div class="doc-cta-actions">
-    <a class="btn btn-primary btn-sm" href="https://app.impri.dev/?signup=1">Start free on Impri Cloud</a>
+    <a class="btn btn-primary btn-sm" href="https://app.airlock.dev/?signup=1">Start free on Airlock Cloud</a>
     <a class="btn btn-ghost btn-sm" href="../docs/quickstart">Quick start</a>
     <a class="btn btn-ghost btn-sm" href="../docs/self-hosting">Self-host guide</a>
   </div>
@@ -406,19 +406,19 @@ pre code.hljs{display:block;overflow-x:auto}
 <footer class="footer">
 <div class="wrap footer-inner">
   <a class="brand" href="/">
-    <span class="mark"><svg viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.5 4.5L19 7.5" stroke="white" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Impri
+    <span class="mark"><svg viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.5 4.5L19 7.5" stroke="white" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Airlock
   </a>
   <div>
-    <a href="https://gitlab.com/sekera.radim/impri">GitLab</a>
+    <a href="https://gitlab.com/sekera.radim/airlock">GitLab</a>
     <a href="/docs">Docs</a>
-    <a href="https://gitlab.com/sekera.radim/impri/-/blob/main/LICENSE">MIT License</a>
-    <a href="https://www.npmjs.com/package/@impri/mcp">@impri/mcp</a>
+    <a href="https://gitlab.com/sekera.radim/airlock/-/blob/main/LICENSE">MIT License</a>
+    <a href="https://www.npmjs.com/package/@airlock/mcp">@airlock/mcp</a>
     <a href="/docs/privacy">Privacy</a>
     <a href="/docs/terms">Terms</a>
     <a href="https://sekera.dev">Contact</a>
   </div>
 </div>
-<div class="wrap" style="margin-top:18px"><span class="muted">© 2026 Impri · The imprimatur for your AI agents · Built by <a href="https://sekera.dev" style="color:inherit">Radim Sekera</a>. Also by the same maker: <a href="https://briefgate.dev/?utm_source=impri.dev&amp;utm_medium=referral" style="color:inherit">BriefGate</a> — client intake for agencies and AI agents.</span></div>
+<div class="wrap" style="margin-top:18px"><span class="muted">© 2026 Airlock · The airlockmatur for your AI agents · Built by <a href="https://sekera.dev" style="color:inherit">Radim Sekera</a>. Also by the same maker: <a href="https://briefgate.dev/?utm_source=airlock.dev&amp;utm_medium=referral" style="color:inherit">BriefGate</a> — client intake for agencies and AI agents.</span></div>
 </footer>
 </body>
 </html>

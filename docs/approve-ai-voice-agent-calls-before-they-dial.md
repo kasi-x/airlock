@@ -14,14 +14,14 @@ The fix is the same pattern used for email or publishing: the agent proposes the
 
 ## Wiring the gate into a Python dial function
 
-Say your agent decides to call a lead back with a follow-up script. Instead of handing the script straight to your `dial()` function, push it to Impri first and only call once you get `approved` back.
+Say your agent decides to call a lead back with a follow-up script. Instead of handing the script straight to your `dial()` function, push it to Airlock first and only call once you get `approved` back.
 
 ```python
 import time
 import requests
 
-API = "https://api.impri.dev/v1/actions"
-HEADERS = {"Authorization": f"Bearer {IMPRI_API_KEY}"}
+API = "https://api.airlock.dev/v1/actions"
+HEADERS = {"Authorization": f"Bearer {AIRLOCK_API_KEY}"}
 
 def request_call_approval(phone_number: str, opening_line: str, call_notes: str) -> dict:
     resp = requests.post(API, headers=HEADERS, json={
@@ -69,7 +69,7 @@ A short `expires_in` (30 minutes above) matters here specifically: a call script
 
 ## Where this fits with voice agent frameworks
 
-Impri doesn't touch your telephony stack — it doesn't know Twilio from Vapi, and it never places the call itself. It sits one layer above: your agent's decision logic calls `request_call_approval()` before it calls whatever your framework's `create_call()` method is. The gate only holds if the agent has no other way to reach the phone line — if it also holds a raw Twilio API key it can call directly, route the credential through the same wrapper function that does the approval check, not through the agent's general toolset.
+Airlock doesn't touch your telephony stack — it doesn't know Twilio from Vapi, and it never places the call itself. It sits one layer above: your agent's decision logic calls `request_call_approval()` before it calls whatever your framework's `create_call()` method is. The gate only holds if the agent has no other way to reach the phone line — if it also holds a raw Twilio API key it can call directly, route the credential through the same wrapper function that does the approval check, not through the agent's general toolset.
 
 For approving calls from your phone rather than a browser tab, pair this with [Telegram approvals](telegram-approval.md) — a call script fits comfortably in a chat message.
 

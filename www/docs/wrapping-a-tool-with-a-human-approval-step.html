@@ -3,21 +3,21 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Wrapping an Agent Tool With a Human Approval Step — Impri Docs</title>
+<title>Wrapping an Agent Tool With a Human Approval Step — Airlock Docs</title>
 <meta name="description" content="Adding a confirmation line to your agent's prompt doesn't stop it from calling a tool directly — wrapping the tool function itself, so the real executor is…">
 <meta name="theme-color" content="#06070d">
-<meta property="og:title" content="Wrapping an Agent Tool With a Human Approval Step — Impri Docs">
+<meta property="og:title" content="Wrapping an Agent Tool With a Human Approval Step — Airlock Docs">
 <meta property="og:description" content="Adding a confirmation line to your agent's prompt doesn't stop it from calling a tool directly — wrapping the tool function itself, so the real executor is…">
 <meta property="og:type" content="article">
-<meta property="og:url" content="https://impri.dev/docs/wrapping-a-tool-with-a-human-approval-step">
-<meta property="og:image" content="https://impri.dev/assets/og/og-docs.png">
+<meta property="og:url" content="https://airlock.dev/docs/wrapping-a-tool-with-a-human-approval-step">
+<meta property="og:image" content="https://airlock.dev/assets/og/og-docs.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
-<meta property="og:image:alt" content="Impri — human-in-the-loop approval inbox for AI agents">
+<meta property="og:image:alt" content="Airlock — human-in-the-loop approval inbox for AI agents">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="https://impri.dev/assets/og/og-docs.png">
-<link rel="canonical" href="https://impri.dev/docs/wrapping-a-tool-with-a-human-approval-step">
-<script type="application/ld+json">{"@context":"https://schema.org","@type":"TechArticle","headline":"Wrapping an Agent Tool With a Human Approval Step","description":"Adding a confirmation line to your agent's prompt doesn't stop it from calling a tool directly — wrapping the tool function itself, so the real executor is…","url":"https://impri.dev/docs/wrapping-a-tool-with-a-human-approval-step","inLanguage":"en","author":{"@type":"Organization","name":"Impri","url":"https://impri.dev"},"publisher":{"@type":"Organization","name":"Impri","url":"https://impri.dev"}}</script>
+<meta name="twitter:image" content="https://airlock.dev/assets/og/og-docs.png">
+<link rel="canonical" href="https://airlock.dev/docs/wrapping-a-tool-with-a-human-approval-step">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"TechArticle","headline":"Wrapping an Agent Tool With a Human Approval Step","description":"Adding a confirmation line to your agent's prompt doesn't stop it from calling a tool directly — wrapping the tool function itself, so the real executor is…","url":"https://airlock.dev/docs/wrapping-a-tool-with-a-human-approval-step","inLanguage":"en","author":{"@type":"Organization","name":"Airlock","url":"https://airlock.dev"},"publisher":{"@type":"Organization","name":"Airlock","url":"https://airlock.dev"}}</script>
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <link rel="icon" href="/favicon.ico" sizes="32x32">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='9' fill='%236366f1'/%3E%3Cpath d='M9 16.5l4.5 4.5L23 11' stroke='white' stroke-width='3' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
@@ -132,13 +132,13 @@ pre code.hljs{display:block;overflow-x:auto}
 <div class="wrap nav-inner">
   <a class="brand" href="/">
     <span class="mark"><svg viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.5 4.5L19 7.5" stroke="white" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
-    Impri
+    Airlock
   </a>
   <div class="nav-links">
     <a class="link" href="/#how">How it works</a>
     <a class="link" href="/#pricing">Pricing</a>
     <a class="link active-nav" href="../docs">Docs</a>
-    <a class="btn btn-primary btn-sm" href="https://gitlab.com/sekera.radim/impri">GitLab</a>
+    <a class="btn btn-primary btn-sm" href="https://gitlab.com/sekera.radim/airlock">GitLab</a>
   </div>
 </div>
 </nav>
@@ -162,10 +162,10 @@ pre code.hljs{display:block;overflow-x:auto}
 <h2 id="the-wrapper-pattern">The wrapper pattern</h2>
 <p>Instead of registering <code>sendSlackMessage</code> as a tool, register <code>withApproval(sendSlackMessage, { kind: &quot;slack.send&quot; })</code>. The wrapper:</p>
 <ol>
-<li>Takes the original arguments, builds an Impri action with a human-readable preview.</li>
+<li>Takes the original arguments, builds an Airlock action with a human-readable preview.</li>
 <li>Pushes the action and waits for a decision.</li>
 <li>Only if <code>status === &quot;approved&quot;</code> does it call the wrapped function — with the human-edited <code>final_preview</code>, not the model&#39;s original draft.</li>
-<li>Reports the result back to Impri.</li>
+<li>Reports the result back to Airlock.</li>
 </ol>
 <p>The model never holds a reference to the real <code>sendSlackMessage</code>. That&#39;s what makes this a genuine chokepoint rather than a suggestion.</p>
 <div class="code-block"><span class="code-lang">typescript</span><pre><code class="hljs"><span class="hljs-comment">// approval-wrapper.ts</span>
@@ -178,9 +178,9 @@ pre code.hljs{display:block;overflow-x:auto}
   <span class="hljs-attr">expiresInS</span>?: <span class="hljs-built_in">number</span>;
 }
 
-<span class="hljs-keyword">const</span> <span class="hljs-variable constant_">BASE</span> = <span class="hljs-string">&quot;https://api.impri.dev&quot;</span>;
+<span class="hljs-keyword">const</span> <span class="hljs-variable constant_">BASE</span> = <span class="hljs-string">&quot;https://api.airlock.dev&quot;</span>;
 <span class="hljs-keyword">const</span> <span class="hljs-variable constant_">HEADERS</span> = {
-  <span class="hljs-title class_">Authorization</span>: <span class="hljs-string">`Bearer <span class="hljs-subst">${process.env.IMPRI_API_KEY}</span>`</span>,
+  <span class="hljs-title class_">Authorization</span>: <span class="hljs-string">`Bearer <span class="hljs-subst">${process.env.AIRLOCK_API_KEY}</span>`</span>,
   <span class="hljs-string">&quot;Content-Type&quot;</span>: <span class="hljs-string">&quot;application/json&quot;</span>,
 };
 
@@ -260,11 +260,11 @@ gatedTools.<span class="hljs-title function_">forEach</span>(<span class="hljs-f
 <h2 id="next-step">Next step</h2>
 <p>Start from <a href="quickstart">quickstart</a> to get an API key, then adapt the wrapper above to your framework&#39;s tool-registration API.</p>
 
-    <aside class="doc-cta" aria-label="Try Impri">
+    <aside class="doc-cta" aria-label="Try Airlock">
   <p class="doc-cta-title">Add an approval step to your own agent</p>
-  <p>Start on Impri Cloud: the Free tier includes 100 approvals a month. Or self-host the MIT-licensed core with Docker Compose, with no tier limits.</p>
+  <p>Start on Airlock Cloud: the Free tier includes 100 approvals a month. Or self-host the MIT-licensed core with Docker Compose, with no tier limits.</p>
   <div class="doc-cta-actions">
-    <a class="btn btn-primary btn-sm" href="https://app.impri.dev/?signup=1">Start free on Impri Cloud</a>
+    <a class="btn btn-primary btn-sm" href="https://app.airlock.dev/?signup=1">Start free on Airlock Cloud</a>
     <a class="btn btn-ghost btn-sm" href="../docs/quickstart">Quick start</a>
     <a class="btn btn-ghost btn-sm" href="../docs/self-hosting">Self-host guide</a>
   </div>
@@ -360,19 +360,19 @@ gatedTools.<span class="hljs-title function_">forEach</span>(<span class="hljs-f
 <footer class="footer">
 <div class="wrap footer-inner">
   <a class="brand" href="/">
-    <span class="mark"><svg viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.5 4.5L19 7.5" stroke="white" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Impri
+    <span class="mark"><svg viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.5 4.5L19 7.5" stroke="white" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Airlock
   </a>
   <div>
-    <a href="https://gitlab.com/sekera.radim/impri">GitLab</a>
+    <a href="https://gitlab.com/sekera.radim/airlock">GitLab</a>
     <a href="/docs">Docs</a>
-    <a href="https://gitlab.com/sekera.radim/impri/-/blob/main/LICENSE">MIT License</a>
-    <a href="https://www.npmjs.com/package/@impri/mcp">@impri/mcp</a>
+    <a href="https://gitlab.com/sekera.radim/airlock/-/blob/main/LICENSE">MIT License</a>
+    <a href="https://www.npmjs.com/package/@airlock/mcp">@airlock/mcp</a>
     <a href="/docs/privacy">Privacy</a>
     <a href="/docs/terms">Terms</a>
     <a href="https://sekera.dev">Contact</a>
   </div>
 </div>
-<div class="wrap" style="margin-top:18px"><span class="muted">© 2026 Impri · The imprimatur for your AI agents · Built by <a href="https://sekera.dev" style="color:inherit">Radim Sekera</a>. Also by the same maker: <a href="https://briefgate.dev/?utm_source=impri.dev&amp;utm_medium=referral" style="color:inherit">BriefGate</a> — client intake for agencies and AI agents.</span></div>
+<div class="wrap" style="margin-top:18px"><span class="muted">© 2026 Airlock · The airlockmatur for your AI agents · Built by <a href="https://sekera.dev" style="color:inherit">Radim Sekera</a>. Also by the same maker: <a href="https://briefgate.dev/?utm_source=airlock.dev&amp;utm_medium=referral" style="color:inherit">BriefGate</a> — client intake for agencies and AI agents.</span></div>
 </footer>
 </body>
 </html>

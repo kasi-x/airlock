@@ -1,6 +1,6 @@
 # Observability
 
-Impri exposes three observability surfaces for self-hosters and operators:
+Airlock exposes three observability surfaces for self-hosters and operators:
 
 - **`/metrics`** — Prometheus text-format endpoint (opt-in)
 - **`/readyz`** — readiness probe (always available, no auth)
@@ -67,9 +67,9 @@ Standard Prometheus text exposition format. Prometheus, Grafana Agent, VictoriaM
 
 ```yaml
 scrape_configs:
-  - job_name: impri
+  - job_name: airlock
     static_configs:
-      - targets: ['your-impri-host:8484']
+      - targets: ['your-airlock-host:8484']
     authorization:
       type: Bearer
       credentials: <METRICS_TOKEN>
@@ -79,7 +79,7 @@ scrape_configs:
 
 ```yaml
 scrape_configs:
-  - job_name: impri
+  - job_name: airlock
     static_configs:
       - targets: ['127.0.0.1:9090']
 ```
@@ -88,22 +88,22 @@ scrape_configs:
 
 ## Metric reference
 
-All metrics are prefixed with `impri_`. Labels never contain raw API keys, webhook secrets, bot tokens, action content, email addresses, callback URLs, or any other user-supplied data — only enum values and route patterns.
+All metrics are prefixed with `airlock_`. Labels never contain raw API keys, webhook secrets, bot tokens, action content, email addresses, callback URLs, or any other user-supplied data — only enum values and route patterns.
 
 ### Build and runtime
 
 | Metric | Type | Description |
 |--------|------|-------------|
-| `impri_build_info{version, node_version}` | Gauge (always 1) | Identifies the running build. `version` from package.json, `node_version` from `process.version`. Emitted once per scrape. |
-| `impri_uptime_seconds` | Gauge | `process.uptime()` at scrape time. Detects unexpected restarts in dashboards. |
-| `impri_db_size_bytes` | Gauge | `fs.statSync(DB_PATH).size`. SQLite growth indicator — useful for disk-space alerting without external DB monitoring. |
+| `airlock_build_info{version, node_version}` | Gauge (always 1) | Identifies the running build. `version` from package.json, `node_version` from `process.version`. Emitted once per scrape. |
+| `airlock_uptime_seconds` | Gauge | `process.uptime()` at scrape time. Detects unexpected restarts in dashboards. |
+| `airlock_db_size_bytes` | Gauge | `fs.statSync(DB_PATH).size`. SQLite growth indicator — useful for disk-space alerting without external DB monitoring. |
 
 ### HTTP traffic
 
 | Metric | Type | Description |
 |--------|------|-------------|
-| `impri_http_requests_total{route, method, status_class}` | Counter | Request count by route pattern, HTTP method, and status class (`2xx` / `4xx` / `5xx`). `route` is Fastify's route pattern (e.g. `/v1/actions/:id`), never the real URL with actual IDs or tokens. |
-| `impri_http_request_duration_seconds{route, method}` | Histogram | Latency from request start to response send. Buckets: 0.005, 0.01, 0.025, 0.05, 0.1, 0.25, 0.5, 1, 2.5, 5, 10 s. |
+| `airlock_http_requests_total{route, method, status_class}` | Counter | Request count by route pattern, HTTP method, and status class (`2xx` / `4xx` / `5xx`). `route` is Fastify's route pattern (e.g. `/v1/actions/:id`), never the real URL with actual IDs or tokens. |
+| `airlock_http_request_duration_seconds{route, method}` | Histogram | Latency from request start to response send. Buckets: 0.005, 0.01, 0.025, 0.05, 0.1, 0.25, 0.5, 1, 2.5, 5, 10 s. |
 
 The `/metrics` route itself is excluded from HTTP counters to avoid noise.
 
@@ -111,44 +111,44 @@ The `/metrics` route itself is excluded from HTTP counters to avoid noise.
 
 | Metric | Type | Description |
 |--------|------|-------------|
-| `impri_rate_limited_total{bucket}` | Counter | Incremented when a request is rejected by the rate limiter. `bucket` is the route string used in `checkRateLimit()` (e.g. `actions:create`, `actions:decide`, `watchers:create`). Labels identify the bucket, not the caller. |
+| `airlock_rate_limited_total{bucket}` | Counter | Incremented when a request is rejected by the rate limiter. `bucket` is the route string used in `checkRateLimit()` (e.g. `actions:create`, `actions:decide`, `watchers:create`). Labels identify the bucket, not the caller. |
 
 ### Actions
 
 | Metric | Type | Description |
 |--------|------|-------------|
-| `impri_actions_total{status}` | Gauge | `COUNT(*) FROM actions GROUP BY status` at scrape time. Labels: `pending`, `approved`, `rejected`, `expired`, `succeeded`, `failed`. |
-| `impri_pending_actions` | Gauge | `COUNT(*) WHERE status = 'pending'`. Convenience alias; useful as an alert trigger. |
-| `impri_action_decisions_total{verdict, channel}` | Counter | Incremented each time a decision is committed. `verdict` = `approve` or `reject`. `channel` = `api` / `bulk-api` / `bulk-web` / `telegram` / `slack` / `discord` / `auto` (rules engine). |
-| `impri_action_decision_latency_seconds{verdict}` | Histogram | Time from action creation to decision (human response time distribution). Value = `decided_at − created_at`. Buckets: 1, 10, 60, 300, 1800, 7200, 86400 s. |
-| `impri_actions_expired_total` | Counter | Incremented once per action that transitions to `expired`. No PII labels. |
+| `airlock_actions_total{status}` | Gauge | `COUNT(*) FROM actions GROUP BY status` at scrape time. Labels: `pending`, `approved`, `rejected`, `expired`, `succeeded`, `failed`. |
+| `airlock_pending_actions` | Gauge | `COUNT(*) WHERE status = 'pending'`. Convenience alias; useful as an alert trigger. |
+| `airlock_action_decisions_total{verdict, channel}` | Counter | Incremented each time a decision is committed. `verdict` = `approve` or `reject`. `channel` = `api` / `bulk-api` / `bulk-web` / `telegram` / `slack` / `discord` / `auto` (rules engine). |
+| `airlock_action_decision_latency_seconds{verdict}` | Histogram | Time from action creation to decision (human response time distribution). Value = `decided_at − created_at`. Buckets: 1, 10, 60, 300, 1800, 7200, 86400 s. |
+| `airlock_actions_expired_total` | Counter | Incremented once per action that transitions to `expired`. No PII labels. |
 
 ### Watchers
 
 | Metric | Type | Description |
 |--------|------|-------------|
-| `impri_active_watchers` | Gauge | `COUNT(*) WHERE status = 'active'` at scrape time. |
-| `impri_degraded_watchers` | Gauge | `COUNT(*) WHERE status = 'degraded'` at scrape time. Alert when non-zero. |
-| `impri_watcher_runs_total{kind, result}` | Counter | `kind` = `rss` / `reddit_search` / `url_diff`. `result` = `ok` / `error` / `window_skipped` (outside schedule window) / `baseline` (first run, no actions created). |
-| `impri_watcher_items_fetched_total{kind}` | Counter | Total items returned by fetch before dedup/scoring. |
-| `impri_watcher_hits_total{kind}` | Counter | Actions created by watcher runs (items that passed dedup + score filter). |
-| `impri_watcher_burst_truncations_total{kind}` | Counter | Incremented when burst protection triggers. Useful for detecting runaway feeds. |
+| `airlock_active_watchers` | Gauge | `COUNT(*) WHERE status = 'active'` at scrape time. |
+| `airlock_degraded_watchers` | Gauge | `COUNT(*) WHERE status = 'degraded'` at scrape time. Alert when non-zero. |
+| `airlock_watcher_runs_total{kind, result}` | Counter | `kind` = `rss` / `reddit_search` / `url_diff`. `result` = `ok` / `error` / `window_skipped` (outside schedule window) / `baseline` (first run, no actions created). |
+| `airlock_watcher_items_fetched_total{kind}` | Counter | Total items returned by fetch before dedup/scoring. |
+| `airlock_watcher_hits_total{kind}` | Counter | Actions created by watcher runs (items that passed dedup + score filter). |
+| `airlock_watcher_burst_truncations_total{kind}` | Counter | Incremented when burst protection triggers. Useful for detecting runaway feeds. |
 
 ### Webhooks
 
 | Metric | Type | Description |
 |--------|------|-------------|
-| `impri_webhook_deliveries_total{result}` | Counter | `result` = `delivered` / `retry` / `dlq` / `gone` / `ssrf_blocked`. |
-| `impri_webhook_delivery_duration_seconds` | Histogram | Wall-clock time of the HTTP POST to the callback URL. Buckets: 0.05, 0.1, 0.25, 0.5, 1, 2, 5, 10, 15 s. Helps identify slow receivers. |
-| `impri_webhook_dlq_size` | Gauge | `COUNT(*) WHERE status = 'dlq'` at scrape time. Alert when this grows. |
+| `airlock_webhook_deliveries_total{result}` | Counter | `result` = `delivered` / `retry` / `dlq` / `gone` / `ssrf_blocked`. |
+| `airlock_webhook_delivery_duration_seconds` | Histogram | Wall-clock time of the HTTP POST to the callback URL. Buckets: 0.05, 0.1, 0.25, 0.5, 1, 2, 5, 10, 15 s. Helps identify slow receivers. |
+| `airlock_webhook_dlq_size` | Gauge | `COUNT(*) WHERE status = 'dlq'` at scrape time. Alert when this grows. |
 
 ### Notification channels
 
 | Metric | Type | Description |
 |--------|------|-------------|
-| `impri_notifications_total{channel_type, result}` | Counter | `channel_type` = `slack` / `discord` / `telegram` / `ntfy` / `email` / `webhook`. `result` = `ok` / `error`. No URL, token, or project ID in labels. |
-| `impri_notification_digest_flushes_total{channel_type}` | Counter | Incremented on each digest queue flush. |
-| `impri_channel_auto_disabled_total{channel_type}` | Counter | Incremented when a channel is auto-disabled after consecutive failures. Alert trigger for broken channels. |
+| `airlock_notifications_total{channel_type, result}` | Counter | `channel_type` = `slack` / `discord` / `telegram` / `ntfy` / `email` / `webhook`. `result` = `ok` / `error`. No URL, token, or project ID in labels. |
+| `airlock_notification_digest_flushes_total{channel_type}` | Counter | Incremented on each digest queue flush. |
+| `airlock_channel_auto_disabled_total{channel_type}` | Counter | Incremented when a channel is auto-disabled after consecutive failures. Alert trigger for broken channels. |
 
 ---
 
@@ -233,14 +233,14 @@ readinessProbe:
 
 ## Structured logging
 
-Impri uses **pino** with JSON output. All logs include `level`, `time`, `msg`, and Fastify's request fields. The logger redacts `Authorization` and `cookie` headers in HTTP logs.
+Airlock uses **pino** with JSON output. All logs include `level`, `time`, `msg`, and Fastify's request fields. The logger redacts `Authorization` and `cookie` headers in HTTP logs.
 
 ### Request-ID correlation
 
 Every response includes an `X-Request-Id` header matching the `reqId` field in the server log. This lets you correlate a `429` or `403` in an agent's log with the exact server log line:
 
 ```bash
-curl -sI https://api.impri.dev/v1/actions | grep x-request-id
+curl -sI https://api.airlock.dev/v1/actions | grep x-request-id
 # x-request-id: req-abc123
 ```
 
@@ -400,7 +400,7 @@ Returns a per-project usage snapshot. Useful for building dashboards, quota warn
 **Rate limit:** 60 requests per minute per key.
 
 ```bash
-curl -H "Authorization: Bearer im_..." https://api.impri.dev/v1/usage
+curl -H "Authorization: Bearer im_..." https://api.airlock.dev/v1/usage
 ```
 
 **Response (HTTP 200):**

@@ -3,21 +3,21 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Slack Approval Bot — Impri Docs</title>
-<meta name="description" content="Impri can send pending-action notifications to a Slack channel with Approve and Reject buttons that let your team decide without ever opening a browser. The…">
+<title>Slack Approval Bot — Airlock Docs</title>
+<meta name="description" content="Airlock can send pending-action notifications to a Slack channel with Approve and Reject buttons that let your team decide without ever opening a browser. The…">
 <meta name="theme-color" content="#06070d">
-<meta property="og:title" content="Slack Approval Bot — Impri Docs">
-<meta property="og:description" content="Impri can send pending-action notifications to a Slack channel with Approve and Reject buttons that let your team decide without ever opening a browser. The…">
+<meta property="og:title" content="Slack Approval Bot — Airlock Docs">
+<meta property="og:description" content="Airlock can send pending-action notifications to a Slack channel with Approve and Reject buttons that let your team decide without ever opening a browser. The…">
 <meta property="og:type" content="article">
-<meta property="og:url" content="https://impri.dev/docs/slack-approval">
-<meta property="og:image" content="https://impri.dev/assets/og/og-docs.png">
+<meta property="og:url" content="https://airlock.dev/docs/slack-approval">
+<meta property="og:image" content="https://airlock.dev/assets/og/og-docs.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
-<meta property="og:image:alt" content="Impri — human-in-the-loop approval inbox for AI agents">
+<meta property="og:image:alt" content="Airlock — human-in-the-loop approval inbox for AI agents">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="https://impri.dev/assets/og/og-docs.png">
-<link rel="canonical" href="https://impri.dev/docs/slack-approval">
-<script type="application/ld+json">{"@context":"https://schema.org","@type":"TechArticle","headline":"Slack Approval Bot","description":"Impri can send pending-action notifications to a Slack channel with Approve and Reject buttons that let your team decide without ever opening a browser. The…","url":"https://impri.dev/docs/slack-approval","inLanguage":"en","author":{"@type":"Organization","name":"Impri","url":"https://impri.dev"},"publisher":{"@type":"Organization","name":"Impri","url":"https://impri.dev"}}</script>
+<meta name="twitter:image" content="https://airlock.dev/assets/og/og-docs.png">
+<link rel="canonical" href="https://airlock.dev/docs/slack-approval">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"TechArticle","headline":"Slack Approval Bot","description":"Airlock can send pending-action notifications to a Slack channel with Approve and Reject buttons that let your team decide without ever opening a browser. The…","url":"https://airlock.dev/docs/slack-approval","inLanguage":"en","author":{"@type":"Organization","name":"Airlock","url":"https://airlock.dev"},"publisher":{"@type":"Organization","name":"Airlock","url":"https://airlock.dev"}}</script>
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <link rel="icon" href="/favicon.ico" sizes="32x32">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='9' fill='%236366f1'/%3E%3Cpath d='M9 16.5l4.5 4.5L23 11' stroke='white' stroke-width='3' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
@@ -132,13 +132,13 @@ pre code.hljs{display:block;overflow-x:auto}
 <div class="wrap nav-inner">
   <a class="brand" href="/">
     <span class="mark"><svg viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.5 4.5L19 7.5" stroke="white" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
-    Impri
+    Airlock
   </a>
   <div class="nav-links">
     <a class="link" href="/#how">How it works</a>
     <a class="link" href="/#pricing">Pricing</a>
     <a class="link active-nav" href="../docs">Docs</a>
-    <a class="btn btn-primary btn-sm" href="https://gitlab.com/sekera.radim/impri">GitLab</a>
+    <a class="btn btn-primary btn-sm" href="https://gitlab.com/sekera.radim/airlock">GitLab</a>
   </div>
 </div>
 </nav>
@@ -153,28 +153,28 @@ pre code.hljs{display:block;overflow-x:auto}
       <span>Slack Approval Bot</span>
     </nav>
     <h1>Slack Approval Bot</h1>
-<p>Impri can send pending-action notifications to a Slack channel with
+<p>Airlock can send pending-action notifications to a Slack channel with
 <strong>Approve</strong> and <strong>Reject</strong> buttons that let your team decide without
-ever opening a browser. The decision is recorded in Impri with the same
+ever opening a browser. The decision is recorded in Airlock with the same
 integrity guarantees as a web-inbox decision.</p>
 <p>This is an extension of the existing <code>slack</code> notification channel
 (see <a href="notifications">Notification channels</a>). When <code>approval_mode</code>
 is <code>false</code> (the default), the channel behaves exactly as before —
-a plain Block Kit message with a &quot;Review in Impri&quot; link. Setting
+a plain Block Kit message with a &quot;Review in Airlock&quot; link. Setting
 <code>approval_mode: true</code> enables the inline-button approval flow
 described here.</p>
 <hr>
 <h2 id="how-it-works">How it works</h2>
 <ol>
-<li>An action lands in Impri as <code>pending</code>.</li>
-<li>Impri posts a Slack message to the configured channel with two
+<li>An action lands in Airlock as <code>pending</code>.</li>
+<li>Airlock posts a Slack message to the configured channel with two
 interactive buttons: <strong>✅ Approve</strong> and <strong>❌ Reject</strong>.</li>
 <li>An authorized team member clicks a button. Slack delivers an
-interaction payload to Impri&#39;s interaction endpoint.</li>
-<li>Impri verifies the Slack request signature (HMAC-SHA256), the HMAC
+interaction payload to Airlock&#39;s interaction endpoint.</li>
+<li>Airlock verifies the Slack request signature (HMAC-SHA256), the HMAC
 on the button value, and the clicker&#39;s Slack user ID against the
 allow-list.</li>
-<li>If all checks pass, Impri records the decision (same transaction as
+<li>If all checks pass, Airlock records the decision (same transaction as
 <code>POST /v1/actions/:id/decision</code>), fires any <code>callback_url</code> webhook,
 and updates the Slack message to show the outcome and remove the
 buttons.</li>
@@ -184,33 +184,33 @@ to a plain notification with a &quot;View inbox&quot; link — interactive butto
 are only meaningful for a single action.</p>
 <hr>
 <h2 id="cloud-add-to-slack-one-click">Cloud: Add to Slack (one click)</h2>
-<p>If you are using the hosted Impri cloud (impri.dev), you can connect your
+<p>If you are using the hosted Airlock cloud (airlock.dev), you can connect your
 Slack workspace in seconds without creating a Slack app yourself.</p>
 <ol>
-<li>In the Impri UI → <strong>Notifications</strong> → <strong>Add channel</strong> → select <strong>Slack</strong>.</li>
+<li>In the Airlock UI → <strong>Notifications</strong> → <strong>Add channel</strong> → select <strong>Slack</strong>.</li>
 <li>Click <strong>Add to Slack</strong>. You are redirected to Slack&#39;s OAuth consent screen.</li>
 <li>Choose the channel where approval messages should appear.</li>
-<li>Click <strong>Allow</strong>. Slack redirects you back to Impri and the channel is ready.</li>
+<li>Click <strong>Allow</strong>. Slack redirects you back to Airlock and the channel is ready.</li>
 </ol>
-<p>The Impri cloud app already has <code>chat:write</code> and <code>incoming-webhook</code> permissions
+<p>The Airlock cloud app already has <code>chat:write</code> and <code>incoming-webhook</code> permissions
 and handles all Interactivity plumbing for you. Approve and Reject buttons work
 immediately — no signing secrets, no interactivity URL to configure.</p>
 <p><strong>Who can approve?</strong></p>
 <p>After the OAuth connection, the channel&#39;s <code>allowed_approver_slack_user_ids</code>
-is empty by default (no one can approve yet). Update it via the Impri UI
+is empty by default (no one can approve yet). Update it via the Airlock UI
 (edit the channel and add Slack user IDs) or via the API:</p>
-<div class="code-block"><span class="code-lang">bash</span><pre><code class="hljs">curl -X PATCH https://api.impri.dev/v1/notification-channels/{channelId} \
+<div class="code-block"><span class="code-lang">bash</span><pre><code class="hljs">curl -X PATCH https://api.airlock.dev/v1/notification-channels/{channelId} \
   -H <span class="hljs-string">&quot;Authorization: Bearer im_...&quot;</span> \
   -H <span class="hljs-string">&quot;Content-Type: application/json&quot;</span> \
   -d <span class="hljs-string">&#x27;{&quot;config&quot;: {&quot;allowed_approver_slack_user_ids&quot;: [&quot;U0XXXXXXXX&quot;]}}&#x27;</span></code></pre></div>
-<p><strong>Self-hosted Impri</strong> does not provide a shared Slack app — follow the
+<p><strong>Self-hosted Airlock</strong> does not provide a shared Slack app — follow the
 <a href="#setup-one-time-15-minutes">manual setup</a> below to create your own.</p>
 <hr>
 <h2 id="setup-one-time-15-minutes">Setup (one-time, ~15 minutes)</h2>
 <h3 id="step-1-create-a-slack-app">Step 1 — Create a Slack app</h3>
 <p>Go to <a href="https://api.slack.com/apps" target="_blank" rel="noopener">https://api.slack.com/apps</a> and
 click <strong>Create New App → From Scratch</strong>. Give it a name (e.g.
-&quot;Impri Approvals&quot;) and choose your workspace.</p>
+&quot;Airlock Approvals&quot;) and choose your workspace.</p>
 <h3 id="step-2-add-bot-permissions-and-install">Step 2 — Add bot permissions and install</h3>
 <p>Open <strong>OAuth &amp; Permissions → Bot Token Scopes</strong> and add the
 <code>chat:write</code> scope. If you want the bot to post to public channels
@@ -220,7 +220,7 @@ without joining them first, also add <code>chat:write.public</code>.</p>
 <h3 id="step-3-copy-the-signing-secret">Step 3 — Copy the Signing Secret</h3>
 <p>Open <strong>Basic Information → App Credentials</strong>. Copy the value under
 <strong>Signing Secret</strong> (32 lowercase hex characters). This is
-<code>signing_secret</code> — it lets Impri verify that every interaction request
+<code>signing_secret</code> — it lets Airlock verify that every interaction request
 genuinely came from Slack.</p>
 <h3 id="step-4-invite-the-bot-and-get-the-channel-id">Step 4 — Invite the bot and get the channel ID</h3>
 <p>In Slack, go to the channel where you want approvals to appear and type
@@ -239,8 +239,8 @@ private channels).</p>
 <p>To find a user ID: open any message from that person, click
 <strong>More actions (…)</strong> → <strong>Copy member ID</strong>. The ID starts with <code>U</code>.</p>
 <p>Collect all IDs you want to authorize.</p>
-<h3 id="step-6-create-the-approval-channel-via-the-impri-api">Step 6 — Create the approval channel via the Impri API</h3>
-<div class="code-block"><span class="code-lang">bash</span><pre><code class="hljs">curl -X POST https://api.impri.dev/v1/notification-channels \
+<h3 id="step-6-create-the-approval-channel-via-the-airlock-api">Step 6 — Create the approval channel via the Airlock API</h3>
+<div class="code-block"><span class="code-lang">bash</span><pre><code class="hljs">curl -X POST https://api.airlock.dev/v1/notification-channels \
   -H <span class="hljs-string">&quot;Authorization: Bearer im_...&quot;</span> \
   -H <span class="hljs-string">&quot;Content-Type: application/json&quot;</span> \
   -d <span class="hljs-string">&#x27;{
@@ -259,14 +259,14 @@ private channels).</p>
 <h3 id="step-7-set-the-interactivity-request-url-in-slack">Step 7 — Set the Interactivity Request URL in Slack</h3>
 <p>In the Slack app dashboard, go to <strong>Interactivity &amp; Shortcuts</strong> and
 toggle <strong>Interactivity</strong> on. Set the <strong>Request URL</strong> to:</p>
-<div class="code-block"><pre><code class="hljs">https://your-impri-host/v1/integrations/slack/interactions/nchan_...</code></pre></div>
-<p>Replace <code>your-impri-host</code> with your Impri server&#39;s public hostname and
+<div class="code-block"><pre><code class="hljs">https://your-airlock-host/v1/integrations/slack/interactions/nchan_...</code></pre></div>
+<p>Replace <code>your-airlock-host</code> with your Airlock server&#39;s public hostname and
 <code>nchan_...</code> with the channel ID from Step 6. Click <strong>Save Changes</strong>.
-Slack immediately sends a verification request; Impri verifies the
+Slack immediately sends a verification request; Airlock verifies the
 Slack signature and responds 200.</p>
 <p><strong>Local dev:</strong> Slack requires a publicly reachable HTTPS URL. Use
 <code>ngrok http 8484</code> or <code>cloudflared tunnel --url http://localhost:8484</code>,
-set <code>BASE_URL=https://your-tunnel-url</code>, restart Impri, then enter the
+set <code>BASE_URL=https://your-tunnel-url</code>, restart Airlock, then enter the
 tunnel URL in the Slack dashboard.</p>
 <h3 id="step-8-verify">Step 8 — Verify</h3>
 <div class="code-block"><span class="code-lang">bash</span><pre><code class="hljs"><span class="hljs-comment"># Send a test message with interactive buttons</span>
@@ -396,7 +396,7 @@ via the Slack request signature verified against <code>signing_secret</code> bef
 the request body is parsed. Operators do not call this endpoint directly
 — Slack does.</p>
 <p><strong>Signature verification:</strong> Slack attaches <code>X-Slack-Signature</code> and
-<code>X-Slack-Request-Timestamp</code> headers. Impri:</p>
+<code>X-Slack-Request-Timestamp</code> headers. Airlock:</p>
 <ol>
 <li>Rejects requests whose timestamp deviates from the server clock by
 more than 5 minutes (replay defense).</li>
@@ -417,7 +417,7 @@ request per button click; this limit stops scanner abuse.</p>
 <p>An attacker must bypass <strong>all five</strong> simultaneously to forge an approval.</p>
 <p><strong>1. Slack request signature (HMAC-SHA256 with timestamp)</strong></p>
 <p>Every interaction request from Slack carries <code>X-Slack-Signature</code> (value:
-<code>v0={64-char hex}</code>) and <code>X-Slack-Request-Timestamp</code>. Impri re-derives
+<code>v0={64-char hex}</code>) and <code>X-Slack-Request-Timestamp</code>. Airlock re-derives
 the expected value using <code>signing_secret</code> and compares with
 <code>timingSafeEqual</code>. A missing header, wrong signature, or timestamp more
 than 5 minutes old is rejected with 403.</p>
@@ -438,7 +438,7 @@ Comparison uses <code>timingSafeEqual</code>.</p>
 <p><strong>3. Authorized-user check (project-scoped allow-list)</strong></p>
 <p>Slack sets <code>payload.user.id</code> in its own infrastructure. After the
 platform signature passes (Layer 1), this field is authoritative — other
-workspace members cannot spoof it. Impri checks it against
+workspace members cannot spoof it. Airlock checks it against
 <code>allowed_approver_slack_user_ids</code>. On failure, an ephemeral &quot;Not
 authorized&quot; message is posted via <code>response_url</code> (visible only to the
 clicker); HTTP 200 is returned so Slack does not retry. No action data
@@ -455,7 +455,7 @@ by the constraint violation, answered with &quot;Already decided,&quot; and retu
 200 to Slack. Replaying a pressed button is a safe no-op.</p>
 <hr>
 <h3 id="responseurl-ssrf-defense"><code>response_url</code> SSRF defense</h3>
-<p>Before posting the confirmation back to Slack&#39;s <code>response_url</code>, Impri
+<p>Before posting the confirmation back to Slack&#39;s <code>response_url</code>, Airlock
 validates that the URL matches <code>^https://hooks\.slack\.com/</code>. Because
 the interaction payload is Slack-signed (Layer 1 already verified), a
 tampered <code>response_url</code> would require forging the Slack signature —
@@ -513,9 +513,9 @@ stored in logs or <code>audit_log</code>. All outbound Slack API calls go throug
 <p><strong>The bot posts a message but buttons do nothing.</strong></p>
 <p>The Interactivity Request URL in the Slack app dashboard is not set, is
 pointing to an unreachable URL, or the <code>channelId</code> in the URL does not
-match the channel in Impri. Verify the URL in <strong>Interactivity &amp;
+match the channel in Airlock. Verify the URL in <strong>Interactivity &amp;
 Shortcuts</strong> matches
-<code>https://your-impri-host/v1/integrations/slack/interactions/{channelId}</code>.</p>
+<code>https://your-airlock-host/v1/integrations/slack/interactions/{channelId}</code>.</p>
 <p><strong>&quot;Not authorized to approve in this project&quot; when clicking a button.</strong></p>
 <p>The Slack user ID of the person clicking is not in
 <code>allowed_approver_slack_user_ids</code>. Find their ID via the Slack profile
@@ -535,14 +535,14 @@ one to it. The decision is idempotent — nothing went wrong.</p>
 <p><strong>The Slack message still shows buttons after a decision.</strong></p>
 <p>The <code>response_url</code> update call failed (expired — <code>response_url</code> is
 valid for 5 updates within 30 minutes of the interaction). The decision
-was still recorded in Impri. The buttons are cosmetically stale; any
+was still recorded in Airlock. The buttons are cosmetically stale; any
 additional click is answered with &quot;Already decided&quot; and is a no-op.</p>
 <p><strong>Slack dashboard rejects the Interactions Endpoint URL.</strong></p>
 <p>Slack verifies the URL by sending a test request signed with your app&#39;s
-<code>signing_secret</code>. Make sure the Impri server is publicly reachable over
+<code>signing_secret</code>. Make sure the Airlock server is publicly reachable over
 HTTPS, the URL is correct (including the <code>channelId</code> suffix), and the
 <code>signing_secret</code> in the channel config matches the one in the Slack app
-dashboard. Check Impri logs for a 403 or signature mismatch error.</p>
+dashboard. Check Airlock logs for a 403 or signature mismatch error.</p>
 <p><strong>The channel was auto-disabled (fail_count reached 5).</strong></p>
 <p>Fix the underlying issue (e.g. incorrect <code>bot_token</code> or <code>channel_id</code>),
 then:</p>
@@ -629,7 +629,7 @@ then:</p>
 <li class="ptoc-h3"><a href="#step-3-copy-the-signing-secret">Step 3 — Copy the Signing Secret</a></li>
 <li class="ptoc-h3"><a href="#step-4-invite-the-bot-and-get-the-channel-id">Step 4 — Invite the bot and get the channel ID</a></li>
 <li class="ptoc-h3"><a href="#step-5-collect-authorized-slack-user-ids">Step 5 — Collect authorized Slack user IDs</a></li>
-<li class="ptoc-h3"><a href="#step-6-create-the-approval-channel-via-the-impri-api">Step 6 — Create the approval channel via the Impri API</a></li>
+<li class="ptoc-h3"><a href="#step-6-create-the-approval-channel-via-the-airlock-api">Step 6 — Create the approval channel via the Airlock API</a></li>
 <li class="ptoc-h3"><a href="#step-7-set-the-interactivity-request-url-in-slack">Step 7 — Set the Interactivity Request URL in Slack</a></li>
 <li class="ptoc-h3"><a href="#step-8-verify">Step 8 — Verify</a></li>
 <li class="ptoc-h2"><a href="#configuration-reference">Configuration reference</a></li>
@@ -648,19 +648,19 @@ then:</p>
 <footer class="footer">
 <div class="wrap footer-inner">
   <a class="brand" href="/">
-    <span class="mark"><svg viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.5 4.5L19 7.5" stroke="white" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Impri
+    <span class="mark"><svg viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.5 4.5L19 7.5" stroke="white" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Airlock
   </a>
   <div>
-    <a href="https://gitlab.com/sekera.radim/impri">GitLab</a>
+    <a href="https://gitlab.com/sekera.radim/airlock">GitLab</a>
     <a href="/docs">Docs</a>
-    <a href="https://gitlab.com/sekera.radim/impri/-/blob/main/LICENSE">MIT License</a>
-    <a href="https://www.npmjs.com/package/@impri/mcp">@impri/mcp</a>
+    <a href="https://gitlab.com/sekera.radim/airlock/-/blob/main/LICENSE">MIT License</a>
+    <a href="https://www.npmjs.com/package/@airlock/mcp">@airlock/mcp</a>
     <a href="/docs/privacy">Privacy</a>
     <a href="/docs/terms">Terms</a>
     <a href="https://sekera.dev">Contact</a>
   </div>
 </div>
-<div class="wrap" style="margin-top:18px"><span class="muted">© 2026 Impri · The imprimatur for your AI agents · Built by <a href="https://sekera.dev" style="color:inherit">Radim Sekera</a>. Also by the same maker: <a href="https://briefgate.dev/?utm_source=impri.dev&amp;utm_medium=referral" style="color:inherit">BriefGate</a> — client intake for agencies and AI agents.</span></div>
+<div class="wrap" style="margin-top:18px"><span class="muted">© 2026 Airlock · The airlockmatur for your AI agents · Built by <a href="https://sekera.dev" style="color:inherit">Radim Sekera</a>. Also by the same maker: <a href="https://briefgate.dev/?utm_source=airlock.dev&amp;utm_medium=referral" style="color:inherit">BriefGate</a> — client intake for agencies and AI agents.</span></div>
 </footer>
 </body>
 </html>

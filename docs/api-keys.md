@@ -1,6 +1,6 @@
 # API Keys
 
-Every request to the Impri API is authenticated with a Bearer token that looks like `im_<base64url>`. Keys are project-scoped, have one or more scopes, and are stored as argon2 hashes — the raw value is shown **exactly once** at creation and never stored in plain text.
+Every request to the Airlock API is authenticated with a Bearer token that looks like `im_<base64url>`. Keys are project-scoped, have one or more scopes, and are stored as argon2 hashes — the raw value is shown **exactly once** at creation and never stored in plain text.
 
 ---
 
@@ -22,10 +22,10 @@ Use the narrowest scope for each purpose:
 
 ## Bootstrap key
 
-On the very first server start, Impri prints a bootstrap admin key and project ID to stdout:
+On the very first server start, Airlock prints a bootstrap admin key and project ID to stdout:
 
 ```
-[impri] Bootstrap complete.
+[airlock] Bootstrap complete.
   project: prj_...
   admin key: im_...   ← copy this now; it is printed once
 ```
@@ -142,9 +142,9 @@ There is no "suspend" state — keys are either active or permanently revoked. T
 ## CLI
 
 ```bash
-impri keys list                            # list all keys
-impri keys create --name "bot" --scopes actions
-impri keys revoke key_abc123 [--yes]      # skip confirmation prompt with --yes
+airlock keys list                            # list all keys
+airlock keys create --name "bot" --scopes actions
+airlock keys revoke key_abc123 [--yes]      # skip confirmation prompt with --yes
 ```
 
 See [CLI reference](cli.md) for full options.

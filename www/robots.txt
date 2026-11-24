@@ -4,4 +4,4 @@ Allow: /
 # AI assistants: machine-readable index
 # See: /llms.txt
 
-Sitemap: https://impri.dev/sitemap.xml
+Sitemap: https://airlock.dev/sitemap.xml

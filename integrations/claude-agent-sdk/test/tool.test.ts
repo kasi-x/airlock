@@ -1,8 +1,8 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import { ImpriClient } from "../src/client.js";
-import { ImpriRejected } from "../src/errors.js";
+import { AirlockClient } from "../src/client.js";
+import { AirlockRejected } from "../src/errors.js";
 import type { ToolUseBlock } from "../src/tool.js";
-import { makeToolResult, withImpriApproval } from "../src/tool.js";
+import { makeToolResult, withAirlockApproval } from "../src/tool.js";
 
 // ─── Fetch mock helpers ───────────────────────────────────────────────────────
 
@@ -88,15 +88,15 @@ function makeMockSequence(verdict: "approve" | "reject"): void {
   }
 }
 
-// ─── withImpriApproval ────────────────────────────────────────────────────────
+// ─── withAirlockApproval ────────────────────────────────────────────────────────
 
-describe("withImpriApproval", () => {
+describe("withAirlockApproval", () => {
   it("returns toolDef unchanged", () => {
-    const client = new ImpriClient({ apiKey: "im_test" });
-    const gated = withImpriApproval({
+    const client = new AirlockClient({ apiKey: "im_test" });
+    const gated = withAirlockApproval({
       toolDef: sendEmailTool,
       execute: async () => "ok",
-      impriClient: client,
+      airlockClient: client,
       kind: "email.send",
       title: "Send email",
     });
@@ -106,16 +106,16 @@ describe("withImpriApproval", () => {
   it("submits action, waits for approval, calls execute, returns string result", async () => {
     makeMockSequence("approve");
 
-    const client = new ImpriClient({ apiKey: "im_test" });
+    const client = new AirlockClient({ apiKey: "im_test" });
     const executeCalls: Record<string, unknown>[] = [];
 
-    const gated = withImpriApproval({
+    const gated = withAirlockApproval({
       toolDef: sendEmailTool,
       execute: async (input) => {
         executeCalls.push(input);
         return `Email sent to ${input["to"] as string}`;
       },
-      impriClient: client,
+      airlockClient: client,
       kind: "email.send",
       title: ({ to }) => `Send email to ${to as string}`,
       preview: ({ body }) => ({ format: "plain" as const, body: String(body) }),
@@ -130,14 +130,14 @@ describe("withImpriApproval", () => {
     expect(mockFetch).toHaveBeenCalledTimes(3);
   });
 
-  it("includes tool_use_id and input in the Impri action payload", async () => {
+  it("includes tool_use_id and input in the Airlock action payload", async () => {
     makeMockSequence("approve");
 
-    const client = new ImpriClient({ apiKey: "im_test" });
-    const gated = withImpriApproval({
+    const client = new AirlockClient({ apiKey: "im_test" });
+    const gated = withAirlockApproval({
       toolDef: sendEmailTool,
       execute: async () => "ok",
-      impriClient: client,
+      airlockClient: client,
       kind: "email.send",
       title: "Send email",
     });
@@ -156,16 +156,16 @@ describe("withImpriApproval", () => {
   it("returns rejection message string when human rejects (does not throw by default)", async () => {
     makeMockSequence("reject");
 
-    const client = new ImpriClient({ apiKey: "im_test" });
+    const client = new AirlockClient({ apiKey: "im_test" });
     const executeCalled = vi.fn();
 
-    const gated = withImpriApproval({
+    const gated = withAirlockApproval({
       toolDef: sendEmailTool,
       execute: async () => {
         executeCalled();
         return "should not run";
       },
-      impriClient: client,
+      airlockClient: client,
       kind: "email.send",
       title: "Send email",
     });
@@ -180,11 +180,11 @@ describe("withImpriApproval", () => {
   it("uses custom onRejected handler when provided", async () => {
     makeMockSequence("reject");
 
-    const client = new ImpriClient({ apiKey: "im_test" });
-    const gated = withImpriApproval({
+    const client = new AirlockClient({ apiKey: "im_test" });
+    const gated = withAirlockApproval({
       toolDef: sendEmailTool,
       execute: async () => "ok",
-      impriClient: client,
+      airlockClient: client,
       kind: "email.send",
       title: "Send email",
       onRejected: (err) => `Custom rejection: ${err.actionId}`,
@@ -197,11 +197,11 @@ describe("withImpriApproval", () => {
   it("defaults preview to JSON of input when preview option is omitted", async () => {
     makeMockSequence("approve");
 
-    const client = new ImpriClient({ apiKey: "im_test" });
-    const gated = withImpriApproval({
+    const client = new AirlockClient({ apiKey: "im_test" });
+    const gated = withAirlockApproval({
       toolDef: sendEmailTool,
       execute: async () => "ok",
-      impriClient: client,
+      airlockClient: client,
       kind: "email.send",
       title: "Send email",
     });
@@ -244,16 +244,16 @@ describe("withImpriApproval", () => {
       .mockResolvedValueOnce(mockOk(approved))
       .mockResolvedValueOnce(mockOk(ack));
 
-    const client = new ImpriClient({ apiKey: "im_test" });
+    const client = new AirlockClient({ apiKey: "im_test" });
     const receivedInputs: Record<string, unknown>[] = [];
 
-    const gated = withImpriApproval({
+    const gated = withAirlockApproval({
       toolDef: sendEmailTool,
       execute: async (input) => {
         receivedInputs.push(input);
         return "ok";
       },
-      impriClient: client,
+      airlockClient: client,
       kind: "email.send",
       title: "T",
       preview: ({ body }) => ({ format: "plain" as const, body: String(body) }),
@@ -270,11 +270,11 @@ describe("withImpriApproval", () => {
   it("serialises non-string execute result to JSON string", async () => {
     makeMockSequence("approve");
 
-    const client = new ImpriClient({ apiKey: "im_test" });
-    const gated = withImpriApproval({
+    const client = new AirlockClient({ apiKey: "im_test" });
+    const gated = withAirlockApproval({
       toolDef: sendEmailTool,
       execute: async () => ({ sent: true, recipients: 1 }),
-      impriClient: client,
+      airlockClient: client,
       kind: "email.send",
       title: "Send email",
     });
@@ -285,7 +285,7 @@ describe("withImpriApproval", () => {
     expect(parsed.recipients).toBe(1);
   });
 
-  it("surfaces ImpriTimeout when approval polling times out", async () => {
+  it("surfaces AirlockTimeout when approval polling times out", async () => {
     const created = { id: "act_t3", status: "pending", inbox_url: "", expires_at: 9999999999, created_at: 0 };
     const pending = {
       id: "act_t3",
@@ -303,11 +303,11 @@ describe("withImpriApproval", () => {
       .mockResolvedValueOnce(mockOk(created, 201))
       .mockResolvedValueOnce(mockOk(pending));
 
-    const client = new ImpriClient({ apiKey: "im_test" });
-    const gated = withImpriApproval({
+    const client = new AirlockClient({ apiKey: "im_test" });
+    const gated = withAirlockApproval({
       toolDef: sendEmailTool,
       execute: async () => "ok",
-      impriClient: client,
+      airlockClient: client,
       kind: "email.send",
       title: "T",
       timeoutS: 0,
@@ -340,11 +340,11 @@ describe("withImpriApproval", () => {
       .mockResolvedValueOnce(mockOk(approved))
       .mockResolvedValueOnce(mockOk(ack));
 
-    const client = new ImpriClient({ apiKey: "im_test" });
-    const gated = withImpriApproval({
+    const client = new AirlockClient({ apiKey: "im_test" });
+    const gated = withAirlockApproval({
       toolDef: sendEmailTool,
       execute: async () => { throw new Error("SMTP unavailable"); },
-      impriClient: client,
+      airlockClient: client,
       kind: "email.send",
       title: "T",
     });

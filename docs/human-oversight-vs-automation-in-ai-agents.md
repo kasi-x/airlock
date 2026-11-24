@@ -43,8 +43,8 @@ import os
 import time
 import requests
 
-IMPRI_KEY = os.environ["IMPRI_API_KEY"]
-BASE = "https://api.impri.dev"
+AIRLOCK_KEY = os.environ["AIRLOCK_API_KEY"]
+BASE = "https://api.airlock.dev"
 
 AUTO_APPROVE = {"ticket.tag", "order.lookup", "reply.faq_canned"}
 
@@ -55,7 +55,7 @@ def handle_action(kind: str, title: str, body: str, execute_fn):
     # everything else waits for a human
     resp = requests.post(
         f"{BASE}/v1/actions",
-        headers={"Authorization": f"Bearer {IMPRI_KEY}"},
+        headers={"Authorization": f"Bearer {AIRLOCK_KEY}"},
         json={
             "kind": kind,
             "title": title,
@@ -69,7 +69,7 @@ def handle_action(kind: str, title: str, body: str, execute_fn):
     while True:
         result = requests.get(
             f"{BASE}/v1/actions/{action_id}",
-            headers={"Authorization": f"Bearer {IMPRI_KEY}"},
+            headers={"Authorization": f"Bearer {AIRLOCK_KEY}"},
         ).json()
         if result["status"] != "pending":
             break
@@ -80,7 +80,7 @@ def handle_action(kind: str, title: str, body: str, execute_fn):
         outcome = execute_fn(final_body)
         requests.post(
             f"{BASE}/v1/actions/{action_id}/result",
-            headers={"Authorization": f"Bearer {IMPRI_KEY}"},
+            headers={"Authorization": f"Bearer {AIRLOCK_KEY}"},
             json={"status": "executed"},
         )
         return outcome
@@ -88,7 +88,7 @@ def handle_action(kind: str, title: str, body: str, execute_fn):
     return None  # rejected or expired — do nothing
 ```
 
-The `AUTO_APPROVE` set is the whole policy. Moving an action type between automated and gated is a one-line change, and the audit trail for gated actions comes for free from Impri's [inbox](inbox.md) and [audit log](audit-log.md) — you don't have to build approval bookkeeping yourself.
+The `AUTO_APPROVE` set is the whole policy. Moving an action type between automated and gated is a one-line change, and the audit trail for gated actions comes for free from Airlock's [inbox](inbox.md) and [audit log](audit-log.md) — you don't have to build approval bookkeeping yourself.
 
 ---
 
@@ -106,6 +106,6 @@ Conversely, an action gated today can graduate to automated once you have enough
 
 ## What this doesn't solve
 
-Deciding *which* actions need a human is a policy problem you have to own — Impri does not classify risk for you, and it doesn't know your business's tolerance for a wrong refund versus a wrong ticket tag. What it provides is the mechanical part: once you've decided an action needs a human, it stores the proposal, notifies someone, and blocks execution until they decide. The judgment call stays yours; the plumbing doesn't have to be.
+Deciding *which* actions need a human is a policy problem you have to own — Airlock does not classify risk for you, and it doesn't know your business's tolerance for a wrong refund versus a wrong ticket tag. What it provides is the mechanical part: once you've decided an action needs a human, it stores the proposal, notifies someone, and blocks execution until they decide. The judgment call stays yours; the plumbing doesn't have to be.
 
 Ready to wire this into your agent? Start with the [quickstart](quickstart.md) to get an API key, then see [the full integration guide](how-to-add-human-approval-to-an-ai-agent.md) for the request/response details.

@@ -36,13 +36,13 @@ The last row matters. If the sheet changes while the proposal sits in the inbox,
 
 ## Python example
 
-This uses plain `requests` against the REST API. `read_current` and `apply_to_sheet` stand in for your own Sheets client code (gspread, the Sheets API, whatever you use) — Impri does not touch the sheet.
+This uses plain `requests` against the REST API. `read_current` and `apply_to_sheet` stand in for your own Sheets client code (gspread, the Sheets API, whatever you use) — Airlock does not touch the sheet.
 
 ```python
 import os, time, requests
 
-API = "https://api.impri.dev"
-HEADERS = {"Authorization": f"Bearer {os.environ['IMPRI_API_KEY']}"}
+API = "https://api.airlock.dev"
+HEADERS = {"Authorization": f"Bearer {os.environ['AIRLOCK_API_KEY']}"}
 
 def propose_sheet_change(sheet_url, tab, changes):
     """changes: list of (cell, old, new)"""
@@ -89,9 +89,9 @@ Rejected and expired actions fall straight through: the write call is never reac
 
 ## Where the gate can leak
 
-Impri is a real gate only when your `apply_to_sheet` function is the agent's **only** route to the sheet. If the agent also holds a service-account key with edit rights and a generic "call the Sheets API" tool, it can write directly and never touch the approval flow. Give the agent read-only credentials for exploration, and keep write credentials inside the gated function that runs after approval.
+Airlock is a real gate only when your `apply_to_sheet` function is the agent's **only** route to the sheet. If the agent also holds a service-account key with edit rights and a generic "call the Sheets API" tool, it can write directly and never touch the approval flow. Give the agent read-only credentials for exploration, and keep write credentials inside the gated function that runs after approval.
 
-Also be honest about scope: Impri stores the proposal, notifies you and holds the decision. It does not understand spreadsheets, validate that the diff matches what actually gets written, or check formulas. Your code has to make sure the applied changes equal the approved ones.
+Also be honest about scope: Airlock stores the proposal, notifies you and holds the decision. It does not understand spreadsheets, validate that the diff matches what actually gets written, or check formulas. Your code has to make sure the applied changes equal the approved ones.
 
 ---
 
@@ -103,4 +103,4 @@ Reviewers rarely sit in the inbox. Route the card where people already are — [
 
 ## Next step
 
-Get a key from the [quickstart](quickstart.md), then wrap your single write function as shown above. If your agent runs in an MCP client, the same flow works with `impri_push_action`, `impri_await_decision` and `impri_report_result` — see the [MCP guide](mcp.md).
+Get a key from the [quickstart](quickstart.md), then wrap your single write function as shown above. If your agent runs in an MCP client, the same flow works with `airlock_push_action`, `airlock_await_decision` and `airlock_report_result` — see the [MCP guide](mcp.md).

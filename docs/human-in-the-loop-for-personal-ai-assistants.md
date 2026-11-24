@@ -18,10 +18,10 @@ Say your assistant handles reminders and can text people on your behalf (via Twi
 
 ```typescript
 async function proposeText(to: string, body: string) {
-  const res = await fetch("https://api.impri.dev/v1/actions", {
+  const res = await fetch("https://api.airlock.dev/v1/actions", {
     method: "POST",
     headers: {
-      Authorization: `Bearer ${process.env.IMPRI_API_KEY}`,
+      Authorization: `Bearer ${process.env.AIRLOCK_API_KEY}`,
       "Content-Type": "application/json",
     },
     body: JSON.stringify({
@@ -38,8 +38,8 @@ async function proposeText(to: string, body: string) {
 
 async function waitForDecision(actionId: string) {
   while (true) {
-    const res = await fetch(`https://api.impri.dev/v1/actions/${actionId}`, {
-      headers: { Authorization: `Bearer ${process.env.IMPRI_API_KEY}` },
+    const res = await fetch(`https://api.airlock.dev/v1/actions/${actionId}`, {
+      headers: { Authorization: `Bearer ${process.env.AIRLOCK_API_KEY}` },
     });
     const data = await res.json();
     if (data.status !== "pending") return data;
@@ -78,7 +78,7 @@ The judgment call is yours: gate the actions that are hard to undo or embarrassi
 
 ## What this doesn't give you
 
-Impri is the approval gate, not the assistant. It doesn't know your contacts, doesn't draft the text, and doesn't decide what "looks wrong" — it just holds the proposed action until you decide and hands back exactly what you approved (including any edits you made). It's also only a real gate if your assistant's SMS/email/payment code path *requires* the approved decision to run — if the assistant still holds a raw Twilio key it could call directly, wrap that credential so the approval step is the only door through.
+Airlock is the approval gate, not the assistant. It doesn't know your contacts, doesn't draft the text, and doesn't decide what "looks wrong" — it just holds the proposed action until you decide and hands back exactly what you approved (including any edits you made). It's also only a real gate if your assistant's SMS/email/payment code path *requires* the approved decision to run — if the assistant still holds a raw Twilio key it could call directly, wrap that credential so the approval step is the only door through.
 
 If your assistant also texts on a schedule unattended (nightly digest, morning reminders), see [gate a cron job with human approval](gate-a-cron-job-with-human-approval.md) for handling actions that fire while you're asleep.
 

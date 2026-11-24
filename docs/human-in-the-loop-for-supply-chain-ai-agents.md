@@ -25,15 +25,15 @@ The pattern below applies to any of the "yes" rows; a reorder PO is the concrete
 
 ## Gating a reorder decision
 
-The agent proposes the PO as an Impri action instead of calling the supplier API directly. A human — usually whoever owns that supplier relationship — sees the SKU, quantity, and unit cost before it goes out.
+The agent proposes the PO as an Airlock action instead of calling the supplier API directly. A human — usually whoever owns that supplier relationship — sees the SKU, quantity, and unit cost before it goes out.
 
 ```python
 import os
 import time
 import requests
 
-API = "https://api.impri.dev"
-HEADERS = {"Authorization": f"Bearer {os.environ['IMPRI_API_KEY']}"}
+API = "https://api.airlock.dev"
+HEADERS = {"Authorization": f"Bearer {os.environ['AIRLOCK_API_KEY']}"}
 
 def propose_reorder(sku: str, qty: int, unit_cost: float, supplier: str) -> str:
     body = {
@@ -84,11 +84,11 @@ Three things matter here specifically for supply chain use cases:
 
 ## Multiple approvers, one SKU category
 
-Procurement teams commonly split ownership by supplier or category rather than having one person approve everything. Route the notification accordingly — Impri's channel integrations (see [Slack approval](slack-approval.md)) let you point different `kind` values or title patterns at different channels or reviewers, so the person who owns the Northwind relationship sees Northwind POs, not every SKU in the warehouse.
+Procurement teams commonly split ownership by supplier or category rather than having one person approve everything. Route the notification accordingly — Airlock's channel integrations (see [Slack approval](slack-approval.md)) let you point different `kind` values or title patterns at different channels or reviewers, so the person who owns the Northwind relationship sees Northwind POs, not every SKU in the warehouse.
 
 ## What this doesn't solve
 
-Impri holds the decision and shows the reviewer what's about to happen — it does not evaluate whether the reorder quantity is *correct*. If your forecasting model is systematically wrong, a human approving a bad PO one at a time won't catch that pattern; you still need monitoring on the forecast itself. Impri is also not a substitute for your ERP's own PO validation (budget limits, duplicate-supplier checks) — those should run before the action is even proposed, so the human is approving something already sane on its face.
+Airlock holds the decision and shows the reviewer what's about to happen — it does not evaluate whether the reorder quantity is *correct*. If your forecasting model is systematically wrong, a human approving a bad PO one at a time won't catch that pattern; you still need monitoring on the forecast itself. Airlock is also not a substitute for your ERP's own PO validation (budget limits, duplicate-supplier checks) — those should run before the action is even proposed, so the human is approving something already sane on its face.
 
 ---
 

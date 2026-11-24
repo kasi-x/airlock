@@ -3,21 +3,21 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Human Approval for Zapier AI Agents — Impri Docs</title>
-<meta name="description" content="Zapier's AI Actions let a Zap decide what to send, post, or update on its own — add one Code step and Impri holds a human approval gate before anything…">
+<title>Human Approval for Zapier AI Agents — Airlock Docs</title>
+<meta name="description" content="Zapier's AI Actions let a Zap decide what to send, post, or update on its own — add one Code step and Airlock holds a human approval gate before anything…">
 <meta name="theme-color" content="#06070d">
-<meta property="og:title" content="Human Approval for Zapier AI Agents — Impri Docs">
-<meta property="og:description" content="Zapier's AI Actions let a Zap decide what to send, post, or update on its own — add one Code step and Impri holds a human approval gate before anything…">
+<meta property="og:title" content="Human Approval for Zapier AI Agents — Airlock Docs">
+<meta property="og:description" content="Zapier's AI Actions let a Zap decide what to send, post, or update on its own — add one Code step and Airlock holds a human approval gate before anything…">
 <meta property="og:type" content="article">
-<meta property="og:url" content="https://impri.dev/docs/human-approval-zapier-ai-agents">
-<meta property="og:image" content="https://impri.dev/assets/og/og-docs.png">
+<meta property="og:url" content="https://airlock.dev/docs/human-approval-zapier-ai-agents">
+<meta property="og:image" content="https://airlock.dev/assets/og/og-docs.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
-<meta property="og:image:alt" content="Impri — human-in-the-loop approval inbox for AI agents">
+<meta property="og:image:alt" content="Airlock — human-in-the-loop approval inbox for AI agents">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="https://impri.dev/assets/og/og-docs.png">
-<link rel="canonical" href="https://impri.dev/docs/human-approval-zapier-ai-agents">
-<script type="application/ld+json">{"@context":"https://schema.org","@type":"TechArticle","headline":"Human Approval for Zapier AI Agents","description":"Zapier's AI Actions let a Zap decide what to send, post, or update on its own — add one Code step and Impri holds a human approval gate before anything…","url":"https://impri.dev/docs/human-approval-zapier-ai-agents","inLanguage":"en","author":{"@type":"Organization","name":"Impri","url":"https://impri.dev"},"publisher":{"@type":"Organization","name":"Impri","url":"https://impri.dev"}}</script>
+<meta name="twitter:image" content="https://airlock.dev/assets/og/og-docs.png">
+<link rel="canonical" href="https://airlock.dev/docs/human-approval-zapier-ai-agents">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"TechArticle","headline":"Human Approval for Zapier AI Agents","description":"Zapier's AI Actions let a Zap decide what to send, post, or update on its own — add one Code step and Airlock holds a human approval gate before anything…","url":"https://airlock.dev/docs/human-approval-zapier-ai-agents","inLanguage":"en","author":{"@type":"Organization","name":"Airlock","url":"https://airlock.dev"},"publisher":{"@type":"Organization","name":"Airlock","url":"https://airlock.dev"}}</script>
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <link rel="icon" href="/favicon.ico" sizes="32x32">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='9' fill='%236366f1'/%3E%3Cpath d='M9 16.5l4.5 4.5L23 11' stroke='white' stroke-width='3' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
@@ -132,13 +132,13 @@ pre code.hljs{display:block;overflow-x:auto}
 <div class="wrap nav-inner">
   <a class="brand" href="/">
     <span class="mark"><svg viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.5 4.5L19 7.5" stroke="white" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
-    Impri
+    Airlock
   </a>
   <div class="nav-links">
     <a class="link" href="/#how">How it works</a>
     <a class="link" href="/#pricing">Pricing</a>
     <a class="link active-nav" href="../docs">Docs</a>
-    <a class="btn btn-primary btn-sm" href="https://gitlab.com/sekera.radim/impri">GitLab</a>
+    <a class="btn btn-primary btn-sm" href="https://gitlab.com/sekera.radim/airlock">GitLab</a>
   </div>
 </div>
 </nav>
@@ -153,17 +153,17 @@ pre code.hljs{display:block;overflow-x:auto}
       <span>Human Approval for Zapier AI Agents</span>
     </nav>
     <h1>Human Approval for Zapier AI Agents</h1>
-<p>Zapier&#39;s AI Actions let a Zap decide what to send, post, or update on its own — add one Code step and Impri holds a human approval gate before anything irreversible runs.</p>
+<p>Zapier&#39;s AI Actions let a Zap decide what to send, post, or update on its own — add one Code step and Airlock holds a human approval gate before anything irreversible runs.</p>
 <hr>
 <h2 id="why-zaps-with-ai-actions-need-a-gate">Why Zaps with AI Actions need a gate</h2>
 <p>A Zap that uses an AI Action to draft a customer email, post a Slack update, or write a CRM record is not the same as a Zap that moves a spreadsheet row. The AI step is non-deterministic: the same trigger can produce a different email body or a different field value each run. Once that step feeds directly into an &quot;Send Email&quot; or &quot;Create Record&quot; action, a bad draft goes out with the same reliability as a good one. Zapier has no built-in &quot;pause until a person says yes&quot; step for AI-generated content — Delay and Filter steps work on fixed conditions, not on human judgment.</p>
-<p>The fix is the same pattern used outside Zapier: the Zap proposes the action to Impri instead of executing it directly, and only continues past a human decision.</p>
+<p>The fix is the same pattern used outside Zapier: the Zap proposes the action to Airlock instead of executing it directly, and only continues past a human decision.</p>
 <h2 id="pushing-the-action-from-a-code-step">Pushing the action from a Code step</h2>
 <p>Add a <strong>Code by Zapier (Run JavaScript)</strong> step right after your AI Action step, with the AI&#39;s output passed in as an input field (call it <code>draft</code>):</p>
-<div class="code-block"><span class="code-lang">javascript</span><pre><code class="hljs"><span class="hljs-keyword">const</span> res = <span class="hljs-keyword">await</span> <span class="hljs-title function_">fetch</span>(<span class="hljs-string">&#x27;https://api.impri.dev/v1/actions&#x27;</span>, {
+<div class="code-block"><span class="code-lang">javascript</span><pre><code class="hljs"><span class="hljs-keyword">const</span> res = <span class="hljs-keyword">await</span> <span class="hljs-title function_">fetch</span>(<span class="hljs-string">&#x27;https://api.airlock.dev/v1/actions&#x27;</span>, {
   <span class="hljs-attr">method</span>: <span class="hljs-string">&#x27;POST&#x27;</span>,
   <span class="hljs-attr">headers</span>: {
-    <span class="hljs-string">&#x27;Authorization&#x27;</span>: <span class="hljs-string">`Bearer <span class="hljs-subst">${process.env.IMPRI_API_KEY}</span>`</span>,
+    <span class="hljs-string">&#x27;Authorization&#x27;</span>: <span class="hljs-string">`Bearer <span class="hljs-subst">${process.env.AIRLOCK_API_KEY}</span>`</span>,
     <span class="hljs-string">&#x27;Content-Type&#x27;</span>: <span class="hljs-string">&#x27;application/json&#x27;</span>
   },
   <span class="hljs-attr">body</span>: <span class="hljs-title class_">JSON</span>.<span class="hljs-title function_">stringify</span>({
@@ -183,7 +183,7 @@ output = { <span class="hljs-attr">action_id</span>: action.<span class="hljs-pr
 <p>Two workable patterns, depending on how fast you need the answer:</p>
 <ol>
 <li><strong>Separate polling Zap.</strong> A second Zap on a Schedule trigger (every 10–15 minutes) calls <code>GET /v1/actions/:id</code> for any action IDs you stored (a Zapier Table or your own database works), and only continues to the send/post/write step once <code>status</code> is no longer <code>pending</code>.</li>
-<li><strong>Webhook callback.</strong> If your Impri deployment has <a href="webhooks">webhooks</a> configured, point the webhook at a <strong>Catch Hook</strong> trigger in a second Zap. That Zap fires the moment a human decides, with the decision already in the payload — no polling step needed.</li>
+<li><strong>Webhook callback.</strong> If your Airlock deployment has <a href="webhooks">webhooks</a> configured, point the webhook at a <strong>Catch Hook</strong> trigger in a second Zap. That Zap fires the moment a human decides, with the decision already in the payload — no polling step needed.</li>
 </ol>
 <p>Either way, the execution Zap step must read <code>decision.final_preview.body</code> (not the original AI draft) and check <code>status === &quot;approved&quot;</code> before it runs the real send/post/write action:</p>
 <div class="code-block"><span class="code-lang">javascript</span><pre><code class="hljs"><span class="hljs-keyword">if</span> (inputData.<span class="hljs-property">status</span> !== <span class="hljs-string">&#x27;approved&#x27;</span>) {
@@ -221,15 +221,15 @@ output = { <span class="hljs-attr">body</span>: inputData.<span class="hljs-prop
 </tr>
 </tbody></table>
 </div>
-<h2 id="what-impri-does-not-replace-in-your-zap">What Impri does not replace in your Zap</h2>
-<p>Impri is the approval gate, not a Zapier replacement. It does not branch on conditions, retry failed steps, or coordinate multiple Zaps — that logic still lives in Zapier itself (Paths, Filters, Delay). Impri&#39;s only job inside this flow is to hold the human decision and hand back <code>final_preview</code> so the rest of your Zap can trust it.</p>
+<h2 id="what-airlock-does-not-replace-in-your-zap">What Airlock does not replace in your Zap</h2>
+<p>Airlock is the approval gate, not a Zapier replacement. It does not branch on conditions, retry failed steps, or coordinate multiple Zaps — that logic still lives in Zapier itself (Paths, Filters, Delay). Airlock&#39;s only job inside this flow is to hold the human decision and hand back <code>final_preview</code> so the rest of your Zap can trust it.</p>
 <p>Next: set up an API key with the <a href="quickstart">quickstart</a>, or read the full <a href="how-to-add-human-approval-to-an-ai-agent">REST/MCP integration guide</a> for the non-Zapier version of this same pattern.</p>
 
-    <aside class="doc-cta" aria-label="Try Impri">
+    <aside class="doc-cta" aria-label="Try Airlock">
   <p class="doc-cta-title">Add an approval step to your own agent</p>
-  <p>Start on Impri Cloud: the Free tier includes 100 approvals a month. Or self-host the MIT-licensed core with Docker Compose, with no tier limits.</p>
+  <p>Start on Airlock Cloud: the Free tier includes 100 approvals a month. Or self-host the MIT-licensed core with Docker Compose, with no tier limits.</p>
   <div class="doc-cta-actions">
-    <a class="btn btn-primary btn-sm" href="https://app.impri.dev/?signup=1">Start free on Impri Cloud</a>
+    <a class="btn btn-primary btn-sm" href="https://app.airlock.dev/?signup=1">Start free on Airlock Cloud</a>
     <a class="btn btn-ghost btn-sm" href="../docs/quickstart">Quick start</a>
     <a class="btn btn-ghost btn-sm" href="../docs/self-hosting">Self-host guide</a>
   </div>
@@ -316,7 +316,7 @@ output = { <span class="hljs-attr">body</span>: inputData.<span class="hljs-prop
 <li class="ptoc-h2"><a href="#pushing-the-action-from-a-code-step">Pushing the action from a Code step</a></li>
 <li class="ptoc-h2"><a href="#resolving-the-decision-without-blocking-the-run">Resolving the decision without blocking the run</a></li>
 <li class="ptoc-h2"><a href="#what-kind-of-zap-steps-this-fits">What kind of Zap steps this fits</a></li>
-<li class="ptoc-h2"><a href="#what-impri-does-not-replace-in-your-zap">What Impri does not replace in your Zap</a></li></ul>
+<li class="ptoc-h2"><a href="#what-airlock-does-not-replace-in-your-zap">What Airlock does not replace in your Zap</a></li></ul>
 </nav>
   </aside>
 </div>
@@ -324,19 +324,19 @@ output = { <span class="hljs-attr">body</span>: inputData.<span class="hljs-prop
 <footer class="footer">
 <div class="wrap footer-inner">
   <a class="brand" href="/">
-    <span class="mark"><svg viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.5 4.5L19 7.5" stroke="white" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Impri
+    <span class="mark"><svg viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.5 4.5L19 7.5" stroke="white" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Airlock
   </a>
   <div>
-    <a href="https://gitlab.com/sekera.radim/impri">GitLab</a>
+    <a href="https://gitlab.com/sekera.radim/airlock">GitLab</a>
     <a href="/docs">Docs</a>
-    <a href="https://gitlab.com/sekera.radim/impri/-/blob/main/LICENSE">MIT License</a>
-    <a href="https://www.npmjs.com/package/@impri/mcp">@impri/mcp</a>
+    <a href="https://gitlab.com/sekera.radim/airlock/-/blob/main/LICENSE">MIT License</a>
+    <a href="https://www.npmjs.com/package/@airlock/mcp">@airlock/mcp</a>
     <a href="/docs/privacy">Privacy</a>
     <a href="/docs/terms">Terms</a>
     <a href="https://sekera.dev">Contact</a>
   </div>
 </div>
-<div class="wrap" style="margin-top:18px"><span class="muted">© 2026 Impri · The imprimatur for your AI agents · Built by <a href="https://sekera.dev" style="color:inherit">Radim Sekera</a>. Also by the same maker: <a href="https://briefgate.dev/?utm_source=impri.dev&amp;utm_medium=referral" style="color:inherit">BriefGate</a> — client intake for agencies and AI agents.</span></div>
+<div class="wrap" style="margin-top:18px"><span class="muted">© 2026 Airlock · The airlockmatur for your AI agents · Built by <a href="https://sekera.dev" style="color:inherit">Radim Sekera</a>. Also by the same maker: <a href="https://briefgate.dev/?utm_source=airlock.dev&amp;utm_medium=referral" style="color:inherit">BriefGate</a> — client intake for agencies and AI agents.</span></div>
 </footer>
 </body>
 </html>

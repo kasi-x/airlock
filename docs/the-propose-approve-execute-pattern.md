@@ -22,18 +22,18 @@ The pattern only works if these three phases are enforced structurally, not just
  └──────────┘
 ```
 
-## Implementing it with Impri
+## Implementing it with Airlock
 
-Impri implements exactly these three phases as three API calls. Here's the pattern applied to a marketing agent that wants to post to a company's social account, written in TypeScript against the Impri SDK:
+Airlock implements exactly these three phases as three API calls. Here's the pattern applied to a marketing agent that wants to post to a company's social account, written in TypeScript against the Airlock SDK:
 
 ```typescript
-import { ImpriClient, ImpriRejected, ImpriExpired } from "@impri/sdk";
+import { AirlockClient, AirlockRejected, AirlockExpired } from "@airlock/sdk";
 
-const impri = new ImpriClient({ apiKey: process.env.IMPRI_API_KEY! });
+const airlock = new AirlockClient({ apiKey: process.env.AIRLOCK_API_KEY! });
 
 async function postWithApproval(draft: string, channel: string) {
   // 1. Propose — store the intent, no post happens yet
-  const created = await impri.createAction({
+  const created = await airlock.createAction({
     kind: "social.post",
     title: `Post to ${channel}`,
     preview: { format: "markdown", body: draft },
@@ -44,10 +44,10 @@ async function postWithApproval(draft: string, channel: string) {
   // 2. Approve — block until a human decides (polling happens under the hood)
   let action;
   try {
-    action = await impri.awaitDecision(created.id, { timeoutS: 21600 });
+    action = await airlock.awaitDecision(created.id, { timeoutS: 21600 });
   } catch (e) {
-    if (e instanceof ImpriRejected || e instanceof ImpriExpired) {
-      const status = e instanceof ImpriRejected ? "rejected" : "expired";
+    if (e instanceof AirlockRejected || e instanceof AirlockExpired) {
+      const status = e instanceof AirlockRejected ? "rejected" : "expired";
       console.log(`Not posting — status: ${status}`);
       return { posted: false, status };
     }
@@ -58,7 +58,7 @@ async function postWithApproval(draft: string, channel: string) {
   const finalBody = action.decision!.final_preview!.body;
   const postResult = await socialApi.post(channel, finalBody);
 
-  await impri.reportResult(action.id, "executed", {
+  await airlock.reportResult(action.id, "executed", {
     detail: `Posted: ${postResult.url}`,
   });
 
@@ -66,7 +66,7 @@ async function postWithApproval(draft: string, channel: string) {
 }
 ```
 
-Three method calls, one per phase. Nothing about `socialApi.post` is reachable from inside the propose step — it lives strictly after `awaitDecision` returns instead of throwing `ImpriRejected` or `ImpriExpired`.
+Three method calls, one per phase. Nothing about `socialApi.post` is reachable from inside the propose step — it lives strictly after `awaitDecision` returns instead of throwing `AirlockRejected` or `AirlockExpired`.
 
 ---
 
@@ -81,7 +81,7 @@ A team that skips straight to "just ask for confirmation" usually ends up with o
 
 The three-phase split gates the *call site* you wrap. It does not gate the underlying credential. If the agent (or a tool it has access to) can still call `socialApi.post` directly — because it holds the raw API token somewhere else in its toolset — the pattern is cosmetic. Apply propose/approve/execute at the layer where the credential itself lives, typically inside an SDK wrapper or MCP tool the agent has no way to bypass. See [AI agent guardrails for real-world actions](ai-agent-guardrails-for-real-world-actions.md) for the broader argument about chokepoints versus advisory checks.
 
-The pattern also isn't a workflow engine. It doesn't branch, schedule, or sequence — it holds one decision per action. If your agent needs to propose five dependent actions and only proceed if all five are approved, that orchestration logic is yours to write; Impri is the primitive each individual gate is built from, not the coordinator across them.
+The pattern also isn't a workflow engine. It doesn't branch, schedule, or sequence — it holds one decision per action. If your agent needs to propose five dependent actions and only proceed if all five are approved, that orchestration logic is yours to write; Airlock is the primitive each individual gate is built from, not the coordinator across them.
 
 ## Next step
 

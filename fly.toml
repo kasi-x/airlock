@@ -4,7 +4,7 @@
 #
 # Template only: replace "your-app-name", the volume name, and every
 # *.example.com domain with your own values. Upstream's hosted endpoints
-# (impri.dev) are deliberately NOT referenced anywhere in this file.
+# (airlock.dev) are deliberately NOT referenced anywhere in this file.
 app = "your-app-name"
 primary_region = "fra"
 
@@ -12,7 +12,7 @@ primary_region = "fra"
   dockerfile = "docker/server.Dockerfile"
 
 [env]
-  DB_PATH = "/data/impri.db"
+  DB_PATH = "/data/airlock.db"
   HOST = "0.0.0.0"
   PORT = "8484"
   BASE_URL = "https://api.example.com"

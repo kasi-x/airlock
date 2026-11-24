@@ -25,7 +25,7 @@ The approval card is only as good as the preview your agent builds. For a migrat
 | Dry-run output (statements, estimated rows, lock level) | Turns "looks fine" into evidence |
 | Rollback / down migration | Tells the reviewer the escape hatch before they approve |
 
-Impri does not run or interpret any of this. Your agent computes the dry-run and the lock analysis with your own tooling and pastes the result into the preview.
+Airlock does not run or interpret any of this. Your agent computes the dry-run and the lock analysis with your own tooling and pastes the result into the preview.
 
 ---
 
@@ -36,8 +36,8 @@ The wrapper below is the **only** code path in the agent that can run migrations
 ```python
 import os, time, requests
 
-API = "https://api.impri.dev"
-H = {"Authorization": f"Bearer {os.environ['IMPRI_API_KEY']}"}
+API = "https://api.airlock.dev"
+H = {"Authorization": f"Bearer {os.environ['AIRLOCK_API_KEY']}"}
 
 def apply_migration(migration_id: str, sql: str, dry_run_report: str, down_sql: str, env: str):
     body = (
@@ -87,7 +87,7 @@ For multi-statement migrations, keep one action per migration file, not one per 
 
 ## Boundaries worth stating plainly
 
-- **Impri is only the gate.** It stores the proposed action, notifies a human and holds the decision. It does not analyse SQL, detect destructive statements or run the migration.
+- **Airlock is only the gate.** It stores the proposed action, notifies a human and holds the decision. It does not analyse SQL, detect destructive statements or run the migration.
 - **It is a real gate only if the wrapper is the agent's only path to the database.** If the agent also holds a superuser connection string, it can bypass the gate. Give the agent credentials that cannot alter schema, and give the executor behind the approval the credentials that can.
 - **It is not a migration tool.** Ordering, locking strategy, zero-downtime patterns and rollbacks are still yours; use Flyway, Alembic, Atlas or whatever you run today.
 - **Production rows and schema belong to humans.** Keep the approval on a channel the on-call person actually sees: [Slack](slack-approval.md) or [phone notifications](notifications.md).

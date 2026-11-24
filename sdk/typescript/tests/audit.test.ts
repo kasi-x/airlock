@@ -1,8 +1,8 @@
 import { describe, it, expect, vi, afterEach } from 'vitest'
 import {
-  ImpriClient,
-  ImpriRateLimited,
-  ImpriUnauthorized,
+  AirlockClient,
+  AirlockRateLimited,
+  AirlockUnauthorized,
   type AuditEvent,
   type ListAuditParams,
 } from '../src/index.js'
@@ -13,7 +13,7 @@ const TEST_KEY = 'im_test_audit_abc'
 const TEST_BASE = 'http://localhost:29999'
 
 function client() {
-  return new ImpriClient({ apiKey: TEST_KEY, baseUrl: TEST_BASE })
+  return new AirlockClient({ apiKey: TEST_KEY, baseUrl: TEST_BASE })
 }
 
 /** Build a JSON-response mock. */
@@ -256,14 +256,14 @@ describe('listAudit', () => {
     }
   })
 
-  it('propagates 403 as ImpriUnauthorized', async () => {
+  it('propagates 403 as AirlockUnauthorized', async () => {
     vi.stubGlobal('fetch', vi.fn().mockResolvedValue(resp(403, { message: "Scope 'admin' required" })))
-    await expect(client().listAudit()).rejects.toBeInstanceOf(ImpriUnauthorized)
+    await expect(client().listAudit()).rejects.toBeInstanceOf(AirlockUnauthorized)
   })
 
-  it('propagates 429 as ImpriRateLimited', async () => {
+  it('propagates 429 as AirlockRateLimited', async () => {
     vi.stubGlobal('fetch', vi.fn().mockResolvedValue(resp(429, { message: 'Rate limit' })))
-    await expect(client().listAudit()).rejects.toBeInstanceOf(ImpriRateLimited)
+    await expect(client().listAudit()).rejects.toBeInstanceOf(AirlockRateLimited)
   })
 
   it('returns an empty items array on an empty page', async () => {
@@ -426,20 +426,20 @@ describe('exportAudit', () => {
     expect(lines[1].event).toBe('rule.created')
   })
 
-  it('propagates 403 as ImpriUnauthorized', async () => {
+  it('propagates 403 as AirlockUnauthorized', async () => {
     vi.stubGlobal(
       'fetch',
       vi.fn().mockResolvedValue(resp(403, { message: "Scope 'admin' required" })),
     )
-    await expect(client().exportAudit()).rejects.toBeInstanceOf(ImpriUnauthorized)
+    await expect(client().exportAudit()).rejects.toBeInstanceOf(AirlockUnauthorized)
   })
 
-  it('propagates 429 as ImpriRateLimited', async () => {
+  it('propagates 429 as AirlockRateLimited', async () => {
     vi.stubGlobal(
       'fetch',
       vi.fn().mockResolvedValue(resp(429, { message: 'Rate limit' }, { 'retry-after': '5' })),
     )
-    await expect(client().exportAudit()).rejects.toBeInstanceOf(ImpriRateLimited)
+    await expect(client().exportAudit()).rejects.toBeInstanceOf(AirlockRateLimited)
   })
 
   it('combines all filters in a single query string', async () => {

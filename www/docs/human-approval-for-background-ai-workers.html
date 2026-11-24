@@ -3,21 +3,21 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Human Approval for Background AI Workers — Impri Docs</title>
+<title>Human Approval for Background AI Workers — Airlock Docs</title>
 <meta name="description" content="Background AI workers run on a schedule or a queue, retry themselves on failure, and have nobody watching — which turns &quot;just add a confirmation…">
 <meta name="theme-color" content="#06070d">
-<meta property="og:title" content="Human Approval for Background AI Workers — Impri Docs">
+<meta property="og:title" content="Human Approval for Background AI Workers — Airlock Docs">
 <meta property="og:description" content="Background AI workers run on a schedule or a queue, retry themselves on failure, and have nobody watching — which turns &quot;just add a confirmation…">
 <meta property="og:type" content="article">
-<meta property="og:url" content="https://impri.dev/docs/human-approval-for-background-ai-workers">
-<meta property="og:image" content="https://impri.dev/assets/og/og-docs.png">
+<meta property="og:url" content="https://airlock.dev/docs/human-approval-for-background-ai-workers">
+<meta property="og:image" content="https://airlock.dev/assets/og/og-docs.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
-<meta property="og:image:alt" content="Impri — human-in-the-loop approval inbox for AI agents">
+<meta property="og:image:alt" content="Airlock — human-in-the-loop approval inbox for AI agents">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="https://impri.dev/assets/og/og-docs.png">
-<link rel="canonical" href="https://impri.dev/docs/human-approval-for-background-ai-workers">
-<script type="application/ld+json">{"@context":"https://schema.org","@type":"TechArticle","headline":"Human Approval for Background AI Workers","description":"Background AI workers run on a schedule or a queue, retry themselves on failure, and have nobody watching — which turns \"just add a confirmation step\" into a…","url":"https://impri.dev/docs/human-approval-for-background-ai-workers","inLanguage":"en","author":{"@type":"Organization","name":"Impri","url":"https://impri.dev"},"publisher":{"@type":"Organization","name":"Impri","url":"https://impri.dev"}}</script>
+<meta name="twitter:image" content="https://airlock.dev/assets/og/og-docs.png">
+<link rel="canonical" href="https://airlock.dev/docs/human-approval-for-background-ai-workers">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"TechArticle","headline":"Human Approval for Background AI Workers","description":"Background AI workers run on a schedule or a queue, retry themselves on failure, and have nobody watching — which turns \"just add a confirmation step\" into a…","url":"https://airlock.dev/docs/human-approval-for-background-ai-workers","inLanguage":"en","author":{"@type":"Organization","name":"Airlock","url":"https://airlock.dev"},"publisher":{"@type":"Organization","name":"Airlock","url":"https://airlock.dev"}}</script>
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <link rel="icon" href="/favicon.ico" sizes="32x32">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='9' fill='%236366f1'/%3E%3Cpath d='M9 16.5l4.5 4.5L23 11' stroke='white' stroke-width='3' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
@@ -132,13 +132,13 @@ pre code.hljs{display:block;overflow-x:auto}
 <div class="wrap nav-inner">
   <a class="brand" href="/">
     <span class="mark"><svg viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.5 4.5L19 7.5" stroke="white" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
-    Impri
+    Airlock
   </a>
   <div class="nav-links">
     <a class="link" href="/#how">How it works</a>
     <a class="link" href="/#pricing">Pricing</a>
     <a class="link active-nav" href="../docs">Docs</a>
-    <a class="btn btn-primary btn-sm" href="https://gitlab.com/sekera.radim/impri">GitLab</a>
+    <a class="btn btn-primary btn-sm" href="https://gitlab.com/sekera.radim/airlock">GitLab</a>
   </div>
 </div>
 </nav>
@@ -167,14 +167,14 @@ pre code.hljs{display:block;overflow-x:auto}
 <p>Say a worker runs every night, summarizes the day&#39;s support tickets, and emails the summary to a distribution list. Here&#39;s a TypeScript BullMQ-style job that gates the send:</p>
 <div class="code-block"><span class="code-lang">typescript</span><pre><code class="hljs"><span class="hljs-keyword">import</span> { <span class="hljs-title class_">Worker</span> } <span class="hljs-keyword">from</span> <span class="hljs-string">&quot;bullmq&quot;</span>;
 
-<span class="hljs-keyword">const</span> <span class="hljs-variable constant_">IMPRI_BASE</span> = process.<span class="hljs-property">env</span>.<span class="hljs-property">IMPRI_BASE_URL</span> ?? <span class="hljs-string">&quot;https://api.impri.dev&quot;</span>;
-<span class="hljs-keyword">const</span> <span class="hljs-variable constant_">IMPRI_KEY</span> = process.<span class="hljs-property">env</span>.<span class="hljs-property">IMPRI_API_KEY</span>!;
+<span class="hljs-keyword">const</span> <span class="hljs-variable constant_">AIRLOCK_BASE</span> = process.<span class="hljs-property">env</span>.<span class="hljs-property">AIRLOCK_BASE_URL</span> ?? <span class="hljs-string">&quot;https://api.airlock.dev&quot;</span>;
+<span class="hljs-keyword">const</span> <span class="hljs-variable constant_">AIRLOCK_KEY</span> = process.<span class="hljs-property">env</span>.<span class="hljs-property">AIRLOCK_API_KEY</span>!;
 
 <span class="hljs-keyword">async</span> <span class="hljs-keyword">function</span> <span class="hljs-title function_">pushAction</span>(<span class="hljs-params"><span class="hljs-attr">title</span>: <span class="hljs-built_in">string</span>, <span class="hljs-attr">body</span>: <span class="hljs-built_in">string</span></span>) {
-  <span class="hljs-keyword">const</span> res = <span class="hljs-keyword">await</span> <span class="hljs-title function_">fetch</span>(<span class="hljs-string">`<span class="hljs-subst">${IMPRI_BASE}</span>/v1/actions`</span>, {
+  <span class="hljs-keyword">const</span> res = <span class="hljs-keyword">await</span> <span class="hljs-title function_">fetch</span>(<span class="hljs-string">`<span class="hljs-subst">${AIRLOCK_BASE}</span>/v1/actions`</span>, {
     <span class="hljs-attr">method</span>: <span class="hljs-string">&quot;POST&quot;</span>,
     <span class="hljs-attr">headers</span>: {
-      <span class="hljs-title class_">Authorization</span>: <span class="hljs-string">`Bearer <span class="hljs-subst">${IMPRI_KEY}</span>`</span>,
+      <span class="hljs-title class_">Authorization</span>: <span class="hljs-string">`Bearer <span class="hljs-subst">${AIRLOCK_KEY}</span>`</span>,
       <span class="hljs-string">&quot;Content-Type&quot;</span>: <span class="hljs-string">&quot;application/json&quot;</span>,
     },
     <span class="hljs-attr">body</span>: <span class="hljs-title class_">JSON</span>.<span class="hljs-title function_">stringify</span>({
@@ -192,8 +192,8 @@ pre code.hljs{display:block;overflow-x:auto}
 
 <span class="hljs-keyword">async</span> <span class="hljs-keyword">function</span> <span class="hljs-title function_">awaitDecision</span>(<span class="hljs-params"><span class="hljs-attr">actionId</span>: <span class="hljs-built_in">string</span></span>) {
   <span class="hljs-keyword">while</span> (<span class="hljs-literal">true</span>) {
-    <span class="hljs-keyword">const</span> res = <span class="hljs-keyword">await</span> <span class="hljs-title function_">fetch</span>(<span class="hljs-string">`<span class="hljs-subst">${IMPRI_BASE}</span>/v1/actions/<span class="hljs-subst">${actionId}</span>`</span>, {
-      <span class="hljs-attr">headers</span>: { <span class="hljs-title class_">Authorization</span>: <span class="hljs-string">`Bearer <span class="hljs-subst">${IMPRI_KEY}</span>`</span> },
+    <span class="hljs-keyword">const</span> res = <span class="hljs-keyword">await</span> <span class="hljs-title function_">fetch</span>(<span class="hljs-string">`<span class="hljs-subst">${AIRLOCK_BASE}</span>/v1/actions/<span class="hljs-subst">${actionId}</span>`</span>, {
+      <span class="hljs-attr">headers</span>: { <span class="hljs-title class_">Authorization</span>: <span class="hljs-string">`Bearer <span class="hljs-subst">${AIRLOCK_KEY}</span>`</span> },
     });
     <span class="hljs-keyword">const</span> data = <span class="hljs-keyword">await</span> res.<span class="hljs-title function_">json</span>();
     <span class="hljs-keyword">if</span> (data.<span class="hljs-property">status</span> !== <span class="hljs-string">&quot;pending&quot;</span>) <span class="hljs-keyword">return</span> data;
@@ -211,10 +211,10 @@ pre code.hljs{display:block;overflow-x:auto}
   }
 
   <span class="hljs-keyword">await</span> <span class="hljs-title function_">sendEmail</span>(decision.<span class="hljs-property">decision</span>.<span class="hljs-property">final_preview</span>.<span class="hljs-property">body</span>);
-  <span class="hljs-keyword">await</span> <span class="hljs-title function_">fetch</span>(<span class="hljs-string">`<span class="hljs-subst">${IMPRI_BASE}</span>/v1/actions/<span class="hljs-subst">${action.id}</span>/result`</span>, {
+  <span class="hljs-keyword">await</span> <span class="hljs-title function_">fetch</span>(<span class="hljs-string">`<span class="hljs-subst">${AIRLOCK_BASE}</span>/v1/actions/<span class="hljs-subst">${action.id}</span>/result`</span>, {
     <span class="hljs-attr">method</span>: <span class="hljs-string">&quot;POST&quot;</span>,
     <span class="hljs-attr">headers</span>: {
-      <span class="hljs-title class_">Authorization</span>: <span class="hljs-string">`Bearer <span class="hljs-subst">${IMPRI_KEY}</span>`</span>,
+      <span class="hljs-title class_">Authorization</span>: <span class="hljs-string">`Bearer <span class="hljs-subst">${AIRLOCK_KEY}</span>`</span>,
       <span class="hljs-string">&quot;Content-Type&quot;</span>: <span class="hljs-string">&quot;application/json&quot;</span>,
     },
     <span class="hljs-attr">body</span>: <span class="hljs-title class_">JSON</span>.<span class="hljs-title function_">stringify</span>({ <span class="hljs-attr">status</span>: <span class="hljs-string">&quot;executed&quot;</span> }),
@@ -222,7 +222,7 @@ pre code.hljs{display:block;overflow-x:auto}
 });</code></pre></div>
 <hr>
 <h2 id="why-this-survives-a-queue-retry">Why this survives a queue retry</h2>
-<p>If the process crashes right after <code>sendEmail()</code> but before the <code>/result</code> call completes, BullMQ will retry the job. On retry, <code>job.data.date</code> is the same, so <code>summarizeTickets()</code> re-runs and <code>pushAction()</code> creates a <strong>new</strong> action — the old one is left dangling as approved-but-unreported, and the retry pushes a fresh approval request rather than silently re-sending. That&#39;s the honest behavior given the API surface here: Impri does not track &quot;did the caller actually execute this,&quot; only &quot;was it approved&quot; and whatever you report back via <code>/result</code>. If you need stronger de-duplication across retries (e.g. a job-id keyed skip), that has to live in your own worker state — Impri&#39;s <code>idempotent</code> field is a signal shown to the human reviewer, not an automatic dedupe mechanism.</p>
+<p>If the process crashes right after <code>sendEmail()</code> but before the <code>/result</code> call completes, BullMQ will retry the job. On retry, <code>job.data.date</code> is the same, so <code>summarizeTickets()</code> re-runs and <code>pushAction()</code> creates a <strong>new</strong> action — the old one is left dangling as approved-but-unreported, and the retry pushes a fresh approval request rather than silently re-sending. That&#39;s the honest behavior given the API surface here: Airlock does not track &quot;did the caller actually execute this,&quot; only &quot;was it approved&quot; and whatever you report back via <code>/result</code>. If you need stronger de-duplication across retries (e.g. a job-id keyed skip), that has to live in your own worker state — Airlock&#39;s <code>idempotent</code> field is a signal shown to the human reviewer, not an automatic dedupe mechanism.</p>
 <p>Setting <code>idempotent: false</code> matters here specifically because queue systems retry: it puts a &quot;retrying may duplicate this action&quot; warning on the inbox card, which is exactly the risk a background worker&#39;s approver needs to know about that a chat-agent approver usually doesn&#39;t.</p>
 <hr>
 <h2 id="where-the-human-actually-sees-this">Where the human actually sees this</h2>
@@ -262,11 +262,11 @@ pre code.hljs{display:block;overflow-x:auto}
 <h2 id="next-step">Next step</h2>
 <p>Read <a href="how-to-add-human-approval-to-an-ai-agent">how to add human approval to an AI agent</a> for the base three-call pattern, then <a href="quickstart">quickstart</a> to get a key and pick a notification channel that reaches you outside working hours.</p>
 
-    <aside class="doc-cta" aria-label="Try Impri">
+    <aside class="doc-cta" aria-label="Try Airlock">
   <p class="doc-cta-title">Add an approval step to your own agent</p>
-  <p>Start on Impri Cloud: the Free tier includes 100 approvals a month. Or self-host the MIT-licensed core with Docker Compose, with no tier limits.</p>
+  <p>Start on Airlock Cloud: the Free tier includes 100 approvals a month. Or self-host the MIT-licensed core with Docker Compose, with no tier limits.</p>
   <div class="doc-cta-actions">
-    <a class="btn btn-primary btn-sm" href="https://app.impri.dev/?signup=1">Start free on Impri Cloud</a>
+    <a class="btn btn-primary btn-sm" href="https://app.airlock.dev/?signup=1">Start free on Airlock Cloud</a>
     <a class="btn btn-ghost btn-sm" href="../docs/quickstart">Quick start</a>
     <a class="btn btn-ghost btn-sm" href="../docs/self-hosting">Self-host guide</a>
   </div>
@@ -362,19 +362,19 @@ pre code.hljs{display:block;overflow-x:auto}
 <footer class="footer">
 <div class="wrap footer-inner">
   <a class="brand" href="/">
-    <span class="mark"><svg viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.5 4.5L19 7.5" stroke="white" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Impri
+    <span class="mark"><svg viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.5 4.5L19 7.5" stroke="white" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Airlock
   </a>
   <div>
-    <a href="https://gitlab.com/sekera.radim/impri">GitLab</a>
+    <a href="https://gitlab.com/sekera.radim/airlock">GitLab</a>
     <a href="/docs">Docs</a>
-    <a href="https://gitlab.com/sekera.radim/impri/-/blob/main/LICENSE">MIT License</a>
-    <a href="https://www.npmjs.com/package/@impri/mcp">@impri/mcp</a>
+    <a href="https://gitlab.com/sekera.radim/airlock/-/blob/main/LICENSE">MIT License</a>
+    <a href="https://www.npmjs.com/package/@airlock/mcp">@airlock/mcp</a>
     <a href="/docs/privacy">Privacy</a>
     <a href="/docs/terms">Terms</a>
     <a href="https://sekera.dev">Contact</a>
   </div>
 </div>
-<div class="wrap" style="margin-top:18px"><span class="muted">© 2026 Impri · The imprimatur for your AI agents · Built by <a href="https://sekera.dev" style="color:inherit">Radim Sekera</a>. Also by the same maker: <a href="https://briefgate.dev/?utm_source=impri.dev&amp;utm_medium=referral" style="color:inherit">BriefGate</a> — client intake for agencies and AI agents.</span></div>
+<div class="wrap" style="margin-top:18px"><span class="muted">© 2026 Airlock · The airlockmatur for your AI agents · Built by <a href="https://sekera.dev" style="color:inherit">Radim Sekera</a>. Also by the same maker: <a href="https://briefgate.dev/?utm_source=airlock.dev&amp;utm_medium=referral" style="color:inherit">BriefGate</a> — client intake for agencies and AI agents.</span></div>
 </footer>
 </body>
 </html>

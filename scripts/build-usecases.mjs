@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-// scripts/build-usecases.mjs — Impri marketing use-case pages + /agents one-pager
+// scripts/build-usecases.mjs — Airlock marketing use-case pages + /agents one-pager
 //
 // Reads docs/use-cases/<slug>.md and renders www/use-cases/<slug>.html in the
 // landing-page style (nav, hero, sections, CTA band, footer — same classes as
@@ -31,10 +31,10 @@ import hljs from 'highlight.js';
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..');
 const SRC = join(ROOT, 'docs', 'use-cases');
 const WWW = join(ROOT, 'www');
-const ORIGIN = 'https://impri.dev';
+const ORIGIN = 'https://airlock.dev';
 const SHOTS_DIR = join(WWW, 'assets', 'screens');
 const OG_DEFAULT = `${ORIGIN}/assets/og/og-default.png`;
-const SIGNUP = 'https://app.impri.dev/?signup=1';
+const SIGNUP = 'https://app.airlock.dev/?signup=1';
 const GITLAB = 'https://gitlab.com/sekera.radim/impri';
 
 const escHtml = (s) => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
@@ -102,7 +102,7 @@ function navHtml(active) {
   const isActive = (name) => (active === name ? ' active-nav' : '');
   return `<nav class="nav scrolled" id="nav">
     <div class="wrap nav-inner">
-      <a class="brand" href="/"><span class="mark">${LOGO_SVG}</span>Impri</a>
+      <a class="brand" href="/"><span class="mark">${LOGO_SVG}</span>Airlock</a>
       <div class="nav-links">
         <a class="link" href="/#how">How it works</a>
         <a class="link${isActive('use-cases')}" href="/use-cases">Use cases</a>
@@ -118,20 +118,20 @@ function navHtml(active) {
 function footerHtml() {
   return `<footer class="footer">
     <div class="wrap footer-inner">
-      <a class="brand" href="/"><span class="mark">${LOGO_SVG}</span>Impri</a>
+      <a class="brand" href="/"><span class="mark">${LOGO_SVG}</span>Airlock</a>
       <div>
         <a href="/use-cases">Use cases</a>
         <a href="/agents">Agents</a>
         <a href="${GITLAB}">GitLab</a>
         <a href="/docs">Docs</a>
         <a href="${GITLAB}/-/blob/main/LICENSE">MIT License</a>
-        <a href="https://www.npmjs.com/package/@impri/mcp">@impri/mcp</a>
+        <a href="https://www.npmjs.com/package/@airlock/mcp">@airlock/mcp</a>
         <a href="/docs/privacy">Privacy</a>
         <a href="/docs/terms">Terms</a>
         <a href="https://sekera.dev">Contact</a>
       </div>
     </div>
-    <div class="wrap" style="margin-top:18px"><span class="muted">© 2026 Impri · The imprimatur for your AI agents · Built by <a href="https://sekera.dev" style="color:inherit">Radim Sekera</a>. Also by the same maker: <a href="https://briefgate.dev/?utm_source=impri.dev&amp;utm_medium=referral" style="color:inherit">BriefGate</a> — client intake for agencies and AI agents.</span></div>
+    <div class="wrap" style="margin-top:18px"><span class="muted">© 2026 Airlock · The airlockmatur for your AI agents · Built by <a href="https://sekera.dev" style="color:inherit">Radim Sekera</a>. Also by the same maker: <a href="https://briefgate.dev/?utm_source=airlock.dev&amp;utm_medium=referral" style="color:inherit">BriefGate</a> — client intake for agencies and AI agents.</span></div>
   </footer>`;
 }
 
@@ -152,7 +152,7 @@ function headHtml({ title, description, path, jsonLd, ogImage = OG_DEFAULT }) {
   <meta property="og:image" content="${ogImage}" />
   <meta property="og:image:width" content="1200" />
   <meta property="og:image:height" content="630" />
-  <meta property="og:image:alt" content="Impri — human-in-the-loop approval inbox for AI agents" />
+  <meta property="og:image:alt" content="Airlock — human-in-the-loop approval inbox for AI agents" />
   <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:image" content="${ogImage}" />
   <link rel="canonical" href="${url}" />
@@ -176,9 +176,9 @@ function renderUseCasePage(page, slug, allPages) {
   const path = `/use-cases/${slug}`;
   const shot = shotInfo(page.screenshot);
   const jsonLd = [
-    { '@context': 'https://schema.org', '@type': 'WebPage', name: page.title, description: page.description, url: `${ORIGIN}${path}`, inLanguage: 'en', isPartOf: { '@type': 'WebSite', name: 'Impri', url: ORIGIN } },
+    { '@context': 'https://schema.org', '@type': 'WebPage', name: page.title, description: page.description, url: `${ORIGIN}${path}`, inLanguage: 'en', isPartOf: { '@type': 'WebSite', name: 'Airlock', url: ORIGIN } },
     { '@context': 'https://schema.org', '@type': 'BreadcrumbList', itemListElement: [
-      { '@type': 'ListItem', position: 1, name: 'Impri', item: ORIGIN },
+      { '@type': 'ListItem', position: 1, name: 'Airlock', item: ORIGIN },
       { '@type': 'ListItem', position: 2, name: 'Use cases', item: `${ORIGIN}/use-cases` },
       { '@type': 'ListItem', position: 3, name: page.title, item: `${ORIGIN}${path}` },
     ] },
@@ -189,11 +189,11 @@ function renderUseCasePage(page, slug, allPages) {
       <img class="uc-shot" src="${shot.src}" alt="${escHtml(shot.caption)}" loading="lazy" width="1400" height="875">
       <figcaption>${escHtml(shot.caption)}</figcaption>
     </figure>` : '';
-  return `${headHtml({ title: `${page.title} — Impri`, description: page.description, path, jsonLd })}
+  return `${headHtml({ title: `${page.title} — Airlock`, description: page.description, path, jsonLd })}
 ${navHtml('use-cases')}
   <header class="hero uc-hero" id="top">
     <div class="wrap" style="max-width:820px">
-      <nav class="uc-crumbs reveal" aria-label="Breadcrumb"><a href="/">Impri</a> › <a href="/use-cases">Use cases</a></nav>
+      <nav class="uc-crumbs reveal" aria-label="Breadcrumb"><a href="/">Airlock</a> › <a href="/use-cases">Use cases</a></nav>
       <span class="eyebrow reveal" data-delay="1">Use case</span>
       <h1 class="reveal" data-delay="1" style="margin-top:18px">${escHtml(page.h1)}</h1>
       <div class="lede reveal uc-intro" data-delay="2">${md(page.intro)}</div>
@@ -268,8 +268,8 @@ ${footerHtml()}
 
 function renderHub(pages) {
   const path = '/use-cases';
-  const title = 'Use cases — Impri';
-  const description = 'What people gate behind Impri: coding agents, database writes, outbound messages, infra changes, payments, and AI content before it publishes.';
+  const title = 'Use cases — Airlock';
+  const description = 'What people gate behind Airlock: coding agents, database writes, outbound messages, infra changes, payments, and AI content before it publishes.';
   const jsonLd = [
     { '@context': 'https://schema.org', '@type': 'CollectionPage', name: title, description, url: `${ORIGIN}${path}`, inLanguage: 'en' },
   ];
@@ -279,7 +279,7 @@ ${navHtml('use-cases')}
   <header class="hero uc-hero" id="top">
     <div class="wrap" style="max-width:820px">
       <span class="eyebrow reveal">Use cases</span>
-      <h1 class="reveal" data-delay="1" style="margin-top:18px">What people use Impri for</h1>
+      <h1 class="reveal" data-delay="1" style="margin-top:18px">What people use Airlock for</h1>
       <p class="lede reveal" data-delay="2" style="max-width:38em">Six places where a human decision belongs between an AI agent and a real-world side effect — pick the one closest to what your agent does.</p>
     </div>
   </header>
@@ -305,32 +305,32 @@ ${footerHtml()}
 
 // ── /agents one-pager ────────────────────────────────────────────────────
 // Facts verified against mcp/README.md, docs/mcp.md and mcp/src/index.ts:
-// env vars IMPRI_API_KEY (required) + IMPRI_BASE_URL (optional, defaults to
-// http://localhost:8484; cloud is https://api.impri.dev), package @impri/mcp,
+// env vars AIRLOCK_API_KEY (required) + AIRLOCK_BASE_URL (optional, defaults to
+// http://localhost:8484; cloud is https://api.airlock.dev), package @airlock/mcp,
 // and the 8 tool names below.
 const INSTALLS = [
-  { name: 'Claude Code', code: 'claude mcp add impri \\\n  -e IMPRI_API_KEY=im_your_key_here \\\n  -e IMPRI_BASE_URL=https://api.impri.dev \\\n  -- npx @impri/mcp', note: 'Self-hosted? Drop IMPRI_BASE_URL — it defaults to http://localhost:8484.', guide: '/docs/claude-code-human-approval' },
-  { name: 'OpenAI Codex', code: 'codex mcp add impri \\\n  --env IMPRI_API_KEY=im_your_key_here \\\n  --env IMPRI_BASE_URL=https://api.impri.dev \\\n  -- npx -y @impri/mcp', note: 'Self-hosted? Drop IMPRI_BASE_URL — it defaults to http://localhost:8484.', guide: '/docs/codex-human-approval' },
-  { name: 'Cursor', code: '{\n  "mcpServers": {\n    "impri": {\n      "command": "npx",\n      "args": ["-y", "@impri/mcp"],\n      "env": {\n        "IMPRI_API_KEY": "im_your_key_here",\n        "IMPRI_BASE_URL": "https://api.impri.dev"\n      }\n    }\n  }\n}', note: 'Save as .cursor/mcp.json. Self-hosted? Drop IMPRI_BASE_URL — it defaults to http://localhost:8484.', guide: '/docs/cursor-human-approval' },
-  { name: 'Windsurf', code: '{\n  "mcpServers": {\n    "impri": {\n      "command": "npx",\n      "args": ["-y", "@impri/mcp"],\n      "env": {\n        "IMPRI_API_KEY": "im_your_key_here",\n        "IMPRI_BASE_URL": "https://api.impri.dev"\n      }\n    }\n  }\n}', note: 'Save to ~/.codeium/windsurf/mcp_config.json. Self-hosted? Drop IMPRI_BASE_URL — it defaults to http://localhost:8484.', guide: '/docs/windsurf-human-approval' },
+  { name: 'Claude Code', code: 'claude mcp add airlock \\\n  -e AIRLOCK_API_KEY=im_your_key_here \\\n  -e AIRLOCK_BASE_URL=https://api.airlock.dev \\\n  -- npx @airlock/mcp', note: 'Self-hosted? Drop AIRLOCK_BASE_URL — it defaults to http://localhost:8484.', guide: '/docs/claude-code-human-approval' },
+  { name: 'OpenAI Codex', code: 'codex mcp add airlock \\\n  --env AIRLOCK_API_KEY=im_your_key_here \\\n  --env AIRLOCK_BASE_URL=https://api.airlock.dev \\\n  -- npx -y @airlock/mcp', note: 'Self-hosted? Drop AIRLOCK_BASE_URL — it defaults to http://localhost:8484.', guide: '/docs/codex-human-approval' },
+  { name: 'Cursor', code: '{\n  "mcpServers": {\n    "airlock": {\n      "command": "npx",\n      "args": ["-y", "@airlock/mcp"],\n      "env": {\n        "AIRLOCK_API_KEY": "im_your_key_here",\n        "AIRLOCK_BASE_URL": "https://api.airlock.dev"\n      }\n    }\n  }\n}', note: 'Save as .cursor/mcp.json. Self-hosted? Drop AIRLOCK_BASE_URL — it defaults to http://localhost:8484.', guide: '/docs/cursor-human-approval' },
+  { name: 'Windsurf', code: '{\n  "mcpServers": {\n    "airlock": {\n      "command": "npx",\n      "args": ["-y", "@airlock/mcp"],\n      "env": {\n        "AIRLOCK_API_KEY": "im_your_key_here",\n        "AIRLOCK_BASE_URL": "https://api.airlock.dev"\n      }\n    }\n  }\n}', note: 'Save to ~/.codeium/windsurf/mcp_config.json. Self-hosted? Drop AIRLOCK_BASE_URL — it defaults to http://localhost:8484.', guide: '/docs/windsurf-human-approval' },
 ];
 
 const TOOLS = [
-  ['impri_push_action', 'Submit a proposed action with a preview; returns an action_id and inbox_url.'],
-  ['impri_await_decision', 'Long-poll until a human approves, rejects, or the timeout elapses.'],
-  ['impri_report_result', 'Report whether the approved action executed; closes the audit loop.'],
-  ['impri_inbox_status', 'Check how many actions are pending before starting a new batch.'],
-  ['impri_create_watcher', 'Create a monitoring watcher from a full hand-written spec.'],
-  ['impri_list_watchers', 'List configured watchers, optionally filtered by status.'],
-  ['impri_list_watcher_presets', 'List ready-made watcher templates (Reddit, GitHub releases, HN, RSS…).'],
-  ['impri_create_watcher_from_preset', 'Create a watcher from a preset by id, with just the params filled in.'],
+  ['airlock_push_action', 'Submit a proposed action with a preview; returns an action_id and inbox_url.'],
+  ['airlock_await_decision', 'Long-poll until a human approves, rejects, or the timeout elapses.'],
+  ['airlock_report_result', 'Report whether the approved action executed; closes the audit loop.'],
+  ['airlock_inbox_status', 'Check how many actions are pending before starting a new batch.'],
+  ['airlock_create_watcher', 'Create a monitoring watcher from a full hand-written spec.'],
+  ['airlock_list_watchers', 'List configured watchers, optionally filtered by status.'],
+  ['airlock_list_watcher_presets', 'List ready-made watcher templates (Reddit, GitHub releases, HN, RSS…).'],
+  ['airlock_create_watcher_from_preset', 'Create a watcher from a preset by id, with just the params filled in.'],
 ];
 
 const FLOW = [
-  'Before an action leaves the sandbox — a send, a deploy, a write, a publish — the agent calls impri_push_action with a short title and a preview.',
-  'The agent calls impri_await_decision and blocks. The action shows up in the web inbox, and on your phone if a notification channel is configured.',
+  'Before an action leaves the sandbox — a send, a deploy, a write, a publish — the agent calls airlock_push_action with a short title and a preview.',
+  'The agent calls airlock_await_decision and blocks. The action shows up in the web inbox, and on your phone if a notification channel is configured.',
   'A human approves, rejects, or edits the draft. The decision (and any edit, as a signed diff) comes back from the poll.',
-  'On approved, the agent executes — never before — and calls impri_report_result so the inbox shows the real outcome, not just the decision.',
+  'On approved, the agent executes — never before — and calls airlock_report_result so the inbox shows the real outcome, not just the decision.',
 ];
 
 function installTabsHtml() {
@@ -354,27 +354,27 @@ function installTabsHtml() {
 
 function renderAgents() {
   const path = '/agents';
-  const title = 'Impri for AI agents — human approval over MCP';
-  const description = 'Install the Impri MCP server in Claude Code, Codex, Cursor or Windsurf: 8 tools to propose actions, await a decision, and report the outcome.';
+  const title = 'Airlock for AI agents — human approval over MCP';
+  const description = 'Install the Airlock MCP server in Claude Code, Codex, Cursor or Windsurf: 8 tools to propose actions, await a decision, and report the outcome.';
   const jsonLd = [
     { '@context': 'https://schema.org', '@type': 'WebPage', name: title, description, url: `${ORIGIN}${path}`, inLanguage: 'en' },
   ];
   const toolRows = TOOLS.map(([name, desc]) => `<tr><td>${escHtml(name)}</td><td>${escHtml(desc)}</td></tr>`).join('\n');
   const flowItems = FLOW.map((f) => `<li>${escHtml(f)}</li>`).join('\n');
-  const loopCode = `impri_push_action({ kind, title, preview: { format, body }, editable })
+  const loopCode = `airlock_push_action({ kind, title, preview: { format, body }, editable })
   // -> { action_id, status: "pending", inbox_url }
 
-impri_await_decision({ action_id, timeout_s })
+airlock_await_decision({ action_id, timeout_s })
   // -> { status: "approved" | "rejected", preview, edited_by_human }
 
-impri_report_result({ action_id, status: "executed" | "execute_failed", detail })`;
+airlock_report_result({ action_id, status: "executed" | "execute_failed", detail })`;
   return `${headHtml({ title, description, path, jsonLd })}
 ${navHtml('agents')}
   <header class="hero uc-hero" id="top">
     <div class="wrap" style="max-width:820px">
       <span class="eyebrow reveal">For Claude Code, Codex, Cursor, Windsurf and any MCP agent</span>
       <h1 class="reveal" data-delay="1" style="margin-top:18px">Give your agent a way to ask a human first.</h1>
-      <div class="lede reveal" data-delay="2">Impri is an MCP server with 8 tools: propose an action, wait for a decision, report what happened. Your agent keeps doing everything else at full speed — it only stops at the door marked "real side effect."</div>
+      <div class="lede reveal" data-delay="2">Airlock is an MCP server with 8 tools: propose an action, wait for a decision, report what happened. Your agent keeps doing everything else at full speed — it only stops at the door marked "real side effect."</div>
       <div class="hero-cta reveal" data-delay="3">
         <a class="btn btn-primary magnetic" href="${SIGNUP}">Get started free ${ARROW_SVG}</a>
         <a class="btn btn-ghost magnetic" href="${GITLAB}">Self-host instead</a>
@@ -410,7 +410,7 @@ ${navHtml('agents')}
   <section class="section uc-section" id="usecases">
     <div class="wrap uc-wrap" style="max-width:820px">
       <div class="section-head reveal"><span class="eyebrow">Use cases</span><h2 style="margin-top:14px">See it applied</h2></div>
-      <p class="uc-prose">Overnight coding runs, destructive database writes, outbound email, deploys, refunds, content publishing — <a href="/use-cases">see what people use it for</a>. Full API reference: <a href="/docs/mcp">MCP server docs</a> and the <a href="https://api.impri.dev/v1/openapi.json">OpenAPI spec</a>.</p>
+      <p class="uc-prose">Overnight coding runs, destructive database writes, outbound email, deploys, refunds, content publishing — <a href="/use-cases">see what people use it for</a>. Full API reference: <a href="/docs/mcp">MCP server docs</a> and the <a href="https://api.airlock.dev/v1/openapi.json">OpenAPI spec</a>.</p>
     </div>
   </section>
 
@@ -458,7 +458,7 @@ function main() {
   const manifest = {
     generatedAt: new Date().toISOString(),
     useCases: pages.map(({ slug, page }) => ({ slug, title: page.title, description: page.description })),
-    agents: { title: 'Impri for AI agents — human approval over MCP' },
+    agents: { title: 'Airlock for AI agents — human approval over MCP' },
   };
   writeFileSync(join(WWW, 'use-cases', '.manifest.json'), JSON.stringify(manifest, null, 2), 'utf8');
   console.log(`  ✓  use-cases/.manifest.json`);

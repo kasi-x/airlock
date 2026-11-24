@@ -3,21 +3,21 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Webhooks — Impri Docs</title>
-<meta name="description" content="When a human approves or rejects an action in the Impri inbox, you can receive the decision in two ways: a webhook pushed to your server, or polling from your…">
+<title>Webhooks — Airlock Docs</title>
+<meta name="description" content="When a human approves or rejects an action in the Airlock inbox, you can receive the decision in two ways: a webhook pushed to your server, or polling from your…">
 <meta name="theme-color" content="#06070d">
-<meta property="og:title" content="Webhooks — Impri Docs">
-<meta property="og:description" content="When a human approves or rejects an action in the Impri inbox, you can receive the decision in two ways: a webhook pushed to your server, or polling from your…">
+<meta property="og:title" content="Webhooks — Airlock Docs">
+<meta property="og:description" content="When a human approves or rejects an action in the Airlock inbox, you can receive the decision in two ways: a webhook pushed to your server, or polling from your…">
 <meta property="og:type" content="article">
-<meta property="og:url" content="https://impri.dev/docs/webhooks">
-<meta property="og:image" content="https://impri.dev/assets/og/og-docs.png">
+<meta property="og:url" content="https://airlock.dev/docs/webhooks">
+<meta property="og:image" content="https://airlock.dev/assets/og/og-docs.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
-<meta property="og:image:alt" content="Impri — human-in-the-loop approval inbox for AI agents">
+<meta property="og:image:alt" content="Airlock — human-in-the-loop approval inbox for AI agents">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="https://impri.dev/assets/og/og-docs.png">
-<link rel="canonical" href="https://impri.dev/docs/webhooks">
-<script type="application/ld+json">{"@context":"https://schema.org","@type":"TechArticle","headline":"Webhooks","description":"When a human approves or rejects an action in the Impri inbox, you can receive the decision in two ways: a webhook pushed to your server, or polling from your…","url":"https://impri.dev/docs/webhooks","inLanguage":"en","author":{"@type":"Organization","name":"Impri","url":"https://impri.dev"},"publisher":{"@type":"Organization","name":"Impri","url":"https://impri.dev"}}</script>
+<meta name="twitter:image" content="https://airlock.dev/assets/og/og-docs.png">
+<link rel="canonical" href="https://airlock.dev/docs/webhooks">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"TechArticle","headline":"Webhooks","description":"When a human approves or rejects an action in the Airlock inbox, you can receive the decision in two ways: a webhook pushed to your server, or polling from your…","url":"https://airlock.dev/docs/webhooks","inLanguage":"en","author":{"@type":"Organization","name":"Airlock","url":"https://airlock.dev"},"publisher":{"@type":"Organization","name":"Airlock","url":"https://airlock.dev"}}</script>
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <link rel="icon" href="/favicon.ico" sizes="32x32">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='9' fill='%236366f1'/%3E%3Cpath d='M9 16.5l4.5 4.5L23 11' stroke='white' stroke-width='3' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
@@ -132,13 +132,13 @@ pre code.hljs{display:block;overflow-x:auto}
 <div class="wrap nav-inner">
   <a class="brand" href="/">
     <span class="mark"><svg viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.5 4.5L19 7.5" stroke="white" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
-    Impri
+    Airlock
   </a>
   <div class="nav-links">
     <a class="link" href="/#how">How it works</a>
     <a class="link" href="/#pricing">Pricing</a>
     <a class="link active-nav" href="../docs">Docs</a>
-    <a class="btn btn-primary btn-sm" href="https://gitlab.com/sekera.radim/impri">GitLab</a>
+    <a class="btn btn-primary btn-sm" href="https://gitlab.com/sekera.radim/airlock">GitLab</a>
   </div>
 </div>
 </nav>
@@ -153,31 +153,31 @@ pre code.hljs{display:block;overflow-x:auto}
       <span>Webhooks</span>
     </nav>
     <h1>Webhooks</h1>
-<p>When a human approves or rejects an action in the Impri inbox, you can receive the decision in two ways: a webhook pushed to your server, or polling from your agent. Both are always available — they are not mutually exclusive.</p>
+<p>When a human approves or rejects an action in the Airlock inbox, you can receive the decision in two ways: a webhook pushed to your server, or polling from your agent. Both are always available — they are not mutually exclusive.</p>
 <hr>
 <h2 id="overview">Overview</h2>
-<p><strong>Webhook</strong>: Impri makes a POST request to your <code>callback_url</code> after the action is created and again when it is decided or expires. Useful when your agent has a public URL and you want near-instant notification.</p>
-<p><strong>Polling</strong>: Your agent calls <code>GET /v1/actions/:id</code> in a loop until <code>status</code> changes from <code>pending</code>. Always works — no public URL required. The MCP tool <code>impri_await_decision</code> implements this automatically.</p>
+<p><strong>Webhook</strong>: Airlock makes a POST request to your <code>callback_url</code> after the action is created and again when it is decided or expires. Useful when your agent has a public URL and you want near-instant notification.</p>
+<p><strong>Polling</strong>: Your agent calls <code>GET /v1/actions/:id</code> in a loop until <code>status</code> changes from <code>pending</code>. Always works — no public URL required. The MCP tool <code>airlock_await_decision</code> implements this automatically.</p>
 <p>The source of truth is always the database. If a webhook delivery fails, polling still returns the correct state.</p>
 <hr>
 <h2 id="setting-up-a-webhook">Setting up a webhook</h2>
 <p>Pass <code>callback_url</code> when creating an action:</p>
-<div class="code-block"><span class="code-lang">bash</span><pre><code class="hljs">curl -X POST https://api.impri.dev/v1/actions \
-  -H <span class="hljs-string">&quot;Authorization: Bearer <span class="hljs-variable">$IMPRI_API_KEY</span>&quot;</span> \
+<div class="code-block"><span class="code-lang">bash</span><pre><code class="hljs">curl -X POST https://api.airlock.dev/v1/actions \
+  -H <span class="hljs-string">&quot;Authorization: Bearer <span class="hljs-variable">$AIRLOCK_API_KEY</span>&quot;</span> \
   -H <span class="hljs-string">&quot;Content-Type: application/json&quot;</span> \
   -d <span class="hljs-string">&#x27;{
     &quot;kind&quot;: &quot;email.send&quot;,
     &quot;title&quot;: &quot;Outreach: partnership proposal&quot;,
     &quot;preview&quot;: { &quot;format&quot;: &quot;markdown&quot;, &quot;body&quot;: &quot;...&quot; },
-    &quot;callback_url&quot;: &quot;https://your-agent.example.com/impri/webhook&quot;,
+    &quot;callback_url&quot;: &quot;https://your-agent.example.com/airlock/webhook&quot;,
     &quot;expires_in&quot;: 86400
   }&#x27;</span></code></pre></div>
-<p>Impri POSTs to <code>https://your-agent.example.com/impri/webhook</code> once after the action is created and again when a human decides it or it expires. An action that a <a href="rules">rule</a> decides on creation gets only the first delivery, which already carries the verdict.</p>
+<p>Airlock POSTs to <code>https://your-agent.example.com/airlock/webhook</code> once after the action is created and again when a human decides it or it expires. An action that a <a href="rules">rule</a> decides on creation gets only the first delivery, which already carries the verdict.</p>
 <h3 id="restrictions-on-callback-urls">Restrictions on callback URLs</h3>
-<p>For security, <code>callback_url</code> must be an <code>http://</code> or <code>https://</code> URL. <code>javascript:</code> and <code>data:</code> schemes are rejected. By default the SSRF guard also blocks URLs that resolve to private IP ranges (RFC 1918, loopback, link-local) — this protects against an agent being manipulated into sending secrets to an internal service. On an isolated intranet deployment you can opt out by setting <code>IMPRI_ALLOW_PRIVATE_TARGETS=1</code> in the server environment.</p>
+<p>For security, <code>callback_url</code> must be an <code>http://</code> or <code>https://</code> URL. <code>javascript:</code> and <code>data:</code> schemes are rejected. By default the SSRF guard also blocks URLs that resolve to private IP ranges (RFC 1918, loopback, link-local) — this protects against an agent being manipulated into sending secrets to an internal service. On an isolated intranet deployment you can opt out by setting <code>AIRLOCK_ALLOW_PRIVATE_TARGETS=1</code> in the server environment.</p>
 <hr>
 <h2 id="webhook-payload">Webhook payload</h2>
-<p>Impri sends a POST with <code>Content-Type: application/json</code>. The body is always a JSON object:</p>
+<p>Airlock sends a POST with <code>Content-Type: application/json</code>. The body is always a JSON object:</p>
 <div class="code-block"><span class="code-lang">json</span><pre><code class="hljs"><span class="hljs-punctuation">{</span>
   <span class="hljs-attr">&quot;event&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;action.updated&quot;</span><span class="hljs-punctuation">,</span>
   <span class="hljs-attr">&quot;action_id&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;act_abc123&quot;</span><span class="hljs-punctuation">,</span>
@@ -236,7 +236,7 @@ pre code.hljs{display:block;overflow-x:auto}
 </tbody></table>
 </div>
 <h3 id="the-body-carries-the-status-at-send-time">The body carries the status at send time</h3>
-<p>Deliveries go out on the server&#39;s 60-second tick, and Impri builds the body when it sends it, not when the event happened. An action decided before its creation delivery goes out therefore arrives twice with the decided status, and a retry carries the status at the time of the retry. Make the receiver safe to run twice:</p>
+<p>Deliveries go out on the server&#39;s 60-second tick, and Airlock builds the body when it sends it, not when the event happened. An action decided before its creation delivery goes out therefore arrives twice with the decided status, and a retry carries the status at the time of the retry. Make the receiver safe to run twice:</p>
 <ul>
 <li>act on <code>approved</code> only while <code>GET /v1/actions/:id</code> still returns <code>approved</code>, and report the outcome with <code>POST /v1/actions/:id/result</code>, so a repeat finds <code>executed</code>;</li>
 <li>remember which <code>rejected</code> or <code>expired</code> actions you already handled;</li>
@@ -256,17 +256,17 @@ pre code.hljs{display:block;overflow-x:auto}
 </tr>
 </thead>
 <tbody><tr>
-<td><code>X-Impri-Signature</code></td>
+<td><code>X-Airlock-Signature</code></td>
 <td><code>sha256=a3f...9c1</code></td>
 <td>HMAC-SHA256 of the raw request body</td>
 </tr>
 <tr>
-<td><code>X-Impri-Timestamp</code></td>
+<td><code>X-Airlock-Timestamp</code></td>
 <td><code>1720000000</code></td>
 <td>Unix timestamp when the request was sent</td>
 </tr>
 <tr>
-<td><code>X-Impri-Nonce</code></td>
+<td><code>X-Airlock-Nonce</code></td>
 <td><code>a1b2c3d4e5f6a7b8</code></td>
 <td>Random hex string, unique per request</td>
 </tr>
@@ -276,14 +276,14 @@ pre code.hljs{display:block;overflow-x:auto}
 <h3 id="verification-algorithm">Verification algorithm</h3>
 <div class="code-block"><pre><code class="hljs">expected = HMAC-SHA256(secret, &quot;${timestamp}.${nonce}.${rawBody}&quot;)
 signature = &quot;sha256=&quot; + hex(expected)</code></pre></div>
-<p>Compare <code>signature</code> to <code>X-Impri-Signature</code> using a constant-time comparison to avoid timing attacks.</p>
+<p>Compare <code>signature</code> to <code>X-Airlock-Signature</code> using a constant-time comparison to avoid timing attacks.</p>
 <p><strong>Python example:</strong></p>
 <div class="code-block"><span class="code-lang">python</span><pre><code class="hljs"><span class="hljs-keyword">import</span> hashlib, hmac, time
 
-<span class="hljs-keyword">def</span> <span class="hljs-title function_">verify_impri_webhook</span>(<span class="hljs-params">body: <span class="hljs-built_in">bytes</span>, headers: <span class="hljs-built_in">dict</span>, secret: <span class="hljs-built_in">str</span></span>) -&gt; <span class="hljs-built_in">bool</span>:
-    timestamp = headers.get(<span class="hljs-string">&quot;X-Impri-Timestamp&quot;</span>, <span class="hljs-string">&quot;&quot;</span>)
-    nonce = headers.get(<span class="hljs-string">&quot;X-Impri-Nonce&quot;</span>, <span class="hljs-string">&quot;&quot;</span>)
-    received_sig = headers.get(<span class="hljs-string">&quot;X-Impri-Signature&quot;</span>, <span class="hljs-string">&quot;&quot;</span>)
+<span class="hljs-keyword">def</span> <span class="hljs-title function_">verify_airlock_webhook</span>(<span class="hljs-params">body: <span class="hljs-built_in">bytes</span>, headers: <span class="hljs-built_in">dict</span>, secret: <span class="hljs-built_in">str</span></span>) -&gt; <span class="hljs-built_in">bool</span>:
+    timestamp = headers.get(<span class="hljs-string">&quot;X-Airlock-Timestamp&quot;</span>, <span class="hljs-string">&quot;&quot;</span>)
+    nonce = headers.get(<span class="hljs-string">&quot;X-Airlock-Nonce&quot;</span>, <span class="hljs-string">&quot;&quot;</span>)
+    received_sig = headers.get(<span class="hljs-string">&quot;X-Airlock-Signature&quot;</span>, <span class="hljs-string">&quot;&quot;</span>)
 
     <span class="hljs-comment"># Reject requests with a timestamp more than 5 minutes old</span>
     <span class="hljs-keyword">if</span> <span class="hljs-built_in">abs</span>(time.time() - <span class="hljs-built_in">int</span>(timestamp)) &gt; <span class="hljs-number">300</span>:
@@ -298,10 +298,10 @@ signature = &quot;sha256=&quot; + hex(expected)</code></pre></div>
 <p><strong>Node.js example:</strong></p>
 <div class="code-block"><span class="code-lang">javascript</span><pre><code class="hljs"><span class="hljs-keyword">import</span> crypto <span class="hljs-keyword">from</span> <span class="hljs-string">&#x27;node:crypto&#x27;</span>;
 
-<span class="hljs-keyword">function</span> <span class="hljs-title function_">verifyImpriWebhook</span>(<span class="hljs-params">rawBody, headers, secret</span>) {
-  <span class="hljs-keyword">const</span> timestamp = headers[<span class="hljs-string">&#x27;x-impri-timestamp&#x27;</span>];
-  <span class="hljs-keyword">const</span> nonce = headers[<span class="hljs-string">&#x27;x-impri-nonce&#x27;</span>];
-  <span class="hljs-keyword">const</span> receivedSig = headers[<span class="hljs-string">&#x27;x-impri-signature&#x27;</span>];
+<span class="hljs-keyword">function</span> <span class="hljs-title function_">verifyAirlockWebhook</span>(<span class="hljs-params">rawBody, headers, secret</span>) {
+  <span class="hljs-keyword">const</span> timestamp = headers[<span class="hljs-string">&#x27;x-airlock-timestamp&#x27;</span>];
+  <span class="hljs-keyword">const</span> nonce = headers[<span class="hljs-string">&#x27;x-airlock-nonce&#x27;</span>];
+  <span class="hljs-keyword">const</span> receivedSig = headers[<span class="hljs-string">&#x27;x-airlock-signature&#x27;</span>];
 
   <span class="hljs-comment">// Reject stale requests (&gt;5 minutes clock skew)</span>
   <span class="hljs-keyword">if</span> (<span class="hljs-title class_">Math</span>.<span class="hljs-title function_">abs</span>(<span class="hljs-title class_">Date</span>.<span class="hljs-title function_">now</span>() / <span class="hljs-number">1000</span> - <span class="hljs-title class_">Number</span>(timestamp)) &gt; <span class="hljs-number">300</span>) <span class="hljs-keyword">return</span> <span class="hljs-literal">false</span>;
@@ -320,10 +320,10 @@ Rotate it any time with <code>POST /v1/project/rotate-webhook-secret</code> — 
 verifier with the new value afterward. The server-level <code>WEBHOOK_SECRET</code> env var
 is only a fallback for a project that has no secret of its own (one created
 before per-project secrets existed); every new project gets one.</p>
-<p>The <code>@impri/mcp</code> package ships a ready-made verifier — <code>import { verifyWebhookSignature } from &#39;@impri/mcp/webhook&#39;</code> — so you don&#39;t have to hand-roll the HMAC check.</p>
+<p>The <code>@airlock/mcp</code> package ships a ready-made verifier — <code>import { verifyWebhookSignature } from &#39;@airlock/mcp/webhook&#39;</code> — so you don&#39;t have to hand-roll the HMAC check.</p>
 <hr>
 <h2 id="retry-schedule">Retry schedule</h2>
-<p>If your endpoint does not return a 2xx response, Impri retries up to 5 times:</p>
+<p>If your endpoint does not return a 2xx response, Airlock retries up to 5 times:</p>
 <div class="table-wrap"><table>
 <thead>
 <tr>
@@ -361,24 +361,24 @@ before per-project secrets existed); every new project gets one.</p>
 <p>The retry scheduler runs every 60 seconds inside the server process.</p>
 <hr>
 <h2 id="special-response-codes">Special response codes</h2>
-<p>Your webhook endpoint can return specific status codes to signal intent to Impri:</p>
-<p><strong><code>410 Gone</code></strong>: tells Impri the endpoint has been deregistered. Impri removes the <code>callback_url</code> from the action and stops all further delivery attempts. Use this to cleanly deregister a webhook when tearing down an agent.</p>
-<p><strong>Any 2xx</strong>: delivery confirmed. Impri marks the delivery as <code>delivered</code>.</p>
-<p><strong>Anything else</strong> (3xx, 4xx, 5xx, connection errors): delivery failed — Impri schedules a retry.</p>
+<p>Your webhook endpoint can return specific status codes to signal intent to Airlock:</p>
+<p><strong><code>410 Gone</code></strong>: tells Airlock the endpoint has been deregistered. Airlock removes the <code>callback_url</code> from the action and stops all further delivery attempts. Use this to cleanly deregister a webhook when tearing down an agent.</p>
+<p><strong>Any 2xx</strong>: delivery confirmed. Airlock marks the delivery as <code>delivered</code>.</p>
+<p><strong>Anything else</strong> (3xx, 4xx, 5xx, connection errors): delivery failed — Airlock schedules a retry.</p>
 <hr>
 <h2 id="polling-as-the-always-on-fallback">Polling as the always-on fallback</h2>
 <p>Polling does not require a public URL and is always available regardless of whether you provided a <code>callback_url</code>.</p>
 <div class="code-block"><span class="code-lang">bash</span><pre><code class="hljs"><span class="hljs-comment"># Poll until status is no longer &quot;pending&quot;</span>
 <span class="hljs-keyword">while</span> <span class="hljs-literal">true</span>; <span class="hljs-keyword">do</span>
-  STATUS=$(curl -s https://api.impri.dev/v1/actions/<span class="hljs-variable">$ACTION_ID</span> \
-    -H <span class="hljs-string">&quot;Authorization: Bearer <span class="hljs-variable">$IMPRI_API_KEY</span>&quot;</span> | jq -r .status)
+  STATUS=$(curl -s https://api.airlock.dev/v1/actions/<span class="hljs-variable">$ACTION_ID</span> \
+    -H <span class="hljs-string">&quot;Authorization: Bearer <span class="hljs-variable">$AIRLOCK_API_KEY</span>&quot;</span> | jq -r .status)
   [ <span class="hljs-string">&quot;<span class="hljs-variable">$STATUS</span>&quot;</span> = <span class="hljs-string">&quot;pending&quot;</span> ] || <span class="hljs-built_in">break</span>
   <span class="hljs-built_in">sleep</span> 10
 <span class="hljs-keyword">done</span></code></pre></div>
-<p>The MCP tool <code>impri_await_decision</code> does this internally, polling every 5 seconds with a configurable timeout (default 300 seconds).</p>
+<p>The MCP tool <code>airlock_await_decision</code> does this internally, polling every 5 seconds with a configurable timeout (default 300 seconds).</p>
 <p>For list-based polling (e.g. an agent that processes all newly-approved actions on a schedule):</p>
-<div class="code-block"><span class="code-lang">bash</span><pre><code class="hljs">curl <span class="hljs-string">&quot;https://api.impri.dev/v1/actions?status=approved&amp;since=1719990000&quot;</span> \
-  -H <span class="hljs-string">&quot;Authorization: Bearer <span class="hljs-variable">$IMPRI_API_KEY</span>&quot;</span></code></pre></div>
+<div class="code-block"><span class="code-lang">bash</span><pre><code class="hljs">curl <span class="hljs-string">&quot;https://api.airlock.dev/v1/actions?status=approved&amp;since=1719990000&quot;</span> \
+  -H <span class="hljs-string">&quot;Authorization: Bearer <span class="hljs-variable">$AIRLOCK_API_KEY</span>&quot;</span></code></pre></div>
 <p><code>since</code> is a Unix timestamp. The response is paginated with <code>has_more</code> and <code>next_cursor</code> for large result sets.</p>
 <hr>
 <h2 id="delivery-status-in-the-ui">Delivery status in the UI</h2>
@@ -473,19 +473,19 @@ before per-project secrets existed); every new project gets one.</p>
 <footer class="footer">
 <div class="wrap footer-inner">
   <a class="brand" href="/">
-    <span class="mark"><svg viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.5 4.5L19 7.5" stroke="white" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Impri
+    <span class="mark"><svg viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.5 4.5L19 7.5" stroke="white" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Airlock
   </a>
   <div>
-    <a href="https://gitlab.com/sekera.radim/impri">GitLab</a>
+    <a href="https://gitlab.com/sekera.radim/airlock">GitLab</a>
     <a href="/docs">Docs</a>
-    <a href="https://gitlab.com/sekera.radim/impri/-/blob/main/LICENSE">MIT License</a>
-    <a href="https://www.npmjs.com/package/@impri/mcp">@impri/mcp</a>
+    <a href="https://gitlab.com/sekera.radim/airlock/-/blob/main/LICENSE">MIT License</a>
+    <a href="https://www.npmjs.com/package/@airlock/mcp">@airlock/mcp</a>
     <a href="/docs/privacy">Privacy</a>
     <a href="/docs/terms">Terms</a>
     <a href="https://sekera.dev">Contact</a>
   </div>
 </div>
-<div class="wrap" style="margin-top:18px"><span class="muted">© 2026 Impri · The imprimatur for your AI agents · Built by <a href="https://sekera.dev" style="color:inherit">Radim Sekera</a>. Also by the same maker: <a href="https://briefgate.dev/?utm_source=impri.dev&amp;utm_medium=referral" style="color:inherit">BriefGate</a> — client intake for agencies and AI agents.</span></div>
+<div class="wrap" style="margin-top:18px"><span class="muted">© 2026 Airlock · The airlockmatur for your AI agents · Built by <a href="https://sekera.dev" style="color:inherit">Radim Sekera</a>. Also by the same maker: <a href="https://briefgate.dev/?utm_source=airlock.dev&amp;utm_medium=referral" style="color:inherit">BriefGate</a> — client intake for agencies and AI agents.</span></div>
 </footer>
 </body>
 </html>

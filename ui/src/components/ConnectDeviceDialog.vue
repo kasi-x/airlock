@@ -10,7 +10,7 @@
 
       <v-card-text class="text-center">
         <p class="text-body-2 text-medium-emphasis mb-4">
-          Scan this with your phone's camera to open Impri already signed in — no
+          Scan this with your phone's camera to open Airlock already signed in — no
           key to type.
         </p>
 

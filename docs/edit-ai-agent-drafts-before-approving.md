@@ -8,19 +8,19 @@ Let a human fix a typo or soften a line in an AI agent's draft before approving 
 
 Picture a marketing agent that drafts LinkedIn posts from a changelog entry. Most of the copy is good. But the AI wrote "revolutionary" for a bug fix, or got a product name wrong. Rejecting the whole thing means the agent regenerates from scratch and you review again — for a one-word fix. What you actually want is to edit the text inline and approve the edited version.
 
-Impri supports this directly: mark specific fields `editable` when you push the action, and the human reviewer can modify them in the inbox card before approving. The agent then executes whatever the human left behind, not what it originally proposed.
+Airlock supports this directly: mark specific fields `editable` when you push the action, and the human reviewer can modify them in the inbox card before approving. The agent then executes whatever the human left behind, not what it originally proposed.
 
 ---
 
 ## Marking a field editable
 
 ```typescript
-import { ImpriClient } from "@impri/sdk";
+import { AirlockClient } from "@airlock/sdk";
 
-const impri = new ImpriClient({ apiKey: process.env.IMPRI_API_KEY! });
+const airlock = new AirlockClient({ apiKey: process.env.AIRLOCK_API_KEY! });
 
 async function proposePost(changelogEntry: string, draft: string) {
-  const action = await impri.createAction({
+  const action = await airlock.createAction({
     kind: "social.post",
     title: `LinkedIn post: ${changelogEntry}`,
     preview: { format: "markdown", body: draft },
@@ -40,7 +40,7 @@ async function proposePost(changelogEntry: string, draft: string) {
 Poll or `await` the decision the same way as any other action. The difference shows up in the payload: when the reviewer edited something, `decision.final_preview` holds their version and `decision.diff` shows what changed.
 
 ```typescript
-const action = await impri.awaitDecision(actionId, { timeoutS: 172800 });
+const action = await airlock.awaitDecision(actionId, { timeoutS: 172800 });
 
 if (action.status === "approved") {
   const finalBody = action.decision!.final_preview!.body; // always use this, never the original draft
@@ -48,7 +48,7 @@ if (action.status === "approved") {
     console.log("Reviewer edited the draft:\n", action.decision.diff);
   }
   await postToLinkedIn(finalBody);
-  await impri.reportResult(actionId, "executed");
+  await airlock.reportResult(actionId, "executed");
 }
 ```
 
@@ -71,8 +71,8 @@ Avoid making highly structured fields (prices, recipient addresses, account IDs)
 
 ---
 
-## What Impri does not do here
+## What Airlock does not do here
 
-Impri stores the edit and hands you `final_preview` and `diff` — it does not validate that the edit makes sense, check it against a schema, or diff it against your business rules. If the reviewer pastes something unrelated into the body, that's what gets approved. The gate is "a human looked at this and signed off on this exact text," not "this text passed a content check." If you need the latter, validate `final_preview` in your own code before executing, the same way you'd validate any external input.
+Airlock stores the edit and hands you `final_preview` and `diff` — it does not validate that the edit makes sense, check it against a schema, or diff it against your business rules. If the reviewer pastes something unrelated into the body, that's what gets approved. The gate is "a human looked at this and signed off on this exact text," not "this text passed a content check." If you need the latter, validate `final_preview` in your own code before executing, the same way you'd validate any external input.
 
 Next: [quickstart](quickstart.md) to get an API key, or [the TypeScript SDK](sdk-typescript.md) for the full client reference.

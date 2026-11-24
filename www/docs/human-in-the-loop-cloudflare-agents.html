@@ -3,21 +3,21 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Human-in-the-Loop for Cloudflare Agents SDK — Impri Docs</title>
+<title>Human-in-the-Loop for Cloudflare Agents SDK — Airlock Docs</title>
 <meta name="description" content="Give a Cloudflare Agents SDK Durable Object agent a real human-in-the-loop gate, so tool calls like sending or posting pause for an actual yes before they run.">
 <meta name="theme-color" content="#06070d">
-<meta property="og:title" content="Human-in-the-Loop for Cloudflare Agents SDK — Impri Docs">
+<meta property="og:title" content="Human-in-the-Loop for Cloudflare Agents SDK — Airlock Docs">
 <meta property="og:description" content="Give a Cloudflare Agents SDK Durable Object agent a real human-in-the-loop gate, so tool calls like sending or posting pause for an actual yes before they run.">
 <meta property="og:type" content="article">
-<meta property="og:url" content="https://impri.dev/docs/human-in-the-loop-cloudflare-agents">
-<meta property="og:image" content="https://impri.dev/assets/og/og-docs.png">
+<meta property="og:url" content="https://airlock.dev/docs/human-in-the-loop-cloudflare-agents">
+<meta property="og:image" content="https://airlock.dev/assets/og/og-docs.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
-<meta property="og:image:alt" content="Impri — human-in-the-loop approval inbox for AI agents">
+<meta property="og:image:alt" content="Airlock — human-in-the-loop approval inbox for AI agents">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="https://impri.dev/assets/og/og-docs.png">
-<link rel="canonical" href="https://impri.dev/docs/human-in-the-loop-cloudflare-agents">
-<script type="application/ld+json">{"@context":"https://schema.org","@type":"TechArticle","headline":"Human-in-the-Loop for Cloudflare Agents SDK","description":"Give a Cloudflare Agents SDK Durable Object agent a real human-in-the-loop gate, so tool calls like sending or posting pause for an actual yes before they run.","url":"https://impri.dev/docs/human-in-the-loop-cloudflare-agents","inLanguage":"en","author":{"@type":"Organization","name":"Impri","url":"https://impri.dev"},"publisher":{"@type":"Organization","name":"Impri","url":"https://impri.dev"}}</script>
+<meta name="twitter:image" content="https://airlock.dev/assets/og/og-docs.png">
+<link rel="canonical" href="https://airlock.dev/docs/human-in-the-loop-cloudflare-agents">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"TechArticle","headline":"Human-in-the-Loop for Cloudflare Agents SDK","description":"Give a Cloudflare Agents SDK Durable Object agent a real human-in-the-loop gate, so tool calls like sending or posting pause for an actual yes before they run.","url":"https://airlock.dev/docs/human-in-the-loop-cloudflare-agents","inLanguage":"en","author":{"@type":"Organization","name":"Airlock","url":"https://airlock.dev"},"publisher":{"@type":"Organization","name":"Airlock","url":"https://airlock.dev"}}</script>
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <link rel="icon" href="/favicon.ico" sizes="32x32">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='9' fill='%236366f1'/%3E%3Cpath d='M9 16.5l4.5 4.5L23 11' stroke='white' stroke-width='3' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
@@ -132,13 +132,13 @@ pre code.hljs{display:block;overflow-x:auto}
 <div class="wrap nav-inner">
   <a class="brand" href="/">
     <span class="mark"><svg viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.5 4.5L19 7.5" stroke="white" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
-    Impri
+    Airlock
   </a>
   <div class="nav-links">
     <a class="link" href="/#how">How it works</a>
     <a class="link" href="/#pricing">Pricing</a>
     <a class="link active-nav" href="../docs">Docs</a>
-    <a class="btn btn-primary btn-sm" href="https://gitlab.com/sekera.radim/impri">GitLab</a>
+    <a class="btn btn-primary btn-sm" href="https://gitlab.com/sekera.radim/airlock">GitLab</a>
   </div>
 </div>
 </nav>
@@ -161,7 +161,7 @@ pre code.hljs{display:block;overflow-x:auto}
 <p>A real gate has to sit <em>outside</em> the model&#39;s process, on the only path to the side effect.</p>
 <hr>
 <h2 id="wrapping-the-tool-executor-not-the-model">Wrapping the tool executor, not the model</h2>
-<p>The fix is mechanical: instead of letting a tool&#39;s <code>execute</code> function call the side-effecting code directly, have it push an Impri action and block on the decision. The side-effecting function only ever gets called from inside the <code>if (status === &quot;approved&quot;)</code> branch — there&#39;s no other route to it in the codebase.</p>
+<p>The fix is mechanical: instead of letting a tool&#39;s <code>execute</code> function call the side-effecting code directly, have it push an Airlock action and block on the decision. The side-effecting function only ever gets called from inside the <code>if (status === &quot;approved&quot;)</code> branch — there&#39;s no other route to it in the codebase.</p>
 <div class="code-block"><span class="code-lang">typescript</span><pre><code class="hljs"><span class="hljs-comment">// inside your Agent&#x27;s Durable Object class (agents SDK)</span>
 <span class="hljs-keyword">import</span> { tool } <span class="hljs-keyword">from</span> <span class="hljs-string">&quot;ai&quot;</span>;
 <span class="hljs-keyword">import</span> { z } <span class="hljs-keyword">from</span> <span class="hljs-string">&quot;zod&quot;</span>;
@@ -170,10 +170,10 @@ pre code.hljs{display:block;overflow-x:auto}
   <span class="hljs-attr">description</span>: <span class="hljs-string">&quot;Post a message to the #eng-updates Slack channel&quot;</span>,
   <span class="hljs-attr">parameters</span>: z.<span class="hljs-title function_">object</span>({ <span class="hljs-attr">text</span>: z.<span class="hljs-title function_">string</span>() }),
   <span class="hljs-attr">execute</span>: <span class="hljs-title function_">async</span> ({ text }) =&gt; {
-    <span class="hljs-keyword">const</span> push = <span class="hljs-keyword">await</span> <span class="hljs-title function_">fetch</span>(<span class="hljs-string">&quot;https://api.impri.dev/v1/actions&quot;</span>, {
+    <span class="hljs-keyword">const</span> push = <span class="hljs-keyword">await</span> <span class="hljs-title function_">fetch</span>(<span class="hljs-string">&quot;https://api.airlock.dev/v1/actions&quot;</span>, {
       <span class="hljs-attr">method</span>: <span class="hljs-string">&quot;POST&quot;</span>,
       <span class="hljs-attr">headers</span>: {
-        <span class="hljs-title class_">Authorization</span>: <span class="hljs-string">`Bearer <span class="hljs-subst">${<span class="hljs-variable language_">this</span>.env.IMPRI_API_KEY}</span>`</span>,
+        <span class="hljs-title class_">Authorization</span>: <span class="hljs-string">`Bearer <span class="hljs-subst">${<span class="hljs-variable language_">this</span>.env.AIRLOCK_API_KEY}</span>`</span>,
         <span class="hljs-string">&quot;Content-Type&quot;</span>: <span class="hljs-string">&quot;application/json&quot;</span>,
       },
       <span class="hljs-attr">body</span>: <span class="hljs-title class_">JSON</span>.<span class="hljs-title function_">stringify</span>({
@@ -189,8 +189,8 @@ pre code.hljs{display:block;overflow-x:auto}
     <span class="hljs-comment">// no separate queue needed. Simplified inline loop shown here.</span>
     <span class="hljs-keyword">let</span> result;
     <span class="hljs-keyword">while</span> (<span class="hljs-literal">true</span>) {
-      result = <span class="hljs-keyword">await</span> <span class="hljs-title function_">fetch</span>(<span class="hljs-string">`https://api.impri.dev/v1/actions/<span class="hljs-subst">${push.id}</span>`</span>, {
-        <span class="hljs-attr">headers</span>: { <span class="hljs-title class_">Authorization</span>: <span class="hljs-string">`Bearer <span class="hljs-subst">${<span class="hljs-variable language_">this</span>.env.IMPRI_API_KEY}</span>`</span> },
+      result = <span class="hljs-keyword">await</span> <span class="hljs-title function_">fetch</span>(<span class="hljs-string">`https://api.airlock.dev/v1/actions/<span class="hljs-subst">${push.id}</span>`</span>, {
+        <span class="hljs-attr">headers</span>: { <span class="hljs-title class_">Authorization</span>: <span class="hljs-string">`Bearer <span class="hljs-subst">${<span class="hljs-variable language_">this</span>.env.AIRLOCK_API_KEY}</span>`</span> },
       }).<span class="hljs-title function_">then</span>(<span class="hljs-function">(<span class="hljs-params">r</span>) =&gt;</span> r.<span class="hljs-title function_">json</span>());
       <span class="hljs-keyword">if</span> (result.<span class="hljs-property">status</span> !== <span class="hljs-string">&quot;pending&quot;</span>) <span class="hljs-keyword">break</span>;
       <span class="hljs-keyword">await</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">Promise</span>(<span class="hljs-function">(<span class="hljs-params">r</span>) =&gt;</span> <span class="hljs-built_in">setTimeout</span>(r, <span class="hljs-number">5000</span>));
@@ -201,10 +201,10 @@ pre code.hljs{display:block;overflow-x:auto}
     }
 
     <span class="hljs-keyword">await</span> slackClient.<span class="hljs-title function_">postMessage</span>(result.<span class="hljs-property">decision</span>.<span class="hljs-property">final_preview</span>.<span class="hljs-property">body</span>);
-    <span class="hljs-keyword">await</span> <span class="hljs-title function_">fetch</span>(<span class="hljs-string">`https://api.impri.dev/v1/actions/<span class="hljs-subst">${push.id}</span>/result`</span>, {
+    <span class="hljs-keyword">await</span> <span class="hljs-title function_">fetch</span>(<span class="hljs-string">`https://api.airlock.dev/v1/actions/<span class="hljs-subst">${push.id}</span>/result`</span>, {
       <span class="hljs-attr">method</span>: <span class="hljs-string">&quot;POST&quot;</span>,
       <span class="hljs-attr">headers</span>: {
-        <span class="hljs-title class_">Authorization</span>: <span class="hljs-string">`Bearer <span class="hljs-subst">${<span class="hljs-variable language_">this</span>.env.IMPRI_API_KEY}</span>`</span>,
+        <span class="hljs-title class_">Authorization</span>: <span class="hljs-string">`Bearer <span class="hljs-subst">${<span class="hljs-variable language_">this</span>.env.AIRLOCK_API_KEY}</span>`</span>,
         <span class="hljs-string">&quot;Content-Type&quot;</span>: <span class="hljs-string">&quot;application/json&quot;</span>,
       },
       <span class="hljs-attr">body</span>: <span class="hljs-title class_">JSON</span>.<span class="hljs-title function_">stringify</span>({ <span class="hljs-attr">status</span>: <span class="hljs-string">&quot;executed&quot;</span> }),
@@ -217,15 +217,15 @@ pre code.hljs{display:block;overflow-x:auto}
 <h2 id="durable-objects-make-the-polling-loop-cheap">Durable Objects make the polling loop cheap</h2>
 <p>One thing that&#39;s genuinely a good fit here: Cloudflare&#39;s Durable Objects support alarms, so instead of a busy <code>while</code> loop burning a Worker invocation, you can push the action, set an alarm for a few seconds out, and let the alarm handler re-check status and reschedule itself if still pending. The example above uses a simple loop for readability, but in production swap it for <code>this.storage.setAlarm()</code> — it&#39;s a natural match for the sub-second-cost, long-idle nature of waiting on a human.</p>
 <hr>
-<h2 id="what-impri-actually-gates-here">What Impri actually gates here</h2>
-<p>Impri stores the proposed Slack message, notifies you (email, push, or a Slack/Discord/Telegram approval channel), and holds the decision — it does not know what &quot;posting to Slack&quot; means or verify the message content. The gate is only as real as the wrapping: if some other part of your Durable Object still holds a Slack token and calls <code>slackClient.postMessage</code> directly, that path routes around Impri entirely. Confine the credential to the wrapped executor, not just the intended call site, and treat the built-in Agents SDK confirmation UI as a UX nicety layered on top of this — not a substitute for it.</p>
-<p>For the full three-call pattern this builds on, see <a href="how-to-add-human-approval-to-an-ai-agent">how to add human approval to an AI agent</a>. If you&#39;re integrating an SDK rather than raw fetch calls, check the <a href="sdk-typescript">TypeScript SDK</a>. New to Impri entirely? Start with the <a href="quickstart">quickstart</a>.</p>
+<h2 id="what-airlock-actually-gates-here">What Airlock actually gates here</h2>
+<p>Airlock stores the proposed Slack message, notifies you (email, push, or a Slack/Discord/Telegram approval channel), and holds the decision — it does not know what &quot;posting to Slack&quot; means or verify the message content. The gate is only as real as the wrapping: if some other part of your Durable Object still holds a Slack token and calls <code>slackClient.postMessage</code> directly, that path routes around Airlock entirely. Confine the credential to the wrapped executor, not just the intended call site, and treat the built-in Agents SDK confirmation UI as a UX nicety layered on top of this — not a substitute for it.</p>
+<p>For the full three-call pattern this builds on, see <a href="how-to-add-human-approval-to-an-ai-agent">how to add human approval to an AI agent</a>. If you&#39;re integrating an SDK rather than raw fetch calls, check the <a href="sdk-typescript">TypeScript SDK</a>. New to Airlock entirely? Start with the <a href="quickstart">quickstart</a>.</p>
 
-    <aside class="doc-cta" aria-label="Try Impri">
+    <aside class="doc-cta" aria-label="Try Airlock">
   <p class="doc-cta-title">Add an approval step to your own agent</p>
-  <p>Start on Impri Cloud: the Free tier includes 100 approvals a month. Or self-host the MIT-licensed core with Docker Compose, with no tier limits.</p>
+  <p>Start on Airlock Cloud: the Free tier includes 100 approvals a month. Or self-host the MIT-licensed core with Docker Compose, with no tier limits.</p>
   <div class="doc-cta-actions">
-    <a class="btn btn-primary btn-sm" href="https://app.impri.dev/?signup=1">Start free on Impri Cloud</a>
+    <a class="btn btn-primary btn-sm" href="https://app.airlock.dev/?signup=1">Start free on Airlock Cloud</a>
     <a class="btn btn-ghost btn-sm" href="../docs/quickstart">Quick start</a>
     <a class="btn btn-ghost btn-sm" href="../docs/self-hosting">Self-host guide</a>
   </div>
@@ -311,7 +311,7 @@ pre code.hljs{display:block;overflow-x:auto}
 <ul><li class="ptoc-h2"><a href="#confirmation-inside-the-agent-isn39t-a-gate">Confirmation inside the agent isn't a gate</a></li>
 <li class="ptoc-h2"><a href="#wrapping-the-tool-executor-not-the-model">Wrapping the tool executor, not the model</a></li>
 <li class="ptoc-h2"><a href="#durable-objects-make-the-polling-loop-cheap">Durable Objects make the polling loop cheap</a></li>
-<li class="ptoc-h2"><a href="#what-impri-actually-gates-here">What Impri actually gates here</a></li></ul>
+<li class="ptoc-h2"><a href="#what-airlock-actually-gates-here">What Airlock actually gates here</a></li></ul>
 </nav>
   </aside>
 </div>
@@ -319,19 +319,19 @@ pre code.hljs{display:block;overflow-x:auto}
 <footer class="footer">
 <div class="wrap footer-inner">
   <a class="brand" href="/">
-    <span class="mark"><svg viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.5 4.5L19 7.5" stroke="white" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Impri
+    <span class="mark"><svg viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.5 4.5L19 7.5" stroke="white" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Airlock
   </a>
   <div>
-    <a href="https://gitlab.com/sekera.radim/impri">GitLab</a>
+    <a href="https://gitlab.com/sekera.radim/airlock">GitLab</a>
     <a href="/docs">Docs</a>
-    <a href="https://gitlab.com/sekera.radim/impri/-/blob/main/LICENSE">MIT License</a>
-    <a href="https://www.npmjs.com/package/@impri/mcp">@impri/mcp</a>
+    <a href="https://gitlab.com/sekera.radim/airlock/-/blob/main/LICENSE">MIT License</a>
+    <a href="https://www.npmjs.com/package/@airlock/mcp">@airlock/mcp</a>
     <a href="/docs/privacy">Privacy</a>
     <a href="/docs/terms">Terms</a>
     <a href="https://sekera.dev">Contact</a>
   </div>
 </div>
-<div class="wrap" style="margin-top:18px"><span class="muted">© 2026 Impri · The imprimatur for your AI agents · Built by <a href="https://sekera.dev" style="color:inherit">Radim Sekera</a>. Also by the same maker: <a href="https://briefgate.dev/?utm_source=impri.dev&amp;utm_medium=referral" style="color:inherit">BriefGate</a> — client intake for agencies and AI agents.</span></div>
+<div class="wrap" style="margin-top:18px"><span class="muted">© 2026 Airlock · The airlockmatur for your AI agents · Built by <a href="https://sekera.dev" style="color:inherit">Radim Sekera</a>. Also by the same maker: <a href="https://briefgate.dev/?utm_source=airlock.dev&amp;utm_medium=referral" style="color:inherit">BriefGate</a> — client intake for agencies and AI agents.</span></div>
 </footer>
 </body>
 </html>

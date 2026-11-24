@@ -1,6 +1,6 @@
-# Impri — Production Deploy Runbook
+# Airlock — Production Deploy Runbook
 
-This runbook covers deploying Impri to a single Hetzner VPS with automatic TLS via Caddy.
+This runbook covers deploying Airlock to a single Hetzner VPS with automatic TLS via Caddy.
 
 **Architecture:**
 ```
@@ -53,9 +53,9 @@ echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.
 apt-get update
 apt-get install -y docker-ce docker-ce-cli containerd.io docker-compose-plugin
 
-# Clone the repo to /opt/impri
-git clone https://gitlab.com/sekera.radim/impri.git /opt/impri
-cd /opt/impri
+# Clone the repo to /opt/airlock
+git clone https://gitlab.com/sekera.radim/impri.git /opt/airlock
+cd /opt/airlock
 ```
 
 ---
@@ -63,7 +63,7 @@ cd /opt/impri
 ## 4. Create the .env file
 
 ```bash
-cd /opt/impri
+cd /opt/airlock
 cp deploy/.env.example deploy/.env
 ```
 
@@ -81,18 +81,18 @@ Copy the output into `WEBHOOK_SECRET=` in `deploy/.env`. Fill in SES credentials
 ## 5. Start the stack
 
 ```bash
-cd /opt/impri
+cd /opt/airlock
 docker compose -f deploy/docker-compose.prod.yml --env-file deploy/.env up -d --build
 ```
 
-This builds the server and UI images on the VPS, then starts server, ui, and Caddy. Caddy immediately begins the ACME challenge to obtain TLS certificates for `api.impri.dev` and `app.impri.dev` — this takes up to 60 seconds on first boot.
+This builds the server and UI images on the VPS, then starts server, ui, and Caddy. Caddy immediately begins the ACME challenge to obtain TLS certificates for `api.airlock.dev` and `app.airlock.dev` — this takes up to 60 seconds on first boot.
 
 **Verify everything is up:**
 ```bash
 docker compose -f deploy/docker-compose.prod.yml --env-file deploy/.env ps
 # All three services should show "healthy" or "running".
 
-curl https://api.impri.dev/healthz
+curl https://api.airlock.dev/healthz
 # Expected: {"status":"ok","ts":<unix>}
 ```
 
@@ -116,7 +116,7 @@ Store this key in your password manager. It is hashed in the database and cannot
 After starting the stack with your Stripe test keys:
 
 1. Go to **Stripe Dashboard → Developers → Webhooks → Add endpoint**.
-2. Endpoint URL: `https://api.impri.dev/v1/billing/webhook`
+2. Endpoint URL: `https://api.airlock.dev/v1/billing/webhook`
 3. Events to listen for:
    - `checkout.session.completed`
    - `customer.subscription.updated`
@@ -135,26 +135,26 @@ Stripe sends the `Stripe-Signature` header and expects to verify it against the 
 
 ## 8. Set up daily backups
 
-Install the systemd units (adjust `WorkingDirectory` in `impri-backup.service` if you cloned to a different path):
+Install the systemd units (adjust `WorkingDirectory` in `airlock-backup.service` if you cloned to a different path):
 
 ```bash
-# Units reference /opt/impri — edit if needed
-cp /opt/impri/deploy/impri-backup.service /etc/systemd/system/
-cp /opt/impri/deploy/impri-backup.timer   /etc/systemd/system/
+# Units reference /opt/airlock — edit if needed
+cp /opt/airlock/deploy/airlock-backup.service /etc/systemd/system/
+cp /opt/airlock/deploy/airlock-backup.timer   /etc/systemd/system/
 
 systemctl daemon-reload
-systemctl enable --now impri-backup.timer
+systemctl enable --now airlock-backup.timer
 
 # Verify the timer is scheduled
-systemctl list-timers impri-backup.timer
+systemctl list-timers airlock-backup.timer
 
 # Test a manual run
-systemctl start impri-backup.service
-journalctl -u impri-backup.service -n 30
-ls /var/backups/impri/
+systemctl start airlock-backup.service
+journalctl -u airlock-backup.service -n 30
+ls /var/backups/airlock/
 ```
 
-Backups are stored in `/var/backups/impri/` as `impri-YYYYMMDDTHHMMSSZ.db`. Files older than 14 days are automatically deleted.
+Backups are stored in `/var/backups/airlock/` as `airlock-YYYYMMDDTHHMMSSZ.db`. Files older than 14 days are automatically deleted.
 
 **Optional: upload to Hetzner Storage Box.** Uncomment the rsync block at the bottom of `deploy/backup.sh` and set `HETZNER_BOX` to your Storage Box SSH target (e.g. `u123456@u123456.your-storagebox.de`). Authorise your VPS key once:
 ```bash
@@ -166,7 +166,7 @@ ssh-copy-id -p 23 u123456@u123456.your-storagebox.de
 ## 9. Upgrading
 
 ```bash
-cd /opt/impri
+cd /opt/airlock
 git pull
 
 # Rebuild and restart (SQLite schema migrations run automatically on startup)
@@ -176,7 +176,7 @@ docker compose -f deploy/docker-compose.prod.yml --env-file deploy/.env \
 
 Take a backup before upgrading:
 ```bash
-systemctl start impri-backup.service
+systemctl start airlock-backup.service
 ```
 
 There are no manual migration steps for v1.
@@ -186,7 +186,7 @@ There are no manual migration steps for v1.
 ## 10. Monitoring
 
 **Health endpoint** (use with Uptime Kuma or similar):
-- `https://api.impri.dev/healthz` → `{"status":"ok","ts":<unix>}`
+- `https://api.airlock.dev/healthz` → `{"status":"ok","ts":<unix>}`
 
 **Uptime Kuma** (self-hosted, free): add a "HTTP(S)" monitor pointing at the health URL. Install on the same VPS or a separate one:
 ```bash
@@ -208,6 +208,6 @@ docker compose -f deploy/docker-compose.prod.yml --env-file deploy/.env \
 
 **Backup status:**
 ```bash
-journalctl -u impri-backup.service -n 50
-ls -lh /var/backups/impri/
+journalctl -u airlock-backup.service -n 50
+ls -lh /var/backups/airlock/
 ```

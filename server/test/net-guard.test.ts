@@ -27,7 +27,7 @@ describe('isPrivateIp', () => {
 });
 
 describe('assertPublicUrl', () => {
-  afterEach(() => { delete process.env.IMPRI_ALLOW_PRIVATE_TARGETS; });
+  afterEach(() => { delete process.env.AIRLOCK_ALLOW_PRIVATE_TARGETS; });
 
   it('rejects non-http(s) schemes', async () => {
     await expect(assertPublicUrl('javascript:alert(1)')).rejects.toThrow();
@@ -50,7 +50,7 @@ describe('assertPublicUrl', () => {
   });
 
   it('opt-out env bypasses the guard', async () => {
-    process.env.IMPRI_ALLOW_PRIVATE_TARGETS = '1';
+    process.env.AIRLOCK_ALLOW_PRIVATE_TARGETS = '1';
     await expect(assertPublicUrl('http://127.0.0.1/x')).resolves.toBeUndefined();
   });
 });

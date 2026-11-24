@@ -30,9 +30,9 @@ The `idempotent` and `undo` fields exist for exactly this table — mark the rol
 ```typescript
 import { setTimeout as sleep } from "node:timers/promises";
 
-const IMPRI_BASE = "https://api.impri.dev";
+const AIRLOCK_BASE = "https://api.airlock.dev";
 const HEADERS = {
-  Authorization: `Bearer ${process.env.IMPRI_API_KEY}`,
+  Authorization: `Bearer ${process.env.AIRLOCK_API_KEY}`,
   "Content-Type": "application/json",
 };
 
@@ -50,7 +50,7 @@ async function proposeRollback(p: RollbackProposal): Promise<string> {
     `**Trigger:** ${p.reason}`,
   ].join("\n\n");
 
-  const res = await fetch(`${IMPRI_BASE}/v1/actions`, {
+  const res = await fetch(`${AIRLOCK_BASE}/v1/actions`, {
     method: "POST",
     headers: HEADERS,
     body: JSON.stringify({
@@ -68,7 +68,7 @@ async function proposeRollback(p: RollbackProposal): Promise<string> {
 
 async function waitForDecision(actionId: string) {
   while (true) {
-    const res = await fetch(`${IMPRI_BASE}/v1/actions/${actionId}`, {
+    const res = await fetch(`${AIRLOCK_BASE}/v1/actions/${actionId}`, {
       headers: HEADERS,
     });
     const data = await res.json();
@@ -87,7 +87,7 @@ async function runRollback(p: RollbackProposal) {
   }
 
   await executeRollback(p.service, p.toVersion); // your deploy tooling
-  await fetch(`${IMPRI_BASE}/v1/actions/${actionId}/result`, {
+  await fetch(`${AIRLOCK_BASE}/v1/actions/${actionId}/result`, {
     method: "POST",
     headers: HEADERS,
     body: JSON.stringify({ status: "executed" }),
@@ -107,6 +107,6 @@ Every approved or rejected rollback is a timestamped record: who decided, what t
 
 ## What this is not
 
-This isn't an incident-management platform — it doesn't detect the incident, run your runbook, or replace PagerDuty/Opsgenie. It's the single checkpoint between "agent decided to act" and "action happened." Detection, diagnosis, and paging stay in your existing tooling; Impri only holds the line at the moment something changes production state.
+This isn't an incident-management platform — it doesn't detect the incident, run your runbook, or replace PagerDuty/Opsgenie. It's the single checkpoint between "agent decided to act" and "action happened." Detection, diagnosis, and paging stay in your existing tooling; Airlock only holds the line at the moment something changes production state.
 
 Next step: start with the [quickstart](quickstart.md) to get a key, then wrap just your riskiest remediation action first — a full rollback — before gating the lower-risk ones from the table above.

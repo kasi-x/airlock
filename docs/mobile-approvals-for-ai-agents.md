@@ -1,6 +1,6 @@
 # Mobile Approvals for AI Agents
 
-Turn the Impri inbox into a phone-first approval queue for AI agents — install it as an app and clear a night's worth of pending decisions before coffee.
+Turn the Airlock inbox into a phone-first approval queue for AI agents — install it as an app and clear a night's worth of pending decisions before coffee.
 
 ---
 
@@ -10,7 +10,7 @@ A watcher-driven agent doesn't work business hours. Point an `rss` or `reddit_se
 
 ## Install it once
 
-The web inbox at `app.impri.dev` is an installable web app — open it in your phone's browser and use "Add to Home Screen" (iOS Safari) or the install prompt (Android Chrome). From then on it opens like any other app, no App Store listing required. Combined with browser push notifications, a new pending action reaches your lock screen the same way a text message would, without a chat app in the middle.
+The web inbox at `app.airlock.dev` is an installable web app — open it in your phone's browser and use "Add to Home Screen" (iOS Safari) or the install prompt (Android Chrome). From then on it opens like any other app, no App Store listing required. Combined with browser push notifications, a new pending action reaches your lock screen the same way a text message would, without a chat app in the middle.
 
 ## Two ways to clear the queue
 
@@ -27,7 +27,7 @@ If you'd rather trigger a batch decision from a shortcut than tap through the UI
 
 ```typescript
 async function approveAll(ids: string[], apiKey: string) {
-  const res = await fetch("https://api.impri.dev/v1/actions/bulk-decision", {
+  const res = await fetch("https://api.airlock.dev/v1/actions/bulk-decision", {
     method: "POST",
     headers: {
       Authorization: `Bearer ${apiKey}`,
@@ -51,7 +51,7 @@ Bulk decision intentionally has no field for edits — it's approve-or-reject on
 
 ## The gate is still just a gate
 
-None of this changes what Impri actually does: it stores the proposed action, notifies you, and holds the decision until you make it. Approving from a phone doesn't make the check any less real than approving from a laptop — the agent still can't execute without `status: "approved"` coming back from the API, regardless of which device you happened to be holding when you sent it.
+None of this changes what Airlock actually does: it stores the proposed action, notifies you, and holds the decision until you make it. Approving from a phone doesn't make the check any less real than approving from a laptop — the agent still can't execute without `status: "approved"` coming back from the API, regardless of which device you happened to be holding when you sent it.
 
 ---
 

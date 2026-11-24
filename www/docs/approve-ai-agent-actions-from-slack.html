@@ -3,21 +3,21 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Approve AI Agent Actions From Slack — Impri Docs</title>
-<meta name="description" content="Connect Impri to Slack and your AI agent's proposed actions land in a channel where you can approve or reject them with a single tap — no dashboard required.">
+<title>Approve AI Agent Actions From Slack — Airlock Docs</title>
+<meta name="description" content="Connect Airlock to Slack and your AI agent's proposed actions land in a channel where you can approve or reject them with a single tap — no dashboard required.">
 <meta name="theme-color" content="#06070d">
-<meta property="og:title" content="Approve AI Agent Actions From Slack — Impri Docs">
-<meta property="og:description" content="Connect Impri to Slack and your AI agent's proposed actions land in a channel where you can approve or reject them with a single tap — no dashboard required.">
+<meta property="og:title" content="Approve AI Agent Actions From Slack — Airlock Docs">
+<meta property="og:description" content="Connect Airlock to Slack and your AI agent's proposed actions land in a channel where you can approve or reject them with a single tap — no dashboard required.">
 <meta property="og:type" content="article">
-<meta property="og:url" content="https://impri.dev/docs/approve-ai-agent-actions-from-slack">
-<meta property="og:image" content="https://impri.dev/assets/og/og-docs.png">
+<meta property="og:url" content="https://airlock.dev/docs/approve-ai-agent-actions-from-slack">
+<meta property="og:image" content="https://airlock.dev/assets/og/og-docs.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
-<meta property="og:image:alt" content="Impri — human-in-the-loop approval inbox for AI agents">
+<meta property="og:image:alt" content="Airlock — human-in-the-loop approval inbox for AI agents">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="https://impri.dev/assets/og/og-docs.png">
-<link rel="canonical" href="https://impri.dev/docs/approve-ai-agent-actions-from-slack">
-<script type="application/ld+json">{"@context":"https://schema.org","@type":"TechArticle","headline":"Approve AI Agent Actions From Slack","description":"Connect Impri to Slack and your AI agent's proposed actions land in a channel where you can approve or reject them with a single tap — no dashboard required.","url":"https://impri.dev/docs/approve-ai-agent-actions-from-slack","inLanguage":"en","author":{"@type":"Organization","name":"Impri","url":"https://impri.dev"},"publisher":{"@type":"Organization","name":"Impri","url":"https://impri.dev"}}</script>
+<meta name="twitter:image" content="https://airlock.dev/assets/og/og-docs.png">
+<link rel="canonical" href="https://airlock.dev/docs/approve-ai-agent-actions-from-slack">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"TechArticle","headline":"Approve AI Agent Actions From Slack","description":"Connect Airlock to Slack and your AI agent's proposed actions land in a channel where you can approve or reject them with a single tap — no dashboard required.","url":"https://airlock.dev/docs/approve-ai-agent-actions-from-slack","inLanguage":"en","author":{"@type":"Organization","name":"Airlock","url":"https://airlock.dev"},"publisher":{"@type":"Organization","name":"Airlock","url":"https://airlock.dev"}}</script>
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <link rel="icon" href="/favicon.ico" sizes="32x32">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='9' fill='%236366f1'/%3E%3Cpath d='M9 16.5l4.5 4.5L23 11' stroke='white' stroke-width='3' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
@@ -132,13 +132,13 @@ pre code.hljs{display:block;overflow-x:auto}
 <div class="wrap nav-inner">
   <a class="brand" href="/">
     <span class="mark"><svg viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.5 4.5L19 7.5" stroke="white" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
-    Impri
+    Airlock
   </a>
   <div class="nav-links">
     <a class="link" href="/#how">How it works</a>
     <a class="link" href="/#pricing">Pricing</a>
     <a class="link active-nav" href="../docs">Docs</a>
-    <a class="btn btn-primary btn-sm" href="https://gitlab.com/sekera.radim/impri">GitLab</a>
+    <a class="btn btn-primary btn-sm" href="https://gitlab.com/sekera.radim/airlock">GitLab</a>
   </div>
 </div>
 </nav>
@@ -153,14 +153,14 @@ pre code.hljs{display:block;overflow-x:auto}
       <span>Approve AI Agent Actions From Slack</span>
     </nav>
     <h1>Approve AI Agent Actions From Slack</h1>
-<p>Connect Impri to Slack and your AI agent&#39;s proposed actions land in a channel where you can approve or reject them with a single tap — no dashboard required.</p>
+<p>Connect Airlock to Slack and your AI agent&#39;s proposed actions land in a channel where you can approve or reject them with a single tap — no dashboard required.</p>
 <hr>
 <h2 id="how-it-works">How it works</h2>
-<p>When an agent pushes a proposed action to Impri, Impri routes the approval notification to wherever you&#39;ve configured it — including a Slack channel. The agent then polls for the decision. If you approve in Slack, the agent proceeds; if you reject, it stops. The agent code is identical regardless of which channel you use for approvals. What changes is the notification routing, which you configure once in the Impri dashboard.</p>
+<p>When an agent pushes a proposed action to Airlock, Airlock routes the approval notification to wherever you&#39;ve configured it — including a Slack channel. The agent then polls for the decision. If you approve in Slack, the agent proceeds; if you reject, it stops. The agent code is identical regardless of which channel you use for approvals. What changes is the notification routing, which you configure once in the Airlock dashboard.</p>
 <p>The action card that arrives in Slack shows the action title, a preview of the content (formatted as the agent sent it), and Approve / Reject buttons. Clicking either one records the decision immediately and unblocks the polling agent.</p>
 <hr>
 <h2 id="setting-up-slack-notifications">Setting up Slack notifications</h2>
-<p>Connect your Slack workspace once via the Impri notifications settings. The full walk-through — including creating the Slack app, OAuth scopes, and which channel gets which actions — is in the <a href="slack-approval">Slack approval guide</a>. Once connected, every action your agent pushes will trigger a Slack notification automatically.</p>
+<p>Connect your Slack workspace once via the Airlock notifications settings. The full walk-through — including creating the Slack app, OAuth scopes, and which channel gets which actions — is in the <a href="slack-approval">Slack approval guide</a>. Once connected, every action your agent pushes will trigger a Slack notification automatically.</p>
 <p>If you want different agents to route to different channels, configure separate API keys and assign each key a distinct notification target in the dashboard.</p>
 <hr>
 <h2 id="the-agent-side">The agent side</h2>
@@ -168,16 +168,16 @@ pre code.hljs{display:block;overflow-x:auto}
 <div class="code-block"><span class="code-lang">python</span><pre><code class="hljs"><span class="hljs-keyword">import</span> time
 <span class="hljs-keyword">import</span> httpx
 
-IMPRI_API_KEY = <span class="hljs-string">&quot;im_your_key_here&quot;</span>
-IMPRI_BASE = <span class="hljs-string">&quot;https://api.impri.dev&quot;</span>
+AIRLOCK_API_KEY = <span class="hljs-string">&quot;im_your_key_here&quot;</span>
+AIRLOCK_BASE = <span class="hljs-string">&quot;https://api.airlock.dev&quot;</span>
 
 <span class="hljs-keyword">def</span> <span class="hljs-title function_">propose_and_wait</span>(<span class="hljs-params">draft: <span class="hljs-built_in">str</span></span>) -&gt; <span class="hljs-built_in">dict</span> | <span class="hljs-literal">None</span>:
     <span class="hljs-string">&quot;&quot;&quot;Push a social post draft for approval. Returns the decision or None on rejection/expiry.&quot;&quot;&quot;</span>
 
     <span class="hljs-comment"># 1. Push the proposed action</span>
     resp = httpx.post(
-        <span class="hljs-string">f&quot;<span class="hljs-subst">{IMPRI_BASE}</span>/v1/actions&quot;</span>,
-        headers={<span class="hljs-string">&quot;Authorization&quot;</span>: <span class="hljs-string">f&quot;Bearer <span class="hljs-subst">{IMPRI_API_KEY}</span>&quot;</span>},
+        <span class="hljs-string">f&quot;<span class="hljs-subst">{AIRLOCK_BASE}</span>/v1/actions&quot;</span>,
+        headers={<span class="hljs-string">&quot;Authorization&quot;</span>: <span class="hljs-string">f&quot;Bearer <span class="hljs-subst">{AIRLOCK_API_KEY}</span>&quot;</span>},
         json={
             <span class="hljs-string">&quot;kind&quot;</span>: <span class="hljs-string">&quot;social.post&quot;</span>,
             <span class="hljs-string">&quot;title&quot;</span>: <span class="hljs-string">&quot;LinkedIn post: Q3 product update&quot;</span>,
@@ -199,8 +199,8 @@ IMPRI_BASE = <span class="hljs-string">&quot;https://api.impri.dev&quot;</span>
     <span class="hljs-comment"># 2. Poll until a human decides in Slack (or until expiry)</span>
     <span class="hljs-keyword">while</span> <span class="hljs-literal">True</span>:
         result = httpx.get(
-            <span class="hljs-string">f&quot;<span class="hljs-subst">{IMPRI_BASE}</span>/v1/actions/<span class="hljs-subst">{action_id}</span>&quot;</span>,
-            headers={<span class="hljs-string">&quot;Authorization&quot;</span>: <span class="hljs-string">f&quot;Bearer <span class="hljs-subst">{IMPRI_API_KEY}</span>&quot;</span>},
+            <span class="hljs-string">f&quot;<span class="hljs-subst">{AIRLOCK_BASE}</span>/v1/actions/<span class="hljs-subst">{action_id}</span>&quot;</span>,
+            headers={<span class="hljs-string">&quot;Authorization&quot;</span>: <span class="hljs-string">f&quot;Bearer <span class="hljs-subst">{AIRLOCK_API_KEY}</span>&quot;</span>},
             timeout=<span class="hljs-number">10</span>,
         ).json()
 
@@ -229,10 +229,10 @@ IMPRI_BASE = <span class="hljs-string">&quot;https://api.impri.dev&quot;</span>
 
     post_to_linkedin(decision[<span class="hljs-string">&quot;body&quot;</span>])
 
-    <span class="hljs-comment"># 4. Report result back to Impri (closes the audit record)</span>
+    <span class="hljs-comment"># 4. Report result back to Airlock (closes the audit record)</span>
     httpx.post(
-        <span class="hljs-string">f&quot;<span class="hljs-subst">{IMPRI_BASE}</span>/v1/actions/<span class="hljs-subst">{action_id}</span>/result&quot;</span>,  <span class="hljs-comment"># reuse action_id from outer scope</span>
-        headers={<span class="hljs-string">&quot;Authorization&quot;</span>: <span class="hljs-string">f&quot;Bearer <span class="hljs-subst">{IMPRI_API_KEY}</span>&quot;</span>},
+        <span class="hljs-string">f&quot;<span class="hljs-subst">{AIRLOCK_BASE}</span>/v1/actions/<span class="hljs-subst">{action_id}</span>/result&quot;</span>,  <span class="hljs-comment"># reuse action_id from outer scope</span>
+        headers={<span class="hljs-string">&quot;Authorization&quot;</span>: <span class="hljs-string">f&quot;Bearer <span class="hljs-subst">{AIRLOCK_API_KEY}</span>&quot;</span>},
         json={<span class="hljs-string">&quot;status&quot;</span>: <span class="hljs-string">&quot;executed&quot;</span>},
         timeout=<span class="hljs-number">10</span>,
     )</code></pre></div>
@@ -289,11 +289,11 @@ IMPRI_BASE = <span class="hljs-string">&quot;https://api.impri.dev&quot;</span>
 <p>Set up Slack as your notification channel: <a href="slack-approval">Slack approval guide</a>.</p>
 <p>For a full explanation of the push → approve → execute pattern and how to make the gate genuinely binding, see <a href="how-to-add-human-approval-to-an-ai-agent">How to Add Human Approval to an AI Agent</a>.</p>
 
-    <aside class="doc-cta" aria-label="Try Impri">
+    <aside class="doc-cta" aria-label="Try Airlock">
   <p class="doc-cta-title">Add an approval step to your own agent</p>
-  <p>Start on Impri Cloud: the Free tier includes 100 approvals a month. Or self-host the MIT-licensed core with Docker Compose, with no tier limits.</p>
+  <p>Start on Airlock Cloud: the Free tier includes 100 approvals a month. Or self-host the MIT-licensed core with Docker Compose, with no tier limits.</p>
   <div class="doc-cta-actions">
-    <a class="btn btn-primary btn-sm" href="https://app.impri.dev/?signup=1">Start free on Impri Cloud</a>
+    <a class="btn btn-primary btn-sm" href="https://app.airlock.dev/?signup=1">Start free on Airlock Cloud</a>
     <a class="btn btn-ghost btn-sm" href="../docs/quickstart">Quick start</a>
     <a class="btn btn-ghost btn-sm" href="../docs/self-hosting">Self-host guide</a>
   </div>
@@ -389,19 +389,19 @@ IMPRI_BASE = <span class="hljs-string">&quot;https://api.impri.dev&quot;</span>
 <footer class="footer">
 <div class="wrap footer-inner">
   <a class="brand" href="/">
-    <span class="mark"><svg viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.5 4.5L19 7.5" stroke="white" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Impri
+    <span class="mark"><svg viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.5 4.5L19 7.5" stroke="white" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Airlock
   </a>
   <div>
-    <a href="https://gitlab.com/sekera.radim/impri">GitLab</a>
+    <a href="https://gitlab.com/sekera.radim/airlock">GitLab</a>
     <a href="/docs">Docs</a>
-    <a href="https://gitlab.com/sekera.radim/impri/-/blob/main/LICENSE">MIT License</a>
-    <a href="https://www.npmjs.com/package/@impri/mcp">@impri/mcp</a>
+    <a href="https://gitlab.com/sekera.radim/airlock/-/blob/main/LICENSE">MIT License</a>
+    <a href="https://www.npmjs.com/package/@airlock/mcp">@airlock/mcp</a>
     <a href="/docs/privacy">Privacy</a>
     <a href="/docs/terms">Terms</a>
     <a href="https://sekera.dev">Contact</a>
   </div>
 </div>
-<div class="wrap" style="margin-top:18px"><span class="muted">© 2026 Impri · The imprimatur for your AI agents · Built by <a href="https://sekera.dev" style="color:inherit">Radim Sekera</a>. Also by the same maker: <a href="https://briefgate.dev/?utm_source=impri.dev&amp;utm_medium=referral" style="color:inherit">BriefGate</a> — client intake for agencies and AI agents.</span></div>
+<div class="wrap" style="margin-top:18px"><span class="muted">© 2026 Airlock · The airlockmatur for your AI agents · Built by <a href="https://sekera.dev" style="color:inherit">Radim Sekera</a>. Also by the same maker: <a href="https://briefgate.dev/?utm_source=airlock.dev&amp;utm_medium=referral" style="color:inherit">BriefGate</a> — client intake for agencies and AI agents.</span></div>
 </footer>
 </body>
 </html>

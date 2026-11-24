@@ -19,9 +19,9 @@ import requests
 import time
 import os
 
-IMPRI_KEY = os.environ["IMPRI_API_KEY"]
-BASE = "https://api.impri.dev"
-HEADERS = {"Authorization": f"Bearer {IMPRI_KEY}"}
+AIRLOCK_KEY = os.environ["AIRLOCK_API_KEY"]
+BASE = "https://api.airlock.dev"
+HEADERS = {"Authorization": f"Bearer {AIRLOCK_KEY}"}
 
 def propose_candidate_email(candidate_name, role, draft_body):
     resp = requests.post(f"{BASE}/v1/actions", headers=HEADERS, json={
@@ -61,18 +61,18 @@ A recruiter — not the model — is the one who actually decides a candidate he
 
 Recruiting emails are the clearest case for the `editable` field. A hiring manager rarely wants to reject a draft outright — more often they want to soften a line, fix a role title, or add a personal note before it goes out. Setting `editable: ["preview.body"]` lets them do that directly on the approval card; `decision.final_preview.body` then carries their edited version, and `decision.diff` shows exactly what changed for the audit trail. Always execute with `final_preview`, never the original draft — the API guarantees the original isn't silently reused.
 
-## Where Impri stops
+## Where Airlock stops
 
-Impri does not read the résumé, decide who's a good fit, or know anything about your ATS's data model. It stores the proposed action, notifies the reviewer, and holds the decision — nothing more. Compliance-sensitive teams tend to also want a durable record of who approved what and when; that's what the [audit log](audit-log.md) is for, and it's often the actual reason HR teams reach for a gate like this over "just trust the agent."
+Airlock does not read the résumé, decide who's a good fit, or know anything about your ATS's data model. It stores the proposed action, notifies the reviewer, and holds the decision — nothing more. Compliance-sensitive teams tend to also want a durable record of who approved what and when; that's what the [audit log](audit-log.md) is for, and it's often the actual reason HR teams reach for a gate like this over "just trust the agent."
 
 It's also only a real gate if the send path is the *only* path. If your agent also holds a raw SMTP credential or ATS API token it can call directly, it can route around the approval step entirely — the gate has to be the sole chokepoint to the side effect, not an optional detour.
 
-| Situation | Use Impri |
+| Situation | Use Airlock |
 |---|---|
 | Agent drafts a rejection/offer email | Yes |
 | Agent proposes an interview slot to book | Yes |
 | You need proof of who approved a candidate communication | Yes |
-| You need multi-stage hiring workflow logic (scorecards, stage transitions) | Use your ATS or a workflow engine; Impri is one step in it |
+| You need multi-stage hiring workflow logic (scorecards, stage transitions) | Use your ATS or a workflow engine; Airlock is one step in it |
 
 ## Next step
 

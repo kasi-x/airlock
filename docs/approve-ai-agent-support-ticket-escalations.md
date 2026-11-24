@@ -18,15 +18,15 @@ For an agent already running as a Claude Agent SDK or Claude Code subagent, the 
 import { Client } from "@modelcontextprotocol/sdk/client/index.js";
 import { StdioClientTransport } from "@modelcontextprotocol/sdk/client/stdio.js";
 
-const impri = new Client({ name: "support-escalations", version: "1.0.0" });
-await impri.connect(
+const airlock = new Client({ name: "support-escalations", version: "1.0.0" });
+await airlock.connect(
   new StdioClientTransport({
     command: "npx",
-    args: ["@impri/mcp"],
+    args: ["@airlock/mcp"],
     env: {
       PATH: process.env.PATH!,
-      IMPRI_API_KEY: process.env.IMPRI_API_KEY!,
-      IMPRI_BASE_URL: "https://api.impri.dev", // or your self-hosted API
+      AIRLOCK_API_KEY: process.env.AIRLOCK_API_KEY!,
+      AIRLOCK_BASE_URL: "https://api.airlock.dev", // or your self-hosted API
     },
   }),
 );
@@ -34,8 +34,8 @@ await impri.connect(
 async function escalateTicket(ticket: {
   id: string; customer: string; amount: number; reason: string;
 }) {
-  const pushed = await impri.callTool({
-    name: "impri_push_action",
+  const pushed = await airlock.callTool({
+    name: "airlock_push_action",
     arguments: {
       kind: "ticket.escalate",
       title: `Refund $${ticket.amount} — ticket #${ticket.id} (${ticket.customer})`,
@@ -47,11 +47,11 @@ async function escalateTicket(ticket: {
       expires_in: 14400, // 4h — an unresolved escalation goes stale fast
     },
   });
-  // Impri's MCP tools return their JSON under structuredContent.
+  // Airlock's MCP tools return their JSON under structuredContent.
   const { action_id: actionId } = pushed.structuredContent as { action_id: string };
 
-  const decided = await impri.callTool(
-    { name: "impri_await_decision", arguments: { action_id: actionId, timeout_s: 14400 } },
+  const decided = await airlock.callTool(
+    { name: "airlock_await_decision", arguments: { action_id: actionId, timeout_s: 14400 } },
     undefined,
     { timeout: 14_460_000 }, // the MCP client gives up after 60 s by default
   );
@@ -67,8 +67,8 @@ async function escalateTicket(ticket: {
   // preview.body carries the on-call lead's edit when they changed the text.
   const result = await issueRefund(ticket.id, decision.preview.body);
 
-  await impri.callTool({
-    name: "impri_report_result",
+  await airlock.callTool({
+    name: "airlock_report_result",
     arguments: { action_id: actionId, status: result.ok ? "executed" : "execute_failed" },
   });
 
@@ -92,8 +92,8 @@ A refund decision that sits unread in a web inbox for six hours isn't a gate, it
 | Account reopen / ban reversal | 24h | `preview.body` (justification) |
 | Priority/SLA override | 1h | none — approve or reject only |
 
-## What Impri is not doing here
+## What Airlock is not doing here
 
-Impri doesn't know your refund policy, doesn't calculate the amount, and doesn't touch your ticketing system. It stores the proposed escalation, shows it to whoever has approval authority, and hands your code a decision. The `issueRefund` call and the ticket status update are your integration, wired through the [TypeScript SDK](sdk-typescript.md) or the [MCP server](mcp.md) as shown above.
+Airlock doesn't know your refund policy, doesn't calculate the amount, and doesn't touch your ticketing system. It stores the proposed escalation, shows it to whoever has approval authority, and hands your code a decision. The `issueRefund` call and the ticket status update are your integration, wired through the [TypeScript SDK](sdk-typescript.md) or the [MCP server](mcp.md) as shown above.
 
 **Next step:** [Quickstart](quickstart.md) to get an API key, then swap the `issueRefund` stub above for your actual support-platform call.

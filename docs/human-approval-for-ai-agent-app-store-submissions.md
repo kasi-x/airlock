@@ -39,12 +39,12 @@ Mark `preview.body` as `editable` so the reviewer can fix a typo in the release 
 
 ## TypeScript example
 
-Node 18+ with built-in `fetch`. `submitToStore` is your own function (fastlane, the store APIs, a CI trigger) — Impri never talks to the stores.
+Node 18+ with built-in `fetch`. `submitToStore` is your own function (fastlane, the store APIs, a CI trigger) — Airlock never talks to the stores.
 
 ```typescript
-const API = "https://api.impri.dev";
+const API = "https://api.airlock.dev";
 const headers = {
-  Authorization: `Bearer ${process.env.IMPRI_API_KEY}`,
+  Authorization: `Bearer ${process.env.AIRLOCK_API_KEY}`,
   "Content-Type": "application/json",
 };
 
@@ -74,7 +74,7 @@ async function requestSubmissionApproval(r: Release): Promise<string> {
       undo: "Remove the build from review or halt the rollout in the store console.",
     }),
   });
-  if (!res.ok) throw new Error(`Impri push failed: ${res.status}`);
+  if (!res.ok) throw new Error(`Airlock push failed: ${res.status}`);
   return (await res.json()).id;
 }
 
@@ -109,9 +109,9 @@ The `idempotent: false` flag puts a warning badge on the card, which is correct:
 
 ## Boundaries worth stating plainly
 
-- **Impri does not know what a build is.** It shows text and holds a decision. Make sure the version and build number in the card are the ones `submitToStore` actually uploads, ideally by passing the same `release` object to both.
+- **Airlock does not know what a build is.** It shows text and holds a decision. Make sure the version and build number in the card are the ones `submitToStore` actually uploads, ideally by passing the same `release` object to both.
 - **It is only a gate if it is the only path.** If the agent's CI has store credentials in its environment and can run `fastlane deliver` on its own, it can bypass the approval. Keep store credentials in the gated step only.
-- **It is not a release pipeline.** Build orchestration, rollout percentages and rollback automation belong in your CI. Impri answers one question: did a human approve this submission?
+- **It is not a release pipeline.** Build orchestration, rollout percentages and rollback automation belong in your CI. Airlock answers one question: did a human approve this submission?
 
 ---
 

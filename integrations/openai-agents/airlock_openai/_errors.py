@@ -1,6 +1,6 @@
-"""Impri exception hierarchy.
+"""Airlock exception hierarchy.
 
-All typed exceptions inherit from ImpriError.
+All typed exceptions inherit from AirlockError.
 """
 from __future__ import annotations
 
@@ -10,15 +10,15 @@ if TYPE_CHECKING:
     import httpx
 
 
-class ImpriError(Exception):
-    """Base class for all Impri SDK errors."""
+class AirlockError(Exception):
+    """Base class for all Airlock SDK errors."""
 
 
-class ImpriConfigError(ImpriError):
+class AirlockConfigError(AirlockError):
     """Raised at client construction when api_key is missing or base_url is malformed."""
 
 
-class ImpriUnauthorized(ImpriError):
+class AirlockUnauthorized(AirlockError):
     """Raised on HTTP 401 or 403: wrong key or missing scope."""
 
     def __init__(self, message: str, *, response: "httpx.Response | None" = None) -> None:
@@ -26,7 +26,7 @@ class ImpriUnauthorized(ImpriError):
         self.response = response
 
 
-class ImpriNotFound(ImpriError):
+class AirlockNotFound(AirlockError):
     """Raised on HTTP 404: action or watcher not found, or belongs to a different project."""
 
     def __init__(self, message: str, *, response: "httpx.Response | None" = None) -> None:
@@ -34,7 +34,7 @@ class ImpriNotFound(ImpriError):
         self.response = response
 
 
-class ImpriConflict(ImpriError):
+class AirlockConflict(AirlockError):
     """Raised on HTTP 409: already decided, idempotency race, or result on non-approved action."""
 
     def __init__(self, message: str, *, response: "httpx.Response | None" = None) -> None:
@@ -42,7 +42,7 @@ class ImpriConflict(ImpriError):
         self.response = response
 
 
-class ImpriExpired(ImpriError):
+class AirlockExpired(AirlockError):
     """Raised on HTTP 410, or by await_decision when status='expired'.
 
     The approval window closed before a human decision was made.
@@ -53,7 +53,7 @@ class ImpriExpired(ImpriError):
         self.response = response
 
 
-class ImpriRateLimited(ImpriError):
+class AirlockRateLimited(AirlockError):
     """Raised on HTTP 429: per-key rate limit hit."""
 
     def __init__(
@@ -68,7 +68,7 @@ class ImpriRateLimited(ImpriError):
         self.response = response
 
 
-class ImpriQuotaExceeded(ImpriError):
+class AirlockQuotaExceeded(AirlockError):
     """Raised on HTTP 402: monthly approval limit or watcher count reached (cloud tiers)."""
 
     def __init__(
@@ -85,7 +85,7 @@ class ImpriQuotaExceeded(ImpriError):
         self.response = response
 
 
-class ImpriValidationError(ImpriError):
+class AirlockValidationError(AirlockError):
     """Raised on HTTP 400 or 422: server-side schema validation failed."""
 
     def __init__(
@@ -100,7 +100,7 @@ class ImpriValidationError(ImpriError):
         self.response = response
 
 
-class ImpriApiError(ImpriError):
+class AirlockApiError(AirlockError):
     """Catch-all for unexpected 4xx/5xx responses."""
 
     def __init__(
@@ -115,7 +115,7 @@ class ImpriApiError(ImpriError):
         self.response = response
 
 
-class ImpriRejected(ImpriError):
+class AirlockRejected(AirlockError):
     """Raised by await_decision when the human verdict is 'reject'.
 
     NOT an HTTP error — catch this as a normal flow outcome.
@@ -134,7 +134,7 @@ class ImpriRejected(ImpriError):
         self.final_preview = final_preview
 
 
-class ImpriTimeout(ImpriError):
+class AirlockTimeout(AirlockError):
     """Raised by await_decision when timeout_s elapses.
 
     The action remains 'pending' server-side — call await_decision again
@@ -149,5 +149,5 @@ class ImpriTimeout(ImpriError):
         self.action_id = action_id
 
 
-class ImpriWebhookSignatureError(ImpriError):
+class AirlockWebhookSignatureError(AirlockError):
     """Raised by verify_webhook on HMAC mismatch or bad signature format."""

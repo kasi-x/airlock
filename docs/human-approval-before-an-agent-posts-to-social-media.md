@@ -21,15 +21,15 @@ import os
 import time
 import requests
 
-IMPRI_BASE = "https://api.impri.dev"
+AIRLOCK_BASE = "https://api.airlock.dev"
 HEADERS = {
-    "Authorization": f"Bearer {os.environ['IMPRI_API_KEY']}",
+    "Authorization": f"Bearer {os.environ['AIRLOCK_API_KEY']}",
     "Content-Type": "application/json",
 }
 
 def push_post_for_approval(draft_text: str, scheduler_url: str) -> str:
     resp = requests.post(
-        f"{IMPRI_BASE}/v1/actions",
+        f"{AIRLOCK_BASE}/v1/actions",
         headers=HEADERS,
         json={
             "kind": "social.post",
@@ -45,7 +45,7 @@ def push_post_for_approval(draft_text: str, scheduler_url: str) -> str:
 
 def wait_for_decision(action_id: str) -> dict:
     while True:
-        data = requests.get(f"{IMPRI_BASE}/v1/actions/{action_id}", headers=HEADERS).json()
+        data = requests.get(f"{AIRLOCK_BASE}/v1/actions/{action_id}", headers=HEADERS).json()
         if data["status"] != "pending":
             return data
         time.sleep(10)
@@ -57,7 +57,7 @@ if decision["status"] == "approved":
     final_body = decision["decision"]["final_preview"]["body"]
     post_to_linkedin(final_body)  # your platform call
     requests.post(
-        f"{IMPRI_BASE}/v1/actions/{action_id}/result",
+        f"{AIRLOCK_BASE}/v1/actions/{action_id}/result",
         headers=HEADERS,
         json={"status": "executed"},
     )
@@ -91,9 +91,9 @@ A `rejected` or `expired` status means the polling loop above exits with `post_t
 
 ---
 
-## What Impri does not check
+## What Airlock does not check
 
-Impri stores the draft, notifies a human, and holds the decision — it does not read the post and judge whether it violates a platform's terms of service, your brand voice guide, or defamation law. That judgment stays with the human reviewing the card. Impri also isn't a scheduling tool: it doesn't manage a content calendar or pick posting times, it just gates the one action — the actual platform-side publish call — that turns a draft into something public.
+Airlock stores the draft, notifies a human, and holds the decision — it does not read the post and judge whether it violates a platform's terms of service, your brand voice guide, or defamation law. That judgment stays with the human reviewing the card. Airlock also isn't a scheduling tool: it doesn't manage a content calendar or pick posting times, it just gates the one action — the actual platform-side publish call — that turns a draft into something public.
 
 For a phone-first workflow, pair this with [Telegram approval](telegram-approval.md) so a reviewer can approve or edit from a notification without opening a dashboard, and check [the audit log](audit-log.md) later for a record of every post approved, by whom, and what was changed before it went out.
 

@@ -17,15 +17,15 @@ That's the core design decision for this pattern: classify each tool the agent c
 ```typescript
 type Tool = (args: Record<string, unknown>) => Promise<unknown>;
 
-const IMPRI_API = "https://api.impri.dev";
+const AIRLOCK_API = "https://api.airlock.dev";
 const HEADERS = {
-  Authorization: `Bearer ${process.env.IMPRI_API_KEY}`,
+  Authorization: `Bearer ${process.env.AIRLOCK_API_KEY}`,
   "Content-Type": "application/json",
 };
 
 function requireApproval(kind: string, title: string, toPreview: (args: any) => string, execute: Tool): Tool {
   return async (args) => {
-    const create = await fetch(`${IMPRI_API}/v1/actions`, {
+    const create = await fetch(`${AIRLOCK_API}/v1/actions`, {
       method: "POST",
       headers: HEADERS,
       body: JSON.stringify({
@@ -40,7 +40,7 @@ function requireApproval(kind: string, title: string, toPreview: (args: any) => 
     let decision;
     do {
       await new Promise((r) => setTimeout(r, 5000));
-      decision = await fetch(`${IMPRI_API}/v1/actions/${create.id}`, { headers: HEADERS }).then((r) => r.json());
+      decision = await fetch(`${AIRLOCK_API}/v1/actions/${create.id}`, { headers: HEADERS }).then((r) => r.json());
     } while (decision.status === "pending");
 
     if (decision.status !== "approved") {
@@ -91,6 +91,6 @@ If you're unsure whether a tool belongs in the privileged column, ask whether a 
 
 ## Boundaries worth stating plainly
 
-Impri holds the decision and notifies a human — it doesn't plan the agent's steps, decide which tools are privileged, or interpret whether a given draft is good. That classification work above is yours to do once, per tool, when you build the agent. Impri also isn't a multi-agent coordination layer: if your "autonomous agent" is actually several agents handing off work to each other, the approval gate still only covers the specific tool call it wraps, not the handoff logic between agents.
+Airlock holds the decision and notifies a human — it doesn't plan the agent's steps, decide which tools are privileged, or interpret whether a given draft is good. That classification work above is yours to do once, per tool, when you build the agent. Airlock also isn't a multi-agent coordination layer: if your "autonomous agent" is actually several agents handing off work to each other, the approval gate still only covers the specific tool call it wraps, not the handoff logic between agents.
 
 For the full three-call pattern this wrapper is built on, see [how to add human approval to an AI agent](how-to-add-human-approval-to-an-ai-agent.md). For a broader look at building the loop itself with review checkpoints baked in from the start, see [how to build a human-in-the-loop AI agent](how-to-build-a-human-in-the-loop-ai-agent.md). If your agent is built on LangGraph specifically, [human-in-the-loop for LangGraph](human-in-the-loop-langgraph.md) covers the framework-specific checkpoint API.

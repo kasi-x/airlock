@@ -3,21 +3,21 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Prevent Prompt Injection From Executing Real Actions — Impri Docs</title>
+<title>Prevent Prompt Injection From Executing Real Actions — Airlock Docs</title>
 <meta name="description" content="Prompt injection can't be filtered away reliably — the fix that holds is making sure injected text can steer what an agent says, never what it does…">
 <meta name="theme-color" content="#06070d">
-<meta property="og:title" content="Prevent Prompt Injection From Executing Real Actions — Impri Docs">
+<meta property="og:title" content="Prevent Prompt Injection From Executing Real Actions — Airlock Docs">
 <meta property="og:description" content="Prompt injection can't be filtered away reliably — the fix that holds is making sure injected text can steer what an agent says, never what it does…">
 <meta property="og:type" content="article">
-<meta property="og:url" content="https://impri.dev/docs/prevent-prompt-injection-from-executing-actions">
-<meta property="og:image" content="https://impri.dev/assets/og/og-docs.png">
+<meta property="og:url" content="https://airlock.dev/docs/prevent-prompt-injection-from-executing-actions">
+<meta property="og:image" content="https://airlock.dev/assets/og/og-docs.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
-<meta property="og:image:alt" content="Impri — human-in-the-loop approval inbox for AI agents">
+<meta property="og:image:alt" content="Airlock — human-in-the-loop approval inbox for AI agents">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="https://impri.dev/assets/og/og-docs.png">
-<link rel="canonical" href="https://impri.dev/docs/prevent-prompt-injection-from-executing-actions">
-<script type="application/ld+json">{"@context":"https://schema.org","@type":"TechArticle","headline":"Prevent Prompt Injection From Executing Real Actions","description":"Prompt injection can't be filtered away reliably — the fix that holds is making sure injected text can steer what an agent says, never what it does…","url":"https://impri.dev/docs/prevent-prompt-injection-from-executing-actions","inLanguage":"en","author":{"@type":"Organization","name":"Impri","url":"https://impri.dev"},"publisher":{"@type":"Organization","name":"Impri","url":"https://impri.dev"}}</script>
+<meta name="twitter:image" content="https://airlock.dev/assets/og/og-docs.png">
+<link rel="canonical" href="https://airlock.dev/docs/prevent-prompt-injection-from-executing-actions">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"TechArticle","headline":"Prevent Prompt Injection From Executing Real Actions","description":"Prompt injection can't be filtered away reliably — the fix that holds is making sure injected text can steer what an agent says, never what it does…","url":"https://airlock.dev/docs/prevent-prompt-injection-from-executing-actions","inLanguage":"en","author":{"@type":"Organization","name":"Airlock","url":"https://airlock.dev"},"publisher":{"@type":"Organization","name":"Airlock","url":"https://airlock.dev"}}</script>
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <link rel="icon" href="/favicon.ico" sizes="32x32">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='9' fill='%236366f1'/%3E%3Cpath d='M9 16.5l4.5 4.5L23 11' stroke='white' stroke-width='3' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
@@ -132,13 +132,13 @@ pre code.hljs{display:block;overflow-x:auto}
 <div class="wrap nav-inner">
   <a class="brand" href="/">
     <span class="mark"><svg viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.5 4.5L19 7.5" stroke="white" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
-    Impri
+    Airlock
   </a>
   <div class="nav-links">
     <a class="link" href="/#how">How it works</a>
     <a class="link" href="/#pricing">Pricing</a>
     <a class="link active-nav" href="../docs">Docs</a>
-    <a class="btn btn-primary btn-sm" href="https://gitlab.com/sekera.radim/impri">GitLab</a>
+    <a class="btn btn-primary btn-sm" href="https://gitlab.com/sekera.radim/airlock">GitLab</a>
   </div>
 </div>
 </nav>
@@ -165,11 +165,11 @@ pre code.hljs{display:block;overflow-x:auto}
 <li>In your system prompt and context construction, be explicit that RSS content, scraped pages, emails, and support tickets are data to summarize, not commands to follow. This helps, and costs nothing.</li>
 <li>Assume layer 1 fails sometimes, and put a human between any tool call with a real-world effect and its execution. This is the layer that actually holds under adversarial input, because it doesn&#39;t rely on the model correctly classifying text as safe or unsafe.</li>
 </ol>
-<p>Here&#39;s a support-agent refund tool wrapped with Impri as that second layer, in TypeScript:</p>
+<p>Here&#39;s a support-agent refund tool wrapped with Airlock as that second layer, in TypeScript:</p>
 <div class="code-block"><span class="code-lang">typescript</span><pre><code class="hljs"><span class="hljs-keyword">import</span> fetch <span class="hljs-keyword">from</span> <span class="hljs-string">&quot;node-fetch&quot;</span>;
 
-<span class="hljs-keyword">const</span> <span class="hljs-variable constant_">BASE</span> = process.<span class="hljs-property">env</span>.<span class="hljs-property">IMPRI_BASE_URL</span> ?? <span class="hljs-string">&quot;https://api.impri.dev&quot;</span>;
-<span class="hljs-keyword">const</span> <span class="hljs-variable constant_">KEY</span> = process.<span class="hljs-property">env</span>.<span class="hljs-property">IMPRI_API_KEY</span>!;
+<span class="hljs-keyword">const</span> <span class="hljs-variable constant_">BASE</span> = process.<span class="hljs-property">env</span>.<span class="hljs-property">AIRLOCK_BASE_URL</span> ?? <span class="hljs-string">&quot;https://api.airlock.dev&quot;</span>;
+<span class="hljs-keyword">const</span> <span class="hljs-variable constant_">KEY</span> = process.<span class="hljs-property">env</span>.<span class="hljs-property">AIRLOCK_API_KEY</span>!;
 
 <span class="hljs-keyword">async</span> <span class="hljs-keyword">function</span> <span class="hljs-title function_">guardedRefund</span>(<span class="hljs-params"><span class="hljs-attr">accountId</span>: <span class="hljs-built_in">string</span>, <span class="hljs-attr">amountCents</span>: <span class="hljs-built_in">number</span>, <span class="hljs-attr">reason</span>: <span class="hljs-built_in">string</span></span>) {
   <span class="hljs-comment">// reason may contain attacker-controlled text lifted from the ticket —</span>
@@ -239,15 +239,15 @@ pre code.hljs{display:block;overflow-x:auto}
 </div>
 <hr>
 <h2 id="what-this-does-and-doesn39t-fix">What this does and doesn&#39;t fix</h2>
-<p>Gating the action doesn&#39;t fix the injection — the model still gets fooled into <em>proposing</em> the refund, the email, the post. What it fixes is the part that matters: the proposal can&#39;t become a real side effect without a human confirming it&#39;s legitimate, no matter how convincing the injected text was. Impri specifically only handles that gate — it stores the proposed action and holds the decision, it doesn&#39;t scan content for injection attempts or make the call on whether the refund is legitimate. That judgment stays with the human reading the card.</p>
+<p>Gating the action doesn&#39;t fix the injection — the model still gets fooled into <em>proposing</em> the refund, the email, the post. What it fixes is the part that matters: the proposal can&#39;t become a real side effect without a human confirming it&#39;s legitimate, no matter how convincing the injected text was. Airlock specifically only handles that gate — it stores the proposed action and holds the decision, it doesn&#39;t scan content for injection attempts or make the call on whether the refund is legitimate. That judgment stays with the human reading the card.</p>
 <p>For the full three-call integration (REST and MCP) this example builds on, see <a href="how-to-add-human-approval-to-an-ai-agent">how to add human approval to an AI agent</a>. If the agent is polling external sources on a schedule rather than reacting to live chat, <a href="watcher-presets">watcher presets</a> covers wiring RSS/Reddit/page-diff pollers into the same approval flow.</p>
 <p>Next: <a href="quickstart">quickstart</a> to get an API key and gate your first tool call.</p>
 
-    <aside class="doc-cta" aria-label="Try Impri">
+    <aside class="doc-cta" aria-label="Try Airlock">
   <p class="doc-cta-title">Add an approval step to your own agent</p>
-  <p>Start on Impri Cloud: the Free tier includes 100 approvals a month. Or self-host the MIT-licensed core with Docker Compose, with no tier limits.</p>
+  <p>Start on Airlock Cloud: the Free tier includes 100 approvals a month. Or self-host the MIT-licensed core with Docker Compose, with no tier limits.</p>
   <div class="doc-cta-actions">
-    <a class="btn btn-primary btn-sm" href="https://app.impri.dev/?signup=1">Start free on Impri Cloud</a>
+    <a class="btn btn-primary btn-sm" href="https://app.airlock.dev/?signup=1">Start free on Airlock Cloud</a>
     <a class="btn btn-ghost btn-sm" href="../docs/quickstart">Quick start</a>
     <a class="btn btn-ghost btn-sm" href="../docs/self-hosting">Self-host guide</a>
   </div>
@@ -341,19 +341,19 @@ pre code.hljs{display:block;overflow-x:auto}
 <footer class="footer">
 <div class="wrap footer-inner">
   <a class="brand" href="/">
-    <span class="mark"><svg viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.5 4.5L19 7.5" stroke="white" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Impri
+    <span class="mark"><svg viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.5 4.5L19 7.5" stroke="white" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Airlock
   </a>
   <div>
-    <a href="https://gitlab.com/sekera.radim/impri">GitLab</a>
+    <a href="https://gitlab.com/sekera.radim/airlock">GitLab</a>
     <a href="/docs">Docs</a>
-    <a href="https://gitlab.com/sekera.radim/impri/-/blob/main/LICENSE">MIT License</a>
-    <a href="https://www.npmjs.com/package/@impri/mcp">@impri/mcp</a>
+    <a href="https://gitlab.com/sekera.radim/airlock/-/blob/main/LICENSE">MIT License</a>
+    <a href="https://www.npmjs.com/package/@airlock/mcp">@airlock/mcp</a>
     <a href="/docs/privacy">Privacy</a>
     <a href="/docs/terms">Terms</a>
     <a href="https://sekera.dev">Contact</a>
   </div>
 </div>
-<div class="wrap" style="margin-top:18px"><span class="muted">© 2026 Impri · The imprimatur for your AI agents · Built by <a href="https://sekera.dev" style="color:inherit">Radim Sekera</a>. Also by the same maker: <a href="https://briefgate.dev/?utm_source=impri.dev&amp;utm_medium=referral" style="color:inherit">BriefGate</a> — client intake for agencies and AI agents.</span></div>
+<div class="wrap" style="margin-top:18px"><span class="muted">© 2026 Airlock · The airlockmatur for your AI agents · Built by <a href="https://sekera.dev" style="color:inherit">Radim Sekera</a>. Also by the same maker: <a href="https://briefgate.dev/?utm_source=airlock.dev&amp;utm_medium=referral" style="color:inherit">BriefGate</a> — client intake for agencies and AI agents.</span></div>
 </footer>
 </body>
 </html>

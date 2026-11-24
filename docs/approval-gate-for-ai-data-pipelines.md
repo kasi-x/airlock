@@ -15,7 +15,7 @@ The agent should keep doing the diagnosis — that's the hard part it's actually
 ## Where the gate sits
 
 ```
-Orchestrator alert ──▶ Agent diagnoses ──▶ Impri holds proposed fix ──▶ Data engineer decides
+Orchestrator alert ──▶ Agent diagnoses ──▶ Airlock holds proposed fix ──▶ Data engineer decides
                                                     │
                                        reject/expire │ approve
                                                     ▼         ▼
@@ -30,8 +30,8 @@ The agent never calls the orchestrator's rerun/delete API directly — it calls 
 ## Wiring it up (TypeScript)
 
 ```typescript
-const IMPRI_KEY = process.env.IMPRI_API_KEY!;
-const BASE = "https://api.impri.dev";
+const AIRLOCK_KEY = process.env.AIRLOCK_API_KEY!;
+const BASE = "https://api.airlock.dev";
 
 interface RemediationProposal {
   dagId: string;
@@ -45,7 +45,7 @@ async function proposeRemediation(p: RemediationProposal): Promise<string> {
   const res = await fetch(`${BASE}/v1/actions`, {
     method: "POST",
     headers: {
-      Authorization: `Bearer ${IMPRI_KEY}`,
+      Authorization: `Bearer ${AIRLOCK_KEY}`,
       "Content-Type": "application/json",
     },
     body: JSON.stringify({
@@ -71,7 +71,7 @@ async function awaitDecision(actionId: string, timeoutS = 1800): Promise<any> {
   const deadline = Date.now() + timeoutS * 1000;
   while (Date.now() < deadline) {
     const r = await fetch(`${BASE}/v1/actions/${actionId}`, {
-      headers: { Authorization: `Bearer ${IMPRI_KEY}` },
+      headers: { Authorization: `Bearer ${AIRLOCK_KEY}` },
     }).then((r) => r.json());
     if (r.status !== "pending") return r;
     await new Promise((resolve) => setTimeout(resolve, 10_000));
@@ -93,7 +93,7 @@ if (decision.status === "approved") {
   await orchestrator.deletePartition(decision.decision.final_preview.body);
   await fetch(`${BASE}/v1/actions/${actionId}/result`, {
     method: "POST",
-    headers: { Authorization: `Bearer ${IMPRI_KEY}`, "Content-Type": "application/json" },
+    headers: { Authorization: `Bearer ${AIRLOCK_KEY}`, "Content-Type": "application/json" },
     body: JSON.stringify({ status: "executed", payload: { target: "billing_events/dt=2026-08-02" } }),
   });
 }
@@ -111,12 +111,12 @@ Note `idempotent` and `undo` doing real work here: a rerun is usually safe to re
 | Giving the reviewer the exact target (partition, date range, task) | Validating that target is actually correct |
 | An audit trail of who approved which remediation, and when | Scheduling or orchestrating the DAG itself |
 
-Impri is the gate, not the orchestrator and not the data-quality checker. It won't tell you the partition is actually corrupted — your monitoring does that. It also isn't a replacement for [Airflow's own retry logic](integrations.md) for transient failures; reserve the approval gate for remediations that mutate or delete data, not every automatic retry.
+Airlock is the gate, not the orchestrator and not the data-quality checker. It won't tell you the partition is actually corrupted — your monitoring does that. It also isn't a replacement for [Airflow's own retry logic](integrations.md) for transient failures; reserve the approval gate for remediations that mutate or delete data, not every automatic retry.
 
 ---
 
 ## Audit trail matters here more than usual
 
-Data incidents get post-mortems. Because every proposed remediation and its decision live in Impri, "who approved deleting that partition, and what did the agent say the reason was" is answered by the [audit log](audit-log.md) instead of by someone's memory of a Slack thread three weeks later.
+Data incidents get post-mortems. Because every proposed remediation and its decision live in Airlock, "who approved deleting that partition, and what did the agent say the reason was" is answered by the [audit log](audit-log.md) instead of by someone's memory of a Slack thread three weeks later.
 
 Next: the [quickstart](quickstart.md) covers getting an API key for cloud or self-hosted use; see [how to add human approval to an AI agent](how-to-add-human-approval-to-an-ai-agent.md) for the underlying request/poll/execute pattern this builds on.

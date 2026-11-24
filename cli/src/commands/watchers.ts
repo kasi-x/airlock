@@ -1,7 +1,7 @@
 import readline from 'node:readline'
 import { Command } from 'commander'
-import { ImpriError } from '@impri/sdk'
-import type { WatcherStatus, WatcherKind } from '@impri/sdk'
+import { AirlockError } from '@airlock/sdk'
+import type { WatcherStatus, WatcherKind } from '@airlock/sdk'
 import { makeClient } from '../client-factory.js'
 import { bold, dim, cyan, green, red, yellow, renderTable, fmtTs, printError, printJson, Column } from '../output.js'
 
@@ -25,12 +25,12 @@ const WATCHER_COLUMNS: Column[] = [
 ]
 
 export function registerWatchers(program: Command): void {
-  // 'impri watchers' as top-level command grouping
+  // 'airlock watchers' as top-level command grouping
   const watchersCmd = program
     .command('watchers')
     .description('Manage watchers')
 
-  // impri watchers list
+  // airlock watchers list
   watchersCmd
     .command('list')
     .description('List all watchers')
@@ -58,7 +58,7 @@ export function registerWatchers(program: Command): void {
       process.stdout.write(renderTable(WATCHER_COLUMNS, result.items as unknown as Record<string, unknown>[]) + '\n')
     })
 
-  // impri watchers get <id>
+  // airlock watchers get <id>
   watchersCmd
     .command('get <watcher-id>')
     .description('Fetch a single watcher with item count')
@@ -87,7 +87,7 @@ export function registerWatchers(program: Command): void {
       process.stdout.write(`  Next run:   ${fmtTs(watcher.next_run_at)}\n`)
     })
 
-  // impri watchers delete <id>
+  // airlock watchers delete <id>
   watchersCmd
     .command('delete <watcher-id>')
     .description('Permanently delete a watcher')
@@ -108,7 +108,7 @@ export function registerWatchers(program: Command): void {
       process.stdout.write(`${green('Deleted')} watcher ${watcherId}\n`)
     })
 
-  // Also expose 'impri watch add' via a separate 'watch' command in the parent program.
+  // Also expose 'airlock watch add' via a separate 'watch' command in the parent program.
   // The watch+add is registered separately by registerWatchAdd in presets.ts.
 }
 
@@ -123,7 +123,7 @@ async function confirm(question: string): Promise<boolean> {
 }
 
 function handleError(err: unknown): never {
-  if (err instanceof ImpriError) {
+  if (err instanceof AirlockError) {
     printError(err.message)
   } else {
     printError(String(err))

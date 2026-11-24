@@ -45,8 +45,8 @@ describe('isInWindow timezone awareness (DST-correct)', () => {
 describe('robots.txt pure check', () => {
   it('allows unmatched paths and blocks disallowed ones', () => {
     const txt = 'User-agent: *\nDisallow: /private';
-    expect(checkRobots('https://x/robots.txt', txt, 'https://x/public', 'Impri-Watcher')).toBe(true);
-    expect(checkRobots('https://x/robots.txt', txt, 'https://x/private/p', 'Impri-Watcher')).toBe(false);
+    expect(checkRobots('https://x/robots.txt', txt, 'https://x/public', 'Airlock-Watcher')).toBe(true);
+    expect(checkRobots('https://x/robots.txt', txt, 'https://x/private/p', 'Airlock-Watcher')).toBe(false);
   });
 });
 
@@ -153,7 +153,7 @@ describe('composite cursor pagination', () => {
 });
 
 describe('malformed JSON body', () => {
-  // Regression for Sentry IMPRI-API-2. Body parsing runs before auth, so the
+  // Regression for Sentry AIRLOCK-API-2. Body parsing runs before auth, so the
   // anonymous request needs no project or key.
   it('answers 400 and does not report the caller mistake to Sentry', async () => {
     const captureError = vi.fn();

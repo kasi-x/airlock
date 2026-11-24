@@ -8,7 +8,7 @@ Overnight AI agents draft emails, tickets, and posts while you're asleep — thi
 
 A cron job that kicks off a Claude Code agent at 2am to triage inbox threads, draft support replies, or scan RSS feeds for content ideas is genuinely useful — until the agent decides one of those drafts should go out immediately. Nobody is watching at 2am. If the draft is wrong, or a scraped page contained an injected instruction, it ships before anyone notices. The fix isn't "don't run agents overnight" — it's separating **drafting** (fine to do unattended) from **sending** (needs a human awake to look at it).
 
-Impri sits at that boundary. The overnight agent pushes every side-effecting action to Impri and stops. It doesn't wait around — there's no one to notify at 2am anyway. You review the stack when you wake up.
+Airlock sits at that boundary. The overnight agent pushes every side-effecting action to Airlock and stops. It doesn't wait around — there's no one to notify at 2am anyway. You review the stack when you wake up.
 
 ---
 
@@ -20,12 +20,12 @@ The default `expires_in` (72 hours) is fine, but for a nightly batch you want ac
 import requests
 import os
 
-IMPRI_KEY = os.environ["IMPRI_API_KEY"]
+AIRLOCK_KEY = os.environ["AIRLOCK_API_KEY"]
 
 def queue_overnight_draft(kind, title, body, target_url=None):
     resp = requests.post(
-        "https://api.impri.dev/v1/actions",
-        headers={"Authorization": f"Bearer {IMPRI_KEY}"},
+        "https://api.airlock.dev/v1/actions",
+        headers={"Authorization": f"Bearer {AIRLOCK_KEY}"},
         json={
             "kind": kind,
             "title": title,
@@ -58,18 +58,18 @@ A single overnight run can produce a dozen drafts. Reviewing them one by one on 
 
 ```bash
 # Check one action's status before deciding
-curl -s https://api.impri.dev/v1/actions/act_101 \
-  -H "Authorization: Bearer $IMPRI_API_KEY"
+curl -s https://api.airlock.dev/v1/actions/act_101 \
+  -H "Authorization: Bearer $AIRLOCK_API_KEY"
 
 # Decide on several at once via the bulk endpoint, rather than
 # one API call (or one inbox tap) per drafted reply
-curl -s -X POST https://api.impri.dev/v1/actions/bulk-decision \
-  -H "Authorization: Bearer $IMPRI_API_KEY" \
+curl -s -X POST https://api.airlock.dev/v1/actions/bulk-decision \
+  -H "Authorization: Bearer $AIRLOCK_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{"ids": ["act_101", "act_102", "act_105"]}'
 ```
 
-In practice most people just do this from the inbox web UI on their phone — the bulk endpoint matters when you're scripting a review pass over a batch you've already read, which is a judgment call you make, not something Impri infers on its own.
+In practice most people just do this from the inbox web UI on their phone — the bulk endpoint matters when you're scripting a review pass over a batch you've already read, which is a judgment call you make, not something Airlock infers on its own.
 
 ---
 
@@ -81,7 +81,7 @@ Nobody wants to open an app every morning just in case. Wire a push channel so t
 
 ## What this doesn't solve
 
-Impri holds the decision; it doesn't decide anything about *when* your agent should run or *how* it should batch work — that scheduling logic is yours (cron, a queue, whatever you already use). It also doesn't retroactively protect you from an agent that has its own direct credentials to the sending service — the gate only holds if the overnight process's *only* path to sending is through the approved action. Wrap the actual send/publish call so it hard-depends on the approved `final_preview`, as described in [the approval guide](how-to-add-human-approval-to-an-ai-agent.md).
+Airlock holds the decision; it doesn't decide anything about *when* your agent should run or *how* it should batch work — that scheduling logic is yours (cron, a queue, whatever you already use). It also doesn't retroactively protect you from an agent that has its own direct credentials to the sending service — the gate only holds if the overnight process's *only* path to sending is through the approved action. Wrap the actual send/publish call so it hard-depends on the approved `final_preview`, as described in [the approval guide](how-to-add-human-approval-to-an-ai-agent.md).
 
 ---
 

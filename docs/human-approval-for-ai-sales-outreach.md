@@ -1,6 +1,6 @@
 # Human Approval for AI Sales Outreach Agents
 
-Gate every AI-drafted sales email or LinkedIn DM before it reaches a prospect — this guide shows how to add human approval to outreach agents using Impri.
+Gate every AI-drafted sales email or LinkedIn DM before it reaches a prospect — this guide shows how to add human approval to outreach agents using Airlock.
 
 ---
 
@@ -12,14 +12,14 @@ A miscalibrated draft can address a prospect at the wrong company, use a tone th
 
 The usual mitigation is a "review before sending" note in the system prompt. That is not a gate. The model has to be trusted to actually pause, and nothing prevents it from sending anyway if the prompt gets long or the context window compresses. A real gate is a data dependency: the sending code cannot run unless the approval API returns `status: "approved"`.
 
-Impri provides that dependency. The agent pushes each drafted message, you get a card in your inbox to approve or edit, and only the approved version — including any edits you made — goes out.
+Airlock provides that dependency. The agent pushes each drafted message, you get a card in your inbox to approve or edit, and only the approved version — including any edits you made — goes out.
 
 ---
 
 ## What the approval flow looks like
 
 ```
-Agent                           Impri                          You
+Agent                           Airlock                          You
   │                               │                              │
   ├── POST /v1/actions ───────────▶  stores draft, notifies ────▶  inbox card
   │   kind: "email.send"          │                              │
@@ -45,13 +45,13 @@ This example assumes a list of prospects with pre-researched context. The agent 
 import httpx
 import time
 
-IMPRI_API_KEY = "im_your_key_here"
-BASE_URL = "https://api.impri.dev"
+AIRLOCK_API_KEY = "im_your_key_here"
+BASE_URL = "https://api.airlock.dev"
 
 def push_outreach_for_approval(prospect: dict, draft: str) -> str:
     resp = httpx.post(
         f"{BASE_URL}/v1/actions",
-        headers={"Authorization": f"Bearer {IMPRI_API_KEY}"},
+        headers={"Authorization": f"Bearer {AIRLOCK_API_KEY}"},
         json={
             "kind": "email.send",
             "title": f"Outreach: {prospect['name']} at {prospect['company']}",
@@ -71,7 +71,7 @@ def await_decision(action_id: str) -> dict:
     while True:
         result = httpx.get(
             f"{BASE_URL}/v1/actions/{action_id}",
-            headers={"Authorization": f"Bearer {IMPRI_API_KEY}"},
+            headers={"Authorization": f"Bearer {AIRLOCK_API_KEY}"},
         ).json()
         if result["status"] != "pending":
             return result
@@ -80,7 +80,7 @@ def await_decision(action_id: str) -> dict:
 def report_result(action_id: str, status: str) -> None:
     httpx.post(
         f"{BASE_URL}/v1/actions/{action_id}/result",
-        headers={"Authorization": f"Bearer {IMPRI_API_KEY}"},
+        headers={"Authorization": f"Bearer {AIRLOCK_API_KEY}"},
         json={"status": status},
     )
 
@@ -131,14 +131,14 @@ Treat `expired` the same as `rejected` in your agent logic: log it, skip the sen
 
 ---
 
-## Impri is the gate, not the sender
+## Airlock is the gate, not the sender
 
-Impri stores the draft, notifies you (via email, Slack, Telegram, or web push — configure in [notifications](notifications.md)), and holds the decision. It does not look at the prospect data, does not interpret what kind of outreach it is, and does not execute the send. Your agent owns the send call; Impri owns the yes/no. This division is intentional — it keeps the approval surface small and auditable.
+Airlock stores the draft, notifies you (via email, Slack, Telegram, or web push — configure in [notifications](notifications.md)), and holds the decision. It does not look at the prospect data, does not interpret what kind of outreach it is, and does not execute the send. Your agent owns the send call; Airlock owns the yes/no. This division is intentional — it keeps the approval surface small and auditable.
 
-The gate is real only as long as the agent's path to `send_email()` goes through the Impri response. If your agent also holds a direct email credential it can use without approval, the gate doesn't hold.
+The gate is real only as long as the agent's path to `send_email()` goes through the Airlock response. If your agent also holds a direct email credential it can use without approval, the gate doesn't hold.
 
 ---
 
 ## Next step
 
-If this is your first Impri integration, start with the [quickstart](quickstart.md) to get your API key and send a test action. For more on the Python SDK helper methods (including a built-in polling loop), see [sdk-python](sdk-python.md).
+If this is your first Airlock integration, start with the [quickstart](quickstart.md) to get your API key and send a test action. For more on the Python SDK helper methods (including a built-in polling loop), see [sdk-python](sdk-python.md).

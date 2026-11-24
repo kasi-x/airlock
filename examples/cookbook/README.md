@@ -1,13 +1,13 @@
-# Impri Cookbook
+# Airlock Cookbook
 
-Runnable, dependency-light recipes showing how to integrate Impri into real
+Runnable, dependency-light recipes showing how to integrate Airlock into real
 agentic workflows. Each recipe is a standalone script with its own README.
 
-All scripts target a running Impri instance. Set `IMPRI_API_KEY` to your key
-(starts with `im_`) and optionally `IMPRI_BASE_URL` to point at a self-hosted
-instance or `https://api.impri.dev` for the cloud.
+All scripts target a running Airlock instance. Set `AIRLOCK_API_KEY` to your key
+(starts with `im_`) and optionally `AIRLOCK_BASE_URL` to point at a self-hosted
+instance or `https://api.airlock.dev` for the cloud.
 
-See the [quickstart](../../docs/quickstart.md) to get Impri running in under
+See the [quickstart](../../docs/quickstart.md) to get Airlock running in under
 5 minutes with Docker Compose.
 
 ---
@@ -24,7 +24,7 @@ the human's edits are honored.
 **Scope:** `actions`
 
 ```bash
-IMPRI_API_KEY=im_xxx node email-approval-agent/agent.mjs
+AIRLOCK_API_KEY=im_xxx node email-approval-agent/agent.mjs
 ```
 
 ---
@@ -38,7 +38,7 @@ directly to the thread so the reviewer can read context before deciding.
 **Scope:** `actions`
 
 ```bash
-IMPRI_API_KEY=im_xxx node reddit-reply-agent/agent.mjs
+AIRLOCK_API_KEY=im_xxx node reddit-reply-agent/agent.mjs
 ```
 
 ---
@@ -53,7 +53,7 @@ fail the pipeline step when the reviewer rejects.
 **Scope:** `actions`
 
 ```bash
-IMPRI_API_KEY=im_xxx GIT_SHA=a3f8c91 node deploy-gate/agent.mjs
+AIRLOCK_API_KEY=im_xxx GIT_SHA=a3f8c91 node deploy-gate/agent.mjs
 ```
 
 ---
@@ -68,7 +68,7 @@ Python to show that any language works against the REST API.
 **Scope:** `actions`
 
 ```bash
-IMPRI_API_KEY=im_xxx APPROVAL_THRESHOLD=100 python3 payment-approval/agent.py
+AIRLOCK_API_KEY=im_xxx APPROVAL_THRESHOLD=100 python3 payment-approval/agent.py
 ```
 
 ---
@@ -77,14 +77,14 @@ IMPRI_API_KEY=im_xxx APPROVAL_THRESHOLD=100 python3 payment-approval/agent.py
 
 Create an RSS watcher with keyword scoring rules and watch new matching
 items land as pending triage actions in the inbox. Demonstrates the Watcher
-half of the Impri API: `POST /v1/watchers`, schedule, deduplication, and
+half of the Airlock API: `POST /v1/watchers`, schedule, deduplication, and
 how to list/pause watchers.
 
 **Script:** `rss-watcher-to-inbox/agent.mjs` (Node 18+, no npm install)
 **Scope:** `watch` (+ `actions` to read the inbox)
 
 ```bash
-IMPRI_API_KEY=im_xxx node rss-watcher-to-inbox/agent.mjs
+AIRLOCK_API_KEY=im_xxx node rss-watcher-to-inbox/agent.mjs
 ```
 
 ---

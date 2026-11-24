@@ -8,26 +8,26 @@ An MCP approval server is a Model Context Protocol server whose tools don't perf
 
 The Model Context Protocol lets an agent runtime (Claude Code, Claude Desktop, Cursor) call tools exposed by a server: read a file, query a database, hit an API. When the model decides to call a tool, the server executes it and returns the result. There's no pause built into the protocol itself — if the tool is `send_email`, the email goes out the moment the model calls it.
 
-That's fine for read-only tools. It's a problem for tools with real-world side effects: sending messages, pushing code, spending money, deleting data. An **MCP approval server** is a specific pattern for that case — instead of exposing `send_email` directly, it exposes tools like `impri_push_action`, `impri_await_decision`, and `impri_report_result` that split "propose" from "execute" and put a human decision in between.
+That's fine for read-only tools. It's a problem for tools with real-world side effects: sending messages, pushing code, spending money, deleting data. An **MCP approval server** is a specific pattern for that case — instead of exposing `send_email` directly, it exposes tools like `airlock_push_action`, `airlock_await_decision`, and `airlock_report_result` that split "propose" from "execute" and put a human decision in between.
 
 ---
 
 ## The three tools, and what each one actually does
 
 ```
-impri_push_action(kind, title, preview, expires_in, editable)
+airlock_push_action(kind, title, preview, expires_in, editable)
   → creates a pending action, notifies a human, returns { action_id }
 
-impri_await_decision(action_id, timeout_s)
+airlock_await_decision(action_id, timeout_s)
   → blocks (polling every 5s internally) until a human decides
   → returns { status: "approved" | "rejected" | "expired", preview, edited_by_human }
 
-impri_report_result(action_id, status)
+airlock_report_result(action_id, status)
   → status: "executed" | "execute_failed"
   → closes the loop so the audit trail shows what actually happened
 ```
 
-Crucially, none of these three tools performs the underlying action. `impri_push_action` doesn't send anything — it stores a proposal. The agent (or the code wrapping the agent) is still the one that calls the real `send_email` or `git push`, and it only does so after `impri_await_decision` returns `"approved"`. The approval server's job ends at the decision; execution is always the caller's responsibility.
+Crucially, none of these three tools performs the underlying action. `airlock_push_action` doesn't send anything — it stores a proposal. The agent (or the code wrapping the agent) is still the one that calls the real `send_email` or `git push`, and it only does so after `airlock_await_decision` returns `"approved"`. The approval server's job ends at the decision; execution is always the caller's responsibility.
 
 ---
 
@@ -41,7 +41,7 @@ import { execSync } from "node:child_process";
 
 async function gatedPush(mcp: Client, branch: string, commitLog: string) {
   const pushAction = await mcp.callTool({
-    name: "impri_push_action",
+    name: "airlock_push_action",
     arguments: {
       kind: "git.push",
       title: `Push ${branch} to origin`,
@@ -53,7 +53,7 @@ async function gatedPush(mcp: Client, branch: string, commitLog: string) {
   const { action_id } = JSON.parse(pushAction.content[0].text);
 
   const decision = await mcp.callTool({
-    name: "impri_await_decision",
+    name: "airlock_await_decision",
     arguments: { action_id, timeout_s: 900 },
   });
 
@@ -67,7 +67,7 @@ async function gatedPush(mcp: Client, branch: string, commitLog: string) {
   execSync(`git push origin ${branch}`, { stdio: "inherit" });
 
   await mcp.callTool({
-    name: "impri_report_result",
+    name: "airlock_report_result",
     arguments: { action_id, status: "executed" },
   });
 }
@@ -87,6 +87,6 @@ The gate is only real when the wrapped path is the agent's *only* route to the s
 
 ## Setting one up
 
-Point any MCP-compatible client at the Impri MCP server — see [the MCP reference](mcp.md) for the full tool schema and client configs (Claude Code, Claude Desktop, Cursor). It requires an API key from the [quickstart](quickstart.md) and nothing else; there's no separate approval-server deployment, since `@impri/mcp` talks to the same hosted or self-hosted Impri API as the REST integration.
+Point any MCP-compatible client at the Airlock MCP server — see [the MCP reference](mcp.md) for the full tool schema and client configs (Claude Code, Claude Desktop, Cursor). It requires an API key from the [quickstart](quickstart.md) and nothing else; there's no separate approval-server deployment, since `@airlock/mcp` talks to the same hosted or self-hosted Airlock API as the REST integration.
 
 An MCP approval server is not a replacement for scoping what your agent can touch — it's the mechanism for the actions you've decided need a second pair of eyes. For the underlying request/response shapes it wraps, see [the full integration guide](how-to-add-human-approval-to-an-ai-agent.md).

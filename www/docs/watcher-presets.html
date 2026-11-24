@@ -3,21 +3,21 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Watcher Presets — Impri Docs</title>
+<title>Watcher Presets — Airlock Docs</title>
 <meta name="description" content="Presets are named, parameterized templates for the most common watcher configurations. Instead of hand-crafting a config object and choosing a schedule, you…">
 <meta name="theme-color" content="#06070d">
-<meta property="og:title" content="Watcher Presets — Impri Docs">
+<meta property="og:title" content="Watcher Presets — Airlock Docs">
 <meta property="og:description" content="Presets are named, parameterized templates for the most common watcher configurations. Instead of hand-crafting a config object and choosing a schedule, you…">
 <meta property="og:type" content="article">
-<meta property="og:url" content="https://impri.dev/docs/watcher-presets">
-<meta property="og:image" content="https://impri.dev/assets/og/og-docs.png">
+<meta property="og:url" content="https://airlock.dev/docs/watcher-presets">
+<meta property="og:image" content="https://airlock.dev/assets/og/og-docs.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
-<meta property="og:image:alt" content="Impri — human-in-the-loop approval inbox for AI agents">
+<meta property="og:image:alt" content="Airlock — human-in-the-loop approval inbox for AI agents">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="https://impri.dev/assets/og/og-docs.png">
-<link rel="canonical" href="https://impri.dev/docs/watcher-presets">
-<script type="application/ld+json">{"@context":"https://schema.org","@type":"TechArticle","headline":"Watcher Presets","description":"Presets are named, parameterized templates for the most common watcher configurations. Instead of hand-crafting a config object and choosing a schedule, you…","url":"https://impri.dev/docs/watcher-presets","inLanguage":"en","author":{"@type":"Organization","name":"Impri","url":"https://impri.dev"},"publisher":{"@type":"Organization","name":"Impri","url":"https://impri.dev"}}</script>
+<meta name="twitter:image" content="https://airlock.dev/assets/og/og-docs.png">
+<link rel="canonical" href="https://airlock.dev/docs/watcher-presets">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"TechArticle","headline":"Watcher Presets","description":"Presets are named, parameterized templates for the most common watcher configurations. Instead of hand-crafting a config object and choosing a schedule, you…","url":"https://airlock.dev/docs/watcher-presets","inLanguage":"en","author":{"@type":"Organization","name":"Airlock","url":"https://airlock.dev"},"publisher":{"@type":"Organization","name":"Airlock","url":"https://airlock.dev"}}</script>
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <link rel="icon" href="/favicon.ico" sizes="32x32">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='9' fill='%236366f1'/%3E%3Cpath d='M9 16.5l4.5 4.5L23 11' stroke='white' stroke-width='3' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
@@ -132,13 +132,13 @@ pre code.hljs{display:block;overflow-x:auto}
 <div class="wrap nav-inner">
   <a class="brand" href="/">
     <span class="mark"><svg viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.5 4.5L19 7.5" stroke="white" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
-    Impri
+    Airlock
   </a>
   <div class="nav-links">
     <a class="link" href="/#how">How it works</a>
     <a class="link" href="/#pricing">Pricing</a>
     <a class="link active-nav" href="../docs">Docs</a>
-    <a class="btn btn-primary btn-sm" href="https://gitlab.com/sekera.radim/impri">GitLab</a>
+    <a class="btn btn-primary btn-sm" href="https://gitlab.com/sekera.radim/airlock">GitLab</a>
   </div>
 </div>
 </nav>
@@ -251,8 +251,8 @@ Content-Type: application/json</code></pre></div>
 <strong>From preset</strong> to see the picker. Select a preset, fill in the param fields,
 optionally change the name and schedule, and click <strong>Create</strong>.</p>
 <h3 id="rest-curl">REST (curl)</h3>
-<div class="code-block"><span class="code-lang">bash</span><pre><code class="hljs">curl -s -X POST https://api.impri.dev/v1/watchers/from-preset \
-  -H <span class="hljs-string">&quot;Authorization: Bearer <span class="hljs-variable">$IMPRI_API_KEY</span>&quot;</span> \
+<div class="code-block"><span class="code-lang">bash</span><pre><code class="hljs">curl -s -X POST https://api.airlock.dev/v1/watchers/from-preset \
+  -H <span class="hljs-string">&quot;Authorization: Bearer <span class="hljs-variable">$AIRLOCK_API_KEY</span>&quot;</span> \
   -H <span class="hljs-string">&quot;Content-Type: application/json&quot;</span> \
   -d <span class="hljs-string">&#x27;{
     &quot;preset_id&quot;: &quot;reddit-keyword&quot;,
@@ -263,9 +263,9 @@ optionally change the name and schedule, and click <strong>Create</strong>.</p>
     &quot;schedule&quot;: { &quot;every&quot;: &quot;30m&quot; }
   }&#x27;</span></code></pre></div>
 <h3 id="python">Python</h3>
-<div class="code-block"><span class="code-lang">python</span><pre><code class="hljs"><span class="hljs-keyword">from</span> impri <span class="hljs-keyword">import</span> ImpriClient
+<div class="code-block"><span class="code-lang">python</span><pre><code class="hljs"><span class="hljs-keyword">from</span> airlock <span class="hljs-keyword">import</span> AirlockClient
 
-client = ImpriClient()  <span class="hljs-comment"># reads IMPRI_API_KEY from env</span>
+client = AirlockClient()  <span class="hljs-comment"># reads AIRLOCK_API_KEY from env</span>
 
 <span class="hljs-comment"># Browse the preset catalog</span>
 catalog = client.list_watcher_presets()
@@ -287,9 +287,9 @@ reddit = client.create_watcher_from_preset(
     name=<span class="hljs-string">&quot;Self-hosting AI on Reddit&quot;</span>,
 )</code></pre></div>
 <h3 id="typescript">TypeScript</h3>
-<div class="code-block"><span class="code-lang">ts</span><pre><code class="hljs"><span class="hljs-keyword">import</span> { <span class="hljs-title class_">ImpriClient</span> } <span class="hljs-keyword">from</span> <span class="hljs-string">&#x27;@impri/sdk&#x27;</span>
+<div class="code-block"><span class="code-lang">ts</span><pre><code class="hljs"><span class="hljs-keyword">import</span> { <span class="hljs-title class_">AirlockClient</span> } <span class="hljs-keyword">from</span> <span class="hljs-string">&#x27;@airlock/sdk&#x27;</span>
 
-<span class="hljs-keyword">const</span> client = <span class="hljs-keyword">new</span> <span class="hljs-title class_">ImpriClient</span>()  <span class="hljs-comment">// reads IMPRI_API_KEY from env</span>
+<span class="hljs-keyword">const</span> client = <span class="hljs-keyword">new</span> <span class="hljs-title class_">AirlockClient</span>()  <span class="hljs-comment">// reads AIRLOCK_API_KEY from env</span>
 
 <span class="hljs-comment">// Browse the preset catalog</span>
 <span class="hljs-keyword">const</span> presets = <span class="hljs-keyword">await</span> client.<span class="hljs-title function_">listWatcherPresets</span>()
@@ -313,13 +313,13 @@ presets.<span class="hljs-title function_">forEach</span>(<span class="hljs-func
   { <span class="hljs-attr">schedule</span>: { <span class="hljs-attr">every</span>: <span class="hljs-string">&#x27;30m&#x27;</span> }, <span class="hljs-attr">name</span>: <span class="hljs-string">&#x27;Self-hosting AI on Reddit&#x27;</span> },
 )</code></pre></div>
 <h3 id="mcp-claude-code-agents">MCP (Claude Code / agents)</h3>
-<p>The MCP server (<code>npx @impri/mcp</code>) exposes two dedicated tools for working
+<p>The MCP server (<code>npx @airlock/mcp</code>) exposes two dedicated tools for working
 with presets.</p>
-<p><strong><code>impri_list_watcher_presets</code></strong> — no inputs required; returns the full preset
+<p><strong><code>airlock_list_watcher_presets</code></strong> — no inputs required; returns the full preset
 catalog grouped by category, including each preset&#39;s id, required and optional
 params, and default schedule. Call this first to discover which preset fits
 your monitoring goal.</p>
-<p><strong><code>impri_create_watcher_from_preset</code></strong> — creates a watcher by supplying the
+<p><strong><code>airlock_create_watcher_from_preset</code></strong> — creates a watcher by supplying the
 preset id and param values. Example for GitHub releases with a custom schedule:</p>
 <div class="code-block"><span class="code-lang">json</span><pre><code class="hljs"><span class="hljs-punctuation">{</span>
   <span class="hljs-attr">&quot;preset_id&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;github-releases&quot;</span><span class="hljs-punctuation">,</span>
@@ -352,7 +352,7 @@ feed. No filtering is applied by default; add ScoringRules after creation to
 surface topics you care about.</p>
 <p><strong>Params:</strong> none<br><strong>Default schedule:</strong> <code>30m</code><br><strong>Kind:</strong> <code>rss</code></p>
 <div class="code-block"><span class="code-lang">bash</span><pre><code class="hljs">curl -s -X POST .../v1/watchers/from-preset \
-  -H <span class="hljs-string">&quot;Authorization: Bearer <span class="hljs-variable">$IMPRI_API_KEY</span>&quot;</span> \
+  -H <span class="hljs-string">&quot;Authorization: Bearer <span class="hljs-variable">$AIRLOCK_API_KEY</span>&quot;</span> \
   -H <span class="hljs-string">&quot;Content-Type: application/json&quot;</span> \
   -d <span class="hljs-string">&#x27;{&quot;preset_id&quot;: &quot;hn-front-page&quot;, &quot;params&quot;: {}}&#x27;</span></code></pre></div>
 <hr>
@@ -385,7 +385,7 @@ minimum upvote points via <a href="https://hnrss.org" target="_blank" rel="noope
 </div>
 <p><strong>Default schedule:</strong> <code>30m</code><br><strong>Kind:</strong> <code>rss</code></p>
 <div class="code-block"><span class="code-lang">bash</span><pre><code class="hljs">curl -s -X POST .../v1/watchers/from-preset \
-  -H <span class="hljs-string">&quot;Authorization: Bearer <span class="hljs-variable">$IMPRI_API_KEY</span>&quot;</span> \
+  -H <span class="hljs-string">&quot;Authorization: Bearer <span class="hljs-variable">$AIRLOCK_API_KEY</span>&quot;</span> \
   -H <span class="hljs-string">&quot;Content-Type: application/json&quot;</span> \
   -d <span class="hljs-string">&#x27;{
     &quot;preset_id&quot;: &quot;hn-keyword&quot;,
@@ -414,7 +414,7 @@ minimum upvote points via <a href="https://hnrss.org" target="_blank" rel="noope
 </div>
 <p><strong>Default schedule:</strong> <code>1h</code><br><strong>Kind:</strong> <code>rss</code></p>
 <div class="code-block"><span class="code-lang">bash</span><pre><code class="hljs">curl -s -X POST .../v1/watchers/from-preset \
-  -H <span class="hljs-string">&quot;Authorization: Bearer <span class="hljs-variable">$IMPRI_API_KEY</span>&quot;</span> \
+  -H <span class="hljs-string">&quot;Authorization: Bearer <span class="hljs-variable">$AIRLOCK_API_KEY</span>&quot;</span> \
   -H <span class="hljs-string">&quot;Content-Type: application/json&quot;</span> \
   -d <span class="hljs-string">&#x27;{&quot;preset_id&quot;: &quot;hn-show-ask&quot;, &quot;params&quot;: {&quot;type&quot;: &quot;show&quot;}}&#x27;</span></code></pre></div>
 <hr>
@@ -440,7 +440,7 @@ minimum upvote points via <a href="https://hnrss.org" target="_blank" rel="noope
 </div>
 <p><strong>Default schedule:</strong> <code>30m</code><br><strong>Kind:</strong> <code>rss</code></p>
 <div class="code-block"><span class="code-lang">bash</span><pre><code class="hljs">curl -s -X POST .../v1/watchers/from-preset \
-  -H <span class="hljs-string">&quot;Authorization: Bearer <span class="hljs-variable">$IMPRI_API_KEY</span>&quot;</span> \
+  -H <span class="hljs-string">&quot;Authorization: Bearer <span class="hljs-variable">$AIRLOCK_API_KEY</span>&quot;</span> \
   -H <span class="hljs-string">&quot;Content-Type: application/json&quot;</span> \
   -d <span class="hljs-string">&#x27;{&quot;preset_id&quot;: &quot;reddit-subreddit&quot;, &quot;params&quot;: {&quot;subreddit&quot;: &quot;MachineLearning&quot;}}&#x27;</span></code></pre></div>
 <hr>
@@ -473,7 +473,7 @@ Supports Reddit search operators such as <code>title:</code>, <code>flair:</code
 </div>
 <p><strong>Default schedule:</strong> <code>30m</code><br><strong>Kind:</strong> <code>reddit_search</code></p>
 <div class="code-block"><span class="code-lang">bash</span><pre><code class="hljs">curl -s -X POST .../v1/watchers/from-preset \
-  -H <span class="hljs-string">&quot;Authorization: Bearer <span class="hljs-variable">$IMPRI_API_KEY</span>&quot;</span> \
+  -H <span class="hljs-string">&quot;Authorization: Bearer <span class="hljs-variable">$AIRLOCK_API_KEY</span>&quot;</span> \
   -H <span class="hljs-string">&quot;Content-Type: application/json&quot;</span> \
   -d <span class="hljs-string">&#x27;{
     &quot;preset_id&quot;: &quot;reddit-keyword&quot;,
@@ -511,7 +511,7 @@ feed. No auth required.</p>
 </div>
 <p><strong>Default schedule:</strong> <code>1h</code><br><strong>Kind:</strong> <code>rss</code></p>
 <div class="code-block"><span class="code-lang">bash</span><pre><code class="hljs">curl -s -X POST .../v1/watchers/from-preset \
-  -H <span class="hljs-string">&quot;Authorization: Bearer <span class="hljs-variable">$IMPRI_API_KEY</span>&quot;</span> \
+  -H <span class="hljs-string">&quot;Authorization: Bearer <span class="hljs-variable">$AIRLOCK_API_KEY</span>&quot;</span> \
   -H <span class="hljs-string">&quot;Content-Type: application/json&quot;</span> \
   -d <span class="hljs-string">&#x27;{&quot;preset_id&quot;: &quot;github-releases&quot;, &quot;params&quot;: {&quot;owner&quot;: &quot;fastify&quot;, &quot;repo&quot;: &quot;fastify&quot;}}&#x27;</span></code></pre></div>
 <hr>
@@ -551,7 +551,7 @@ after creation to match specific commit message patterns.</p>
 </div>
 <p><strong>Default schedule:</strong> <code>1h</code><br><strong>Kind:</strong> <code>rss</code></p>
 <div class="code-block"><span class="code-lang">bash</span><pre><code class="hljs">curl -s -X POST .../v1/watchers/from-preset \
-  -H <span class="hljs-string">&quot;Authorization: Bearer <span class="hljs-variable">$IMPRI_API_KEY</span>&quot;</span> \
+  -H <span class="hljs-string">&quot;Authorization: Bearer <span class="hljs-variable">$AIRLOCK_API_KEY</span>&quot;</span> \
   -H <span class="hljs-string">&quot;Content-Type: application/json&quot;</span> \
   -d <span class="hljs-string">&#x27;{
     &quot;preset_id&quot;: &quot;github-commits&quot;,
@@ -583,7 +583,7 @@ when a new version is published, making it a reliable <code>url_diff</code> trig
 </div>
 <p><strong>Default schedule:</strong> <code>6h</code><br><strong>Kind:</strong> <code>url_diff</code></p>
 <div class="code-block"><span class="code-lang">bash</span><pre><code class="hljs">curl -s -X POST .../v1/watchers/from-preset \
-  -H <span class="hljs-string">&quot;Authorization: Bearer <span class="hljs-variable">$IMPRI_API_KEY</span>&quot;</span> \
+  -H <span class="hljs-string">&quot;Authorization: Bearer <span class="hljs-variable">$AIRLOCK_API_KEY</span>&quot;</span> \
   -H <span class="hljs-string">&quot;Content-Type: application/json&quot;</span> \
   -d <span class="hljs-string">&#x27;{&quot;preset_id&quot;: &quot;npm-package&quot;, &quot;params&quot;: {&quot;package&quot;: &quot;@types/react&quot;}}&#x27;</span></code></pre></div>
 <hr>
@@ -610,7 +610,7 @@ feed.</p>
 </div>
 <p><strong>Default schedule:</strong> <code>6h</code><br><strong>Kind:</strong> <code>rss</code></p>
 <div class="code-block"><span class="code-lang">bash</span><pre><code class="hljs">curl -s -X POST .../v1/watchers/from-preset \
-  -H <span class="hljs-string">&quot;Authorization: Bearer <span class="hljs-variable">$IMPRI_API_KEY</span>&quot;</span> \
+  -H <span class="hljs-string">&quot;Authorization: Bearer <span class="hljs-variable">$AIRLOCK_API_KEY</span>&quot;</span> \
   -H <span class="hljs-string">&quot;Content-Type: application/json&quot;</span> \
   -d <span class="hljs-string">&#x27;{&quot;preset_id&quot;: &quot;pypi-package&quot;, &quot;params&quot;: {&quot;package&quot;: &quot;requests&quot;}}&#x27;</span></code></pre></div>
 <hr>
@@ -638,7 +638,7 @@ after creation.</p>
 </div>
 <p><strong>Default schedule:</strong> <code>30m</code><br><strong>Kind:</strong> <code>rss</code></p>
 <div class="code-block"><span class="code-lang">bash</span><pre><code class="hljs">curl -s -X POST .../v1/watchers/from-preset \
-  -H <span class="hljs-string">&quot;Authorization: Bearer <span class="hljs-variable">$IMPRI_API_KEY</span>&quot;</span> \
+  -H <span class="hljs-string">&quot;Authorization: Bearer <span class="hljs-variable">$AIRLOCK_API_KEY</span>&quot;</span> \
   -H <span class="hljs-string">&quot;Content-Type: application/json&quot;</span> \
   -d <span class="hljs-string">&#x27;{&quot;preset_id&quot;: &quot;stackoverflow-tag&quot;, &quot;params&quot;: {&quot;tag&quot;: &quot;typescript&quot;}}&#x27;</span></code></pre></div>
 <hr>
@@ -668,7 +668,7 @@ addresses are blocked at both parse time and fetch time.</p>
 </div>
 <p><strong>Default schedule:</strong> <code>1h</code><br><strong>Kind:</strong> <code>rss</code></p>
 <div class="code-block"><span class="code-lang">bash</span><pre><code class="hljs">curl -s -X POST .../v1/watchers/from-preset \
-  -H <span class="hljs-string">&quot;Authorization: Bearer <span class="hljs-variable">$IMPRI_API_KEY</span>&quot;</span> \
+  -H <span class="hljs-string">&quot;Authorization: Bearer <span class="hljs-variable">$AIRLOCK_API_KEY</span>&quot;</span> \
   -H <span class="hljs-string">&quot;Content-Type: application/json&quot;</span> \
   -d <span class="hljs-string">&#x27;{&quot;preset_id&quot;: &quot;rss-feed&quot;, &quot;params&quot;: {&quot;url&quot;: &quot;https://martinfowler.com/feed.atom&quot;}}&#x27;</span></code></pre></div>
 <hr>
@@ -702,7 +702,7 @@ posts. Scored at <code>min_score = 10</code> when keywords are active, <code>0</
 </div>
 <p><strong>Default schedule:</strong> <code>12h</code><br><strong>Kind:</strong> <code>rss</code></p>
 <div class="code-block"><span class="code-lang">bash</span><pre><code class="hljs">curl -s -X POST .../v1/watchers/from-preset \
-  -H <span class="hljs-string">&quot;Authorization: Bearer <span class="hljs-variable">$IMPRI_API_KEY</span>&quot;</span> \
+  -H <span class="hljs-string">&quot;Authorization: Bearer <span class="hljs-variable">$AIRLOCK_API_KEY</span>&quot;</span> \
   -H <span class="hljs-string">&quot;Content-Type: application/json&quot;</span> \
   -d <span class="hljs-string">&#x27;{
     &quot;preset_id&quot;: &quot;blog-newsletter&quot;,
@@ -735,7 +735,7 @@ feed. No API key or auth required.</p>
 </div>
 <p><strong>Default schedule:</strong> <code>6h</code><br><strong>Kind:</strong> <code>rss</code></p>
 <div class="code-block"><span class="code-lang">bash</span><pre><code class="hljs">curl -s -X POST .../v1/watchers/from-preset \
-  -H <span class="hljs-string">&quot;Authorization: Bearer <span class="hljs-variable">$IMPRI_API_KEY</span>&quot;</span> \
+  -H <span class="hljs-string">&quot;Authorization: Bearer <span class="hljs-variable">$AIRLOCK_API_KEY</span>&quot;</span> \
   -H <span class="hljs-string">&quot;Content-Type: application/json&quot;</span> \
   -d <span class="hljs-string">&#x27;{&quot;preset_id&quot;: &quot;youtube-channel&quot;, &quot;params&quot;: {&quot;channel_id&quot;: &quot;UCnUYZLuoy1rq1aVMwx4aTzw&quot;}}&#x27;</span></code></pre></div>
 <hr>
@@ -775,13 +775,13 @@ category are delivered without keyword filtering.</p>
 <p><strong>Default schedule:</strong> <code>6h</code><br><strong>Kind:</strong> <code>rss</code></p>
 <div class="code-block"><span class="code-lang">bash</span><pre><code class="hljs"><span class="hljs-comment"># Category only</span>
 curl -s -X POST .../v1/watchers/from-preset \
-  -H <span class="hljs-string">&quot;Authorization: Bearer <span class="hljs-variable">$IMPRI_API_KEY</span>&quot;</span> \
+  -H <span class="hljs-string">&quot;Authorization: Bearer <span class="hljs-variable">$AIRLOCK_API_KEY</span>&quot;</span> \
   -H <span class="hljs-string">&quot;Content-Type: application/json&quot;</span> \
   -d <span class="hljs-string">&#x27;{&quot;preset_id&quot;: &quot;arxiv-papers&quot;, &quot;params&quot;: {&quot;category&quot;: &quot;cs.AI&quot;}}&#x27;</span>
 
 <span class="hljs-comment"># Category + keyword filter</span>
 curl -s -X POST .../v1/watchers/from-preset \
-  -H <span class="hljs-string">&quot;Authorization: Bearer <span class="hljs-variable">$IMPRI_API_KEY</span>&quot;</span> \
+  -H <span class="hljs-string">&quot;Authorization: Bearer <span class="hljs-variable">$AIRLOCK_API_KEY</span>&quot;</span> \
   -H <span class="hljs-string">&quot;Content-Type: application/json&quot;</span> \
   -d <span class="hljs-string">&#x27;{
     &quot;preset_id&quot;: &quot;arxiv-papers&quot;,
@@ -819,7 +819,7 @@ boolean operators (<code>AND</code>, <code>OR</code>), <code>site:</code>, and e
 </div>
 <p><strong>Default schedule:</strong> <code>1h</code><br><strong>Kind:</strong> <code>rss</code></p>
 <div class="code-block"><span class="code-lang">bash</span><pre><code class="hljs">curl -s -X POST .../v1/watchers/from-preset \
-  -H <span class="hljs-string">&quot;Authorization: Bearer <span class="hljs-variable">$IMPRI_API_KEY</span>&quot;</span> \
+  -H <span class="hljs-string">&quot;Authorization: Bearer <span class="hljs-variable">$AIRLOCK_API_KEY</span>&quot;</span> \
   -H <span class="hljs-string">&quot;Content-Type: application/json&quot;</span> \
   -d <span class="hljs-string">&#x27;{
     &quot;preset_id&quot;: &quot;google-news&quot;,
@@ -832,7 +832,7 @@ high-volume; add ScoringRule keywords after creation (e.g. <code>&quot;developer
 <code>&quot;open source&quot;</code>) to surface launches relevant to you.</p>
 <p><strong>Params:</strong> none<br><strong>Default schedule:</strong> <code>6h</code><br><strong>Kind:</strong> <code>rss</code></p>
 <div class="code-block"><span class="code-lang">bash</span><pre><code class="hljs">curl -s -X POST .../v1/watchers/from-preset \
-  -H <span class="hljs-string">&quot;Authorization: Bearer <span class="hljs-variable">$IMPRI_API_KEY</span>&quot;</span> \
+  -H <span class="hljs-string">&quot;Authorization: Bearer <span class="hljs-variable">$AIRLOCK_API_KEY</span>&quot;</span> \
   -H <span class="hljs-string">&quot;Content-Type: application/json&quot;</span> \
   -d <span class="hljs-string">&#x27;{&quot;preset_id&quot;: &quot;product-hunt&quot;, &quot;params&quot;: {}}&#x27;</span></code></pre></div>
 <hr>
@@ -861,11 +861,11 @@ action regardless of keyword scoring.</p>
 </tbody></table>
 </div>
 <p><strong>Default schedule:</strong> <code>6h</code><br><strong>Kind:</strong> <code>url_diff</code></p>
-<p>Note: the scheduler respects <code>robots.txt</code>. If the <code>Impri-Watcher</code> user-agent
+<p>Note: the scheduler respects <code>robots.txt</code>. If the <code>Airlock-Watcher</code> user-agent
 is disallowed, the watcher is degraded with <code>error: robots_disallowed</code> rather
 than crawling.</p>
 <div class="code-block"><span class="code-lang">bash</span><pre><code class="hljs">curl -s -X POST .../v1/watchers/from-preset \
-  -H <span class="hljs-string">&quot;Authorization: Bearer <span class="hljs-variable">$IMPRI_API_KEY</span>&quot;</span> \
+  -H <span class="hljs-string">&quot;Authorization: Bearer <span class="hljs-variable">$AIRLOCK_API_KEY</span>&quot;</span> \
   -H <span class="hljs-string">&quot;Content-Type: application/json&quot;</span> \
   -d <span class="hljs-string">&#x27;{&quot;preset_id&quot;: &quot;url-changed&quot;, &quot;params&quot;: {&quot;url&quot;: &quot;https://example.com/pricing&quot;}}&#x27;</span></code></pre></div>
 <hr>
@@ -896,7 +896,7 @@ to reflect the operational urgency of status pages.</p>
 bundle hash changes. Consider adding keywords such as <code>&quot;incident&quot;</code>,
 <code>&quot;degraded&quot;</code>, or <code>&quot;version&quot;</code> after creation to filter for genuine signal.</p>
 <div class="code-block"><span class="code-lang">bash</span><pre><code class="hljs">curl -s -X POST .../v1/watchers/from-preset \
-  -H <span class="hljs-string">&quot;Authorization: Bearer <span class="hljs-variable">$IMPRI_API_KEY</span>&quot;</span> \
+  -H <span class="hljs-string">&quot;Authorization: Bearer <span class="hljs-variable">$AIRLOCK_API_KEY</span>&quot;</span> \
   -H <span class="hljs-string">&quot;Content-Type: application/json&quot;</span> \
   -d <span class="hljs-string">&#x27;{&quot;preset_id&quot;: &quot;changelog-status&quot;, &quot;params&quot;: {&quot;url&quot;: &quot;https://www.githubstatus.com/&quot;}}&#x27;</span></code></pre></div>
 <hr>
@@ -1136,19 +1136,19 @@ bundle hash changes. Consider adding keywords such as <code>&quot;incident&quot;
 <footer class="footer">
 <div class="wrap footer-inner">
   <a class="brand" href="/">
-    <span class="mark"><svg viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.5 4.5L19 7.5" stroke="white" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Impri
+    <span class="mark"><svg viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.5 4.5L19 7.5" stroke="white" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Airlock
   </a>
   <div>
-    <a href="https://gitlab.com/sekera.radim/impri">GitLab</a>
+    <a href="https://gitlab.com/sekera.radim/airlock">GitLab</a>
     <a href="/docs">Docs</a>
-    <a href="https://gitlab.com/sekera.radim/impri/-/blob/main/LICENSE">MIT License</a>
-    <a href="https://www.npmjs.com/package/@impri/mcp">@impri/mcp</a>
+    <a href="https://gitlab.com/sekera.radim/airlock/-/blob/main/LICENSE">MIT License</a>
+    <a href="https://www.npmjs.com/package/@airlock/mcp">@airlock/mcp</a>
     <a href="/docs/privacy">Privacy</a>
     <a href="/docs/terms">Terms</a>
     <a href="https://sekera.dev">Contact</a>
   </div>
 </div>
-<div class="wrap" style="margin-top:18px"><span class="muted">© 2026 Impri · The imprimatur for your AI agents · Built by <a href="https://sekera.dev" style="color:inherit">Radim Sekera</a>. Also by the same maker: <a href="https://briefgate.dev/?utm_source=impri.dev&amp;utm_medium=referral" style="color:inherit">BriefGate</a> — client intake for agencies and AI agents.</span></div>
+<div class="wrap" style="margin-top:18px"><span class="muted">© 2026 Airlock · The airlockmatur for your AI agents · Built by <a href="https://sekera.dev" style="color:inherit">Radim Sekera</a>. Also by the same maker: <a href="https://briefgate.dev/?utm_source=airlock.dev&amp;utm_medium=referral" style="color:inherit">BriefGate</a> — client intake for agencies and AI agents.</span></div>
 </footer>
 </body>
 </html>

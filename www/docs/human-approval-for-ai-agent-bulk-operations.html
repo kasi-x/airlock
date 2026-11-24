@@ -3,21 +3,21 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Human Approval for AI Agent Bulk Operations and Mass… — Impri Docs</title>
+<title>Human Approval for AI Agent Bulk Operations and Mass… — Airlock Docs</title>
 <meta name="description" content="Human approval for AI agent bulk operations: gate a mass update as one reviewable action with a count, a sample and a scope, not 5,000 separate approvals.">
 <meta name="theme-color" content="#06070d">
-<meta property="og:title" content="Human Approval for AI Agent Bulk Operations and Mass… — Impri Docs">
+<meta property="og:title" content="Human Approval for AI Agent Bulk Operations and Mass… — Airlock Docs">
 <meta property="og:description" content="Human approval for AI agent bulk operations: gate a mass update as one reviewable action with a count, a sample and a scope, not 5,000 separate approvals.">
 <meta property="og:type" content="article">
-<meta property="og:url" content="https://impri.dev/docs/human-approval-for-ai-agent-bulk-operations">
-<meta property="og:image" content="https://impri.dev/assets/og/og-docs.png">
+<meta property="og:url" content="https://airlock.dev/docs/human-approval-for-ai-agent-bulk-operations">
+<meta property="og:image" content="https://airlock.dev/assets/og/og-docs.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
-<meta property="og:image:alt" content="Impri — human-in-the-loop approval inbox for AI agents">
+<meta property="og:image:alt" content="Airlock — human-in-the-loop approval inbox for AI agents">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="https://impri.dev/assets/og/og-docs.png">
-<link rel="canonical" href="https://impri.dev/docs/human-approval-for-ai-agent-bulk-operations">
-<script type="application/ld+json">{"@context":"https://schema.org","@type":"TechArticle","headline":"Human Approval for AI Agent Bulk Operations and Mass Updates","description":"Human approval for AI agent bulk operations: gate a mass update as one reviewable action with a count, a sample and a scope, not 5,000 separate approvals.","url":"https://impri.dev/docs/human-approval-for-ai-agent-bulk-operations","inLanguage":"en","author":{"@type":"Organization","name":"Impri","url":"https://impri.dev"},"publisher":{"@type":"Organization","name":"Impri","url":"https://impri.dev"}}</script>
+<meta name="twitter:image" content="https://airlock.dev/assets/og/og-docs.png">
+<link rel="canonical" href="https://airlock.dev/docs/human-approval-for-ai-agent-bulk-operations">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"TechArticle","headline":"Human Approval for AI Agent Bulk Operations and Mass Updates","description":"Human approval for AI agent bulk operations: gate a mass update as one reviewable action with a count, a sample and a scope, not 5,000 separate approvals.","url":"https://airlock.dev/docs/human-approval-for-ai-agent-bulk-operations","inLanguage":"en","author":{"@type":"Organization","name":"Airlock","url":"https://airlock.dev"},"publisher":{"@type":"Organization","name":"Airlock","url":"https://airlock.dev"}}</script>
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <link rel="icon" href="/favicon.ico" sizes="32x32">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='9' fill='%236366f1'/%3E%3Cpath d='M9 16.5l4.5 4.5L23 11' stroke='white' stroke-width='3' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
@@ -132,13 +132,13 @@ pre code.hljs{display:block;overflow-x:auto}
 <div class="wrap nav-inner">
   <a class="brand" href="/">
     <span class="mark"><svg viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.5 4.5L19 7.5" stroke="white" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
-    Impri
+    Airlock
   </a>
   <div class="nav-links">
     <a class="link" href="/#how">How it works</a>
     <a class="link" href="/#pricing">Pricing</a>
     <a class="link active-nav" href="../docs">Docs</a>
-    <a class="btn btn-primary btn-sm" href="https://gitlab.com/sekera.radim/impri">GitLab</a>
+    <a class="btn btn-primary btn-sm" href="https://gitlab.com/sekera.radim/airlock">GitLab</a>
   </div>
 </div>
 </nav>
@@ -190,8 +190,8 @@ pre code.hljs{display:block;overflow-x:auto}
 <p>An agent decides that accounts with no login in 18 months should be deactivated. It runs the query as a <code>SELECT COUNT(*)</code> plus a sample, and only then proposes the action:</p>
 <div class="code-block"><span class="code-lang">python</span><pre><code class="hljs"><span class="hljs-keyword">import</span> os, time, requests
 
-BASE = <span class="hljs-string">&quot;https://api.impri.dev&quot;</span>
-H = {<span class="hljs-string">&quot;Authorization&quot;</span>: <span class="hljs-string">f&quot;Bearer <span class="hljs-subst">{os.environ[<span class="hljs-string">&#x27;IMPRI_API_KEY&#x27;</span>]}</span>&quot;</span>}
+BASE = <span class="hljs-string">&quot;https://api.airlock.dev&quot;</span>
+H = {<span class="hljs-string">&quot;Authorization&quot;</span>: <span class="hljs-string">f&quot;Bearer <span class="hljs-subst">{os.environ[<span class="hljs-string">&#x27;AIRLOCK_API_KEY&#x27;</span>]}</span>&quot;</span>}
 
 <span class="hljs-comment"># 1. Dry run — nothing is modified here</span>
 ids, sample = dry_run_stale_accounts(months=<span class="hljs-number">18</span>)   <span class="hljs-comment"># your code, read-only</span>
@@ -245,29 +245,29 @@ action = requests.post(<span class="hljs-string">f&quot;<span class="hljs-subst"
   <span class="hljs-attr">&quot;preview&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span> <span class="hljs-attr">&quot;format&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;markdown&quot;</span><span class="hljs-punctuation">,</span> <span class="hljs-attr">&quot;body&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;Filter: last_login &lt; 2025-04-01 AND plan = &#x27;free&#x27;&quot;</span> <span class="hljs-punctuation">}</span><span class="hljs-punctuation">,</span>
   <span class="hljs-attr">&quot;editable&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">[</span><span class="hljs-string">&quot;preview.body&quot;</span><span class="hljs-punctuation">]</span>
 <span class="hljs-punctuation">}</span></code></pre></div>
-<p>If the reviewer tightens the filter, <code>decision.final_preview</code> carries their version and <code>decision.diff</code> shows what changed. Your agent must then <strong>re-run the dry run with the edited filter</strong> and, if the count changed, propose again. Impri does not parse your filter or recompute anything; it hands back the text the human approved.</p>
+<p>If the reviewer tightens the filter, <code>decision.final_preview</code> carries their version and <code>decision.diff</code> shows what changed. Your agent must then <strong>re-run the dry run with the edited filter</strong> and, if the count changed, propose again. Airlock does not parse your filter or recompute anything; it hands back the text the human approved.</p>
 <hr>
 <h2 id="batches-in-the-inbox">Batches in the inbox</h2>
 <p>If you do end up with several batch actions (for example one per customer segment), the inbox supports deciding them together via <code>POST /v1/actions/bulk-decision</code>. That is a reviewer convenience for many small, similar, low-risk actions — it is not a substitute for a count and a sample on a destructive batch.</p>
 <p>For single destructive operations, see <a href="approve-database-writes-from-an-ai-agent">approving database writes</a> and <a href="human-approval-before-an-agent-deletes-data">approval before an agent deletes data</a>. Every decision lands in the <a href="audit-log">audit log</a>, which is where you prove which scope was approved.</p>
 <hr>
-<h2 id="what-impri-does-and-doesn39t-do-here">What Impri does and doesn&#39;t do here</h2>
-<p>Impri is the approval gate only. It stores the proposed batch, notifies the reviewer, and holds the decision. It does <strong>not</strong> run your query, count rows, validate that the sample is representative, or execute the update.</p>
+<h2 id="what-airlock-does-and-doesn39t-do-here">What Airlock does and doesn&#39;t do here</h2>
+<p>Airlock is the approval gate only. It stores the proposed batch, notifies the reviewer, and holds the decision. It does <strong>not</strong> run your query, count rows, validate that the sample is representative, or execute the update.</p>
 <p>Two limits to be honest about:</p>
 <ul>
 <li><strong>The preview is only as good as the agent&#39;s dry run.</strong> If the agent writes a misleading summary, the human approves a misleading summary. Generate the count and sample from the real query result, in code, not from the model&#39;s prose.</li>
 <li><strong>It is a real gate only if the approved path is the only path.</strong> If the agent also holds a database credential with write access, it can bypass the gate. Give the agent a tool that executes only a frozen, approved ID list.</li>
 </ul>
-<p>Impri is not a workflow engine, a batch scheduler or a rollback system. For retries, throttling and chunked execution, use your own job runner and call Impri once per batch.</p>
+<p>Airlock is not a workflow engine, a batch scheduler or a rollback system. For retries, throttling and chunked execution, use your own job runner and call Airlock once per batch.</p>
 <hr>
 <h2 id="next-step">Next step</h2>
 <p>Get a key and push your first batch action with the <a href="quickstart">quickstart</a>, or read the general pattern in <a href="how-to-add-human-approval-to-an-ai-agent">how to add human approval to an AI agent</a>.</p>
 
-    <aside class="doc-cta" aria-label="Try Impri">
+    <aside class="doc-cta" aria-label="Try Airlock">
   <p class="doc-cta-title">Add an approval step to your own agent</p>
-  <p>Start on Impri Cloud: the Free tier includes 100 approvals a month. Or self-host the MIT-licensed core with Docker Compose, with no tier limits.</p>
+  <p>Start on Airlock Cloud: the Free tier includes 100 approvals a month. Or self-host the MIT-licensed core with Docker Compose, with no tier limits.</p>
   <div class="doc-cta-actions">
-    <a class="btn btn-primary btn-sm" href="https://app.impri.dev/?signup=1">Start free on Impri Cloud</a>
+    <a class="btn btn-primary btn-sm" href="https://app.airlock.dev/?signup=1">Start free on Airlock Cloud</a>
     <a class="btn btn-ghost btn-sm" href="../docs/quickstart">Quick start</a>
     <a class="btn btn-ghost btn-sm" href="../docs/self-hosting">Self-host guide</a>
   </div>
@@ -355,7 +355,7 @@ action = requests.post(<span class="hljs-string">f&quot;<span class="hljs-subst"
 <li class="ptoc-h2"><a href="#the-classic-bulk-failure-the-scope-drifts">The classic bulk failure: the scope drifts</a></li>
 <li class="ptoc-h2"><a href="#let-the-human-narrow-it-not-just-accept-it">Let the human narrow it, not just accept it</a></li>
 <li class="ptoc-h2"><a href="#batches-in-the-inbox">Batches in the inbox</a></li>
-<li class="ptoc-h2"><a href="#what-impri-does-and-doesn39t-do-here">What Impri does and doesn't do here</a></li>
+<li class="ptoc-h2"><a href="#what-airlock-does-and-doesn39t-do-here">What Airlock does and doesn't do here</a></li>
 <li class="ptoc-h2"><a href="#next-step">Next step</a></li></ul>
 </nav>
   </aside>
@@ -364,19 +364,19 @@ action = requests.post(<span class="hljs-string">f&quot;<span class="hljs-subst"
 <footer class="footer">
 <div class="wrap footer-inner">
   <a class="brand" href="/">
-    <span class="mark"><svg viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.5 4.5L19 7.5" stroke="white" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Impri
+    <span class="mark"><svg viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.5 4.5L19 7.5" stroke="white" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Airlock
   </a>
   <div>
-    <a href="https://gitlab.com/sekera.radim/impri">GitLab</a>
+    <a href="https://gitlab.com/sekera.radim/airlock">GitLab</a>
     <a href="/docs">Docs</a>
-    <a href="https://gitlab.com/sekera.radim/impri/-/blob/main/LICENSE">MIT License</a>
-    <a href="https://www.npmjs.com/package/@impri/mcp">@impri/mcp</a>
+    <a href="https://gitlab.com/sekera.radim/airlock/-/blob/main/LICENSE">MIT License</a>
+    <a href="https://www.npmjs.com/package/@airlock/mcp">@airlock/mcp</a>
     <a href="/docs/privacy">Privacy</a>
     <a href="/docs/terms">Terms</a>
     <a href="https://sekera.dev">Contact</a>
   </div>
 </div>
-<div class="wrap" style="margin-top:18px"><span class="muted">© 2026 Impri · The imprimatur for your AI agents · Built by <a href="https://sekera.dev" style="color:inherit">Radim Sekera</a>. Also by the same maker: <a href="https://briefgate.dev/?utm_source=impri.dev&amp;utm_medium=referral" style="color:inherit">BriefGate</a> — client intake for agencies and AI agents.</span></div>
+<div class="wrap" style="margin-top:18px"><span class="muted">© 2026 Airlock · The airlockmatur for your AI agents · Built by <a href="https://sekera.dev" style="color:inherit">Radim Sekera</a>. Also by the same maker: <a href="https://briefgate.dev/?utm_source=airlock.dev&amp;utm_medium=referral" style="color:inherit">BriefGate</a> — client intake for agencies and AI agents.</span></div>
 </footer>
 </body>
 </html>

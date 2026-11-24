@@ -3,21 +3,21 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>An Approval Gate for Webhook-Triggered Agents — Impri Docs</title>
+<title>An Approval Gate for Webhook-Triggered Agents — Airlock Docs</title>
 <meta name="description" content="Webhook-triggered agents fire the instant an event lands, with no chat window open for a human to catch a bad call — here's how to wire in an approval gate…">
 <meta name="theme-color" content="#06070d">
-<meta property="og:title" content="An Approval Gate for Webhook-Triggered Agents — Impri Docs">
+<meta property="og:title" content="An Approval Gate for Webhook-Triggered Agents — Airlock Docs">
 <meta property="og:description" content="Webhook-triggered agents fire the instant an event lands, with no chat window open for a human to catch a bad call — here's how to wire in an approval gate…">
 <meta property="og:type" content="article">
-<meta property="og:url" content="https://impri.dev/docs/approval-gate-for-webhook-triggered-agents">
-<meta property="og:image" content="https://impri.dev/assets/og/og-docs.png">
+<meta property="og:url" content="https://airlock.dev/docs/approval-gate-for-webhook-triggered-agents">
+<meta property="og:image" content="https://airlock.dev/assets/og/og-docs.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
-<meta property="og:image:alt" content="Impri — human-in-the-loop approval inbox for AI agents">
+<meta property="og:image:alt" content="Airlock — human-in-the-loop approval inbox for AI agents">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="https://impri.dev/assets/og/og-docs.png">
-<link rel="canonical" href="https://impri.dev/docs/approval-gate-for-webhook-triggered-agents">
-<script type="application/ld+json">{"@context":"https://schema.org","@type":"TechArticle","headline":"An Approval Gate for Webhook-Triggered Agents","description":"Webhook-triggered agents fire the instant an event lands, with no chat window open for a human to catch a bad call — here's how to wire in an approval gate…","url":"https://impri.dev/docs/approval-gate-for-webhook-triggered-agents","inLanguage":"en","author":{"@type":"Organization","name":"Impri","url":"https://impri.dev"},"publisher":{"@type":"Organization","name":"Impri","url":"https://impri.dev"}}</script>
+<meta name="twitter:image" content="https://airlock.dev/assets/og/og-docs.png">
+<link rel="canonical" href="https://airlock.dev/docs/approval-gate-for-webhook-triggered-agents">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"TechArticle","headline":"An Approval Gate for Webhook-Triggered Agents","description":"Webhook-triggered agents fire the instant an event lands, with no chat window open for a human to catch a bad call — here's how to wire in an approval gate…","url":"https://airlock.dev/docs/approval-gate-for-webhook-triggered-agents","inLanguage":"en","author":{"@type":"Organization","name":"Airlock","url":"https://airlock.dev"},"publisher":{"@type":"Organization","name":"Airlock","url":"https://airlock.dev"}}</script>
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <link rel="icon" href="/favicon.ico" sizes="32x32">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='9' fill='%236366f1'/%3E%3Cpath d='M9 16.5l4.5 4.5L23 11' stroke='white' stroke-width='3' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
@@ -132,13 +132,13 @@ pre code.hljs{display:block;overflow-x:auto}
 <div class="wrap nav-inner">
   <a class="brand" href="/">
     <span class="mark"><svg viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.5 4.5L19 7.5" stroke="white" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
-    Impri
+    Airlock
   </a>
   <div class="nav-links">
     <a class="link" href="/#how">How it works</a>
     <a class="link" href="/#pricing">Pricing</a>
     <a class="link active-nav" href="../docs">Docs</a>
-    <a class="btn btn-primary btn-sm" href="https://gitlab.com/sekera.radim/impri">GitLab</a>
+    <a class="btn btn-primary btn-sm" href="https://gitlab.com/sekera.radim/airlock">GitLab</a>
   </div>
 </div>
 </nav>
@@ -161,14 +161,14 @@ pre code.hljs{display:block;overflow-x:auto}
 <hr>
 <h2 id="example-an-agent-that-triages-and-merges-dependency-update-prs">Example: an agent that triages and merges dependency-update PRs</h2>
 <p>Say you have an agent that reads the diff on incoming PRs opened by a bot (Dependabot-style version bumps) and decides whether the bump looks safe. When it&#39;s confident, its job is to merge. That&#39;s exactly the kind of action worth gating — a bad automatic merge is hard to notice until something breaks in production.</p>
-<p>Here&#39;s a minimal Flask webhook receiver in Python that pushes the merge decision to Impri instead of merging directly:</p>
+<p>Here&#39;s a minimal Flask webhook receiver in Python that pushes the merge decision to Airlock instead of merging directly:</p>
 <div class="code-block"><span class="code-lang">python</span><pre><code class="hljs"><span class="hljs-keyword">import</span> os
 <span class="hljs-keyword">import</span> requests
 <span class="hljs-keyword">from</span> flask <span class="hljs-keyword">import</span> Flask, request
 
 app = Flask(__name__)
-IMPRI_KEY = os.environ[<span class="hljs-string">&quot;IMPRI_API_KEY&quot;</span>]
-IMPRI_BASE = <span class="hljs-string">&quot;https://api.impri.dev&quot;</span>
+AIRLOCK_KEY = os.environ[<span class="hljs-string">&quot;AIRLOCK_API_KEY&quot;</span>]
+AIRLOCK_BASE = <span class="hljs-string">&quot;https://api.airlock.dev&quot;</span>
 
 <span class="hljs-meta">@app.route(<span class="hljs-params"><span class="hljs-string">&quot;/webhooks/github&quot;</span>, methods=[<span class="hljs-string">&quot;POST&quot;</span>]</span>)</span>
 <span class="hljs-keyword">def</span> <span class="hljs-title function_">handle_pr_event</span>():
@@ -181,8 +181,8 @@ IMPRI_BASE = <span class="hljs-string">&quot;https://api.impri.dev&quot;</span>
         <span class="hljs-keyword">return</span> <span class="hljs-string">&quot;&quot;</span>, <span class="hljs-number">204</span>
 
     action = requests.post(
-        <span class="hljs-string">f&quot;<span class="hljs-subst">{IMPRI_BASE}</span>/v1/actions&quot;</span>,
-        headers={<span class="hljs-string">&quot;Authorization&quot;</span>: <span class="hljs-string">f&quot;Bearer <span class="hljs-subst">{IMPRI_KEY}</span>&quot;</span>},
+        <span class="hljs-string">f&quot;<span class="hljs-subst">{AIRLOCK_BASE}</span>/v1/actions&quot;</span>,
+        headers={<span class="hljs-string">&quot;Authorization&quot;</span>: <span class="hljs-string">f&quot;Bearer <span class="hljs-subst">{AIRLOCK_KEY}</span>&quot;</span>},
         json={
             <span class="hljs-string">&quot;kind&quot;</span>: <span class="hljs-string">&quot;git.merge_pr&quot;</span>,
             <span class="hljs-string">&quot;title&quot;</span>: <span class="hljs-string">f&quot;Auto-merge: <span class="hljs-subst">{pr[<span class="hljs-string">&#x27;title&#x27;</span>]}</span>&quot;</span>,
@@ -206,8 +206,8 @@ IMPRI_BASE = <span class="hljs-string">&quot;https://api.impri.dev&quot;</span>
 <span class="hljs-keyword">def</span> <span class="hljs-title function_">process_pending_merge</span>(<span class="hljs-params">action_id, pr_number</span>):
     <span class="hljs-keyword">while</span> <span class="hljs-literal">True</span>:
         result = requests.get(
-            <span class="hljs-string">f&quot;<span class="hljs-subst">{IMPRI_BASE}</span>/v1/actions/<span class="hljs-subst">{action_id}</span>&quot;</span>,
-            headers={<span class="hljs-string">&quot;Authorization&quot;</span>: <span class="hljs-string">f&quot;Bearer <span class="hljs-subst">{IMPRI_KEY}</span>&quot;</span>},
+            <span class="hljs-string">f&quot;<span class="hljs-subst">{AIRLOCK_BASE}</span>/v1/actions/<span class="hljs-subst">{action_id}</span>&quot;</span>,
+            headers={<span class="hljs-string">&quot;Authorization&quot;</span>: <span class="hljs-string">f&quot;Bearer <span class="hljs-subst">{AIRLOCK_KEY}</span>&quot;</span>},
         ).json()
 
         <span class="hljs-keyword">if</span> result[<span class="hljs-string">&quot;status&quot;</span>] == <span class="hljs-string">&quot;pending&quot;</span>:
@@ -217,8 +217,8 @@ IMPRI_BASE = <span class="hljs-string">&quot;https://api.impri.dev&quot;</span>
         <span class="hljs-keyword">if</span> result[<span class="hljs-string">&quot;status&quot;</span>] == <span class="hljs-string">&quot;approved&quot;</span>:
             merge_pull_request(pr_number)  <span class="hljs-comment"># your GitHub API call</span>
             requests.post(
-                <span class="hljs-string">f&quot;<span class="hljs-subst">{IMPRI_BASE}</span>/v1/actions/<span class="hljs-subst">{action_id}</span>/result&quot;</span>,
-                headers={<span class="hljs-string">&quot;Authorization&quot;</span>: <span class="hljs-string">f&quot;Bearer <span class="hljs-subst">{IMPRI_KEY}</span>&quot;</span>},
+                <span class="hljs-string">f&quot;<span class="hljs-subst">{AIRLOCK_BASE}</span>/v1/actions/<span class="hljs-subst">{action_id}</span>/result&quot;</span>,
+                headers={<span class="hljs-string">&quot;Authorization&quot;</span>: <span class="hljs-string">f&quot;Bearer <span class="hljs-subst">{AIRLOCK_KEY}</span>&quot;</span>},
                 json={<span class="hljs-string">&quot;status&quot;</span>: <span class="hljs-string">&quot;executed&quot;</span>},
             )
         <span class="hljs-comment"># rejected or expired: do nothing, PR stays open for a human to handle manually</span>
@@ -229,17 +229,17 @@ IMPRI_BASE = <span class="hljs-string">&quot;https://api.impri.dev&quot;</span>
 <p>Chat-driven approvals can afford a long expiry — a human might come back to the conversation the next day. Webhook-driven actions are usually tied to something time-sensitive: a PR that will get more commits pushed to it, a refund window, an incident that resolves itself. Set <code>expires_in</code> short enough that an approval past that point would be acting on stale information. Six hours for a PR merge, thirty minutes for an incident remediation — pick a number tied to how fast the underlying event goes stale, not a generic default.</p>
 <hr>
 <h2 id="what-this-does-and-doesn39t-protect-against">What this does and doesn&#39;t protect against</h2>
-<p>Impri holds the decision and notifies a human; it does not inspect the PR diff, run your safety heuristic, or know anything about GitHub. The gate only holds if <code>merge_pull_request()</code> genuinely cannot be reached except through the approved path — if the agent process also has a GitHub token it could call directly on some other code path, the gate is decorative. Route the credential only through the code that checks <code>status: &quot;approved&quot;</code> first.</p>
-<p>For the full three-call pattern this builds on, see <a href="how-to-add-human-approval-to-an-ai-agent">how to add human approval to an AI agent</a>. For receiving the GitHub/Stripe/etc. webhook itself (separate from Impri&#39;s own decision notifications), see <a href="webhooks">webhooks</a>. To wire the target tool so the approved path is the only path, see <a href="integrations">integrations</a>.</p>
+<p>Airlock holds the decision and notifies a human; it does not inspect the PR diff, run your safety heuristic, or know anything about GitHub. The gate only holds if <code>merge_pull_request()</code> genuinely cannot be reached except through the approved path — if the agent process also has a GitHub token it could call directly on some other code path, the gate is decorative. Route the credential only through the code that checks <code>status: &quot;approved&quot;</code> first.</p>
+<p>For the full three-call pattern this builds on, see <a href="how-to-add-human-approval-to-an-ai-agent">how to add human approval to an AI agent</a>. For receiving the GitHub/Stripe/etc. webhook itself (separate from Airlock&#39;s own decision notifications), see <a href="webhooks">webhooks</a>. To wire the target tool so the approved path is the only path, see <a href="integrations">integrations</a>.</p>
 <hr>
 <h2 id="next-step">Next step</h2>
 <p>Start with the <a href="quickstart">quickstart</a> to get an API key, then adapt the Flask example above to whatever webhook source triggers your agent.</p>
 
-    <aside class="doc-cta" aria-label="Try Impri">
+    <aside class="doc-cta" aria-label="Try Airlock">
   <p class="doc-cta-title">Add an approval step to your own agent</p>
-  <p>Start on Impri Cloud: the Free tier includes 100 approvals a month. Or self-host the MIT-licensed core with Docker Compose, with no tier limits.</p>
+  <p>Start on Airlock Cloud: the Free tier includes 100 approvals a month. Or self-host the MIT-licensed core with Docker Compose, with no tier limits.</p>
   <div class="doc-cta-actions">
-    <a class="btn btn-primary btn-sm" href="https://app.impri.dev/?signup=1">Start free on Impri Cloud</a>
+    <a class="btn btn-primary btn-sm" href="https://app.airlock.dev/?signup=1">Start free on Airlock Cloud</a>
     <a class="btn btn-ghost btn-sm" href="../docs/quickstart">Quick start</a>
     <a class="btn btn-ghost btn-sm" href="../docs/self-hosting">Self-host guide</a>
   </div>
@@ -335,19 +335,19 @@ IMPRI_BASE = <span class="hljs-string">&quot;https://api.impri.dev&quot;</span>
 <footer class="footer">
 <div class="wrap footer-inner">
   <a class="brand" href="/">
-    <span class="mark"><svg viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.5 4.5L19 7.5" stroke="white" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Impri
+    <span class="mark"><svg viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.5 4.5L19 7.5" stroke="white" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Airlock
   </a>
   <div>
-    <a href="https://gitlab.com/sekera.radim/impri">GitLab</a>
+    <a href="https://gitlab.com/sekera.radim/airlock">GitLab</a>
     <a href="/docs">Docs</a>
-    <a href="https://gitlab.com/sekera.radim/impri/-/blob/main/LICENSE">MIT License</a>
-    <a href="https://www.npmjs.com/package/@impri/mcp">@impri/mcp</a>
+    <a href="https://gitlab.com/sekera.radim/airlock/-/blob/main/LICENSE">MIT License</a>
+    <a href="https://www.npmjs.com/package/@airlock/mcp">@airlock/mcp</a>
     <a href="/docs/privacy">Privacy</a>
     <a href="/docs/terms">Terms</a>
     <a href="https://sekera.dev">Contact</a>
   </div>
 </div>
-<div class="wrap" style="margin-top:18px"><span class="muted">© 2026 Impri · The imprimatur for your AI agents · Built by <a href="https://sekera.dev" style="color:inherit">Radim Sekera</a>. Also by the same maker: <a href="https://briefgate.dev/?utm_source=impri.dev&amp;utm_medium=referral" style="color:inherit">BriefGate</a> — client intake for agencies and AI agents.</span></div>
+<div class="wrap" style="margin-top:18px"><span class="muted">© 2026 Airlock · The airlockmatur for your AI agents · Built by <a href="https://sekera.dev" style="color:inherit">Radim Sekera</a>. Also by the same maker: <a href="https://briefgate.dev/?utm_source=airlock.dev&amp;utm_medium=referral" style="color:inherit">BriefGate</a> — client intake for agencies and AI agents.</span></div>
 </footer>
 </body>
 </html>

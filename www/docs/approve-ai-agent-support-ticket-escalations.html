@@ -3,21 +3,21 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Approve AI Agent Support Ticket Escalations — Impri Docs</title>
+<title>Approve AI Agent Support Ticket Escalations — Airlock Docs</title>
 <meta name="description" content="Require a human to sign off before a support agent escalates a ticket, issues a refund, or reopens a case — approve or edit the outcome from a phone.">
 <meta name="theme-color" content="#06070d">
-<meta property="og:title" content="Approve AI Agent Support Ticket Escalations — Impri Docs">
+<meta property="og:title" content="Approve AI Agent Support Ticket Escalations — Airlock Docs">
 <meta property="og:description" content="Require a human to sign off before a support agent escalates a ticket, issues a refund, or reopens a case — approve or edit the outcome from a phone.">
 <meta property="og:type" content="article">
-<meta property="og:url" content="https://impri.dev/docs/approve-ai-agent-support-ticket-escalations">
-<meta property="og:image" content="https://impri.dev/assets/og/og-docs.png">
+<meta property="og:url" content="https://airlock.dev/docs/approve-ai-agent-support-ticket-escalations">
+<meta property="og:image" content="https://airlock.dev/assets/og/og-docs.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
-<meta property="og:image:alt" content="Impri — human-in-the-loop approval inbox for AI agents">
+<meta property="og:image:alt" content="Airlock — human-in-the-loop approval inbox for AI agents">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="https://impri.dev/assets/og/og-docs.png">
-<link rel="canonical" href="https://impri.dev/docs/approve-ai-agent-support-ticket-escalations">
-<script type="application/ld+json">{"@context":"https://schema.org","@type":"TechArticle","headline":"Approve AI Agent Support Ticket Escalations","description":"Require a human to sign off before a support agent escalates a ticket, issues a refund, or reopens a case — approve or edit the outcome from a phone.","url":"https://impri.dev/docs/approve-ai-agent-support-ticket-escalations","inLanguage":"en","author":{"@type":"Organization","name":"Impri","url":"https://impri.dev"},"publisher":{"@type":"Organization","name":"Impri","url":"https://impri.dev"}}</script>
+<meta name="twitter:image" content="https://airlock.dev/assets/og/og-docs.png">
+<link rel="canonical" href="https://airlock.dev/docs/approve-ai-agent-support-ticket-escalations">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"TechArticle","headline":"Approve AI Agent Support Ticket Escalations","description":"Require a human to sign off before a support agent escalates a ticket, issues a refund, or reopens a case — approve or edit the outcome from a phone.","url":"https://airlock.dev/docs/approve-ai-agent-support-ticket-escalations","inLanguage":"en","author":{"@type":"Organization","name":"Airlock","url":"https://airlock.dev"},"publisher":{"@type":"Organization","name":"Airlock","url":"https://airlock.dev"}}</script>
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <link rel="icon" href="/favicon.ico" sizes="32x32">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='9' fill='%236366f1'/%3E%3Cpath d='M9 16.5l4.5 4.5L23 11' stroke='white' stroke-width='3' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
@@ -132,13 +132,13 @@ pre code.hljs{display:block;overflow-x:auto}
 <div class="wrap nav-inner">
   <a class="brand" href="/">
     <span class="mark"><svg viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.5 4.5L19 7.5" stroke="white" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
-    Impri
+    Airlock
   </a>
   <div class="nav-links">
     <a class="link" href="/#how">How it works</a>
     <a class="link" href="/#pricing">Pricing</a>
     <a class="link active-nav" href="../docs">Docs</a>
-    <a class="btn btn-primary btn-sm" href="https://gitlab.com/sekera.radim/impri">GitLab</a>
+    <a class="btn btn-primary btn-sm" href="https://gitlab.com/sekera.radim/airlock">GitLab</a>
   </div>
 </div>
 </nav>
@@ -163,15 +163,15 @@ pre code.hljs{display:block;overflow-x:auto}
 <div class="code-block"><span class="code-lang">typescript</span><pre><code class="hljs"><span class="hljs-keyword">import</span> { <span class="hljs-title class_">Client</span> } <span class="hljs-keyword">from</span> <span class="hljs-string">&quot;@modelcontextprotocol/sdk/client/index.js&quot;</span>;
 <span class="hljs-keyword">import</span> { <span class="hljs-title class_">StdioClientTransport</span> } <span class="hljs-keyword">from</span> <span class="hljs-string">&quot;@modelcontextprotocol/sdk/client/stdio.js&quot;</span>;
 
-<span class="hljs-keyword">const</span> impri = <span class="hljs-keyword">new</span> <span class="hljs-title class_">Client</span>({ <span class="hljs-attr">name</span>: <span class="hljs-string">&quot;support-escalations&quot;</span>, <span class="hljs-attr">version</span>: <span class="hljs-string">&quot;1.0.0&quot;</span> });
-<span class="hljs-keyword">await</span> impri.<span class="hljs-title function_">connect</span>(
+<span class="hljs-keyword">const</span> airlock = <span class="hljs-keyword">new</span> <span class="hljs-title class_">Client</span>({ <span class="hljs-attr">name</span>: <span class="hljs-string">&quot;support-escalations&quot;</span>, <span class="hljs-attr">version</span>: <span class="hljs-string">&quot;1.0.0&quot;</span> });
+<span class="hljs-keyword">await</span> airlock.<span class="hljs-title function_">connect</span>(
   <span class="hljs-keyword">new</span> <span class="hljs-title class_">StdioClientTransport</span>({
     <span class="hljs-attr">command</span>: <span class="hljs-string">&quot;npx&quot;</span>,
-    <span class="hljs-attr">args</span>: [<span class="hljs-string">&quot;@impri/mcp&quot;</span>],
+    <span class="hljs-attr">args</span>: [<span class="hljs-string">&quot;@airlock/mcp&quot;</span>],
     <span class="hljs-attr">env</span>: {
       <span class="hljs-attr">PATH</span>: process.<span class="hljs-property">env</span>.<span class="hljs-property">PATH</span>!,
-      <span class="hljs-attr">IMPRI_API_KEY</span>: process.<span class="hljs-property">env</span>.<span class="hljs-property">IMPRI_API_KEY</span>!,
-      <span class="hljs-attr">IMPRI_BASE_URL</span>: <span class="hljs-string">&quot;https://api.impri.dev&quot;</span>, <span class="hljs-comment">// or your self-hosted API</span>
+      <span class="hljs-attr">AIRLOCK_API_KEY</span>: process.<span class="hljs-property">env</span>.<span class="hljs-property">AIRLOCK_API_KEY</span>!,
+      <span class="hljs-attr">AIRLOCK_BASE_URL</span>: <span class="hljs-string">&quot;https://api.airlock.dev&quot;</span>, <span class="hljs-comment">// or your self-hosted API</span>
     },
   }),
 );
@@ -179,8 +179,8 @@ pre code.hljs{display:block;overflow-x:auto}
 <span class="hljs-keyword">async</span> <span class="hljs-keyword">function</span> <span class="hljs-title function_">escalateTicket</span>(<span class="hljs-params"><span class="hljs-attr">ticket</span>: {
   id: <span class="hljs-built_in">string</span>; customer: <span class="hljs-built_in">string</span>; amount: <span class="hljs-built_in">number</span>; reason: <span class="hljs-built_in">string</span>;
 }</span>) {
-  <span class="hljs-keyword">const</span> pushed = <span class="hljs-keyword">await</span> impri.<span class="hljs-title function_">callTool</span>({
-    <span class="hljs-attr">name</span>: <span class="hljs-string">&quot;impri_push_action&quot;</span>,
+  <span class="hljs-keyword">const</span> pushed = <span class="hljs-keyword">await</span> airlock.<span class="hljs-title function_">callTool</span>({
+    <span class="hljs-attr">name</span>: <span class="hljs-string">&quot;airlock_push_action&quot;</span>,
     <span class="hljs-attr">arguments</span>: {
       <span class="hljs-attr">kind</span>: <span class="hljs-string">&quot;ticket.escalate&quot;</span>,
       <span class="hljs-attr">title</span>: <span class="hljs-string">`Refund $<span class="hljs-subst">${ticket.amount}</span> — ticket #<span class="hljs-subst">${ticket.id}</span> (<span class="hljs-subst">${ticket.customer}</span>)`</span>,
@@ -192,11 +192,11 @@ pre code.hljs{display:block;overflow-x:auto}
       <span class="hljs-attr">expires_in</span>: <span class="hljs-number">14400</span>, <span class="hljs-comment">// 4h — an unresolved escalation goes stale fast</span>
     },
   });
-  <span class="hljs-comment">// Impri&#x27;s MCP tools return their JSON under structuredContent.</span>
+  <span class="hljs-comment">// Airlock&#x27;s MCP tools return their JSON under structuredContent.</span>
   <span class="hljs-keyword">const</span> { <span class="hljs-attr">action_id</span>: actionId } = pushed.<span class="hljs-property">structuredContent</span> <span class="hljs-keyword">as</span> { <span class="hljs-attr">action_id</span>: <span class="hljs-built_in">string</span> };
 
-  <span class="hljs-keyword">const</span> decided = <span class="hljs-keyword">await</span> impri.<span class="hljs-title function_">callTool</span>(
-    { <span class="hljs-attr">name</span>: <span class="hljs-string">&quot;impri_await_decision&quot;</span>, <span class="hljs-attr">arguments</span>: { <span class="hljs-attr">action_id</span>: actionId, <span class="hljs-attr">timeout_s</span>: <span class="hljs-number">14400</span> } },
+  <span class="hljs-keyword">const</span> decided = <span class="hljs-keyword">await</span> airlock.<span class="hljs-title function_">callTool</span>(
+    { <span class="hljs-attr">name</span>: <span class="hljs-string">&quot;airlock_await_decision&quot;</span>, <span class="hljs-attr">arguments</span>: { <span class="hljs-attr">action_id</span>: actionId, <span class="hljs-attr">timeout_s</span>: <span class="hljs-number">14400</span> } },
     <span class="hljs-literal">undefined</span>,
     { <span class="hljs-attr">timeout</span>: <span class="hljs-number">14_460_000</span> }, <span class="hljs-comment">// the MCP client gives up after 60 s by default</span>
   );
@@ -212,8 +212,8 @@ pre code.hljs{display:block;overflow-x:auto}
   <span class="hljs-comment">// preview.body carries the on-call lead&#x27;s edit when they changed the text.</span>
   <span class="hljs-keyword">const</span> result = <span class="hljs-keyword">await</span> <span class="hljs-title function_">issueRefund</span>(ticket.<span class="hljs-property">id</span>, decision.<span class="hljs-property">preview</span>.<span class="hljs-property">body</span>);
 
-  <span class="hljs-keyword">await</span> impri.<span class="hljs-title function_">callTool</span>({
-    <span class="hljs-attr">name</span>: <span class="hljs-string">&quot;impri_report_result&quot;</span>,
+  <span class="hljs-keyword">await</span> airlock.<span class="hljs-title function_">callTool</span>({
+    <span class="hljs-attr">name</span>: <span class="hljs-string">&quot;airlock_report_result&quot;</span>,
     <span class="hljs-attr">arguments</span>: { <span class="hljs-attr">action_id</span>: actionId, <span class="hljs-attr">status</span>: result.<span class="hljs-property">ok</span> ? <span class="hljs-string">&quot;executed&quot;</span> : <span class="hljs-string">&quot;execute_failed&quot;</span> },
   });
 
@@ -249,15 +249,15 @@ pre code.hljs{display:block;overflow-x:auto}
 </tr>
 </tbody></table>
 </div>
-<h2 id="what-impri-is-not-doing-here">What Impri is not doing here</h2>
-<p>Impri doesn&#39;t know your refund policy, doesn&#39;t calculate the amount, and doesn&#39;t touch your ticketing system. It stores the proposed escalation, shows it to whoever has approval authority, and hands your code a decision. The <code>issueRefund</code> call and the ticket status update are your integration, wired through the <a href="sdk-typescript">TypeScript SDK</a> or the <a href="mcp">MCP server</a> as shown above.</p>
+<h2 id="what-airlock-is-not-doing-here">What Airlock is not doing here</h2>
+<p>Airlock doesn&#39;t know your refund policy, doesn&#39;t calculate the amount, and doesn&#39;t touch your ticketing system. It stores the proposed escalation, shows it to whoever has approval authority, and hands your code a decision. The <code>issueRefund</code> call and the ticket status update are your integration, wired through the <a href="sdk-typescript">TypeScript SDK</a> or the <a href="mcp">MCP server</a> as shown above.</p>
 <p><strong>Next step:</strong> <a href="quickstart">Quickstart</a> to get an API key, then swap the <code>issueRefund</code> stub above for your actual support-platform call.</p>
 
-    <aside class="doc-cta" aria-label="Try Impri">
+    <aside class="doc-cta" aria-label="Try Airlock">
   <p class="doc-cta-title">Add an approval step to your own agent</p>
-  <p>Start on Impri Cloud: the Free tier includes 100 approvals a month. Or self-host the MIT-licensed core with Docker Compose, with no tier limits.</p>
+  <p>Start on Airlock Cloud: the Free tier includes 100 approvals a month. Or self-host the MIT-licensed core with Docker Compose, with no tier limits.</p>
   <div class="doc-cta-actions">
-    <a class="btn btn-primary btn-sm" href="https://app.impri.dev/?signup=1">Start free on Impri Cloud</a>
+    <a class="btn btn-primary btn-sm" href="https://app.airlock.dev/?signup=1">Start free on Airlock Cloud</a>
     <a class="btn btn-ghost btn-sm" href="../docs/quickstart">Quick start</a>
     <a class="btn btn-ghost btn-sm" href="../docs/self-hosting">Self-host guide</a>
   </div>
@@ -345,7 +345,7 @@ pre code.hljs{display:block;overflow-x:auto}
 <li class="ptoc-h2"><a href="#the-three-call-pattern-via-mcp-typescript">The three-call pattern, via MCP (TypeScript)</a></li>
 <li class="ptoc-h2"><a href="#letting-the-reviewer-adjust-the-amount-not-just-approve-or-deny">Letting the reviewer adjust the amount, not just approve or deny</a></li>
 <li class="ptoc-h2"><a href="#routing-escalations-to-slack-instead-of-an-inbox-tab">Routing escalations to Slack instead of an inbox tab</a></li>
-<li class="ptoc-h2"><a href="#what-impri-is-not-doing-here">What Impri is not doing here</a></li></ul>
+<li class="ptoc-h2"><a href="#what-airlock-is-not-doing-here">What Airlock is not doing here</a></li></ul>
 </nav>
   </aside>
 </div>
@@ -353,19 +353,19 @@ pre code.hljs{display:block;overflow-x:auto}
 <footer class="footer">
 <div class="wrap footer-inner">
   <a class="brand" href="/">
-    <span class="mark"><svg viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.5 4.5L19 7.5" stroke="white" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Impri
+    <span class="mark"><svg viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.5 4.5L19 7.5" stroke="white" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Airlock
   </a>
   <div>
-    <a href="https://gitlab.com/sekera.radim/impri">GitLab</a>
+    <a href="https://gitlab.com/sekera.radim/airlock">GitLab</a>
     <a href="/docs">Docs</a>
-    <a href="https://gitlab.com/sekera.radim/impri/-/blob/main/LICENSE">MIT License</a>
-    <a href="https://www.npmjs.com/package/@impri/mcp">@impri/mcp</a>
+    <a href="https://gitlab.com/sekera.radim/airlock/-/blob/main/LICENSE">MIT License</a>
+    <a href="https://www.npmjs.com/package/@airlock/mcp">@airlock/mcp</a>
     <a href="/docs/privacy">Privacy</a>
     <a href="/docs/terms">Terms</a>
     <a href="https://sekera.dev">Contact</a>
   </div>
 </div>
-<div class="wrap" style="margin-top:18px"><span class="muted">© 2026 Impri · The imprimatur for your AI agents · Built by <a href="https://sekera.dev" style="color:inherit">Radim Sekera</a>. Also by the same maker: <a href="https://briefgate.dev/?utm_source=impri.dev&amp;utm_medium=referral" style="color:inherit">BriefGate</a> — client intake for agencies and AI agents.</span></div>
+<div class="wrap" style="margin-top:18px"><span class="muted">© 2026 Airlock · The airlockmatur for your AI agents · Built by <a href="https://sekera.dev" style="color:inherit">Radim Sekera</a>. Also by the same maker: <a href="https://briefgate.dev/?utm_source=airlock.dev&amp;utm_medium=referral" style="color:inherit">BriefGate</a> — client intake for agencies and AI agents.</span></div>
 </footer>
 </body>
 </html>

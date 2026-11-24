@@ -1,4 +1,4 @@
-"""Impri REST client — Python stdlib only.
+"""Airlock REST client — Python stdlib only.
 
 No third-party dependencies. Uses urllib.request (blocking I/O) and mirrors
 the polling logic in mcp/src/tools.ts (awaitDecision) and the error-handling
@@ -6,7 +6,7 @@ switch in mcp/src/client.ts (throwApiError), extended with 402 QuotaExceeded.
 
 Base URL resolution order:
   1. ``base_url`` constructor argument
-  2. ``IMPRI_BASE_URL`` environment variable
+  2. ``AIRLOCK_BASE_URL`` environment variable
   3. ``http://localhost:8484`` (self-hosted default)
 
 The client always appends ``/v1`` internally; callers never include it in the
@@ -22,34 +22,34 @@ import urllib.request
 from typing import Any
 
 from ._errors import (
-    ImpriApiError,
-    ImpriConflict,
-    ImpriConfigError,
-    ImpriExpired,
-    ImpriNotFound,
-    ImpriQuotaExceeded,
-    ImpriRateLimited,
-    ImpriRejected,
-    ImpriTimeout,
-    ImpriUnauthorized,
-    ImpriValidationError,
+    AirlockApiError,
+    AirlockConflict,
+    AirlockConfigError,
+    AirlockExpired,
+    AirlockNotFound,
+    AirlockQuotaExceeded,
+    AirlockRateLimited,
+    AirlockRejected,
+    AirlockTimeout,
+    AirlockUnauthorized,
+    AirlockValidationError,
 )
 
 
-class ImpriClient:
-    """Synchronous Impri REST client backed by ``urllib.request``.
+class AirlockClient:
+    """Synchronous Airlock REST client backed by ``urllib.request``.
 
     Args:
-        api_key:  Bearer token (``im_...``). Falls back to ``IMPRI_API_KEY`` env var.
+        api_key:  Bearer token (``im_...``). Falls back to ``AIRLOCK_API_KEY`` env var.
         base_url: API root without the ``/v1`` path prefix. Falls back to
-                  ``IMPRI_BASE_URL``, then ``http://localhost:8484``.
+                  ``AIRLOCK_BASE_URL``, then ``http://localhost:8484``.
 
     Raises:
-        ImpriConfigError: if neither ``api_key`` nor ``IMPRI_API_KEY`` is set.
+        AirlockConfigError: if neither ``api_key`` nor ``AIRLOCK_API_KEY`` is set.
 
     Example::
 
-        client = ImpriClient(api_key="im_...")
+        client = AirlockClient(api_key="im_...")
         action = client.create_action(
             kind="email.send",
             title="Send welcome email to alice@example.com",
@@ -65,17 +65,17 @@ class ImpriClient:
         api_key: str | None = None,
         base_url: str | None = None,
     ) -> None:
-        resolved_key = api_key or os.environ.get("IMPRI_API_KEY")
+        resolved_key = api_key or os.environ.get("AIRLOCK_API_KEY")
         if not resolved_key:
-            raise ImpriConfigError(
-                "No API key found. Pass api_key= or set the IMPRI_API_KEY "
+            raise AirlockConfigError(
+                "No API key found. Pass api_key= or set the AIRLOCK_API_KEY "
                 "environment variable."
             )
         self._api_key = resolved_key
 
         resolved_url = (
             base_url
-            or os.environ.get("IMPRI_BASE_URL")
+            or os.environ.get("AIRLOCK_BASE_URL")
             or "http://localhost:8484"
         )
         self._base = resolved_url.rstrip("/") + "/v1"
@@ -85,7 +85,7 @@ class ImpriClient:
     def _request(self, method: str, path: str, body: Any = None) -> Any:
         """Make an authenticated JSON request and return the parsed response body.
 
-        Raises the appropriate ``ImpriError`` subclass on non-2xx responses.
+        Raises the appropriate ``AirlockError`` subclass on non-2xx responses.
         """
         url = self._base + path
         headers: dict[str, str] = {
@@ -106,7 +106,7 @@ class ImpriClient:
             return self._raise_http_error(exc)
 
     def _raise_http_error(self, exc: urllib.error.HTTPError) -> Any:
-        """Map HTTP error codes to typed ImpriError subclasses."""
+        """Map HTTP error codes to typed AirlockError subclasses."""
         try:
             body: dict[str, Any] = json.loads(exc.read())
         except Exception:
@@ -116,33 +116,33 @@ class ImpriClient:
         status = exc.code
 
         if status in (401, 403):
-            raise ImpriUnauthorized(
-                "Authentication failed — verify your IMPRI_API_KEY is correct "
+            raise AirlockUnauthorized(
+                "Authentication failed — verify your AIRLOCK_API_KEY is correct "
                 "and has the required scope ('actions' for action operations)."
             )
         if status == 402:
-            raise ImpriQuotaExceeded(
+            raise AirlockQuotaExceeded(
                 f"Quota exceeded: {detail or 'monthly approval limit reached.'}",
                 limit=body.get("limit"),
                 tier=body.get("tier"),
             )
         if status == 404:
-            raise ImpriNotFound(
+            raise AirlockNotFound(
                 "Resource not found — verify the action_id is correct and "
                 "belongs to this API key's project."
             )
         if status == 409:
-            raise ImpriConflict(
+            raise AirlockConflict(
                 "Conflict — the action has already been decided, or a concurrent "
                 "idempotency race occurred. Use get_action to check current status."
             )
         if status == 410:
-            raise ImpriExpired(
+            raise AirlockExpired(
                 "Action expired — the approval window has closed. "
                 "Create a new action if the task is still relevant."
             )
         if status in (400, 422):
-            raise ImpriValidationError(
+            raise AirlockValidationError(
                 f"Invalid request: {detail or 'check the parameters and try again.'}",
                 issues=body.get("issues"),
             )
@@ -151,12 +151,12 @@ class ImpriClient:
             retry_after = (
                 int(ra_raw) if ra_raw and str(ra_raw).strip().isdigit() else None
             )
-            raise ImpriRateLimited(
+            raise AirlockRateLimited(
                 "Rate limit reached — wait a moment and retry.",
                 retry_after=retry_after,
             )
-        raise ImpriApiError(
-            f"Impri API error {status}: {detail or exc.reason}",
+        raise AirlockApiError(
+            f"Airlock API error {status}: {detail or exc.reason}",
             status_code=status,
         )
 
@@ -217,7 +217,7 @@ class ImpriClient:
         been modified by the reviewer.
 
         Raises:
-            ImpriNotFound: if the action_id is unknown or belongs to another project.
+            AirlockNotFound: if the action_id is unknown or belongs to another project.
         """
         return self._request("GET", f"/actions/{action_id}")  # type: ignore[return-value]
 
@@ -235,7 +235,7 @@ class ImpriClient:
         ``'execute_failed'``.
 
         Raises:
-            ImpriConflict: if the action is not in the ``'approved'`` state.
+            AirlockConflict: if the action is not in the ``'approved'`` state.
         """
         body: dict[str, Any] = {"status": status}
         if detail is not None:
@@ -264,10 +264,10 @@ class ImpriClient:
             The approved Action dict.
 
         Raises:
-            ImpriRejected:  Human rejected — carry this as a normal flow outcome,
+            AirlockRejected:  Human rejected — carry this as a normal flow outcome,
                             not an error. The agent should stop and not execute.
-            ImpriExpired:   Approval window closed before a decision was made.
-            ImpriTimeout:   timeout_s elapsed; action is still pending server-side.
+            AirlockExpired:   Approval window closed before a decision was made.
+            AirlockTimeout:   timeout_s elapsed; action is still pending server-side.
         """
         deadline = time.monotonic() + timeout_s
         while True:
@@ -277,13 +277,13 @@ class ImpriClient:
             if status != "pending":
                 if status == "rejected":
                     decision = action.get("decision") or {}
-                    raise ImpriRejected(
+                    raise AirlockRejected(
                         action_id,
                         decision=decision,
                         final_preview=decision.get("final_preview"),
                     )
                 if status == "expired":
-                    raise ImpriExpired(
+                    raise AirlockExpired(
                         f"Action {action_id!r} expired before a human decision was made."
                     )
                 # approved / executed / execute_failed — return as success path
@@ -291,6 +291,6 @@ class ImpriClient:
 
             remaining = deadline - time.monotonic()
             if remaining <= 0:
-                raise ImpriTimeout(action_id)
+                raise AirlockTimeout(action_id)
 
             time.sleep(min(poll_interval_s, remaining))

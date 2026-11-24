@@ -1,7 +1,7 @@
 import type { Decision, Preview } from './types.js'
 
-/** Base class for all Impri SDK errors. */
-export class ImpriError extends Error {
+/** Base class for all Airlock SDK errors. */
+export class AirlockError extends Error {
   constructor(message: string) {
     super(message)
     this.name = this.constructor.name
@@ -12,14 +12,14 @@ export class ImpriError extends Error {
 }
 
 /** API key is missing at construction time, or baseUrl is malformed. */
-export class ImpriConfigError extends ImpriError {
+export class AirlockConfigError extends AirlockError {
   constructor(message: string) {
     super(message)
   }
 }
 
 /** HTTP 401 / 403 — missing/wrong key or key lacks the required scope. */
-export class ImpriUnauthorized extends ImpriError {
+export class AirlockUnauthorized extends AirlockError {
   statusCode: number
   responseBody: unknown
   constructor(message: string, statusCode: number, responseBody: unknown) {
@@ -30,7 +30,7 @@ export class ImpriUnauthorized extends ImpriError {
 }
 
 /** HTTP 404 — action/watcher not found or belongs to a different project. */
-export class ImpriNotFound extends ImpriError {
+export class AirlockNotFound extends AirlockError {
   statusCode = 404
   responseBody: unknown
   constructor(message: string, responseBody: unknown) {
@@ -43,7 +43,7 @@ export class ImpriNotFound extends ImpriError {
  * HTTP 409 — action already decided; concurrent idempotency race resolved by
  * another writer; or reportResult called on a non-approved action.
  */
-export class ImpriConflict extends ImpriError {
+export class AirlockConflict extends AirlockError {
   statusCode = 409
   responseBody: unknown
   constructor(message: string, responseBody: unknown) {
@@ -56,7 +56,7 @@ export class ImpriConflict extends ImpriError {
  * HTTP 410 — approval window closed; also raised by awaitDecision when
  * action.status === 'expired'.
  */
-export class ImpriExpired extends ImpriError {
+export class AirlockExpired extends AirlockError {
   statusCode = 410
   responseBody: unknown
   constructor(message: string, responseBody: unknown) {
@@ -66,7 +66,7 @@ export class ImpriExpired extends ImpriError {
 }
 
 /** HTTP 429 — per-key rate limit hit. Check retryAfter for the backoff hint. */
-export class ImpriRateLimited extends ImpriError {
+export class AirlockRateLimited extends AirlockError {
   statusCode = 429
   responseBody: unknown
   /** Seconds to wait before retrying, from the Retry-After header. */
@@ -82,7 +82,7 @@ export class ImpriRateLimited extends ImpriError {
  * HTTP 402 — monthly approval limit or watcher count limit reached (cloud
  * tiers). Check limit and tier for details.
  */
-export class ImpriQuotaExceeded extends ImpriError {
+export class AirlockQuotaExceeded extends AirlockError {
   statusCode = 402
   responseBody: unknown
   limit?: number
@@ -96,7 +96,7 @@ export class ImpriQuotaExceeded extends ImpriError {
 }
 
 /** HTTP 400 / 422 — server-side schema validation failed. */
-export class ImpriValidationError extends ImpriError {
+export class AirlockValidationError extends AirlockError {
   statusCode: number
   responseBody: unknown
   /** Zod-format issues array from the response body. */
@@ -110,7 +110,7 @@ export class ImpriValidationError extends ImpriError {
 }
 
 /** Catch-all for unexpected 4xx/5xx responses. */
-export class ImpriApiError extends ImpriError {
+export class AirlockApiError extends AirlockError {
   statusCode: number
   responseBody: unknown
   constructor(message: string, statusCode: number, responseBody: unknown) {
@@ -126,7 +126,7 @@ export class ImpriApiError extends ImpriError {
  * This is a valid flow outcome — catch and handle it gracefully.
  * Do NOT log it as an error or retry the action.
  */
-export class ImpriRejected extends ImpriError {
+export class AirlockRejected extends AirlockError {
   /** The action ID that was rejected. */
   actionId: string
   /** The decision object from the human reviewer. */
@@ -151,7 +151,7 @@ export class ImpriRejected extends ImpriError {
  * The action remains pending server-side. Call awaitDecision again to resume
  * waiting, or poll separately.
  */
-export class ImpriTimeout extends ImpriError {
+export class AirlockTimeout extends AirlockError {
   /** The action ID that timed out. */
   actionId: string
   statusCode: undefined
@@ -170,7 +170,7 @@ export class ImpriTimeout extends ImpriError {
 /**
  * Raised by verifyWebhook when the signature is invalid, stale, or malformed.
  */
-export class ImpriWebhookSignatureError extends ImpriError {
+export class AirlockWebhookSignatureError extends AirlockError {
   constructor(message = 'Webhook signature verification failed.') {
     super(message)
   }

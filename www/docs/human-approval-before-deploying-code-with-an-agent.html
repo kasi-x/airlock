@@ -3,21 +3,21 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Human Approval Before an AI Agent Deploys Code — Impri Docs</title>
+<title>Human Approval Before an AI Agent Deploys Code — Airlock Docs</title>
 <meta name="description" content="Add human approval before an AI agent deploys code — gate the deploy call itself, review the diff and rollback plan, and stop a bad deploy before it ever ships.">
 <meta name="theme-color" content="#06070d">
-<meta property="og:title" content="Human Approval Before an AI Agent Deploys Code — Impri Docs">
+<meta property="og:title" content="Human Approval Before an AI Agent Deploys Code — Airlock Docs">
 <meta property="og:description" content="Add human approval before an AI agent deploys code — gate the deploy call itself, review the diff and rollback plan, and stop a bad deploy before it ever ships.">
 <meta property="og:type" content="article">
-<meta property="og:url" content="https://impri.dev/docs/human-approval-before-deploying-code-with-an-agent">
-<meta property="og:image" content="https://impri.dev/assets/og/og-docs.png">
+<meta property="og:url" content="https://airlock.dev/docs/human-approval-before-deploying-code-with-an-agent">
+<meta property="og:image" content="https://airlock.dev/assets/og/og-docs.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
-<meta property="og:image:alt" content="Impri — human-in-the-loop approval inbox for AI agents">
+<meta property="og:image:alt" content="Airlock — human-in-the-loop approval inbox for AI agents">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="https://impri.dev/assets/og/og-docs.png">
-<link rel="canonical" href="https://impri.dev/docs/human-approval-before-deploying-code-with-an-agent">
-<script type="application/ld+json">{"@context":"https://schema.org","@type":"TechArticle","headline":"Human Approval Before an AI Agent Deploys Code","description":"Add human approval before an AI agent deploys code — gate the deploy call itself, review the diff and rollback plan, and stop a bad deploy before it ever ships.","url":"https://impri.dev/docs/human-approval-before-deploying-code-with-an-agent","inLanguage":"en","author":{"@type":"Organization","name":"Impri","url":"https://impri.dev"},"publisher":{"@type":"Organization","name":"Impri","url":"https://impri.dev"}}</script>
+<meta name="twitter:image" content="https://airlock.dev/assets/og/og-docs.png">
+<link rel="canonical" href="https://airlock.dev/docs/human-approval-before-deploying-code-with-an-agent">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"TechArticle","headline":"Human Approval Before an AI Agent Deploys Code","description":"Add human approval before an AI agent deploys code — gate the deploy call itself, review the diff and rollback plan, and stop a bad deploy before it ever ships.","url":"https://airlock.dev/docs/human-approval-before-deploying-code-with-an-agent","inLanguage":"en","author":{"@type":"Organization","name":"Airlock","url":"https://airlock.dev"},"publisher":{"@type":"Organization","name":"Airlock","url":"https://airlock.dev"}}</script>
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <link rel="icon" href="/favicon.ico" sizes="32x32">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='9' fill='%236366f1'/%3E%3Cpath d='M9 16.5l4.5 4.5L23 11' stroke='white' stroke-width='3' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
@@ -132,13 +132,13 @@ pre code.hljs{display:block;overflow-x:auto}
 <div class="wrap nav-inner">
   <a class="brand" href="/">
     <span class="mark"><svg viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.5 4.5L19 7.5" stroke="white" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
-    Impri
+    Airlock
   </a>
   <div class="nav-links">
     <a class="link" href="/#how">How it works</a>
     <a class="link" href="/#pricing">Pricing</a>
     <a class="link active-nav" href="../docs">Docs</a>
-    <a class="btn btn-primary btn-sm" href="https://gitlab.com/sekera.radim/impri">GitLab</a>
+    <a class="btn btn-primary btn-sm" href="https://gitlab.com/sekera.radim/airlock">GitLab</a>
   </div>
 </div>
 </nav>
@@ -173,7 +173,7 @@ pre code.hljs{display:block;overflow-x:auto}
 	<span class="hljs-string">&quot;time&quot;</span>
 )
 
-<span class="hljs-keyword">const</span> base = <span class="hljs-string">&quot;https://api.impri.dev&quot;</span>
+<span class="hljs-keyword">const</span> base = <span class="hljs-string">&quot;https://api.airlock.dev&quot;</span>
 
 <span class="hljs-function"><span class="hljs-keyword">func</span> <span class="hljs-title">pushDeploy</span><span class="hljs-params">(commitSHA, env, diffURL <span class="hljs-type">string</span>, hasMigration <span class="hljs-type">bool</span>)</span></span> (<span class="hljs-type">string</span>, <span class="hljs-type">error</span>) {
 	body, _ := json.Marshal(<span class="hljs-keyword">map</span>[<span class="hljs-type">string</span>]any{
@@ -190,7 +190,7 @@ pre code.hljs{display:block;overflow-x:auto}
 		<span class="hljs-string">&quot;target_url&quot;</span>: diffURL,
 	})
 	req, _ := http.NewRequest(<span class="hljs-string">&quot;POST&quot;</span>, base+<span class="hljs-string">&quot;/v1/actions&quot;</span>, bytes.NewReader(body))
-	req.Header.Set(<span class="hljs-string">&quot;Authorization&quot;</span>, <span class="hljs-string">&quot;Bearer &quot;</span>+os.Getenv(<span class="hljs-string">&quot;IMPRI_API_KEY&quot;</span>))
+	req.Header.Set(<span class="hljs-string">&quot;Authorization&quot;</span>, <span class="hljs-string">&quot;Bearer &quot;</span>+os.Getenv(<span class="hljs-string">&quot;AIRLOCK_API_KEY&quot;</span>))
 	req.Header.Set(<span class="hljs-string">&quot;Content-Type&quot;</span>, <span class="hljs-string">&quot;application/json&quot;</span>)
 	res, err := http.DefaultClient.Do(req)
 	<span class="hljs-keyword">if</span> err != <span class="hljs-literal">nil</span> {
@@ -205,7 +205,7 @@ pre code.hljs{display:block;overflow-x:auto}
 <span class="hljs-function"><span class="hljs-keyword">func</span> <span class="hljs-title">awaitAndDeploy</span><span class="hljs-params">(actionID, env <span class="hljs-type">string</span>)</span></span> <span class="hljs-type">error</span> {
 	<span class="hljs-keyword">for</span> {
 		req, _ := http.NewRequest(<span class="hljs-string">&quot;GET&quot;</span>, base+<span class="hljs-string">&quot;/v1/actions/&quot;</span>+actionID, <span class="hljs-literal">nil</span>)
-		req.Header.Set(<span class="hljs-string">&quot;Authorization&quot;</span>, <span class="hljs-string">&quot;Bearer &quot;</span>+os.Getenv(<span class="hljs-string">&quot;IMPRI_API_KEY&quot;</span>))
+		req.Header.Set(<span class="hljs-string">&quot;Authorization&quot;</span>, <span class="hljs-string">&quot;Bearer &quot;</span>+os.Getenv(<span class="hljs-string">&quot;AIRLOCK_API_KEY&quot;</span>))
 		res, _ := http.DefaultClient.Do(req)
 		<span class="hljs-keyword">var</span> out <span class="hljs-keyword">struct</span>{ Status <span class="hljs-type">string</span> <span class="hljs-string">`json:&quot;status&quot;`</span> }
 		json.NewDecoder(res.Body).Decode(&amp;out)
@@ -282,15 +282,15 @@ pre code.hljs{display:block;overflow-x:auto}
 <h2 id="rejected-expired-and-rollback">Rejected, expired, and rollback</h2>
 <p><code>rejected</code> and <code>expired</code> both mean <code>exec.Command</code> never runs — same rule as any gated action. Set <code>expires_in</code> short enough that an approval can&#39;t sit stale past a deploy window; a production deploy approved two days late, after three more commits have merged on top, isn&#39;t the same deploy the reviewer looked at. If the code still needs to ship, push a fresh action against the current commit rather than resurrecting an old approval.</p>
 <hr>
-<h2 id="what-impri-isn39t-doing-here">What Impri isn&#39;t doing here</h2>
-<p>Impri stores the deploy request, notifies a human, and holds the decision — it does not run <code>kubectl apply</code> itself, does not know whether your tests are trustworthy, and does not evaluate whether the diff is actually safe. That judgment stays with whoever&#39;s holding the phone. For the base three-call pattern this builds on, see <a href="how-to-add-human-approval-to-an-ai-agent">how to add human approval to an AI agent</a>; if the agent doing the merging runs on the Claude Agent SDK, see <a href="human-approval-claude-agent-sdk">the Claude Agent SDK guide</a> for wiring the gate into the same process. Once you&#39;re gating deploys, <a href="audit-log">the audit log</a> gives you a record of every production rollout, who approved it, and when — useful the next time someone asks &quot;who shipped this.&quot;</p>
+<h2 id="what-airlock-isn39t-doing-here">What Airlock isn&#39;t doing here</h2>
+<p>Airlock stores the deploy request, notifies a human, and holds the decision — it does not run <code>kubectl apply</code> itself, does not know whether your tests are trustworthy, and does not evaluate whether the diff is actually safe. That judgment stays with whoever&#39;s holding the phone. For the base three-call pattern this builds on, see <a href="how-to-add-human-approval-to-an-ai-agent">how to add human approval to an AI agent</a>; if the agent doing the merging runs on the Claude Agent SDK, see <a href="human-approval-claude-agent-sdk">the Claude Agent SDK guide</a> for wiring the gate into the same process. Once you&#39;re gating deploys, <a href="audit-log">the audit log</a> gives you a record of every production rollout, who approved it, and when — useful the next time someone asks &quot;who shipped this.&quot;</p>
 <p>Next step: <a href="quickstart">quickstart</a> to get an API key and try this against a staging pipeline first.</p>
 
-    <aside class="doc-cta" aria-label="Try Impri">
+    <aside class="doc-cta" aria-label="Try Airlock">
   <p class="doc-cta-title">Add an approval step to your own agent</p>
-  <p>Start on Impri Cloud: the Free tier includes 100 approvals a month. Or self-host the MIT-licensed core with Docker Compose, with no tier limits.</p>
+  <p>Start on Airlock Cloud: the Free tier includes 100 approvals a month. Or self-host the MIT-licensed core with Docker Compose, with no tier limits.</p>
   <div class="doc-cta-actions">
-    <a class="btn btn-primary btn-sm" href="https://app.impri.dev/?signup=1">Start free on Impri Cloud</a>
+    <a class="btn btn-primary btn-sm" href="https://app.airlock.dev/?signup=1">Start free on Airlock Cloud</a>
     <a class="btn btn-ghost btn-sm" href="../docs/quickstart">Quick start</a>
     <a class="btn btn-ghost btn-sm" href="../docs/self-hosting">Self-host guide</a>
   </div>
@@ -378,7 +378,7 @@ pre code.hljs{display:block;overflow-x:auto}
 <li class="ptoc-h2"><a href="#what-belongs-on-the-approval-card">What belongs on the approval card</a></li>
 <li class="ptoc-h2"><a href="#staging-versus-production">Staging versus production</a></li>
 <li class="ptoc-h2"><a href="#rejected-expired-and-rollback">Rejected, expired, and rollback</a></li>
-<li class="ptoc-h2"><a href="#what-impri-isn39t-doing-here">What Impri isn't doing here</a></li></ul>
+<li class="ptoc-h2"><a href="#what-airlock-isn39t-doing-here">What Airlock isn't doing here</a></li></ul>
 </nav>
   </aside>
 </div>
@@ -386,19 +386,19 @@ pre code.hljs{display:block;overflow-x:auto}
 <footer class="footer">
 <div class="wrap footer-inner">
   <a class="brand" href="/">
-    <span class="mark"><svg viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.5 4.5L19 7.5" stroke="white" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Impri
+    <span class="mark"><svg viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.5 4.5L19 7.5" stroke="white" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Airlock
   </a>
   <div>
-    <a href="https://gitlab.com/sekera.radim/impri">GitLab</a>
+    <a href="https://gitlab.com/sekera.radim/airlock">GitLab</a>
     <a href="/docs">Docs</a>
-    <a href="https://gitlab.com/sekera.radim/impri/-/blob/main/LICENSE">MIT License</a>
-    <a href="https://www.npmjs.com/package/@impri/mcp">@impri/mcp</a>
+    <a href="https://gitlab.com/sekera.radim/airlock/-/blob/main/LICENSE">MIT License</a>
+    <a href="https://www.npmjs.com/package/@airlock/mcp">@airlock/mcp</a>
     <a href="/docs/privacy">Privacy</a>
     <a href="/docs/terms">Terms</a>
     <a href="https://sekera.dev">Contact</a>
   </div>
 </div>
-<div class="wrap" style="margin-top:18px"><span class="muted">© 2026 Impri · The imprimatur for your AI agents · Built by <a href="https://sekera.dev" style="color:inherit">Radim Sekera</a>. Also by the same maker: <a href="https://briefgate.dev/?utm_source=impri.dev&amp;utm_medium=referral" style="color:inherit">BriefGate</a> — client intake for agencies and AI agents.</span></div>
+<div class="wrap" style="margin-top:18px"><span class="muted">© 2026 Airlock · The airlockmatur for your AI agents · Built by <a href="https://sekera.dev" style="color:inherit">Radim Sekera</a>. Also by the same maker: <a href="https://briefgate.dev/?utm_source=airlock.dev&amp;utm_medium=referral" style="color:inherit">BriefGate</a> — client intake for agencies and AI agents.</span></div>
 </footer>
 </body>
 </html>

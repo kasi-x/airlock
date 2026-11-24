@@ -28,8 +28,8 @@ import os
 import time
 import requests
 
-IMPRI_KEY = os.environ["IMPRI_API_KEY"]
-BASE = "https://api.impri.dev"
+AIRLOCK_KEY = os.environ["AIRLOCK_API_KEY"]
+BASE = "https://api.airlock.dev"
 
 def request_write_approval(path: str, new_content: str) -> str:
     old_content = ""
@@ -44,7 +44,7 @@ def request_write_approval(path: str, new_content: str) -> str:
     )) or "(new file, no prior content)"
 
     resp = requests.post(f"{BASE}/v1/actions", headers={
-        "Authorization": f"Bearer {IMPRI_KEY}",
+        "Authorization": f"Bearer {AIRLOCK_KEY}",
         "Content-Type": "application/json",
     }, json={
         "kind": "fs.write",
@@ -60,7 +60,7 @@ def request_write_approval(path: str, new_content: str) -> str:
 def await_and_write(path: str, action_id: str) -> str:
     while True:
         resp = requests.get(f"{BASE}/v1/actions/{action_id}",
-                             headers={"Authorization": f"Bearer {IMPRI_KEY}"})
+                             headers={"Authorization": f"Bearer {AIRLOCK_KEY}"})
         data = resp.json()
         if data["status"] == "pending":
             time.sleep(5)
@@ -75,7 +75,7 @@ def await_and_write(path: str, action_id: str) -> str:
             f.write(new_content_from(final_body))
 
         requests.post(f"{BASE}/v1/actions/{action_id}/result",
-                       headers={"Authorization": f"Bearer {IMPRI_KEY}"},
+                       headers={"Authorization": f"Bearer {AIRLOCK_KEY}"},
                        json={"status": "executed", "payload": {"path": path}})
         return "executed"
 ```
@@ -96,9 +96,9 @@ This pattern only holds if `write_file` above — not the agent's model output �
 
 ---
 
-## What Impri does not check
+## What Airlock does not check
 
-Impri does not know whether the new file content is syntactically valid, whether it passes your linter, or whether it will actually build. It shows the human a diff and holds a decision — nothing more. Pair this with your existing CI and pre-commit checks, which should still run on whatever the agent eventually writes; approval and correctness-checking are separate concerns that happen to share a gate here.
+Airlock does not know whether the new file content is syntactically valid, whether it passes your linter, or whether it will actually build. It shows the human a diff and holds a decision — nothing more. Pair this with your existing CI and pre-commit checks, which should still run on whatever the agent eventually writes; approval and correctness-checking are separate concerns that happen to share a gate here.
 
 ---
 

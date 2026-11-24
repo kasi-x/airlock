@@ -3,21 +3,21 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Human Approval for AI Sales Outreach Agents — Impri Docs</title>
-<meta name="description" content="Gate every AI-drafted sales email or LinkedIn DM before it reaches a prospect — this guide shows how to add human approval to outreach agents using Impri.">
+<title>Human Approval for AI Sales Outreach Agents — Airlock Docs</title>
+<meta name="description" content="Gate every AI-drafted sales email or LinkedIn DM before it reaches a prospect — this guide shows how to add human approval to outreach agents using Airlock.">
 <meta name="theme-color" content="#06070d">
-<meta property="og:title" content="Human Approval for AI Sales Outreach Agents — Impri Docs">
-<meta property="og:description" content="Gate every AI-drafted sales email or LinkedIn DM before it reaches a prospect — this guide shows how to add human approval to outreach agents using Impri.">
+<meta property="og:title" content="Human Approval for AI Sales Outreach Agents — Airlock Docs">
+<meta property="og:description" content="Gate every AI-drafted sales email or LinkedIn DM before it reaches a prospect — this guide shows how to add human approval to outreach agents using Airlock.">
 <meta property="og:type" content="article">
-<meta property="og:url" content="https://impri.dev/docs/human-approval-for-ai-sales-outreach">
-<meta property="og:image" content="https://impri.dev/assets/og/og-docs.png">
+<meta property="og:url" content="https://airlock.dev/docs/human-approval-for-ai-sales-outreach">
+<meta property="og:image" content="https://airlock.dev/assets/og/og-docs.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
-<meta property="og:image:alt" content="Impri — human-in-the-loop approval inbox for AI agents">
+<meta property="og:image:alt" content="Airlock — human-in-the-loop approval inbox for AI agents">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="https://impri.dev/assets/og/og-docs.png">
-<link rel="canonical" href="https://impri.dev/docs/human-approval-for-ai-sales-outreach">
-<script type="application/ld+json">{"@context":"https://schema.org","@type":"TechArticle","headline":"Human Approval for AI Sales Outreach Agents","description":"Gate every AI-drafted sales email or LinkedIn DM before it reaches a prospect — this guide shows how to add human approval to outreach agents using Impri.","url":"https://impri.dev/docs/human-approval-for-ai-sales-outreach","inLanguage":"en","author":{"@type":"Organization","name":"Impri","url":"https://impri.dev"},"publisher":{"@type":"Organization","name":"Impri","url":"https://impri.dev"}}</script>
+<meta name="twitter:image" content="https://airlock.dev/assets/og/og-docs.png">
+<link rel="canonical" href="https://airlock.dev/docs/human-approval-for-ai-sales-outreach">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"TechArticle","headline":"Human Approval for AI Sales Outreach Agents","description":"Gate every AI-drafted sales email or LinkedIn DM before it reaches a prospect — this guide shows how to add human approval to outreach agents using Airlock.","url":"https://airlock.dev/docs/human-approval-for-ai-sales-outreach","inLanguage":"en","author":{"@type":"Organization","name":"Airlock","url":"https://airlock.dev"},"publisher":{"@type":"Organization","name":"Airlock","url":"https://airlock.dev"}}</script>
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <link rel="icon" href="/favicon.ico" sizes="32x32">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='9' fill='%236366f1'/%3E%3Cpath d='M9 16.5l4.5 4.5L23 11' stroke='white' stroke-width='3' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
@@ -132,13 +132,13 @@ pre code.hljs{display:block;overflow-x:auto}
 <div class="wrap nav-inner">
   <a class="brand" href="/">
     <span class="mark"><svg viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.5 4.5L19 7.5" stroke="white" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
-    Impri
+    Airlock
   </a>
   <div class="nav-links">
     <a class="link" href="/#how">How it works</a>
     <a class="link" href="/#pricing">Pricing</a>
     <a class="link active-nav" href="../docs">Docs</a>
-    <a class="btn btn-primary btn-sm" href="https://gitlab.com/sekera.radim/impri">GitLab</a>
+    <a class="btn btn-primary btn-sm" href="https://gitlab.com/sekera.radim/airlock">GitLab</a>
   </div>
 </div>
 </nav>
@@ -153,16 +153,16 @@ pre code.hljs{display:block;overflow-x:auto}
       <span>Human Approval for AI Sales Outreach Agents</span>
     </nav>
     <h1>Human Approval for AI Sales Outreach Agents</h1>
-<p>Gate every AI-drafted sales email or LinkedIn DM before it reaches a prospect — this guide shows how to add human approval to outreach agents using Impri.</p>
+<p>Gate every AI-drafted sales email or LinkedIn DM before it reaches a prospect — this guide shows how to add human approval to outreach agents using Airlock.</p>
 <hr>
 <h2 id="why-outreach-agents-need-a-gate">Why outreach agents need a gate</h2>
 <p>A sales outreach agent is a category of agent with an unusual risk profile: the mistake is public, personal, and addressed to someone by name.</p>
 <p>A miscalibrated draft can address a prospect at the wrong company, use a tone that doesn&#39;t fit the relationship, reference a detail that is factually wrong or creepy, or simply repeat a message the person already received last week. You don&#39;t know until they tell you — or don&#39;t.</p>
 <p>The usual mitigation is a &quot;review before sending&quot; note in the system prompt. That is not a gate. The model has to be trusted to actually pause, and nothing prevents it from sending anyway if the prompt gets long or the context window compresses. A real gate is a data dependency: the sending code cannot run unless the approval API returns <code>status: &quot;approved&quot;</code>.</p>
-<p>Impri provides that dependency. The agent pushes each drafted message, you get a card in your inbox to approve or edit, and only the approved version — including any edits you made — goes out.</p>
+<p>Airlock provides that dependency. The agent pushes each drafted message, you get a card in your inbox to approve or edit, and only the approved version — including any edits you made — goes out.</p>
 <hr>
 <h2 id="what-the-approval-flow-looks-like">What the approval flow looks like</h2>
-<div class="code-block"><pre><code class="hljs">Agent                           Impri                          You
+<div class="code-block"><pre><code class="hljs">Agent                           Airlock                          You
   │                               │                              │
   ├── POST /v1/actions ───────────▶  stores draft, notifies ────▶  inbox card
   │   kind: &quot;email.send&quot;          │                              │
@@ -181,13 +181,13 @@ pre code.hljs{display:block;overflow-x:auto}
 <div class="code-block"><span class="code-lang">python</span><pre><code class="hljs"><span class="hljs-keyword">import</span> httpx
 <span class="hljs-keyword">import</span> time
 
-IMPRI_API_KEY = <span class="hljs-string">&quot;im_your_key_here&quot;</span>
-BASE_URL = <span class="hljs-string">&quot;https://api.impri.dev&quot;</span>
+AIRLOCK_API_KEY = <span class="hljs-string">&quot;im_your_key_here&quot;</span>
+BASE_URL = <span class="hljs-string">&quot;https://api.airlock.dev&quot;</span>
 
 <span class="hljs-keyword">def</span> <span class="hljs-title function_">push_outreach_for_approval</span>(<span class="hljs-params">prospect: <span class="hljs-built_in">dict</span>, draft: <span class="hljs-built_in">str</span></span>) -&gt; <span class="hljs-built_in">str</span>:
     resp = httpx.post(
         <span class="hljs-string">f&quot;<span class="hljs-subst">{BASE_URL}</span>/v1/actions&quot;</span>,
-        headers={<span class="hljs-string">&quot;Authorization&quot;</span>: <span class="hljs-string">f&quot;Bearer <span class="hljs-subst">{IMPRI_API_KEY}</span>&quot;</span>},
+        headers={<span class="hljs-string">&quot;Authorization&quot;</span>: <span class="hljs-string">f&quot;Bearer <span class="hljs-subst">{AIRLOCK_API_KEY}</span>&quot;</span>},
         json={
             <span class="hljs-string">&quot;kind&quot;</span>: <span class="hljs-string">&quot;email.send&quot;</span>,
             <span class="hljs-string">&quot;title&quot;</span>: <span class="hljs-string">f&quot;Outreach: <span class="hljs-subst">{prospect[<span class="hljs-string">&#x27;name&#x27;</span>]}</span> at <span class="hljs-subst">{prospect[<span class="hljs-string">&#x27;company&#x27;</span>]}</span>&quot;</span>,
@@ -207,7 +207,7 @@ BASE_URL = <span class="hljs-string">&quot;https://api.impri.dev&quot;</span>
     <span class="hljs-keyword">while</span> <span class="hljs-literal">True</span>:
         result = httpx.get(
             <span class="hljs-string">f&quot;<span class="hljs-subst">{BASE_URL}</span>/v1/actions/<span class="hljs-subst">{action_id}</span>&quot;</span>,
-            headers={<span class="hljs-string">&quot;Authorization&quot;</span>: <span class="hljs-string">f&quot;Bearer <span class="hljs-subst">{IMPRI_API_KEY}</span>&quot;</span>},
+            headers={<span class="hljs-string">&quot;Authorization&quot;</span>: <span class="hljs-string">f&quot;Bearer <span class="hljs-subst">{AIRLOCK_API_KEY}</span>&quot;</span>},
         ).json()
         <span class="hljs-keyword">if</span> result[<span class="hljs-string">&quot;status&quot;</span>] != <span class="hljs-string">&quot;pending&quot;</span>:
             <span class="hljs-keyword">return</span> result
@@ -216,7 +216,7 @@ BASE_URL = <span class="hljs-string">&quot;https://api.impri.dev&quot;</span>
 <span class="hljs-keyword">def</span> <span class="hljs-title function_">report_result</span>(<span class="hljs-params">action_id: <span class="hljs-built_in">str</span>, status: <span class="hljs-built_in">str</span></span>) -&gt; <span class="hljs-literal">None</span>:
     httpx.post(
         <span class="hljs-string">f&quot;<span class="hljs-subst">{BASE_URL}</span>/v1/actions/<span class="hljs-subst">{action_id}</span>/result&quot;</span>,
-        headers={<span class="hljs-string">&quot;Authorization&quot;</span>: <span class="hljs-string">f&quot;Bearer <span class="hljs-subst">{IMPRI_API_KEY}</span>&quot;</span>},
+        headers={<span class="hljs-string">&quot;Authorization&quot;</span>: <span class="hljs-string">f&quot;Bearer <span class="hljs-subst">{AIRLOCK_API_KEY}</span>&quot;</span>},
         json={<span class="hljs-string">&quot;status&quot;</span>: status},
     )
 
@@ -254,18 +254,18 @@ decision = await_decision(action_id)
 <p>For outreach, this is a feature. An email drafted in response to a prospect&#39;s blog post from yesterday has a narrow relevance window. Setting <code>expires_in: 43200</code> (12 hours) means a draft you missed in your inbox simply disappears rather than going out days later when the context has changed.</p>
 <p>Treat <code>expired</code> the same as <code>rejected</code> in your agent logic: log it, skip the send, and move on.</p>
 <hr>
-<h2 id="impri-is-the-gate-not-the-sender">Impri is the gate, not the sender</h2>
-<p>Impri stores the draft, notifies you (via email, Slack, Telegram, or web push — configure in <a href="notifications">notifications</a>), and holds the decision. It does not look at the prospect data, does not interpret what kind of outreach it is, and does not execute the send. Your agent owns the send call; Impri owns the yes/no. This division is intentional — it keeps the approval surface small and auditable.</p>
-<p>The gate is real only as long as the agent&#39;s path to <code>send_email()</code> goes through the Impri response. If your agent also holds a direct email credential it can use without approval, the gate doesn&#39;t hold.</p>
+<h2 id="airlock-is-the-gate-not-the-sender">Airlock is the gate, not the sender</h2>
+<p>Airlock stores the draft, notifies you (via email, Slack, Telegram, or web push — configure in <a href="notifications">notifications</a>), and holds the decision. It does not look at the prospect data, does not interpret what kind of outreach it is, and does not execute the send. Your agent owns the send call; Airlock owns the yes/no. This division is intentional — it keeps the approval surface small and auditable.</p>
+<p>The gate is real only as long as the agent&#39;s path to <code>send_email()</code> goes through the Airlock response. If your agent also holds a direct email credential it can use without approval, the gate doesn&#39;t hold.</p>
 <hr>
 <h2 id="next-step">Next step</h2>
-<p>If this is your first Impri integration, start with the <a href="quickstart">quickstart</a> to get your API key and send a test action. For more on the Python SDK helper methods (including a built-in polling loop), see <a href="sdk-python">sdk-python</a>.</p>
+<p>If this is your first Airlock integration, start with the <a href="quickstart">quickstart</a> to get your API key and send a test action. For more on the Python SDK helper methods (including a built-in polling loop), see <a href="sdk-python">sdk-python</a>.</p>
 
-    <aside class="doc-cta" aria-label="Try Impri">
+    <aside class="doc-cta" aria-label="Try Airlock">
   <p class="doc-cta-title">Add an approval step to your own agent</p>
-  <p>Start on Impri Cloud: the Free tier includes 100 approvals a month. Or self-host the MIT-licensed core with Docker Compose, with no tier limits.</p>
+  <p>Start on Airlock Cloud: the Free tier includes 100 approvals a month. Or self-host the MIT-licensed core with Docker Compose, with no tier limits.</p>
   <div class="doc-cta-actions">
-    <a class="btn btn-primary btn-sm" href="https://app.impri.dev/?signup=1">Start free on Impri Cloud</a>
+    <a class="btn btn-primary btn-sm" href="https://app.airlock.dev/?signup=1">Start free on Airlock Cloud</a>
     <a class="btn btn-ghost btn-sm" href="../docs/quickstart">Quick start</a>
     <a class="btn btn-ghost btn-sm" href="../docs/self-hosting">Self-host guide</a>
   </div>
@@ -353,7 +353,7 @@ decision = await_decision(action_id)
 <li class="ptoc-h2"><a href="#python-integration">Python integration</a></li>
 <li class="ptoc-h2"><a href="#when-you-edit-the-draft">When you edit the draft</a></li>
 <li class="ptoc-h2"><a href="#expiry-as-a-built-in-quality-filter">Expiry as a built-in quality filter</a></li>
-<li class="ptoc-h2"><a href="#impri-is-the-gate-not-the-sender">Impri is the gate, not the sender</a></li>
+<li class="ptoc-h2"><a href="#airlock-is-the-gate-not-the-sender">Airlock is the gate, not the sender</a></li>
 <li class="ptoc-h2"><a href="#next-step">Next step</a></li></ul>
 </nav>
   </aside>
@@ -362,19 +362,19 @@ decision = await_decision(action_id)
 <footer class="footer">
 <div class="wrap footer-inner">
   <a class="brand" href="/">
-    <span class="mark"><svg viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.5 4.5L19 7.5" stroke="white" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Impri
+    <span class="mark"><svg viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.5 4.5L19 7.5" stroke="white" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Airlock
   </a>
   <div>
-    <a href="https://gitlab.com/sekera.radim/impri">GitLab</a>
+    <a href="https://gitlab.com/sekera.radim/airlock">GitLab</a>
     <a href="/docs">Docs</a>
-    <a href="https://gitlab.com/sekera.radim/impri/-/blob/main/LICENSE">MIT License</a>
-    <a href="https://www.npmjs.com/package/@impri/mcp">@impri/mcp</a>
+    <a href="https://gitlab.com/sekera.radim/airlock/-/blob/main/LICENSE">MIT License</a>
+    <a href="https://www.npmjs.com/package/@airlock/mcp">@airlock/mcp</a>
     <a href="/docs/privacy">Privacy</a>
     <a href="/docs/terms">Terms</a>
     <a href="https://sekera.dev">Contact</a>
   </div>
 </div>
-<div class="wrap" style="margin-top:18px"><span class="muted">© 2026 Impri · The imprimatur for your AI agents · Built by <a href="https://sekera.dev" style="color:inherit">Radim Sekera</a>. Also by the same maker: <a href="https://briefgate.dev/?utm_source=impri.dev&amp;utm_medium=referral" style="color:inherit">BriefGate</a> — client intake for agencies and AI agents.</span></div>
+<div class="wrap" style="margin-top:18px"><span class="muted">© 2026 Airlock · The airlockmatur for your AI agents · Built by <a href="https://sekera.dev" style="color:inherit">Radim Sekera</a>. Also by the same maker: <a href="https://briefgate.dev/?utm_source=airlock.dev&amp;utm_medium=referral" style="color:inherit">BriefGate</a> — client intake for agencies and AI agents.</span></div>
 </footer>
 </body>
 </html>

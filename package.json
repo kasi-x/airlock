@@ -1,5 +1,5 @@
 {
-  "name": "impri",
+  "name": "airlock",
   "private": true,
   "workspaces": [
     "server",

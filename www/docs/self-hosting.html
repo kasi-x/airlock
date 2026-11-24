@@ -3,21 +3,21 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Self-Hosting Impri — Impri Docs</title>
-<meta name="description" content="Impri is fully self-hostable. docker compose up gives you the complete stack: API server, web inbox, SQLite database, and the watcher scheduler. No licence…">
+<title>Self-Hosting Airlock — Airlock Docs</title>
+<meta name="description" content="Airlock is fully self-hostable. docker compose up gives you the complete stack: API server, web inbox, SQLite database, and the watcher scheduler. No licence…">
 <meta name="theme-color" content="#06070d">
-<meta property="og:title" content="Self-Hosting Impri — Impri Docs">
-<meta property="og:description" content="Impri is fully self-hostable. docker compose up gives you the complete stack: API server, web inbox, SQLite database, and the watcher scheduler. No licence…">
+<meta property="og:title" content="Self-Hosting Airlock — Airlock Docs">
+<meta property="og:description" content="Airlock is fully self-hostable. docker compose up gives you the complete stack: API server, web inbox, SQLite database, and the watcher scheduler. No licence…">
 <meta property="og:type" content="article">
-<meta property="og:url" content="https://impri.dev/docs/self-hosting">
-<meta property="og:image" content="https://impri.dev/assets/og/og-docs.png">
+<meta property="og:url" content="https://airlock.dev/docs/self-hosting">
+<meta property="og:image" content="https://airlock.dev/assets/og/og-docs.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
-<meta property="og:image:alt" content="Impri — human-in-the-loop approval inbox for AI agents">
+<meta property="og:image:alt" content="Airlock — human-in-the-loop approval inbox for AI agents">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="https://impri.dev/assets/og/og-docs.png">
-<link rel="canonical" href="https://impri.dev/docs/self-hosting">
-<script type="application/ld+json">{"@context":"https://schema.org","@type":"TechArticle","headline":"Self-Hosting Impri","description":"Impri is fully self-hostable. docker compose up gives you the complete stack: API server, web inbox, SQLite database, and the watcher scheduler. No licence…","url":"https://impri.dev/docs/self-hosting","inLanguage":"en","author":{"@type":"Organization","name":"Impri","url":"https://impri.dev"},"publisher":{"@type":"Organization","name":"Impri","url":"https://impri.dev"}}</script>
+<meta name="twitter:image" content="https://airlock.dev/assets/og/og-docs.png">
+<link rel="canonical" href="https://airlock.dev/docs/self-hosting">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"TechArticle","headline":"Self-Hosting Airlock","description":"Airlock is fully self-hostable. docker compose up gives you the complete stack: API server, web inbox, SQLite database, and the watcher scheduler. No licence…","url":"https://airlock.dev/docs/self-hosting","inLanguage":"en","author":{"@type":"Organization","name":"Airlock","url":"https://airlock.dev"},"publisher":{"@type":"Organization","name":"Airlock","url":"https://airlock.dev"}}</script>
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <link rel="icon" href="/favicon.ico" sizes="32x32">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='9' fill='%236366f1'/%3E%3Cpath d='M9 16.5l4.5 4.5L23 11' stroke='white' stroke-width='3' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
@@ -132,13 +132,13 @@ pre code.hljs{display:block;overflow-x:auto}
 <div class="wrap nav-inner">
   <a class="brand" href="/">
     <span class="mark"><svg viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.5 4.5L19 7.5" stroke="white" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
-    Impri
+    Airlock
   </a>
   <div class="nav-links">
     <a class="link" href="/#how">How it works</a>
     <a class="link" href="/#pricing">Pricing</a>
     <a class="link active-nav" href="../docs">Docs</a>
-    <a class="btn btn-primary btn-sm" href="https://gitlab.com/sekera.radim/impri">GitLab</a>
+    <a class="btn btn-primary btn-sm" href="https://gitlab.com/sekera.radim/airlock">GitLab</a>
   </div>
 </div>
 </nav>
@@ -150,10 +150,10 @@ pre code.hljs{display:block;overflow-x:auto}
       <span class="bc-sep">/</span>
       <span>Getting started</span>
       <span class="bc-sep">/</span>
-      <span>Self-Hosting Impri</span>
+      <span>Self-Hosting Airlock</span>
     </nav>
-    <h1>Self-Hosting Impri</h1>
-<p>Impri is fully self-hostable. <code>docker compose up</code> gives you the complete stack: API server, web inbox, SQLite database, and the watcher scheduler. No licence required, no external services needed to get started.</p>
+    <h1>Self-Hosting Airlock</h1>
+<p>Airlock is fully self-hostable. <code>docker compose up</code> gives you the complete stack: API server, web inbox, SQLite database, and the watcher scheduler. No licence required, no external services needed to get started.</p>
 <hr>
 <h2 id="requirements">Requirements</h2>
 <ul>
@@ -163,8 +163,8 @@ pre code.hljs{display:block;overflow-x:auto}
 </ul>
 <hr>
 <h2 id="quick-start">Quick start</h2>
-<div class="code-block"><span class="code-lang">bash</span><pre><code class="hljs">git <span class="hljs-built_in">clone</span> https://gitlab.com/sekera.radim/impri.git
-<span class="hljs-built_in">cd</span> impri
+<div class="code-block"><span class="code-lang">bash</span><pre><code class="hljs">git <span class="hljs-built_in">clone</span> https://gitlab.com/sekera.radim/airlock.git
+<span class="hljs-built_in">cd</span> airlock
 
 <span class="hljs-comment"># Generate a strong webhook secret (required — do not leave it as &quot;change-me-in-production&quot;)</span>
 <span class="hljs-built_in">echo</span> <span class="hljs-string">&quot;WEBHOOK_SECRET=<span class="hljs-subst">$(openssl rand -hex 32)</span>&quot;</span> &gt; .<span class="hljs-built_in">env</span>
@@ -210,8 +210,8 @@ docker compose up -d</code></pre></div>
 </thead>
 <tbody><tr>
 <td><code>DB_PATH</code></td>
-<td><code>/app/data/impri.db</code></td>
-<td>Path to the SQLite database file. The Docker volume <code>impri-data</code> is mounted at <code>/app/data</code>.</td>
+<td><code>/app/data/airlock.db</code></td>
+<td>Path to the SQLite database file. The Docker volume <code>airlock-data</code> is mounted at <code>/app/data</code>.</td>
 </tr>
 <tr>
 <td><code>PORT</code></td>
@@ -226,7 +226,7 @@ docker compose up -d</code></pre></div>
 <tr>
 <td><code>BASE_URL</code></td>
 <td><code>http://localhost:8080</code></td>
-<td>Public base URL used to construct <code>inbox_url</code> values in API responses. Set this to your public domain when deploying with a reverse proxy (e.g. <code>https://impri.yourdomain.com</code>).</td>
+<td>Public base URL used to construct <code>inbox_url</code> values in API responses. Set this to your public domain when deploying with a reverse proxy (e.g. <code>https://airlock.yourdomain.com</code>).</td>
 </tr>
 <tr>
 <td><code>DISABLE_WATCHER_SCHEDULER</code></td>
@@ -236,7 +236,7 @@ docker compose up -d</code></pre></div>
 </tbody></table>
 </div>
 <h3 id="notifications">Notifications</h3>
-<p>Impri can notify you via email (SMTP) and/or ntfy. Both are optional; the server starts without them and falls back to logging the notification.</p>
+<p>Airlock can notify you via email (SMTP) and/or ntfy. Both are optional; the server starts without them and falls back to logging the notification.</p>
 <p><strong>Email (SMTP):</strong></p>
 <div class="table-wrap"><table>
 <thead>
@@ -273,7 +273,7 @@ docker compose up -d</code></pre></div>
 </tr>
 <tr>
 <td><code>SMTP_FROM</code></td>
-<td><code>impri@localhost</code></td>
+<td><code>airlock@localhost</code></td>
 <td>From address for outgoing notification emails.</td>
 </tr>
 <tr>
@@ -282,13 +282,13 @@ docker compose up -d</code></pre></div>
 <td>Instance-wide recipient address for approval notifications (operator-configured, no confirmation). Without this, the instance-wide email is not sent even if SMTP is configured.</td>
 </tr>
 <tr>
-<td><code>IMPRI_EMAIL_DAILY_CAP</code></td>
+<td><code>AIRLOCK_EMAIL_DAILY_CAP</code></td>
 <td><code>100</code></td>
 <td>Notification emails each project may send through its email channels per rolling 24 h.</td>
 </tr>
 </tbody></table>
 </div>
-<p>Per-project <strong>email notification channels</strong> (Settings → Notifications) use the same SMTP settings. Without <code>SMTP_HOST</code> they cannot be created. Each channel&#39;s address must be confirmed through a link Impri emails to it before notifications are delivered; the link points at <code>BASE_URL</code>, so set <code>BASE_URL</code> to the public URL of your API. Email channels created before this check existed are sent one confirmation email after the upgrade. Impri gives up on the SMTP server after 10 s without a connection or greeting and after 20 s of silence on an open connection. See <a href="notifications#email-address-confirmation">Notification channels → Email address confirmation</a>.</p>
+<p>Per-project <strong>email notification channels</strong> (Settings → Notifications) use the same SMTP settings. Without <code>SMTP_HOST</code> they cannot be created. Each channel&#39;s address must be confirmed through a link Airlock emails to it before notifications are delivered; the link points at <code>BASE_URL</code>, so set <code>BASE_URL</code> to the public URL of your API. Email channels created before this check existed are sent one confirmation email after the upgrade. Airlock gives up on the SMTP server after 10 s without a connection or greeting and after 20 s of silence on an open connection. See <a href="notifications#email-address-confirmation">Notification channels → Email address confirmation</a>.</p>
 <p><strong>ntfy (recommended for self-hosters):</strong></p>
 <p>ntfy is an open-source push notification service with mobile apps. It works with the public <code>ntfy.sh</code> instance or your own self-hosted ntfy server, and requires no registration for basic use.</p>
 <div class="table-wrap"><table>
@@ -340,7 +340,7 @@ in the environment; without these keys the web-push channel is simply off
 </tr>
 <tr>
 <td><code>VAPID_SUBJECT</code></td>
-<td><code>mailto:admin@impri.dev</code></td>
+<td><code>mailto:admin@airlock.dev</code></td>
 <td>Contact <code>mailto:</code> or URL, per the web-push spec.</td>
 </tr>
 </tbody></table>
@@ -374,7 +374,7 @@ pending action.</p>
 </tr>
 </thead>
 <tbody><tr>
-<td><code>IMPRI_ALLOW_PRIVATE_TARGETS</code></td>
+<td><code>AIRLOCK_ALLOW_PRIVATE_TARGETS</code></td>
 <td>unset</td>
 <td>Set to <code>1</code> to allow <code>callback_url</code> and watcher <code>config.url</code> to target private/intranet addresses (RFC 1918, loopback). <strong>Only set this on an isolated intranet deployment.</strong> By default, the SSRF guard blocks any URL that resolves to a private IP.</td>
 </tr>
@@ -383,7 +383,7 @@ pending action.</p>
 <hr>
 <h2 id="example-env-for-a-production-self-host">Example <code>.env</code> for a production self-host</h2>
 <div class="code-block"><span class="code-lang">bash</span><pre><code class="hljs">WEBHOOK_SECRET=a6f3b2c1d0e9f8a7b6c5d4e3f2a1b0c9d8e7f6a5b4c3d2e1f0a9b8c7d6e5f4
-BASE_URL=https://impri.yourdomain.com
+BASE_URL=https://airlock.yourdomain.com
 
 <span class="hljs-comment"># Notifications via ntfy</span>
 NTFY_URL=https://ntfy.sh
@@ -394,36 +394,36 @@ SMTP_HOST=smtp.mailgun.org
 SMTP_PORT=587
 SMTP_USER=postmaster@mg.yourdomain.com
 SMTP_PASS=your-smtp-password
-SMTP_FROM=impri@yourdomain.com
+SMTP_FROM=airlock@yourdomain.com
 NOTIFY_EMAIL=you@yourdomain.com</code></pre></div>
 <hr>
 <h2 id="reverse-proxy-https">Reverse proxy (HTTPS)</h2>
 <p>For production use, put a reverse proxy in front that handles TLS. The UI container serves on port 8080 and the API server on 8484. A typical setup proxies both through a single domain:</p>
 <ul>
-<li><code>https://impri.yourdomain.com</code> → UI (port 8080)</li>
-<li><code>https://impri.yourdomain.com/v1</code> → API (port 8484/v1)</li>
+<li><code>https://airlock.yourdomain.com</code> → UI (port 8080)</li>
+<li><code>https://airlock.yourdomain.com/v1</code> → API (port 8484/v1)</li>
 </ul>
 <p>Or run them on separate subdomains. The important variable is <code>BASE_URL</code>, which must match the public URL the UI and API are reachable at.</p>
 <p><strong>Example Caddy config:</strong></p>
-<div class="code-block"><span class="code-lang">caddyfile</span><pre><code class="hljs">impri.yourdomain.com {
+<div class="code-block"><span class="code-lang">caddyfile</span><pre><code class="hljs">airlock.yourdomain.com {
   reverse_proxy /v1/* localhost:8484
   reverse_proxy /* localhost:8080
 }</code></pre></div>
 <hr>
 <h2 id="backups">Backups</h2>
-<p>Impri uses SQLite. The database file is stored in the <code>impri-data</code> Docker volume, mounted at <code>/app/data/impri.db</code> inside the container.</p>
+<p>Airlock uses SQLite. The database file is stored in the <code>airlock-data</code> Docker volume, mounted at <code>/app/data/airlock.db</code> inside the container.</p>
 <p><strong>Manual backup:</strong></p>
 <div class="code-block"><span class="code-lang">bash</span><pre><code class="hljs"><span class="hljs-comment"># Hot backup using SQLite&#x27;s built-in online backup</span>
-docker compose <span class="hljs-built_in">exec</span> server sqlite3 /app/data/impri.db <span class="hljs-string">&quot;.backup /app/data/impri-backup-<span class="hljs-subst">$(date +%Y%m%d)</span>.db&quot;</span></code></pre></div>
+docker compose <span class="hljs-built_in">exec</span> server sqlite3 /app/data/airlock.db <span class="hljs-string">&quot;.backup /app/data/airlock-backup-<span class="hljs-subst">$(date +%Y%m%d)</span>.db&quot;</span></code></pre></div>
 <p><strong>Automated daily backup (cron example):</strong></p>
-<div class="code-block"><span class="code-lang">bash</span><pre><code class="hljs"><span class="hljs-comment"># /etc/cron.daily/impri-backup</span>
+<div class="code-block"><span class="code-lang">bash</span><pre><code class="hljs"><span class="hljs-comment"># /etc/cron.daily/airlock-backup</span>
 <span class="hljs-comment">#!/bin/bash</span>
-BACKUP_DIR=/var/backups/impri
+BACKUP_DIR=/var/backups/airlock
 <span class="hljs-built_in">mkdir</span> -p <span class="hljs-string">&quot;<span class="hljs-variable">$BACKUP_DIR</span>&quot;</span>
-docker compose -f /home/impri/docker-compose.yml <span class="hljs-built_in">exec</span> -T server \
-  sqlite3 /app/data/impri.db <span class="hljs-string">&quot;.backup /tmp/impri-<span class="hljs-subst">$(date +%Y%m%d)</span>.db&quot;</span>
-docker compose -f /home/impri/docker-compose.yml <span class="hljs-built_in">cp</span> \
-  server:/tmp/impri-$(<span class="hljs-built_in">date</span> +%Y%m%d).db <span class="hljs-string">&quot;<span class="hljs-variable">$BACKUP_DIR</span>/&quot;</span>
+docker compose -f /home/airlock/docker-compose.yml <span class="hljs-built_in">exec</span> -T server \
+  sqlite3 /app/data/airlock.db <span class="hljs-string">&quot;.backup /tmp/airlock-<span class="hljs-subst">$(date +%Y%m%d)</span>.db&quot;</span>
+docker compose -f /home/airlock/docker-compose.yml <span class="hljs-built_in">cp</span> \
+  server:/tmp/airlock-$(<span class="hljs-built_in">date</span> +%Y%m%d).db <span class="hljs-string">&quot;<span class="hljs-variable">$BACKUP_DIR</span>/&quot;</span>
 <span class="hljs-comment"># Optionally: rsync to offsite storage</span></code></pre></div>
 <p>Decisions (what a human approved or rejected) are the most critical data. The database schema stores them in an append-only <code>decisions</code> table with a <code>decisions</code> unique constraint that prevents overwrite.</p>
 <hr>
@@ -542,19 +542,19 @@ docker compose up -d</code></pre></div>
 <footer class="footer">
 <div class="wrap footer-inner">
   <a class="brand" href="/">
-    <span class="mark"><svg viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.5 4.5L19 7.5" stroke="white" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Impri
+    <span class="mark"><svg viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.5 4.5L19 7.5" stroke="white" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Airlock
   </a>
   <div>
-    <a href="https://gitlab.com/sekera.radim/impri">GitLab</a>
+    <a href="https://gitlab.com/sekera.radim/airlock">GitLab</a>
     <a href="/docs">Docs</a>
-    <a href="https://gitlab.com/sekera.radim/impri/-/blob/main/LICENSE">MIT License</a>
-    <a href="https://www.npmjs.com/package/@impri/mcp">@impri/mcp</a>
+    <a href="https://gitlab.com/sekera.radim/airlock/-/blob/main/LICENSE">MIT License</a>
+    <a href="https://www.npmjs.com/package/@airlock/mcp">@airlock/mcp</a>
     <a href="/docs/privacy">Privacy</a>
     <a href="/docs/terms">Terms</a>
     <a href="https://sekera.dev">Contact</a>
   </div>
 </div>
-<div class="wrap" style="margin-top:18px"><span class="muted">© 2026 Impri · The imprimatur for your AI agents · Built by <a href="https://sekera.dev" style="color:inherit">Radim Sekera</a>. Also by the same maker: <a href="https://briefgate.dev/?utm_source=impri.dev&amp;utm_medium=referral" style="color:inherit">BriefGate</a> — client intake for agencies and AI agents.</span></div>
+<div class="wrap" style="margin-top:18px"><span class="muted">© 2026 Airlock · The airlockmatur for your AI agents · Built by <a href="https://sekera.dev" style="color:inherit">Radim Sekera</a>. Also by the same maker: <a href="https://briefgate.dev/?utm_source=airlock.dev&amp;utm_medium=referral" style="color:inherit">BriefGate</a> — client intake for agencies and AI agents.</span></div>
 </footer>
 </body>
 </html>

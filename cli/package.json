@@ -1,10 +1,10 @@
 {
-  "name": "@impri/cli",
+  "name": "@airlock/cli",
   "version": "0.1.0",
-  "description": "CLI for the Impri human-in-the-loop approval API",
+  "description": "CLI for the Airlock human-in-the-loop approval API",
   "license": "MIT",
   "type": "module",
-  "bin": { "impri": "./dist/cli.js" },
+  "bin": { "airlock": "./dist/cli.js" },
   "files": ["dist", "README.md"],
   "scripts": {
     "build": "tsup",
@@ -13,7 +13,7 @@
     "test": "vitest run"
   },
   "dependencies": {
-    "@impri/sdk": "file:../sdk/typescript",
+    "@airlock/sdk": "file:../sdk/typescript",
     "commander": "^12.0.0"
   },
   "devDependencies": {

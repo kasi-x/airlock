@@ -44,7 +44,7 @@ class FakeStripeError extends Error {
 async function setup() {
   process.env.STRIPE_SECRET_KEY = 'sk_test_fake';
   process.env.STRIPE_PRICE_INDIE = 'price_indie_m';
-  process.env.APP_URL = 'https://app.impri.dev';
+  process.env.APP_URL = 'http://localhost:8080';
   const db = createDb(':memory:');
   const bootstrap = await bootstrapAdminKey(db);
   const app = await createApp(db);

@@ -12,7 +12,7 @@ Unlike a single email or a single blog post, a pricing agent usually wants to ch
 
 ## The MCP flow, one SKU at a time
 
-For an agent running inside an MCP client (Claude Code, Claude Desktop, or your own MCP host), each proposed change is one `impri_push_action` call:
+For an agent running inside an MCP client (Claude Code, Claude Desktop, or your own MCP host), each proposed change is one `airlock_push_action` call:
 
 ```typescript
 type PriceChange = {
@@ -23,7 +23,7 @@ type PriceChange = {
 };
 
 async function proposePriceChange(change: PriceChange) {
-  const { action_id } = await mcp.call("impri_push_action", {
+  const { action_id } = await mcp.call("airlock_push_action", {
     kind: "price.update",
     title: `${change.sku}: $${change.currentPrice} → $${change.proposedPrice}`,
     preview: {
@@ -39,7 +39,7 @@ async function proposePriceChange(change: PriceChange) {
     expires_in: 3600,
   });
 
-  const decision = await mcp.call("impri_await_decision", {
+  const decision = await mcp.call("airlock_await_decision", {
     action_id,
     timeout_s: 1800,
   });
@@ -47,7 +47,7 @@ async function proposePriceChange(change: PriceChange) {
   if (decision.status !== "approved") return; // rejected or expired: price stays put
 
   await updateListingPrice(change.sku, change.proposedPrice);
-  await mcp.call("impri_report_result", { action_id, status: "executed" });
+  await mcp.call("airlock_report_result", { action_id, status: "executed" });
 }
 ```
 
@@ -72,6 +72,6 @@ Pick thresholds you can defend later, and let the boring, high-confidence cases 
 
 ## Boundaries
 
-Impri does not know your pricing model, your margin floor, or your competitor data — it only stores what the agent proposed and holds the human's decision on it. The threshold logic above belongs in your agent, not in Impri. And this only holds as a real gate if the agent's price-update function requires an approved decision to run — if it also has a separate cron job that writes prices directly to the store, the gate has a hole in it.
+Airlock does not know your pricing model, your margin floor, or your competitor data — it only stores what the agent proposed and holds the human's decision on it. The threshold logic above belongs in your agent, not in Airlock. And this only holds as a real gate if the agent's price-update function requires an approved decision to run — if it also has a separate cron job that writes prices directly to the store, the gate has a hole in it.
 
 See [the base integration pattern](how-to-add-human-approval-to-an-ai-agent.md) for the full three-call flow, [MCP setup](mcp.md) if you haven't wired the server in yet, and [integrations](integrations.md) for wrapping the actual store-update call so the approved path is the only path.

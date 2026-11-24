@@ -1,20 +1,20 @@
 # A Self-Hosted Approval Inbox for AI Agents
 
-Run your own approval inbox for AI agents — Impri's MIT core is self-hostable in minutes, with the same REST API and MCP server as the cloud.
+Run your own approval inbox for AI agents — Airlock's MIT core is self-hostable in minutes, with the same REST API and MCP server as the cloud.
 
 ---
 
 ## Why run it yourself
 
-The cloud at impri.dev is the fastest way to get started. But there are reasons to prefer running Impri on your own infrastructure:
+The cloud at airlock.dev is the fastest way to get started. But there are reasons to prefer running Airlock on your own infrastructure:
 
-**Data stays internal.** Every action pushed to Impri includes the draft content your agent produced — an email body, a database query, a file to be modified. For agents working with internal documents, customer records, or anything under compliance review, you may not want that content leaving your network at all.
+**Data stays internal.** Every action pushed to Airlock includes the draft content your agent produced — an email body, a database query, a file to be modified. For agents working with internal documents, customer records, or anything under compliance review, you may not want that content leaving your network at all.
 
 **No per-seat or per-action cost at scale.** If you run a high-volume agent loop that produces hundreds of approval requests per day, self-hosting removes that ceiling.
 
-**Integration with internal tooling.** Running on-prem means you can put Impri behind your VPN or an authenticating reverse proxy, and point notifications at your own SMTP server or ntfy instance.
+**Integration with internal tooling.** Running on-prem means you can put Airlock behind your VPN or an authenticating reverse proxy, and point notifications at your own SMTP server or ntfy instance.
 
-Impri is open-core: the server that handles the approval inbox, the REST API, the MCP server, and the web UI is MIT-licensed and available at [github.com/sekera-radim/impri](https://github.com/sekera-radim/impri). The hosted version at impri.dev runs the same code with managed infrastructure on top.
+Airlock is open-core: the server that handles the approval inbox, the REST API, the MCP server, and the web UI is MIT-licensed and available at [github.com/sekera-radim/airlock](https://github.com/sekera-radim/airlock). The hosted version at airlock.dev runs the same code with managed infrastructure on top.
 
 ---
 
@@ -23,8 +23,8 @@ Impri is open-core: the server that handles the approval inbox, the REST API, th
 Self-hosting runs two containers from the repo's `docker-compose.yml`: `server` (the REST API, port 8484) and `ui` (the web inbox, port 8080). Data lives in SQLite on a Docker volume, so there is no database to provision.
 
 ```bash
-git clone https://gitlab.com/sekera.radim/impri.git
-cd impri
+git clone https://gitlab.com/sekera.radim/airlock.git
+cd airlock
 
 # Signs outgoing webhook payloads (HMAC-SHA256) — don't keep the default
 echo "WEBHOOK_SECRET=$(openssl rand -hex 32)" > .env
@@ -32,7 +32,7 @@ echo "WEBHOOK_SECRET=$(openssl rand -hex 32)" > .env
 docker compose up -d
 ```
 
-The API answers on `http://localhost:8484/v1` (health check at `/healthz`) and the inbox opens at `http://localhost:8080`. The `impri-data` volume keeps actions, decisions and audit records across restarts.
+The API answers on `http://localhost:8484/v1` (health check at `/healthz`) and the inbox opens at `http://localhost:8080`. The `airlock-data` volume keeps actions, decisions and audit records across restarts.
 
 On first start the server prints a bootstrap admin key to its log, once — only its hash is stored:
 
@@ -44,7 +44,7 @@ Don't hand that admin key to an agent. Create a key limited to the `actions` sco
 
 ```bash
 curl -X POST http://localhost:8484/v1/keys \
-  -H "Authorization: Bearer $IMPRI_ADMIN_KEY" \
+  -H "Authorization: Bearer $AIRLOCK_ADMIN_KEY" \
   -H "Content-Type: application/json" \
   -d '{"name": "agent", "scopes": ["actions"]}'
 ```
@@ -55,26 +55,26 @@ The agent sends that key in the `Authorization: Bearer im_...` header, the same 
 
 ## Pointing your agents at the local instance
 
-Wherever you set `IMPRI_BASE_URL`, switch it to your instance's address. The rest of the API is identical.
+Wherever you set `AIRLOCK_BASE_URL`, switch it to your instance's address. The rest of the API is identical.
 
 **MCP server** (Claude Code, Claude Desktop, or any MCP client):
 
 ```json
 {
   "mcpServers": {
-    "impri": {
+    "airlock": {
       "command": "npx",
-      "args": ["@impri/mcp"],
+      "args": ["@airlock/mcp"],
       "env": {
-        "IMPRI_API_KEY": "im_your_local_key",
-        "IMPRI_BASE_URL": "http://localhost:8484"
+        "AIRLOCK_API_KEY": "im_your_local_key",
+        "AIRLOCK_BASE_URL": "http://localhost:8484"
       }
     }
   }
 }
 ```
 
-The MCP server reads `IMPRI_BASE_URL` and routes all tool calls — `impri_push_action`, `impri_await_decision`, `impri_report_result` — to your instance instead of the cloud. No code changes needed in the agent.
+The MCP server reads `AIRLOCK_BASE_URL` and routes all tool calls — `airlock_push_action`, `airlock_await_decision`, `airlock_report_result` — to your instance instead of the cloud. No code changes needed in the agent.
 
 **REST directly** — useful for testing that the instance is up and accepting requests:
 
@@ -104,10 +104,10 @@ The response is `{ id, status: "pending", inbox_url }` — the same shape as the
 
 ## What you get vs. the cloud
 
-| Capability | Self-hosted (MIT core) | Cloud (impri.dev) |
+| Capability | Self-hosted (MIT core) | Cloud (airlock.dev) |
 |---|---|---|
 | REST API (`/v1/actions`) | Yes | Yes |
-| MCP server (`@impri/mcp`) | Yes | Yes |
+| MCP server (`@airlock/mcp`) | Yes | Yes |
 | Web inbox | Yes | Yes |
 | Audit log | Yes | Yes |
 | Notifications (email, ntfy, web push) | Yes — configure your own SMTP/ntfy | Managed |
@@ -120,16 +120,16 @@ The split is operational, not functional. A self-hosted instance accepts the sam
 
 ---
 
-## Honesty about what Impri is and is not
+## Honesty about what Airlock is and is not
 
-Running Impri yourself doesn't change what it does. It stores the proposed action, notifies the designated human, and holds the decision. It does not interpret what the agent is doing, does not generate or modify content, and does not execute anything.
+Running Airlock yourself doesn't change what it does. It stores the proposed action, notifies the designated human, and holds the decision. It does not interpret what the agent is doing, does not generate or modify content, and does not execute anything.
 
-The gate is real only when the agent's path to the side effect runs through the Impri response. If you run the server behind your firewall but your agent also holds direct credentials to the target system, the gate does not enforce anything — it just records what was proposed.
+The gate is real only when the agent's path to the side effect runs through the Airlock response. If you run the server behind your firewall but your agent also holds direct credentials to the target system, the gate does not enforce anything — it just records what was proposed.
 
-Impri is a focused tool: one human, one decision, one proposed action at a time. It is not a workflow engine with branching or scheduling (look at n8n or Temporal for those), and it is not an agent-to-agent coordination layer. You can embed it as one step inside a larger workflow. For compliance-sensitive environments, pair it with [audit-log](audit-log.md) to export decision records.
+Airlock is a focused tool: one human, one decision, one proposed action at a time. It is not a workflow engine with branching or scheduling (look at n8n or Temporal for those), and it is not an agent-to-agent coordination layer. You can embed it as one step inside a larger workflow. For compliance-sensitive environments, pair it with [audit-log](audit-log.md) to export decision records.
 
 ---
 
 ## Next step
 
-Follow the [self-hosting](self-hosting.md) guide for compose file, reverse proxy, and environment variable reference. To wire up your first agent, start with the [quickstart](quickstart.md) (the examples work against either the cloud or a local instance — just set `IMPRI_BASE_URL`). To use the MCP server with Claude Code or Claude Desktop, see [mcp](mcp.md).
+Follow the [self-hosting](self-hosting.md) guide for compose file, reverse proxy, and environment variable reference. To wire up your first agent, start with the [quickstart](quickstart.md) (the examples work against either the cloud or a local instance — just set `AIRLOCK_BASE_URL`). To use the MCP server with Claude Code or Claude Desktop, see [mcp](mcp.md).

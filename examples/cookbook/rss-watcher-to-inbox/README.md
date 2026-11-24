@@ -1,25 +1,25 @@
 # Recipe 5 — RSS Watcher to Inbox
 
 Create an RSS watcher that monitors a feed for new items matching keyword
-rules, and watch those items land as triage actions in your Impri inbox.
+rules, and watch those items land as triage actions in your Airlock inbox.
 
 ## Why this matters
 
 Monitoring RSS feeds, Reddit threads, or web pages by hand is tedious and
-error-prone. Impri's watcher API handles deduplication, scheduling, and
+error-prone. Airlock's watcher API handles deduplication, scheduling, and
 keyword scoring — you only see new items that actually match, once.
 
 ## How it works
 
 ```
 POST /v1/watchers  (kind: rss, config.url, keywords, schedule)
-    → first run: baseline — Impri records existing items; no inbox actions yet
+    → first run: baseline — Airlock records existing items; no inbox actions yet
     → subsequent runs: new matching items → pending actions in inbox
     → human triages: approve (act on it) or reject (ignore)
     → GET /v1/actions?status=pending  to see what arrived
 ```
 
-**First run = baseline.** Impri never floods your inbox with all historical
+**First run = baseline.** Airlock never floods your inbox with all historical
 items from a feed — it silently captures the current state and only surfaces
 NEW items on the next run.
 
@@ -38,8 +38,8 @@ NEW items on the next run.
 ## Requirements
 
 - Node 18+ (no npm install)
-- Impri API key with **`watch` scope** (admin scope also works)
-- Running Impri instance
+- Airlock API key with **`watch` scope** (admin scope also works)
+- Running Airlock instance
 
 To also read inbox actions, the same key needs `actions` scope too, or use
 separate keys. Admin scope covers everything.
@@ -48,10 +48,10 @@ separate keys. Admin scope covers everything.
 
 ```bash
 # Self-hosted
-IMPRI_API_KEY=im_your_watch_key node agent.mjs
+AIRLOCK_API_KEY=im_your_watch_key node agent.mjs
 
 # Cloud
-IMPRI_API_KEY=im_your_watch_key IMPRI_BASE_URL=https://api.impri.dev node agent.mjs
+AIRLOCK_API_KEY=im_your_watch_key AIRLOCK_BASE_URL=https://api.airlock.dev node agent.mjs
 ```
 
 The script creates the watcher, waits for the baseline run, then pauses it

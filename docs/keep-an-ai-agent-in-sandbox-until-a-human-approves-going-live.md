@@ -14,15 +14,15 @@ The fix isn't "tell the agent to ask first" in its system prompt — that's a su
 
 ## Where the gate goes
 
-The agent keeps full autonomy inside the sandbox. The only new step is between "sandbox build is green" and "promote to production" — a single Impri action that blocks until someone approves it.
+The agent keeps full autonomy inside the sandbox. The only new step is between "sandbox build is green" and "promote to production" — a single Airlock action that blocks until someone approves it.
 
 ```typescript
-import { ImpriClient } from "@impri/sdk";
+import { AirlockClient } from "@airlock/sdk";
 
-const impri = new ImpriClient({ apiKey: process.env.IMPRI_API_KEY! });
+const airlock = new AirlockClient({ apiKey: process.env.AIRLOCK_API_KEY! });
 
 async function requestPromotion(sandboxUrl: string, diffSummary: string) {
-  const action = await impri.createAction({
+  const action = await airlock.createAction({
     kind: "deploy.promote",
     title: `Promote sandbox build to production: ${process.env.GIT_SHA}`,
     preview: {
@@ -46,7 +46,7 @@ async function awaitAndPromote(actionId: string) {
   let result;
   do {
     await new Promise((r) => setTimeout(r, 10_000));
-    result = await impri.getAction(actionId);
+    result = await airlock.getAction(actionId);
   } while (result.status === "pending");
 
   if (result.status !== "approved") {
@@ -55,7 +55,7 @@ async function awaitAndPromote(actionId: string) {
   }
 
   await runDeployPipeline({ target: "production" }); // your real promote step
-  await impri.reportResult(actionId, "executed");
+  await airlock.reportResult(actionId, "executed");
 }
 ```
 
@@ -63,7 +63,7 @@ async function awaitAndPromote(actionId: string) {
 
 ## Why "sandbox" has to mean something narrow
 
-This pattern only holds if the agent's credentials genuinely can't reach production without going through `runDeployPipeline`. If the same CI token the agent uses for sandbox builds also has production deploy rights, an agent (or an injected instruction) can skip the whole flow and deploy directly. Scope the agent's deploy credentials to the sandbox environment, and put the production deploy credential behind the code path that only runs after `status: "approved"` — ideally in a separate CI job or service the agent can't invoke on its own. Impri holds the decision; your infrastructure has to be the thing that actually enforces it.
+This pattern only holds if the agent's credentials genuinely can't reach production without going through `runDeployPipeline`. If the same CI token the agent uses for sandbox builds also has production deploy rights, an agent (or an injected instruction) can skip the whole flow and deploy directly. Scope the agent's deploy credentials to the sandbox environment, and put the production deploy credential behind the code path that only runs after `status: "approved"` — ideally in a separate CI job or service the agent can't invoke on its own. Airlock holds the decision; your infrastructure has to be the thing that actually enforces it.
 
 ## Handling rebuilds and stale approvals
 
@@ -83,6 +83,6 @@ Because `expires_in` has a 300-second floor and a 30-day ceiling, pick a window 
 
 ## What this does and doesn't check
 
-Impri stores the promotion request, notifies whoever reviews deploys, and holds the decision — it does not run your tests, diff your migrations, or evaluate whether the sandbox build is actually safe. The `preview.body` markdown is exactly as good as what the agent puts into it, so include the CI run link, the diff summary, and anything a reviewer needs to make the call from the notification alone (see [Slack approval](slack-approval.md) if reviewers want this on mobile).
+Airlock stores the promotion request, notifies whoever reviews deploys, and holds the decision — it does not run your tests, diff your migrations, or evaluate whether the sandbox build is actually safe. The `preview.body` markdown is exactly as good as what the agent puts into it, so include the CI run link, the diff summary, and anything a reviewer needs to make the call from the notification alone (see [Slack approval](slack-approval.md) if reviewers want this on mobile).
 
 For the full three-call pattern this builds on, see [How to Add Human Approval to an AI Agent](how-to-add-human-approval-to-an-ai-agent.md). For other CI/CD and agent-framework wiring, check [integrations](integrations.md).

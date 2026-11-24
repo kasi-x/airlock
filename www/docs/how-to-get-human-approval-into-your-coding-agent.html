@@ -3,21 +3,21 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>How to get human approval into your coding agent — Impri Docs</title>
-<meta name="description" content="Every coding agent that can call MCP tools can be wired to pause on risky actions and wait for a human decision through Impri, with a one-line install per…">
+<title>How to get human approval into your coding agent — Airlock Docs</title>
+<meta name="description" content="Every coding agent that can call MCP tools can be wired to pause on risky actions and wait for a human decision through Airlock, with a one-line install per…">
 <meta name="theme-color" content="#06070d">
-<meta property="og:title" content="How to get human approval into your coding agent — Impri Docs">
-<meta property="og:description" content="Every coding agent that can call MCP tools can be wired to pause on risky actions and wait for a human decision through Impri, with a one-line install per…">
+<meta property="og:title" content="How to get human approval into your coding agent — Airlock Docs">
+<meta property="og:description" content="Every coding agent that can call MCP tools can be wired to pause on risky actions and wait for a human decision through Airlock, with a one-line install per…">
 <meta property="og:type" content="article">
-<meta property="og:url" content="https://impri.dev/docs/how-to-get-human-approval-into-your-coding-agent">
-<meta property="og:image" content="https://impri.dev/assets/og/og-docs.png">
+<meta property="og:url" content="https://airlock.dev/docs/how-to-get-human-approval-into-your-coding-agent">
+<meta property="og:image" content="https://airlock.dev/assets/og/og-docs.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
-<meta property="og:image:alt" content="Impri — human-in-the-loop approval inbox for AI agents">
+<meta property="og:image:alt" content="Airlock — human-in-the-loop approval inbox for AI agents">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="https://impri.dev/assets/og/og-docs.png">
-<link rel="canonical" href="https://impri.dev/docs/how-to-get-human-approval-into-your-coding-agent">
-<script type="application/ld+json">{"@context":"https://schema.org","@type":"TechArticle","headline":"How to get human approval into your coding agent","description":"Every coding agent that can call MCP tools can be wired to pause on risky actions and wait for a human decision through Impri, with a one-line install per…","url":"https://impri.dev/docs/how-to-get-human-approval-into-your-coding-agent","inLanguage":"en","author":{"@type":"Organization","name":"Impri","url":"https://impri.dev"},"publisher":{"@type":"Organization","name":"Impri","url":"https://impri.dev"}}</script>
+<meta name="twitter:image" content="https://airlock.dev/assets/og/og-docs.png">
+<link rel="canonical" href="https://airlock.dev/docs/how-to-get-human-approval-into-your-coding-agent">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"TechArticle","headline":"How to get human approval into your coding agent","description":"Every coding agent that can call MCP tools can be wired to pause on risky actions and wait for a human decision through Airlock, with a one-line install per…","url":"https://airlock.dev/docs/how-to-get-human-approval-into-your-coding-agent","inLanguage":"en","author":{"@type":"Organization","name":"Airlock","url":"https://airlock.dev"},"publisher":{"@type":"Organization","name":"Airlock","url":"https://airlock.dev"}}</script>
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <link rel="icon" href="/favicon.ico" sizes="32x32">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='9' fill='%236366f1'/%3E%3Cpath d='M9 16.5l4.5 4.5L23 11' stroke='white' stroke-width='3' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
@@ -132,13 +132,13 @@ pre code.hljs{display:block;overflow-x:auto}
 <div class="wrap nav-inner">
   <a class="brand" href="/">
     <span class="mark"><svg viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.5 4.5L19 7.5" stroke="white" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
-    Impri
+    Airlock
   </a>
   <div class="nav-links">
     <a class="link" href="/#how">How it works</a>
     <a class="link" href="/#pricing">Pricing</a>
     <a class="link active-nav" href="../docs">Docs</a>
-    <a class="btn btn-primary btn-sm" href="https://gitlab.com/sekera.radim/impri">GitLab</a>
+    <a class="btn btn-primary btn-sm" href="https://gitlab.com/sekera.radim/airlock">GitLab</a>
   </div>
 </div>
 </nav>
@@ -153,22 +153,22 @@ pre code.hljs{display:block;overflow-x:auto}
       <span>How to get human approval into your coding agent</span>
     </nav>
     <h1>How to get human approval into your coding agent</h1>
-<p>Every coding agent that can call MCP tools can be wired to pause on risky actions and wait for a human decision through Impri, with a one-line install per agent.</p>
-<p>The pattern underneath is the same everywhere: the agent calls <code>impri_push_action</code> with a preview, then <code>impri_await_decision</code>, and only acts on <code>approved</code>.</p>
+<p>Every coding agent that can call MCP tools can be wired to pause on risky actions and wait for a human decision through Airlock, with a one-line install per agent.</p>
+<p>The pattern underneath is the same everywhere: the agent calls <code>airlock_push_action</code> with a preview, then <code>airlock_await_decision</code>, and only acts on <code>approved</code>.</p>
 <p>Pick your agent:</p>
 <ul>
-<li><a href="claude-code-human-approval">Claude Code</a> — <code>claude mcp add impri -e IMPRI_API_KEY=... -e IMPRI_BASE_URL=https://api.impri.dev -- npx @impri/mcp</code></li>
-<li><a href="codex-human-approval">OpenAI Codex</a> — <code>codex mcp add impri --env IMPRI_API_KEY=... --env IMPRI_BASE_URL=https://api.impri.dev -- npx -y @impri/mcp</code></li>
+<li><a href="claude-code-human-approval">Claude Code</a> — <code>claude mcp add airlock -e AIRLOCK_API_KEY=... -e AIRLOCK_BASE_URL=https://api.airlock.dev -- npx @airlock/mcp</code></li>
+<li><a href="codex-human-approval">OpenAI Codex</a> — <code>codex mcp add airlock --env AIRLOCK_API_KEY=... --env AIRLOCK_BASE_URL=https://api.airlock.dev -- npx -y @airlock/mcp</code></li>
 <li><a href="cursor-human-approval">Cursor</a> — <code>.cursor/mcp.json</code></li>
 <li><a href="windsurf-human-approval">Windsurf</a> — <code>~/.codeium/windsurf/mcp_config.json</code></li>
 </ul>
 <p>Any other MCP-compatible client works the same way — see the <a href="mcp">MCP server reference</a> for the full tool list and config shape, or the <a href="/agents">/agents overview</a> for a side-by-side of all four.</p>
 <h2 id="the-pattern-in-short">The pattern, in short</h2>
 <ol>
-<li>Get an API key at <a href="https://impri.dev" target="_blank" rel="noopener">impri.dev</a> or self-host with <code>docker compose up</code> (see <a href="self-hosting">self-hosting</a>).</li>
-<li>Register the <code>@impri/mcp</code> server with your agent&#39;s CLI or config file (links above) — set <code>IMPRI_BASE_URL</code> to <code>https://api.impri.dev</code> for the cloud, or leave it unset for self-hosted (it defaults to <code>http://localhost:8484</code>).</li>
-<li>Add a short instruction to your agent&#39;s system prompt or rules file: before any action with a real side effect, call <code>impri_push_action</code>, then <code>impri_await_decision</code>, and only proceed on <code>approved</code>.</li>
-<li>Decide from the web inbox at <a href="https://app.impri.dev" target="_blank" rel="noopener">app.impri.dev</a>, or from your phone if you&#39;ve set up <a href="notifications">notifications</a> (Slack, Discord, Telegram, ntfy, or web push).</li>
+<li>Get an API key at <a href="https://airlock.dev" target="_blank" rel="noopener">airlock.dev</a> or self-host with <code>docker compose up</code> (see <a href="self-hosting">self-hosting</a>).</li>
+<li>Register the <code>@airlock/mcp</code> server with your agent&#39;s CLI or config file (links above) — set <code>AIRLOCK_BASE_URL</code> to <code>https://api.airlock.dev</code> for the cloud, or leave it unset for self-hosted (it defaults to <code>http://localhost:8484</code>).</li>
+<li>Add a short instruction to your agent&#39;s system prompt or rules file: before any action with a real side effect, call <code>airlock_push_action</code>, then <code>airlock_await_decision</code>, and only proceed on <code>approved</code>.</li>
+<li>Decide from the web inbox at <a href="https://app.airlock.dev" target="_blank" rel="noopener">app.airlock.dev</a>, or from your phone if you&#39;ve set up <a href="notifications">notifications</a> (Slack, Discord, Telegram, ntfy, or web push).</li>
 </ol>
 <h2 id="where-to-go-deeper">Where to go deeper</h2>
 <ul>
@@ -257,19 +257,19 @@ pre code.hljs{display:block;overflow-x:auto}
 <footer class="footer">
 <div class="wrap footer-inner">
   <a class="brand" href="/">
-    <span class="mark"><svg viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.5 4.5L19 7.5" stroke="white" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Impri
+    <span class="mark"><svg viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.5 4.5L19 7.5" stroke="white" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Airlock
   </a>
   <div>
-    <a href="https://gitlab.com/sekera.radim/impri">GitLab</a>
+    <a href="https://gitlab.com/sekera.radim/airlock">GitLab</a>
     <a href="/docs">Docs</a>
-    <a href="https://gitlab.com/sekera.radim/impri/-/blob/main/LICENSE">MIT License</a>
-    <a href="https://www.npmjs.com/package/@impri/mcp">@impri/mcp</a>
+    <a href="https://gitlab.com/sekera.radim/airlock/-/blob/main/LICENSE">MIT License</a>
+    <a href="https://www.npmjs.com/package/@airlock/mcp">@airlock/mcp</a>
     <a href="/docs/privacy">Privacy</a>
     <a href="/docs/terms">Terms</a>
     <a href="https://sekera.dev">Contact</a>
   </div>
 </div>
-<div class="wrap" style="margin-top:18px"><span class="muted">© 2026 Impri · The imprimatur for your AI agents · Built by <a href="https://sekera.dev" style="color:inherit">Radim Sekera</a>. Also by the same maker: <a href="https://briefgate.dev/?utm_source=impri.dev&amp;utm_medium=referral" style="color:inherit">BriefGate</a> — client intake for agencies and AI agents.</span></div>
+<div class="wrap" style="margin-top:18px"><span class="muted">© 2026 Airlock · The airlockmatur for your AI agents · Built by <a href="https://sekera.dev" style="color:inherit">Radim Sekera</a>. Also by the same maker: <a href="https://briefgate.dev/?utm_source=airlock.dev&amp;utm_medium=referral" style="color:inherit">BriefGate</a> — client intake for agencies and AI agents.</span></div>
 </footer>
 </body>
 </html>

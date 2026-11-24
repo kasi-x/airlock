@@ -27,20 +27,20 @@ agent receives a payment request (invoice, expense, refund)
 ## Requirements
 
 - Python 3.8+ (stdlib only — no pip install)
-- Impri API key with `actions` scope
-- Running Impri instance
+- Airlock API key with `actions` scope
+- Running Airlock instance
 
 ## Quick start
 
 ```bash
 # Default threshold: $100
-IMPRI_API_KEY=im_your_key python3 agent.py
+AIRLOCK_API_KEY=im_your_key python3 agent.py
 
 # Custom threshold
-IMPRI_API_KEY=im_your_key APPROVAL_THRESHOLD=250 python3 agent.py
+AIRLOCK_API_KEY=im_your_key APPROVAL_THRESHOLD=250 python3 agent.py
 
 # Cloud
-IMPRI_API_KEY=im_your_key IMPRI_BASE_URL=https://api.impri.dev python3 agent.py
+AIRLOCK_API_KEY=im_your_key AIRLOCK_BASE_URL=https://api.airlock.dev python3 agent.py
 ```
 
 ## Connecting to a real payment processor
@@ -73,7 +73,7 @@ potentially a double payment.
 
 ## Audit trail
 
-Every payment approved through Impri has a timestamped record:
+Every payment approved through Airlock has a timestamped record:
 - Who approved it (channel, timestamp)
 - The original amount and description
 - The execution result and transaction ID

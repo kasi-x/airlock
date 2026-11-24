@@ -16,15 +16,15 @@
     <template v-else>
       <v-app-bar elevation="0" density="compact">
         <v-app-bar-title>
-          <span class="font-weight-bold">Impri</span>
+          <span class="font-weight-bold">Airlock</span>
           <span class="text-medium-emphasis text-body-2 ml-2">Approval Inbox</span>
         </v-app-bar-title>
 
         <template #append>
           <v-btn
             icon="mdi-help-circle-outline"
-            title="How Impri works"
-            aria-label="How Impri works"
+            title="How Airlock works"
+            aria-label="How Airlock works"
             variant="text"
             size="small"
             @click="openHelp"
@@ -197,7 +197,7 @@ const activeTab = ref<'inbox' | 'watchers' | 'notifications' | 'billing' | 'usag
 const pendingTotal = computed(() => inbox.pendingTotal)
 
 // First-run onboarding (dismissible, re-openable via the app-bar help button).
-const showOnboarding = ref(localStorage.getItem('impri-onboarding-dismissed') !== '1')
+const showOnboarding = ref(localStorage.getItem('airlock-onboarding-dismissed') !== '1')
 function openHelp(): void {
   activeTab.value = 'inbox'
   showOnboarding.value = true
@@ -208,7 +208,7 @@ const isDark = computed(() => theme.global.current.value.dark)
 function toggleTheme() {
   const next = isDark.value ? 'light' : 'dark'
   theme.global.name.value = next
-  localStorage.setItem('impri-theme', next)
+  localStorage.setItem('airlock-theme', next)
 }
 
 // Return trip from Stripe Checkout / portal: land on the Billing tab and

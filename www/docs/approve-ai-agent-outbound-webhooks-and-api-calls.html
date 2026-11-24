@@ -3,21 +3,21 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Approve AI Agent Outbound Webhooks and Third-Party API… — Impri Docs</title>
+<title>Approve AI Agent Outbound Webhooks and Third-Party API… — Airlock Docs</title>
 <meta name="description" content="Approve AI agent outbound webhooks and third-party API calls before they fire: review the exact URL, method and payload, then send only after a human says yes.">
 <meta name="theme-color" content="#06070d">
-<meta property="og:title" content="Approve AI Agent Outbound Webhooks and Third-Party API… — Impri Docs">
+<meta property="og:title" content="Approve AI Agent Outbound Webhooks and Third-Party API… — Airlock Docs">
 <meta property="og:description" content="Approve AI agent outbound webhooks and third-party API calls before they fire: review the exact URL, method and payload, then send only after a human says yes.">
 <meta property="og:type" content="article">
-<meta property="og:url" content="https://impri.dev/docs/approve-ai-agent-outbound-webhooks-and-api-calls">
-<meta property="og:image" content="https://impri.dev/assets/og/og-docs.png">
+<meta property="og:url" content="https://airlock.dev/docs/approve-ai-agent-outbound-webhooks-and-api-calls">
+<meta property="og:image" content="https://airlock.dev/assets/og/og-docs.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
-<meta property="og:image:alt" content="Impri — human-in-the-loop approval inbox for AI agents">
+<meta property="og:image:alt" content="Airlock — human-in-the-loop approval inbox for AI agents">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="https://impri.dev/assets/og/og-docs.png">
-<link rel="canonical" href="https://impri.dev/docs/approve-ai-agent-outbound-webhooks-and-api-calls">
-<script type="application/ld+json">{"@context":"https://schema.org","@type":"TechArticle","headline":"Approve AI Agent Outbound Webhooks and Third-Party API Calls","description":"Approve AI agent outbound webhooks and third-party API calls before they fire: review the exact URL, method and payload, then send only after a human says yes.","url":"https://impri.dev/docs/approve-ai-agent-outbound-webhooks-and-api-calls","inLanguage":"en","author":{"@type":"Organization","name":"Impri","url":"https://impri.dev"},"publisher":{"@type":"Organization","name":"Impri","url":"https://impri.dev"}}</script>
+<meta name="twitter:image" content="https://airlock.dev/assets/og/og-docs.png">
+<link rel="canonical" href="https://airlock.dev/docs/approve-ai-agent-outbound-webhooks-and-api-calls">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"TechArticle","headline":"Approve AI Agent Outbound Webhooks and Third-Party API Calls","description":"Approve AI agent outbound webhooks and third-party API calls before they fire: review the exact URL, method and payload, then send only after a human says yes.","url":"https://airlock.dev/docs/approve-ai-agent-outbound-webhooks-and-api-calls","inLanguage":"en","author":{"@type":"Organization","name":"Airlock","url":"https://airlock.dev"},"publisher":{"@type":"Organization","name":"Airlock","url":"https://airlock.dev"}}</script>
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <link rel="icon" href="/favicon.ico" sizes="32x32">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='9' fill='%236366f1'/%3E%3Cpath d='M9 16.5l4.5 4.5L23 11' stroke='white' stroke-width='3' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
@@ -132,13 +132,13 @@ pre code.hljs{display:block;overflow-x:auto}
 <div class="wrap nav-inner">
   <a class="brand" href="/">
     <span class="mark"><svg viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.5 4.5L19 7.5" stroke="white" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
-    Impri
+    Airlock
   </a>
   <div class="nav-links">
     <a class="link" href="/#how">How it works</a>
     <a class="link" href="/#pricing">Pricing</a>
     <a class="link active-nav" href="../docs">Docs</a>
-    <a class="btn btn-primary btn-sm" href="https://gitlab.com/sekera.radim/impri">GitLab</a>
+    <a class="btn btn-primary btn-sm" href="https://gitlab.com/sekera.radim/airlock">GitLab</a>
   </div>
 </div>
 </nav>
@@ -192,8 +192,8 @@ pre code.hljs{display:block;overflow-x:auto}
 <p>The agent pushes the request as an action instead of sending it. <code>expires_in</code> is short, because a stale webhook is usually not worth firing.</p>
 <div class="code-block"><span class="code-lang">python</span><pre><code class="hljs"><span class="hljs-keyword">import</span> os, time, requests
 
-BASE = <span class="hljs-string">&quot;https://api.impri.dev&quot;</span>
-H = {<span class="hljs-string">&quot;Authorization&quot;</span>: <span class="hljs-string">f&quot;Bearer <span class="hljs-subst">{os.environ[<span class="hljs-string">&#x27;IMPRI_API_KEY&#x27;</span>]}</span>&quot;</span>}
+BASE = <span class="hljs-string">&quot;https://api.airlock.dev&quot;</span>
+H = {<span class="hljs-string">&quot;Authorization&quot;</span>: <span class="hljs-string">f&quot;Bearer <span class="hljs-subst">{os.environ[<span class="hljs-string">&#x27;AIRLOCK_API_KEY&#x27;</span>]}</span>&quot;</span>}
 
 <span class="hljs-keyword">def</span> <span class="hljs-title function_">propose_webhook</span>(<span class="hljs-params">url: <span class="hljs-built_in">str</span>, payload: <span class="hljs-built_in">dict</span>, reason: <span class="hljs-built_in">str</span></span>) -&gt; <span class="hljs-built_in">str</span>:
     body = (
@@ -245,19 +245,19 @@ decision = wait(action_id)
 <li><strong>Retries after <code>execute_failed</code>.</strong> Report the failure honestly, then propose a new action rather than silently re-sending.</li>
 </ul>
 <hr>
-<h2 id="what-impri-does-and-doesn39t-do-here">What Impri does and doesn&#39;t do here</h2>
-<p>Impri is the approval gate only. It stores the proposed request, notifies a human and holds the decision. It does not send the HTTP call, inspect the target, validate the payload or know what the endpoint does. Your code performs the request.</p>
+<h2 id="what-airlock-does-and-doesn39t-do-here">What Airlock does and doesn&#39;t do here</h2>
+<p>Airlock is the approval gate only. It stores the proposed request, notifies a human and holds the decision. It does not send the HTTP call, inspect the target, validate the payload or know what the endpoint does. Your code performs the request.</p>
 <p>It is a real gate only if the wrapped function is the agent&#39;s <strong>only</strong> path to that endpoint. If the agent also holds the raw API token and can run <code>curl</code> or an unrestricted HTTP tool, it can route around the approval. Keep the credential inside the wrapper, not in the agent&#39;s reach.</p>
-<p>Impri is not a workflow engine and not a webhook delivery service: there is no retry queue, signing or delivery log for the outbound call. Those stay in your stack.</p>
+<p>Airlock is not a workflow engine and not a webhook delivery service: there is no retry queue, signing or delivery log for the outbound call. Those stay in your stack.</p>
 <hr>
 <h2 id="next-steps">Next steps</h2>
 <p>Get a key and run the three calls in the <a href="quickstart">quickstart</a>. For the full pattern behind this example, read <a href="how-to-add-human-approval-to-an-ai-agent">how to add human approval to an AI agent</a>, and to get decisions on your phone see <a href="notifications">notifications</a>. If your agent uses MCP tools, the <a href="mcp">MCP guide</a> shows the same flow without HTTP code.</p>
 
-    <aside class="doc-cta" aria-label="Try Impri">
+    <aside class="doc-cta" aria-label="Try Airlock">
   <p class="doc-cta-title">Add an approval step to your own agent</p>
-  <p>Start on Impri Cloud: the Free tier includes 100 approvals a month. Or self-host the MIT-licensed core with Docker Compose, with no tier limits.</p>
+  <p>Start on Airlock Cloud: the Free tier includes 100 approvals a month. Or self-host the MIT-licensed core with Docker Compose, with no tier limits.</p>
   <div class="doc-cta-actions">
-    <a class="btn btn-primary btn-sm" href="https://app.impri.dev/?signup=1">Start free on Impri Cloud</a>
+    <a class="btn btn-primary btn-sm" href="https://app.airlock.dev/?signup=1">Start free on Airlock Cloud</a>
     <a class="btn btn-ghost btn-sm" href="../docs/quickstart">Quick start</a>
     <a class="btn btn-ghost btn-sm" href="../docs/self-hosting">Self-host guide</a>
   </div>
@@ -344,7 +344,7 @@ decision = wait(action_id)
 <li class="ptoc-h2"><a href="#what-the-reviewer-needs-to-see">What the reviewer needs to see</a></li>
 <li class="ptoc-h2"><a href="#example-gate-a-webhook-call-before-it-is-sent">Example: gate a webhook call before it is sent</a></li>
 <li class="ptoc-h2"><a href="#common-pitfalls">Common pitfalls</a></li>
-<li class="ptoc-h2"><a href="#what-impri-does-and-doesn39t-do-here">What Impri does and doesn't do here</a></li>
+<li class="ptoc-h2"><a href="#what-airlock-does-and-doesn39t-do-here">What Airlock does and doesn't do here</a></li>
 <li class="ptoc-h2"><a href="#next-steps">Next steps</a></li></ul>
 </nav>
   </aside>
@@ -353,19 +353,19 @@ decision = wait(action_id)
 <footer class="footer">
 <div class="wrap footer-inner">
   <a class="brand" href="/">
-    <span class="mark"><svg viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.5 4.5L19 7.5" stroke="white" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Impri
+    <span class="mark"><svg viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.5 4.5L19 7.5" stroke="white" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Airlock
   </a>
   <div>
-    <a href="https://gitlab.com/sekera.radim/impri">GitLab</a>
+    <a href="https://gitlab.com/sekera.radim/airlock">GitLab</a>
     <a href="/docs">Docs</a>
-    <a href="https://gitlab.com/sekera.radim/impri/-/blob/main/LICENSE">MIT License</a>
-    <a href="https://www.npmjs.com/package/@impri/mcp">@impri/mcp</a>
+    <a href="https://gitlab.com/sekera.radim/airlock/-/blob/main/LICENSE">MIT License</a>
+    <a href="https://www.npmjs.com/package/@airlock/mcp">@airlock/mcp</a>
     <a href="/docs/privacy">Privacy</a>
     <a href="/docs/terms">Terms</a>
     <a href="https://sekera.dev">Contact</a>
   </div>
 </div>
-<div class="wrap" style="margin-top:18px"><span class="muted">© 2026 Impri · The imprimatur for your AI agents · Built by <a href="https://sekera.dev" style="color:inherit">Radim Sekera</a>. Also by the same maker: <a href="https://briefgate.dev/?utm_source=impri.dev&amp;utm_medium=referral" style="color:inherit">BriefGate</a> — client intake for agencies and AI agents.</span></div>
+<div class="wrap" style="margin-top:18px"><span class="muted">© 2026 Airlock · The airlockmatur for your AI agents · Built by <a href="https://sekera.dev" style="color:inherit">Radim Sekera</a>. Also by the same maker: <a href="https://briefgate.dev/?utm_source=airlock.dev&amp;utm_medium=referral" style="color:inherit">BriefGate</a> — client intake for agencies and AI agents.</span></div>
 </footer>
 </body>
 </html>

@@ -3,21 +3,21 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Human-in-the-Loop for the OpenAI Agents SDK — Impri Docs</title>
-<meta name="description" content="The OpenAI Agents SDK pauses a run before any tool marked needs_approval. Send each pause to an Impri inbox, save the run, and resume it once a human decides.">
+<title>Human-in-the-Loop for the OpenAI Agents SDK — Airlock Docs</title>
+<meta name="description" content="The OpenAI Agents SDK pauses a run before any tool marked needs_approval. Send each pause to an Airlock inbox, save the run, and resume it once a human decides.">
 <meta name="theme-color" content="#06070d">
-<meta property="og:title" content="Human-in-the-Loop for the OpenAI Agents SDK — Impri Docs">
-<meta property="og:description" content="The OpenAI Agents SDK pauses a run before any tool marked needs_approval. Send each pause to an Impri inbox, save the run, and resume it once a human decides.">
+<meta property="og:title" content="Human-in-the-Loop for the OpenAI Agents SDK — Airlock Docs">
+<meta property="og:description" content="The OpenAI Agents SDK pauses a run before any tool marked needs_approval. Send each pause to an Airlock inbox, save the run, and resume it once a human decides.">
 <meta property="og:type" content="article">
-<meta property="og:url" content="https://impri.dev/docs/human-in-the-loop-openai-agents-sdk">
-<meta property="og:image" content="https://impri.dev/assets/og/og-docs.png">
+<meta property="og:url" content="https://airlock.dev/docs/human-in-the-loop-openai-agents-sdk">
+<meta property="og:image" content="https://airlock.dev/assets/og/og-docs.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
-<meta property="og:image:alt" content="Impri — human-in-the-loop approval inbox for AI agents">
+<meta property="og:image:alt" content="Airlock — human-in-the-loop approval inbox for AI agents">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="https://impri.dev/assets/og/og-docs.png">
-<link rel="canonical" href="https://impri.dev/docs/human-in-the-loop-openai-agents-sdk">
-<script type="application/ld+json">{"@context":"https://schema.org","@type":"TechArticle","headline":"Human-in-the-Loop for the OpenAI Agents SDK","description":"The OpenAI Agents SDK pauses a run before any tool marked needs_approval. Send each pause to an Impri inbox, save the run, and resume it once a human decides.","url":"https://impri.dev/docs/human-in-the-loop-openai-agents-sdk","inLanguage":"en","author":{"@type":"Organization","name":"Impri","url":"https://impri.dev"},"publisher":{"@type":"Organization","name":"Impri","url":"https://impri.dev"}}</script>
+<meta name="twitter:image" content="https://airlock.dev/assets/og/og-docs.png">
+<link rel="canonical" href="https://airlock.dev/docs/human-in-the-loop-openai-agents-sdk">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"TechArticle","headline":"Human-in-the-Loop for the OpenAI Agents SDK","description":"The OpenAI Agents SDK pauses a run before any tool marked needs_approval. Send each pause to an Airlock inbox, save the run, and resume it once a human decides.","url":"https://airlock.dev/docs/human-in-the-loop-openai-agents-sdk","inLanguage":"en","author":{"@type":"Organization","name":"Airlock","url":"https://airlock.dev"},"publisher":{"@type":"Organization","name":"Airlock","url":"https://airlock.dev"}}</script>
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <link rel="icon" href="/favicon.ico" sizes="32x32">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='9' fill='%236366f1'/%3E%3Cpath d='M9 16.5l4.5 4.5L23 11' stroke='white' stroke-width='3' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
@@ -132,13 +132,13 @@ pre code.hljs{display:block;overflow-x:auto}
 <div class="wrap nav-inner">
   <a class="brand" href="/">
     <span class="mark"><svg viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.5 4.5L19 7.5" stroke="white" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
-    Impri
+    Airlock
   </a>
   <div class="nav-links">
     <a class="link" href="/#how">How it works</a>
     <a class="link" href="/#pricing">Pricing</a>
     <a class="link active-nav" href="../docs">Docs</a>
-    <a class="btn btn-primary btn-sm" href="https://gitlab.com/sekera.radim/impri">GitLab</a>
+    <a class="btn btn-primary btn-sm" href="https://gitlab.com/sekera.radim/airlock">GitLab</a>
   </div>
 </div>
 </nav>
@@ -153,8 +153,8 @@ pre code.hljs{display:block;overflow-x:auto}
       <span>Human-in-the-Loop for the OpenAI Agents SDK</span>
     </nav>
     <h1>Human-in-the-Loop for the OpenAI Agents SDK</h1>
-<p>The OpenAI Agents SDK pauses a run before any tool marked needs_approval. Send each pause to an Impri inbox, save the run, and resume it once a human decides.</p>
-<p><em>Updated 2026-11-15. Tested with <code>openai-agents</code> 0.24.0 (Python) against a self-hosted Impri server.</em></p>
+<p>The OpenAI Agents SDK pauses a run before any tool marked needs_approval. Send each pause to an Airlock inbox, save the run, and resume it once a human decides.</p>
+<p><em>Updated 2026-11-15. Tested with <code>openai-agents</code> 0.24.0 (Python) against a self-hosted Airlock server.</em></p>
 <h2 id="what-the-sdk-does-and-what-it-leaves-to-you">What the SDK does, and what it leaves to you</h2>
 <p>The SDK has human-in-the-loop built in (<a href="https://openai.github.io/openai-agents-python/human_in_the_loop/" target="_blank" rel="noopener">official guide</a>):</p>
 <ol>
@@ -163,12 +163,12 @@ pre code.hljs{display:block;overflow-x:auto}
 <li><code>state.to_string()</code> and <code>RunState.from_string(agent, text)</code> let a different process resume the run, hours later.</li>
 <li><code>needs_approval</code> also accepts an async function <code>(run_context, params, call_id) -&gt; bool</code>, so only some calls pause (say, issues in public repositories).</li>
 </ol>
-<p>It leaves to you who is asked and where, what happens when nobody answers, a record of who approved what, and edits: <code>approve()</code> runs the tool with exactly the arguments the model wrote. Impri covers those: each pause becomes a card in the inbox (with notifications to the project&#39;s Slack, Discord, Telegram, ntfy, email or webhook channels), it expires if nobody decides, the decision goes to the audit log, and the reviewer can edit the text before approving.</p>
+<p>It leaves to you who is asked and where, what happens when nobody answers, a record of who approved what, and edits: <code>approve()</code> runs the tool with exactly the arguments the model wrote. Airlock covers those: each pause becomes a card in the inbox (with notifications to the project&#39;s Slack, Discord, Telegram, ntfy, email or webhook channels), it expires if nobody decides, the decision goes to the audit log, and the reviewer can edit the text before approving.</p>
 <h2 id="the-full-example-an-issue-triage-agent">The full example: an issue triage agent</h2>
-<p><code>start</code> runs the agent until it pauses, creates one Impri card per paused call and saves the run. <code>resume</code> runs from a cron job or worker (or a webhook handler, if you add <code>callback_url</code>: see <a href="webhooks">Webhooks</a>) and continues once every card is decided.</p>
+<p><code>start</code> runs the agent until it pauses, creates one Airlock card per paused call and saves the run. <code>resume</code> runs from a cron job or worker (or a webhook handler, if you add <code>callback_url</code>: see <a href="webhooks">Webhooks</a>) and continues once every card is decided.</p>
 <div class="code-block"><pre><code class="hljs">pip install openai-agents httpx
 export OPENAI_API_KEY=...           # for the model
-export IMPRI_API_KEY=...            # your Impri project key
+export AIRLOCK_API_KEY=...            # your Airlock project key
 python triage.py start &quot;Login breaks on Safari 17 for SSO users. CSV export hangs over 50 MB.&quot;
 python triage.py resume &lt;run id&gt;    # later, as often as you like</code></pre></div>
 <div class="code-block"><span class="code-lang">python</span><pre><code class="hljs"><span class="hljs-keyword">import</span> asyncio
@@ -182,9 +182,9 @@ python triage.py resume &lt;run id&gt;    # later, as often as you like</code></
 <span class="hljs-keyword">from</span> agents <span class="hljs-keyword">import</span> Agent, RunState, Runner, function_tool
 <span class="hljs-keyword">from</span> agents.tool_context <span class="hljs-keyword">import</span> ToolContext
 
-IMPRI = httpx.Client(
-    base_url=os.environ.get(<span class="hljs-string">&quot;IMPRI_BASE_URL&quot;</span>, <span class="hljs-string">&quot;https://api.impri.dev&quot;</span>),
-    headers={<span class="hljs-string">&quot;Authorization&quot;</span>: <span class="hljs-string">f&quot;Bearer <span class="hljs-subst">{os.environ[<span class="hljs-string">&#x27;IMPRI_API_KEY&#x27;</span>]}</span>&quot;</span>},
+AIRLOCK = httpx.Client(
+    base_url=os.environ.get(<span class="hljs-string">&quot;AIRLOCK_BASE_URL&quot;</span>, <span class="hljs-string">&quot;https://api.airlock.dev&quot;</span>),
+    headers={<span class="hljs-string">&quot;Authorization&quot;</span>: <span class="hljs-string">f&quot;Bearer <span class="hljs-subst">{os.environ[<span class="hljs-string">&#x27;AIRLOCK_API_KEY&#x27;</span>]}</span>&quot;</span>},
     timeout=<span class="hljs-number">10</span>,
 )
 RUNS = Path(<span class="hljs-string">&quot;runs&quot;</span>)  <span class="hljs-comment"># paused runs; use your database in production</span>
@@ -199,16 +199,16 @@ RUNS = Path(<span class="hljs-string">&quot;runs&quot;</span>)  <span class="hlj
     ctx: ToolContext[<span class="hljs-built_in">dict</span>], repository: <span class="hljs-built_in">str</span>, title: <span class="hljs-built_in">str</span>, body: <span class="hljs-built_in">str</span>
 </span>) -&gt; <span class="hljs-built_in">str</span>:
     <span class="hljs-string">&quot;&quot;&quot;Open a GitHub issue in the given repository.&quot;&quot;&quot;</span>
-    action_id = ctx.context[<span class="hljs-string">&quot;impri&quot;</span>][ctx.tool_call_id]
-    decision = IMPRI.get(<span class="hljs-string">f&quot;/v1/actions/<span class="hljs-subst">{action_id}</span>&quot;</span>).json()[<span class="hljs-string">&quot;decision&quot;</span>]
+    action_id = ctx.context[<span class="hljs-string">&quot;airlock&quot;</span>][ctx.tool_call_id]
+    decision = AIRLOCK.get(<span class="hljs-string">f&quot;/v1/actions/<span class="hljs-subst">{action_id}</span>&quot;</span>).json()[<span class="hljs-string">&quot;decision&quot;</span>]
     body = decision[<span class="hljs-string">&quot;final_preview&quot;</span>][<span class="hljs-string">&quot;body&quot;</span>]  <span class="hljs-comment"># the text as the reviewer left it</span>
     <span class="hljs-keyword">try</span>:
         url = open_issue(repository, title, body)
     <span class="hljs-keyword">except</span> Exception <span class="hljs-keyword">as</span> exc:
-        IMPRI.post(<span class="hljs-string">f&quot;/v1/actions/<span class="hljs-subst">{action_id}</span>/result&quot;</span>,
+        AIRLOCK.post(<span class="hljs-string">f&quot;/v1/actions/<span class="hljs-subst">{action_id}</span>/result&quot;</span>,
                    json={<span class="hljs-string">&quot;status&quot;</span>: <span class="hljs-string">&quot;execute_failed&quot;</span>, <span class="hljs-string">&quot;detail&quot;</span>: <span class="hljs-built_in">str</span>(exc)[:<span class="hljs-number">500</span>]})
         <span class="hljs-keyword">raise</span>
-    IMPRI.post(<span class="hljs-string">f&quot;/v1/actions/<span class="hljs-subst">{action_id}</span>/result&quot;</span>,
+    AIRLOCK.post(<span class="hljs-string">f&quot;/v1/actions/<span class="hljs-subst">{action_id}</span>/result&quot;</span>,
                json={<span class="hljs-string">&quot;status&quot;</span>: <span class="hljs-string">&quot;executed&quot;</span>, <span class="hljs-string">&quot;detail&quot;</span>: url})
     <span class="hljs-keyword">return</span> <span class="hljs-string">f&quot;Created <span class="hljs-subst">{url}</span>&quot;</span>
 
@@ -221,16 +221,16 @@ agent = Agent(
 
 
 <span class="hljs-keyword">def</span> <span class="hljs-title function_">park_or_finish</span>(<span class="hljs-params">run_id: <span class="hljs-built_in">str</span>, result</span>) -&gt; <span class="hljs-literal">None</span>:
-    <span class="hljs-string">&quot;&quot;&quot;Send each paused tool call to Impri and save the run, or finish.&quot;&quot;&quot;</span>
+    <span class="hljs-string">&quot;&quot;&quot;Send each paused tool call to Airlock and save the run, or finish.&quot;&quot;&quot;</span>
     file = RUNS / <span class="hljs-string">f&quot;<span class="hljs-subst">{run_id}</span>.json&quot;</span>
     <span class="hljs-keyword">if</span> <span class="hljs-keyword">not</span> result.interruptions:
         file.unlink(missing_ok=<span class="hljs-literal">True</span>)
         <span class="hljs-built_in">print</span>(result.final_output)
         <span class="hljs-keyword">return</span>
-    actions = result.context_wrapper.context[<span class="hljs-string">&quot;impri&quot;</span>]
+    actions = result.context_wrapper.context[<span class="hljs-string">&quot;airlock&quot;</span>]
     <span class="hljs-keyword">for</span> item <span class="hljs-keyword">in</span> result.interruptions:
         args = json.loads(item.arguments <span class="hljs-keyword">or</span> <span class="hljs-string">&quot;{}&quot;</span>)
-        r = IMPRI.post(<span class="hljs-string">&quot;/v1/actions&quot;</span>, json={
+        r = AIRLOCK.post(<span class="hljs-string">&quot;/v1/actions&quot;</span>, json={
             <span class="hljs-string">&quot;kind&quot;</span>: <span class="hljs-string">&quot;github.issue.create&quot;</span>,
             <span class="hljs-string">&quot;title&quot;</span>: <span class="hljs-string">f&quot;New issue in <span class="hljs-subst">{args[<span class="hljs-string">&#x27;repository&#x27;</span>]}</span>: <span class="hljs-subst">{args[<span class="hljs-string">&#x27;title&#x27;</span>]}</span>&quot;</span>,
             <span class="hljs-string">&quot;preview&quot;</span>: {<span class="hljs-string">&quot;format&quot;</span>: <span class="hljs-string">&quot;markdown&quot;</span>, <span class="hljs-string">&quot;body&quot;</span>: args[<span class="hljs-string">&quot;body&quot;</span>]},
@@ -248,7 +248,7 @@ agent = Agent(
 
 <span class="hljs-keyword">async</span> <span class="hljs-keyword">def</span> <span class="hljs-title function_">start</span>(<span class="hljs-params">message: <span class="hljs-built_in">str</span></span>) -&gt; <span class="hljs-literal">None</span>:
     run_id = uuid.uuid4().<span class="hljs-built_in">hex</span>
-    result = <span class="hljs-keyword">await</span> Runner.run(agent, message, context={<span class="hljs-string">&quot;impri&quot;</span>: {}})
+    result = <span class="hljs-keyword">await</span> Runner.run(agent, message, context={<span class="hljs-string">&quot;airlock&quot;</span>: {}})
     park_or_finish(run_id, result)
 
 
@@ -256,7 +256,7 @@ agent = Agent(
     saved = json.loads((RUNS / <span class="hljs-string">f&quot;<span class="hljs-subst">{run_id}</span>.json&quot;</span>).read_text())
     state = <span class="hljs-keyword">await</span> RunState.from_string(agent, saved[<span class="hljs-string">&quot;state&quot;</span>])
     <span class="hljs-keyword">for</span> item <span class="hljs-keyword">in</span> state.get_interruptions():
-        status = IMPRI.get(<span class="hljs-string">f&quot;/v1/actions/<span class="hljs-subst">{saved[<span class="hljs-string">&#x27;actions&#x27;</span>][item.call_id]}</span>&quot;</span>).json()[<span class="hljs-string">&quot;status&quot;</span>]
+        status = AIRLOCK.get(<span class="hljs-string">f&quot;/v1/actions/<span class="hljs-subst">{saved[<span class="hljs-string">&#x27;actions&#x27;</span>][item.call_id]}</span>&quot;</span>).json()[<span class="hljs-string">&quot;status&quot;</span>]
         <span class="hljs-keyword">if</span> status == <span class="hljs-string">&quot;pending&quot;</span>:
             <span class="hljs-keyword">return</span>  <span class="hljs-comment"># nobody has decided yet: try again later</span>
         <span class="hljs-keyword">if</span> status == <span class="hljs-string">&quot;approved&quot;</span>:
@@ -265,7 +265,7 @@ agent = Agent(
             state.reject(item, rejection_message=<span class="hljs-string">&quot;Already opened. Do not open it again.&quot;</span>)
         <span class="hljs-keyword">else</span>:  <span class="hljs-comment"># rejected, expired or execute_failed</span>
             state.reject(item, rejection_message=(
-                <span class="hljs-string">f&quot;The issue was <span class="hljs-subst">{status}</span> in Impri. Do not open it again.&quot;</span>))
+                <span class="hljs-string">f&quot;The issue was <span class="hljs-subst">{status}</span> in Airlock. Do not open it again.&quot;</span>))
     park_or_finish(run_id, <span class="hljs-keyword">await</span> Runner.run(agent, state))
 
 
@@ -273,8 +273,8 @@ agent = Agent(
     command, arg = sys.argv[<span class="hljs-number">1</span>], sys.argv[<span class="hljs-number">2</span>]
     asyncio.run(start(arg) <span class="hljs-keyword">if</span> command == <span class="hljs-string">&quot;start&quot;</span> <span class="hljs-keyword">else</span> resume(arg))</code></pre></div>
 <h2 id="how-the-pieces-fit">How the pieces fit</h2>
-<p><strong>One card per call.</strong> The <code>idempotency_key</code> is the SDK&#39;s <code>call_id</code>: if the process crashes after posting and retries, Impri returns the existing card instead of creating a second one.</p>
-<p><strong>The run waits on disk.</strong> The snapshot holds the conversation, the paused calls and the run context, a plain dict mapping each <code>call_id</code> to its Impri action id. The SDK serializes a dict context and restores it, so the tool finds its card in the new process.</p>
+<p><strong>One card per call.</strong> The <code>idempotency_key</code> is the SDK&#39;s <code>call_id</code>: if the process crashes after posting and retries, Airlock returns the existing card instead of creating a second one.</p>
+<p><strong>The run waits on disk.</strong> The snapshot holds the conversation, the paused calls and the run context, a plain dict mapping each <code>call_id</code> to its Airlock action id. The SDK serializes a dict context and restores it, so the tool finds its card in the new process.</p>
 <p><strong>Each decision maps to the SDK.</strong> <code>pending</code>: do nothing, try later. <code>approved</code>: <code>state.approve(item)</code>. <code>rejected</code> or <code>expired</code>: <code>state.reject(...)</code> with a message telling the model not to retry. Cards here expire after 24 hours (<code>expires_in</code> takes 300 seconds to 30 days). <code>executed</code> means the tool already ran but the process died before saving the run; rejecting with &quot;Already opened&quot; keeps it from running twice.</p>
 <p><strong>Edits survive approval.</strong> With <code>editable: [&quot;preview.body&quot;]</code> the reviewer can rewrite the issue body. The tool posts <code>decision.final_preview.body</code> from <code>GET /v1/actions/{id}</code>, not the model&#39;s draft, then reports <code>executed</code>. If the GitHub call fails, the card becomes <code>execute_failed</code> and the model gets the SDK&#39;s generic tool error; a retry is a new call and a new card. One gap remains: a crash between opening the issue and reporting it leaves the card <code>approved</code>, so the next <code>resume</code> opens it again. Make the GitHub call idempotent where duplicates hurt.</p>
 <h2 id="what-we-verified">What we verified</h2>
@@ -287,17 +287,17 @@ agent = Agent(
 <li>a failing GitHub call left the card <code>execute_failed</code>; a crash after the tool ran, then a second <code>resume</code>, did not open the issue twice.</li>
 </ul>
 <h2 id="keep-the-snapshot-on-your-server">Keep the snapshot on your server</h2>
-<p>The SDK warns that <code>RunState.from_string</code> doesn&#39;t authenticate the snapshot, which holds approvals and pending tool calls. Never accept saved state from a browser or other client. Here the snapshot stays in your storage; only the decision comes from outside, read from Impri&#39;s API with your key.</p>
+<p>The SDK warns that <code>RunState.from_string</code> doesn&#39;t authenticate the snapshot, which holds approvals and pending tool calls. Never accept saved state from a browser or other client. Here the snapshot stays in your storage; only the decision comes from outside, read from Airlock&#39;s API with your key.</p>
 <h2 id="when-a-blocking-gate-in-the-tool-is-enough">When a blocking gate in the tool is enough</h2>
 <p>If someone answers within minutes and the process stays up (a local CLI agent), the tool can post the card and poll <code>GET /v1/actions/{id}</code> itself. Shorter, but the run lives in memory and a restart or deploy loses it. Anything that waits longer needs pause and resume.</p>
 <h2 id="next-step">Next step</h2>
-<p>Create a free project on <a href="https://app.impri.dev/?signup=1" target="_blank" rel="noopener">Impri Cloud</a>, copy its API key into <code>IMPRI_API_KEY</code> and run <code>triage.py start</code>; the first card shows up in your inbox. Prefer your own server? Follow <a href="self-hosting">self-hosting</a> and set <code>IMPRI_BASE_URL</code>. Building in TypeScript: the same flow with <code>needsApproval</code> is in <a href="human-approval-for-openai-agentkit">Human approval for OpenAI AgentKit</a>.</p>
+<p>Create a free project on <a href="https://app.airlock.dev/?signup=1" target="_blank" rel="noopener">Airlock Cloud</a>, copy its API key into <code>AIRLOCK_API_KEY</code> and run <code>triage.py start</code>; the first card shows up in your inbox. Prefer your own server? Follow <a href="self-hosting">self-hosting</a> and set <code>AIRLOCK_BASE_URL</code>. Building in TypeScript: the same flow with <code>needsApproval</code> is in <a href="human-approval-for-openai-agentkit">Human approval for OpenAI AgentKit</a>.</p>
 
-    <aside class="doc-cta" aria-label="Try Impri">
+    <aside class="doc-cta" aria-label="Try Airlock">
   <p class="doc-cta-title">Add an approval step to your own agent</p>
-  <p>Start on Impri Cloud: the Free tier includes 100 approvals a month. Or self-host the MIT-licensed core with Docker Compose, with no tier limits.</p>
+  <p>Start on Airlock Cloud: the Free tier includes 100 approvals a month. Or self-host the MIT-licensed core with Docker Compose, with no tier limits.</p>
   <div class="doc-cta-actions">
-    <a class="btn btn-primary btn-sm" href="https://app.impri.dev/?signup=1">Start free on Impri Cloud</a>
+    <a class="btn btn-primary btn-sm" href="https://app.airlock.dev/?signup=1">Start free on Airlock Cloud</a>
     <a class="btn btn-ghost btn-sm" href="../docs/quickstart">Quick start</a>
     <a class="btn btn-ghost btn-sm" href="../docs/self-hosting">Self-host guide</a>
   </div>
@@ -394,19 +394,19 @@ agent = Agent(
 <footer class="footer">
 <div class="wrap footer-inner">
   <a class="brand" href="/">
-    <span class="mark"><svg viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.5 4.5L19 7.5" stroke="white" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Impri
+    <span class="mark"><svg viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.5 4.5L19 7.5" stroke="white" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Airlock
   </a>
   <div>
-    <a href="https://gitlab.com/sekera.radim/impri">GitLab</a>
+    <a href="https://gitlab.com/sekera.radim/airlock">GitLab</a>
     <a href="/docs">Docs</a>
-    <a href="https://gitlab.com/sekera.radim/impri/-/blob/main/LICENSE">MIT License</a>
-    <a href="https://www.npmjs.com/package/@impri/mcp">@impri/mcp</a>
+    <a href="https://gitlab.com/sekera.radim/airlock/-/blob/main/LICENSE">MIT License</a>
+    <a href="https://www.npmjs.com/package/@airlock/mcp">@airlock/mcp</a>
     <a href="/docs/privacy">Privacy</a>
     <a href="/docs/terms">Terms</a>
     <a href="https://sekera.dev">Contact</a>
   </div>
 </div>
-<div class="wrap" style="margin-top:18px"><span class="muted">© 2026 Impri · The imprimatur for your AI agents · Built by <a href="https://sekera.dev" style="color:inherit">Radim Sekera</a>. Also by the same maker: <a href="https://briefgate.dev/?utm_source=impri.dev&amp;utm_medium=referral" style="color:inherit">BriefGate</a> — client intake for agencies and AI agents.</span></div>
+<div class="wrap" style="margin-top:18px"><span class="muted">© 2026 Airlock · The airlockmatur for your AI agents · Built by <a href="https://sekera.dev" style="color:inherit">Radim Sekera</a>. Also by the same maker: <a href="https://briefgate.dev/?utm_source=airlock.dev&amp;utm_medium=referral" style="color:inherit">BriefGate</a> — client intake for agencies and AI agents.</span></div>
 </footer>
 </body>
 </html>

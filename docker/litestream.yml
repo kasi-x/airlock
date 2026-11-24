@@ -3,10 +3,10 @@
 # Přístupové klíče čte Litestream standardně z AWS_ACCESS_KEY_ID / AWS_SECRET_ACCESS_KEY.
 # Aktivuje se jen, když je nastaven BUCKET_NAME (viz docker/entrypoint.sh).
 dbs:
-  - path: /data/impri.db
+  - path: /data/airlock.db
     replicas:
       - type: s3
         bucket: ${BUCKET_NAME}
-        path: impri-db
+        path: airlock-db
         endpoint: ${AWS_ENDPOINT_URL_S3}
         region: ${AWS_REGION}

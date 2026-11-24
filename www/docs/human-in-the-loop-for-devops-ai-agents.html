@@ -3,21 +3,21 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Human-in-the-Loop for DevOps AI Agents — Impri Docs</title>
+<title>Human-in-the-Loop for DevOps AI Agents — Airlock Docs</title>
 <meta name="description" content="Let a DevOps AI agent read freely, and send every infra write (terraform apply, restart, scale, rollback) through an approval gate it has no way around.">
 <meta name="theme-color" content="#06070d">
-<meta property="og:title" content="Human-in-the-Loop for DevOps AI Agents — Impri Docs">
+<meta property="og:title" content="Human-in-the-Loop for DevOps AI Agents — Airlock Docs">
 <meta property="og:description" content="Let a DevOps AI agent read freely, and send every infra write (terraform apply, restart, scale, rollback) through an approval gate it has no way around.">
 <meta property="og:type" content="article">
-<meta property="og:url" content="https://impri.dev/docs/human-in-the-loop-for-devops-ai-agents">
-<meta property="og:image" content="https://impri.dev/assets/og/og-docs.png">
+<meta property="og:url" content="https://airlock.dev/docs/human-in-the-loop-for-devops-ai-agents">
+<meta property="og:image" content="https://airlock.dev/assets/og/og-docs.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
-<meta property="og:image:alt" content="Impri — human-in-the-loop approval inbox for AI agents">
+<meta property="og:image:alt" content="Airlock — human-in-the-loop approval inbox for AI agents">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="https://impri.dev/assets/og/og-docs.png">
-<link rel="canonical" href="https://impri.dev/docs/human-in-the-loop-for-devops-ai-agents">
-<script type="application/ld+json">{"@context":"https://schema.org","@type":"TechArticle","headline":"Human-in-the-Loop for DevOps AI Agents","description":"Let a DevOps AI agent read freely, and send every infra write (terraform apply, restart, scale, rollback) through an approval gate it has no way around.","url":"https://impri.dev/docs/human-in-the-loop-for-devops-ai-agents","inLanguage":"en","author":{"@type":"Organization","name":"Impri","url":"https://impri.dev"},"publisher":{"@type":"Organization","name":"Impri","url":"https://impri.dev"}}</script>
+<meta name="twitter:image" content="https://airlock.dev/assets/og/og-docs.png">
+<link rel="canonical" href="https://airlock.dev/docs/human-in-the-loop-for-devops-ai-agents">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"TechArticle","headline":"Human-in-the-Loop for DevOps AI Agents","description":"Let a DevOps AI agent read freely, and send every infra write (terraform apply, restart, scale, rollback) through an approval gate it has no way around.","url":"https://airlock.dev/docs/human-in-the-loop-for-devops-ai-agents","inLanguage":"en","author":{"@type":"Organization","name":"Airlock","url":"https://airlock.dev"},"publisher":{"@type":"Organization","name":"Airlock","url":"https://airlock.dev"}}</script>
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <link rel="icon" href="/favicon.ico" sizes="32x32">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='9' fill='%236366f1'/%3E%3Cpath d='M9 16.5l4.5 4.5L23 11' stroke='white' stroke-width='3' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
@@ -132,13 +132,13 @@ pre code.hljs{display:block;overflow-x:auto}
 <div class="wrap nav-inner">
   <a class="brand" href="/">
     <span class="mark"><svg viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.5 4.5L19 7.5" stroke="white" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
-    Impri
+    Airlock
   </a>
   <div class="nav-links">
     <a class="link" href="/#how">How it works</a>
     <a class="link" href="/#pricing">Pricing</a>
     <a class="link active-nav" href="../docs">Docs</a>
-    <a class="btn btn-primary btn-sm" href="https://gitlab.com/sekera.radim/impri">GitLab</a>
+    <a class="btn btn-primary btn-sm" href="https://gitlab.com/sekera.radim/airlock">GitLab</a>
   </div>
 </div>
 </nav>
@@ -157,9 +157,9 @@ pre code.hljs{display:block;overflow-x:auto}
 <hr>
 <h2 id="why-infra-agents-need-a-stricter-gate">Why infra agents need a stricter gate</h2>
 <p>A support agent that sends a bad email is embarrassing. A DevOps agent that runs <code>kubectl scale deployment/api --replicas=0</code> or applies a plan with a destroy step is an outage, and a retry after a half-finished run can make it worse. So the reviewer needs two facts besides the command: is it safe to run twice, and how do you undo it.</p>
-<p>Impri&#39;s REST API takes both on the action: <code>idempotent</code> (the inbox card then warns &quot;Not idempotent — retrying may duplicate this action&quot;) and <code>undo</code> (plain text shown on the card). The TypeScript and Python SDKs and the MCP tool don&#39;t pass these two fields yet, so a CI job sends them with a direct <code>POST /v1/actions</code>:</p>
-<div class="code-block"><span class="code-lang">bash</span><pre><code class="hljs">curl -X POST https://api.impri.dev/v1/actions \
-  -H <span class="hljs-string">&quot;Authorization: Bearer <span class="hljs-variable">$IMPRI_API_KEY</span>&quot;</span> -H <span class="hljs-string">&quot;Content-Type: application/json&quot;</span> \
+<p>Airlock&#39;s REST API takes both on the action: <code>idempotent</code> (the inbox card then warns &quot;Not idempotent — retrying may duplicate this action&quot;) and <code>undo</code> (plain text shown on the card). The TypeScript and Python SDKs and the MCP tool don&#39;t pass these two fields yet, so a CI job sends them with a direct <code>POST /v1/actions</code>:</p>
+<div class="code-block"><span class="code-lang">bash</span><pre><code class="hljs">curl -X POST https://api.airlock.dev/v1/actions \
+  -H <span class="hljs-string">&quot;Authorization: Bearer <span class="hljs-variable">$AIRLOCK_API_KEY</span>&quot;</span> -H <span class="hljs-string">&quot;Content-Type: application/json&quot;</span> \
   -d <span class="hljs-string">&#x27;{
     &quot;kind&quot;: &quot;terraform.apply&quot;,
     &quot;title&quot;: &quot;Apply: drop legacy queue, resize db-main&quot;,
@@ -175,17 +175,17 @@ pre code.hljs{display:block;overflow-x:auto}
 <p><strong>1. The agent can read, not write.</strong> In <a href="https://github.com/containers/kubernetes-mcp-server" target="_blank" rel="noopener">containers/kubernetes-mcp-server</a>, set this in its TOML config:</p>
 <div class="code-block"><span class="code-lang">toml</span><pre><code class="hljs"><span class="hljs-attr">read_only</span> = <span class="hljs-literal">true</span>   <span class="hljs-comment"># only tools annotated readOnlyHint=true are registered</span></code></pre></div>
 <p>Its configuration reference calls this a best-effort guardrail: it hides tools but doesn&#39;t change the cluster permissions of the identity the server runs as, and read tools can still read Secrets. Give that identity a read-only RBAC role as well. The same server has <code>confirmation_rules</code>, but they ask the person at the MCP client, and when the client can&#39;t ask, the default <code>confirmation_fallback</code> is <code>&quot;allow&quot;</code>. A headless on-call agent has nobody to ask, so the approval has to happen somewhere else.</p>
-<p><strong>2. The agent proposes through Impri.</strong> Add Impri&#39;s MCP server next to it:
-<code>claude mcp add --transport http impri https://api.impri.dev/mcp --header &quot;Authorization: Bearer $IMPRI_API_KEY&quot;</code>
-(self-hosted: <code>npx @impri/mcp</code> with <code>IMPRI_BASE_URL</code>, see <a href="mcp">MCP</a>). The agent calls <code>impri_push_action</code> with a <code>kind</code> of <code>k8s.rollout_restart</code>, <code>k8s.scale</code> or <code>k8s.rollout_undo</code>, the exact command as <code>preview.body</code> (<code>kubectl scale deployment/api -n shop --replicas=4</code>) and the target as <code>payload</code> (<code>{&quot;namespace&quot;: &quot;shop&quot;, &quot;deployment&quot;: &quot;api&quot;, &quot;replicas&quot;: 4}</code>).</p>
+<p><strong>2. The agent proposes through Airlock.</strong> Add Airlock&#39;s MCP server next to it:
+<code>claude mcp add --transport http airlock https://api.airlock.dev/mcp --header &quot;Authorization: Bearer $AIRLOCK_API_KEY&quot;</code>
+(self-hosted: <code>npx @airlock/mcp</code> with <code>AIRLOCK_BASE_URL</code>, see <a href="mcp">MCP</a>). The agent calls <code>airlock_push_action</code> with a <code>kind</code> of <code>k8s.rollout_restart</code>, <code>k8s.scale</code> or <code>k8s.rollout_undo</code>, the exact command as <code>preview.body</code> (<code>kubectl scale deployment/api -n shop --replicas=4</code>) and the target as <code>payload</code> (<code>{&quot;namespace&quot;: &quot;shop&quot;, &quot;deployment&quot;: &quot;api&quot;, &quot;replicas&quot;: 4}</code>).</p>
 <p><strong>3. An executor with its own credentials runs only what a human approved.</strong></p>
 <div class="code-block"><span class="code-lang">typescript</span><pre><code class="hljs"><span class="hljs-keyword">import</span> { execFile } <span class="hljs-keyword">from</span> <span class="hljs-string">&quot;node:child_process&quot;</span>;
 <span class="hljs-keyword">import</span> { promisify } <span class="hljs-keyword">from</span> <span class="hljs-string">&quot;node:util&quot;</span>;
-<span class="hljs-keyword">import</span> { <span class="hljs-title class_">ImpriClient</span> } <span class="hljs-keyword">from</span> <span class="hljs-string">&quot;@impri/sdk&quot;</span>;
+<span class="hljs-keyword">import</span> { <span class="hljs-title class_">AirlockClient</span> } <span class="hljs-keyword">from</span> <span class="hljs-string">&quot;@airlock/sdk&quot;</span>;
 
 <span class="hljs-keyword">const</span> run = <span class="hljs-title function_">promisify</span>(execFile);
-<span class="hljs-comment">// Reads IMPRI_BASE_URL: https://api.impri.dev for the cloud, your server when self-hosted.</span>
-<span class="hljs-keyword">const</span> impri = <span class="hljs-keyword">new</span> <span class="hljs-title class_">ImpriClient</span>({ <span class="hljs-attr">apiKey</span>: process.<span class="hljs-property">env</span>.<span class="hljs-property">IMPRI_API_KEY</span>! });
+<span class="hljs-comment">// Reads AIRLOCK_BASE_URL: https://api.airlock.dev for the cloud, your server when self-hosted.</span>
+<span class="hljs-keyword">const</span> airlock = <span class="hljs-keyword">new</span> <span class="hljs-title class_">AirlockClient</span>({ <span class="hljs-attr">apiKey</span>: process.<span class="hljs-property">env</span>.<span class="hljs-property">AIRLOCK_API_KEY</span>! });
 
 <span class="hljs-keyword">type</span> <span class="hljs-title class_">Target</span> = { <span class="hljs-attr">namespace</span>: <span class="hljs-built_in">string</span>; <span class="hljs-attr">deployment</span>: <span class="hljs-built_in">string</span>; <span class="hljs-attr">replicas</span>?: <span class="hljs-built_in">number</span>; <span class="hljs-attr">revision</span>?: <span class="hljs-built_in">number</span> };
 <span class="hljs-keyword">const</span> <span class="hljs-variable constant_">NAME</span> = <span class="hljs-regexp">/^[a-z0-9]([-a-z0-9]{0,61}[a-z0-9])?$/</span>; <span class="hljs-comment">// Kubernetes object name</span>
@@ -203,7 +203,7 @@ pre code.hljs{display:block;overflow-x:auto}
 
 <span class="hljs-comment">// Run every 30 s (cron, a loop, a CronJob): execute what a human approved, nothing else.</span>
 <span class="hljs-keyword">for</span> (<span class="hljs-keyword">const</span> kind <span class="hljs-keyword">of</span> [<span class="hljs-string">&quot;k8s.rollout_restart&quot;</span>, <span class="hljs-string">&quot;k8s.scale&quot;</span>, <span class="hljs-string">&quot;k8s.rollout_undo&quot;</span>]) {
-  <span class="hljs-keyword">const</span> { items } = <span class="hljs-keyword">await</span> impri.<span class="hljs-title function_">listActions</span>({ <span class="hljs-attr">status</span>: <span class="hljs-string">&quot;approved&quot;</span>, kind, <span class="hljs-attr">autoPaginate</span>: <span class="hljs-literal">true</span> });
+  <span class="hljs-keyword">const</span> { items } = <span class="hljs-keyword">await</span> airlock.<span class="hljs-title function_">listActions</span>({ <span class="hljs-attr">status</span>: <span class="hljs-string">&quot;approved&quot;</span>, kind, <span class="hljs-attr">autoPaginate</span>: <span class="hljs-literal">true</span> });
   <span class="hljs-keyword">for</span> (<span class="hljs-keyword">const</span> action <span class="hljs-keyword">of</span> items) {
     <span class="hljs-keyword">let</span> <span class="hljs-attr">status</span>: <span class="hljs-string">&quot;executed&quot;</span> | <span class="hljs-string">&quot;execute_failed&quot;</span> = <span class="hljs-string">&quot;execute_failed&quot;</span>;
     <span class="hljs-keyword">let</span> detail = <span class="hljs-string">&quot;&quot;</span>;
@@ -217,7 +217,7 @@ pre code.hljs{display:block;overflow-x:auto}
       detail = <span class="hljs-title class_">String</span>(e);
     }
     <span class="hljs-comment">// A failed report leaves the action approved, so the next pass repeats it.</span>
-    <span class="hljs-keyword">await</span> impri.<span class="hljs-title function_">reportResult</span>(action.<span class="hljs-property">id</span>, status, { detail }).<span class="hljs-title function_">catch</span>(<span class="hljs-function">(<span class="hljs-params">e</span>) =&gt;</span> <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">error</span>(action.<span class="hljs-property">id</span>, e));
+    <span class="hljs-keyword">await</span> airlock.<span class="hljs-title function_">reportResult</span>(action.<span class="hljs-property">id</span>, status, { detail }).<span class="hljs-title function_">catch</span>(<span class="hljs-function">(<span class="hljs-params">e</span>) =&gt;</span> <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">error</span>(action.<span class="hljs-property">id</span>, e));
   }
 }</code></pre></div>
 <p>Two details carry the safety. The reviewer approves the preview and never sees the payload, so the executor rebuilds the command from the payload and refuses when it differs from what was approved. And a repeat after a crash stays harmless: a replica count is absolute, a repeated restart only rolls the pods again, and <code>--to-revision</code> pins the rollback, where a plain <code>rollout undo</code> goes to whatever the previous revision is when it runs. Reporting the result moves the action out of <code>approved</code>, so the next pass skips it.</p>
@@ -234,15 +234,15 @@ pre code.hljs{display:block;overflow-x:auto}
   <span class="hljs-attr">&quot;rule_action&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;auto_approve&quot;</span>
 <span class="hljs-punctuation">}</span></code></pre></div>
 <p>An auto-approved action sends no notification; the <a href="audit-log">audit log</a> records which rule approved it, and the executor still checks the preview.</p>
-<h2 id="what-impri-does-not-do-here">What Impri does not do here</h2>
-<p>It doesn&#39;t check that a plan or command is correct: it shows it to a person. It isn&#39;t a policy engine: &quot;never touch IAM, whoever approves&quot; belongs in OPA or Sentinel before Impri. It never runs kubectl or terraform: your executor does, with credentials the agent never sees. Related: <a href="agentic-ai-safety-patterns">agentic AI safety patterns</a> and <a href="human-in-the-loop-for-ai-agent-incident-response">incident response agents</a>.</p>
-<p>Next: run the inbox next to your cluster with <a href="self-hosting">self-hosting</a> (<code>docker compose</code>, MIT core), or <a href="https://app.impri.dev/?signup=1" target="_blank" rel="noopener">start free on the cloud</a> and point the executor at <code>https://api.impri.dev</code>.</p>
+<h2 id="what-airlock-does-not-do-here">What Airlock does not do here</h2>
+<p>It doesn&#39;t check that a plan or command is correct: it shows it to a person. It isn&#39;t a policy engine: &quot;never touch IAM, whoever approves&quot; belongs in OPA or Sentinel before Airlock. It never runs kubectl or terraform: your executor does, with credentials the agent never sees. Related: <a href="agentic-ai-safety-patterns">agentic AI safety patterns</a> and <a href="human-in-the-loop-for-ai-agent-incident-response">incident response agents</a>.</p>
+<p>Next: run the inbox next to your cluster with <a href="self-hosting">self-hosting</a> (<code>docker compose</code>, MIT core), or <a href="https://app.airlock.dev/?signup=1" target="_blank" rel="noopener">start free on the cloud</a> and point the executor at <code>https://api.airlock.dev</code>.</p>
 
-    <aside class="doc-cta" aria-label="Try Impri">
+    <aside class="doc-cta" aria-label="Try Airlock">
   <p class="doc-cta-title">Add an approval step to your own agent</p>
-  <p>Start on Impri Cloud: the Free tier includes 100 approvals a month. Or self-host the MIT-licensed core with Docker Compose, with no tier limits.</p>
+  <p>Start on Airlock Cloud: the Free tier includes 100 approvals a month. Or self-host the MIT-licensed core with Docker Compose, with no tier limits.</p>
   <div class="doc-cta-actions">
-    <a class="btn btn-primary btn-sm" href="https://app.impri.dev/?signup=1">Start free on Impri Cloud</a>
+    <a class="btn btn-primary btn-sm" href="https://app.airlock.dev/?signup=1">Start free on Airlock Cloud</a>
     <a class="btn btn-ghost btn-sm" href="../docs/quickstart">Quick start</a>
     <a class="btn btn-ghost btn-sm" href="../docs/self-hosting">Self-host guide</a>
   </div>
@@ -328,7 +328,7 @@ pre code.hljs{display:block;overflow-x:auto}
 <ul><li class="ptoc-h2"><a href="#why-infra-agents-need-a-stricter-gate">Why infra agents need a stricter gate</a></li>
 <li class="ptoc-h2"><a href="#a-kubernetes-agent-over-mcp-restarts-scaling-rollbacks">A Kubernetes agent over MCP: restarts, scaling, rollbacks</a></li>
 <li class="ptoc-h2"><a href="#let-small-changes-through-stop-the-rest">Let small changes through, stop the rest</a></li>
-<li class="ptoc-h2"><a href="#what-impri-does-not-do-here">What Impri does not do here</a></li></ul>
+<li class="ptoc-h2"><a href="#what-airlock-does-not-do-here">What Airlock does not do here</a></li></ul>
 </nav>
   </aside>
 </div>
@@ -336,19 +336,19 @@ pre code.hljs{display:block;overflow-x:auto}
 <footer class="footer">
 <div class="wrap footer-inner">
   <a class="brand" href="/">
-    <span class="mark"><svg viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.5 4.5L19 7.5" stroke="white" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Impri
+    <span class="mark"><svg viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.5 4.5L19 7.5" stroke="white" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Airlock
   </a>
   <div>
-    <a href="https://gitlab.com/sekera.radim/impri">GitLab</a>
+    <a href="https://gitlab.com/sekera.radim/airlock">GitLab</a>
     <a href="/docs">Docs</a>
-    <a href="https://gitlab.com/sekera.radim/impri/-/blob/main/LICENSE">MIT License</a>
-    <a href="https://www.npmjs.com/package/@impri/mcp">@impri/mcp</a>
+    <a href="https://gitlab.com/sekera.radim/airlock/-/blob/main/LICENSE">MIT License</a>
+    <a href="https://www.npmjs.com/package/@airlock/mcp">@airlock/mcp</a>
     <a href="/docs/privacy">Privacy</a>
     <a href="/docs/terms">Terms</a>
     <a href="https://sekera.dev">Contact</a>
   </div>
 </div>
-<div class="wrap" style="margin-top:18px"><span class="muted">© 2026 Impri · The imprimatur for your AI agents · Built by <a href="https://sekera.dev" style="color:inherit">Radim Sekera</a>. Also by the same maker: <a href="https://briefgate.dev/?utm_source=impri.dev&amp;utm_medium=referral" style="color:inherit">BriefGate</a> — client intake for agencies and AI agents.</span></div>
+<div class="wrap" style="margin-top:18px"><span class="muted">© 2026 Airlock · The airlockmatur for your AI agents · Built by <a href="https://sekera.dev" style="color:inherit">Radim Sekera</a>. Also by the same maker: <a href="https://briefgate.dev/?utm_source=airlock.dev&amp;utm_medium=referral" style="color:inherit">BriefGate</a> — client intake for agencies and AI agents.</span></div>
 </footer>
 </body>
 </html>

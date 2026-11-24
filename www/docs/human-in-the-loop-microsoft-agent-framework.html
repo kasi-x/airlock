@@ -3,21 +3,21 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Human-in-the-Loop in Microsoft Agent Framework — Impri Docs</title>
+<title>Human-in-the-Loop in Microsoft Agent Framework — Airlock Docs</title>
 <meta name="description" content="Microsoft Agent Framework can pause a tool call for confirmation — here's how to wire that pause to a real human approval inbox instead of a console prompt.">
 <meta name="theme-color" content="#06070d">
-<meta property="og:title" content="Human-in-the-Loop in Microsoft Agent Framework — Impri Docs">
+<meta property="og:title" content="Human-in-the-Loop in Microsoft Agent Framework — Airlock Docs">
 <meta property="og:description" content="Microsoft Agent Framework can pause a tool call for confirmation — here's how to wire that pause to a real human approval inbox instead of a console prompt.">
 <meta property="og:type" content="article">
-<meta property="og:url" content="https://impri.dev/docs/human-in-the-loop-microsoft-agent-framework">
-<meta property="og:image" content="https://impri.dev/assets/og/og-docs.png">
+<meta property="og:url" content="https://airlock.dev/docs/human-in-the-loop-microsoft-agent-framework">
+<meta property="og:image" content="https://airlock.dev/assets/og/og-docs.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
-<meta property="og:image:alt" content="Impri — human-in-the-loop approval inbox for AI agents">
+<meta property="og:image:alt" content="Airlock — human-in-the-loop approval inbox for AI agents">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="https://impri.dev/assets/og/og-docs.png">
-<link rel="canonical" href="https://impri.dev/docs/human-in-the-loop-microsoft-agent-framework">
-<script type="application/ld+json">{"@context":"https://schema.org","@type":"TechArticle","headline":"Human-in-the-Loop in Microsoft Agent Framework","description":"Microsoft Agent Framework can pause a tool call for confirmation — here's how to wire that pause to a real human approval inbox instead of a console prompt.","url":"https://impri.dev/docs/human-in-the-loop-microsoft-agent-framework","inLanguage":"en","author":{"@type":"Organization","name":"Impri","url":"https://impri.dev"},"publisher":{"@type":"Organization","name":"Impri","url":"https://impri.dev"}}</script>
+<meta name="twitter:image" content="https://airlock.dev/assets/og/og-docs.png">
+<link rel="canonical" href="https://airlock.dev/docs/human-in-the-loop-microsoft-agent-framework">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"TechArticle","headline":"Human-in-the-Loop in Microsoft Agent Framework","description":"Microsoft Agent Framework can pause a tool call for confirmation — here's how to wire that pause to a real human approval inbox instead of a console prompt.","url":"https://airlock.dev/docs/human-in-the-loop-microsoft-agent-framework","inLanguage":"en","author":{"@type":"Organization","name":"Airlock","url":"https://airlock.dev"},"publisher":{"@type":"Organization","name":"Airlock","url":"https://airlock.dev"}}</script>
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <link rel="icon" href="/favicon.ico" sizes="32x32">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='9' fill='%236366f1'/%3E%3Cpath d='M9 16.5l4.5 4.5L23 11' stroke='white' stroke-width='3' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
@@ -132,13 +132,13 @@ pre code.hljs{display:block;overflow-x:auto}
 <div class="wrap nav-inner">
   <a class="brand" href="/">
     <span class="mark"><svg viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.5 4.5L19 7.5" stroke="white" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
-    Impri
+    Airlock
   </a>
   <div class="nav-links">
     <a class="link" href="/#how">How it works</a>
     <a class="link" href="/#pricing">Pricing</a>
     <a class="link active-nav" href="../docs">Docs</a>
-    <a class="btn btn-primary btn-sm" href="https://gitlab.com/sekera.radim/impri">GitLab</a>
+    <a class="btn btn-primary btn-sm" href="https://gitlab.com/sekera.radim/airlock">GitLab</a>
   </div>
 </div>
 </nav>
@@ -157,7 +157,7 @@ pre code.hljs{display:block;overflow-x:auto}
 <hr>
 <h2 id="what-agent-framework-gives-you-and-what-it-doesn39t">What Agent Framework gives you, and what it doesn&#39;t</h2>
 <p>Microsoft Agent Framework&#39;s approval pattern lets a function tool declare that it requires confirmation before running; the framework pauses the agent loop, surfaces the pending call, and resumes once your code returns a decision. That&#39;s the right shape — propose, pause, decide, execute — but the framework leaves the &quot;decide&quot; part to you. In a local console app that&#39;s a <code>Console.ReadLine()</code>. In anything that runs unattended (a scheduled job, a Teams bot, a background worker with no one watching stdin), you need somewhere durable to put that pending decision and something that notifies an actual person.</p>
-<p>That&#39;s the gap Impri fills. It doesn&#39;t replace Agent Framework&#39;s approval hook — it becomes the thing the hook calls into.</p>
+<p>That&#39;s the gap Airlock fills. It doesn&#39;t replace Agent Framework&#39;s approval hook — it becomes the thing the hook calls into.</p>
 <hr>
 <h2 id="wrapping-a-sensitive-tool-call">Wrapping a sensitive tool call</h2>
 <p>Say the agent manages IT support tickets: it can read tickets, draft resolutions, and — the sensitive part — close a ticket and post the resolution to a Teams channel. Closing a ticket is hard to undo cleanly (reopening loses the original SLA clock), so it&#39;s the one tool worth gating.</p>
@@ -166,14 +166,14 @@ pre code.hljs{display:block;overflow-x:auto}
 <span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title">TicketApprovalTool</span>
 {
     <span class="hljs-keyword">private</span> <span class="hljs-keyword">readonly</span> HttpClient _http;
-    <span class="hljs-keyword">private</span> <span class="hljs-keyword">const</span> <span class="hljs-built_in">string</span> ImpriBase = <span class="hljs-string">&quot;https://api.impri.dev&quot;</span>;
+    <span class="hljs-keyword">private</span> <span class="hljs-keyword">const</span> <span class="hljs-built_in">string</span> AirlockBase = <span class="hljs-string">&quot;https://api.airlock.dev&quot;</span>;
 
     <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-title">TicketApprovalTool</span>(<span class="hljs-params">HttpClient http</span>)</span> =&gt; _http = http;
 
     <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">async</span> Task&lt;<span class="hljs-built_in">string</span>&gt; <span class="hljs-title">CloseTicketWithApproval</span>(<span class="hljs-params"><span class="hljs-built_in">string</span> ticketId, <span class="hljs-built_in">string</span> resolutionSummary</span>)</span>
     {
         <span class="hljs-comment">// 1. Push the proposed action instead of closing the ticket directly</span>
-        <span class="hljs-keyword">var</span> createResponse = <span class="hljs-keyword">await</span> _http.PostAsJsonAsync(<span class="hljs-string">$&quot;<span class="hljs-subst">{ImpriBase}</span>/v1/actions&quot;</span>, <span class="hljs-keyword">new</span>
+        <span class="hljs-keyword">var</span> createResponse = <span class="hljs-keyword">await</span> _http.PostAsJsonAsync(<span class="hljs-string">$&quot;<span class="hljs-subst">{AirlockBase}</span>/v1/actions&quot;</span>, <span class="hljs-keyword">new</span>
         {
             kind = <span class="hljs-string">&quot;ticket.close&quot;</span>,
             title = <span class="hljs-string">$&quot;Close ticket <span class="hljs-subst">{ticketId}</span>&quot;</span>,
@@ -190,7 +190,7 @@ pre code.hljs{display:block;overflow-x:auto}
         {
             <span class="hljs-keyword">await</span> Task.Delay(TimeSpan.FromSeconds(<span class="hljs-number">10</span>));
             <span class="hljs-keyword">var</span> poll = <span class="hljs-keyword">await</span> _http.GetFromJsonAsync&lt;ActionStatus&gt;(
-                <span class="hljs-string">$&quot;<span class="hljs-subst">{ImpriBase}</span>/v1/actions/<span class="hljs-subst">{action!.Id}</span>&quot;</span>);
+                <span class="hljs-string">$&quot;<span class="hljs-subst">{AirlockBase}</span>/v1/actions/<span class="hljs-subst">{action!.Id}</span>&quot;</span>);
             status = poll!;
         } <span class="hljs-keyword">while</span> (status.Status == <span class="hljs-string">&quot;pending&quot;</span>);
 
@@ -201,7 +201,7 @@ pre code.hljs{display:block;overflow-x:auto}
         <span class="hljs-keyword">var</span> finalSummary = status.Decision!.FinalPreview.Body;
         <span class="hljs-keyword">await</span> CloseTicketInSystem(ticketId, finalSummary); <span class="hljs-comment">// your actual ticketing call</span>
 
-        <span class="hljs-keyword">await</span> _http.PostAsJsonAsync(<span class="hljs-string">$&quot;<span class="hljs-subst">{ImpriBase}</span>/v1/actions/<span class="hljs-subst">{action.Id}</span>/result&quot;</span>,
+        <span class="hljs-keyword">await</span> _http.PostAsJsonAsync(<span class="hljs-string">$&quot;<span class="hljs-subst">{AirlockBase}</span>/v1/actions/<span class="hljs-subst">{action.Id}</span>/result&quot;</span>,
             <span class="hljs-keyword">new</span> { status = <span class="hljs-string">&quot;executed&quot;</span> });
 
         <span class="hljs-keyword">return</span> <span class="hljs-string">$&quot;Ticket <span class="hljs-subst">{ticketId}</span> closed with reviewer-approved summary.&quot;</span>;
@@ -216,15 +216,15 @@ pre code.hljs{display:block;overflow-x:auto}
 <h2 id="handling-rejection-and-expiry">Handling rejection and expiry</h2>
 <p><code>expires_in</code> above is set to four hours because a stale ticket resolution isn&#39;t worth posting a day later. If the action expires or gets rejected, <code>status.Status</code> will be <code>&quot;expired&quot;</code> or <code>&quot;rejected&quot;</code>, and the method above returns without calling the ticketing system — there&#39;s no separate branch to remember, because the close call only happens inside the <code>approved</code> check.</p>
 <hr>
-<h2 id="what-impri-isn39t-doing-here">What Impri isn&#39;t doing here</h2>
-<p>Impri doesn&#39;t know what a support ticket is, doesn&#39;t validate the resolution text, and doesn&#39;t talk to your ticketing system. It stores the proposed action, shows it to a human, and hands back a decision. Agent Framework still owns the agent loop and the actual tool execution; Impri owns exactly one question — did a person say yes — and nothing else. If you need branching logic across multiple approvals or a multi-step review workflow, that belongs in your own orchestration, not in the gate itself.</p>
-<p>For the general integration pattern this builds on, see <a href="how-to-add-human-approval-to-an-ai-agent">how to add human approval to an AI agent</a>. For wrapping other SDKs the same way, see <a href="integrations">integrations</a>. New to Impri? Start with the <a href="quickstart">quickstart</a>.</p>
+<h2 id="what-airlock-isn39t-doing-here">What Airlock isn&#39;t doing here</h2>
+<p>Airlock doesn&#39;t know what a support ticket is, doesn&#39;t validate the resolution text, and doesn&#39;t talk to your ticketing system. It stores the proposed action, shows it to a human, and hands back a decision. Agent Framework still owns the agent loop and the actual tool execution; Airlock owns exactly one question — did a person say yes — and nothing else. If you need branching logic across multiple approvals or a multi-step review workflow, that belongs in your own orchestration, not in the gate itself.</p>
+<p>For the general integration pattern this builds on, see <a href="how-to-add-human-approval-to-an-ai-agent">how to add human approval to an AI agent</a>. For wrapping other SDKs the same way, see <a href="integrations">integrations</a>. New to Airlock? Start with the <a href="quickstart">quickstart</a>.</p>
 
-    <aside class="doc-cta" aria-label="Try Impri">
+    <aside class="doc-cta" aria-label="Try Airlock">
   <p class="doc-cta-title">Add an approval step to your own agent</p>
-  <p>Start on Impri Cloud: the Free tier includes 100 approvals a month. Or self-host the MIT-licensed core with Docker Compose, with no tier limits.</p>
+  <p>Start on Airlock Cloud: the Free tier includes 100 approvals a month. Or self-host the MIT-licensed core with Docker Compose, with no tier limits.</p>
   <div class="doc-cta-actions">
-    <a class="btn btn-primary btn-sm" href="https://app.impri.dev/?signup=1">Start free on Impri Cloud</a>
+    <a class="btn btn-primary btn-sm" href="https://app.airlock.dev/?signup=1">Start free on Airlock Cloud</a>
     <a class="btn btn-ghost btn-sm" href="../docs/quickstart">Quick start</a>
     <a class="btn btn-ghost btn-sm" href="../docs/self-hosting">Self-host guide</a>
   </div>
@@ -311,7 +311,7 @@ pre code.hljs{display:block;overflow-x:auto}
 <li class="ptoc-h2"><a href="#wrapping-a-sensitive-tool-call">Wrapping a sensitive tool call</a></li>
 <li class="ptoc-h2"><a href="#why-this-matters-more-with-planning-agents">Why this matters more with planning agents</a></li>
 <li class="ptoc-h2"><a href="#handling-rejection-and-expiry">Handling rejection and expiry</a></li>
-<li class="ptoc-h2"><a href="#what-impri-isn39t-doing-here">What Impri isn't doing here</a></li></ul>
+<li class="ptoc-h2"><a href="#what-airlock-isn39t-doing-here">What Airlock isn't doing here</a></li></ul>
 </nav>
   </aside>
 </div>
@@ -319,19 +319,19 @@ pre code.hljs{display:block;overflow-x:auto}
 <footer class="footer">
 <div class="wrap footer-inner">
   <a class="brand" href="/">
-    <span class="mark"><svg viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.5 4.5L19 7.5" stroke="white" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Impri
+    <span class="mark"><svg viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.5 4.5L19 7.5" stroke="white" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Airlock
   </a>
   <div>
-    <a href="https://gitlab.com/sekera.radim/impri">GitLab</a>
+    <a href="https://gitlab.com/sekera.radim/airlock">GitLab</a>
     <a href="/docs">Docs</a>
-    <a href="https://gitlab.com/sekera.radim/impri/-/blob/main/LICENSE">MIT License</a>
-    <a href="https://www.npmjs.com/package/@impri/mcp">@impri/mcp</a>
+    <a href="https://gitlab.com/sekera.radim/airlock/-/blob/main/LICENSE">MIT License</a>
+    <a href="https://www.npmjs.com/package/@airlock/mcp">@airlock/mcp</a>
     <a href="/docs/privacy">Privacy</a>
     <a href="/docs/terms">Terms</a>
     <a href="https://sekera.dev">Contact</a>
   </div>
 </div>
-<div class="wrap" style="margin-top:18px"><span class="muted">© 2026 Impri · The imprimatur for your AI agents · Built by <a href="https://sekera.dev" style="color:inherit">Radim Sekera</a>. Also by the same maker: <a href="https://briefgate.dev/?utm_source=impri.dev&amp;utm_medium=referral" style="color:inherit">BriefGate</a> — client intake for agencies and AI agents.</span></div>
+<div class="wrap" style="margin-top:18px"><span class="muted">© 2026 Airlock · The airlockmatur for your AI agents · Built by <a href="https://sekera.dev" style="color:inherit">Radim Sekera</a>. Also by the same maker: <a href="https://briefgate.dev/?utm_source=airlock.dev&amp;utm_medium=referral" style="color:inherit">BriefGate</a> — client intake for agencies and AI agents.</span></div>
 </footer>
 </body>
 </html>

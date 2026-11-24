@@ -11,7 +11,7 @@ Agents that read the WhatsApp Business API (inbound messages, order lookups) don
 ## Where the gate sits
 
 ```
-Customer message ──▶ Agent reads context, drafts reply ──▶ Impri action created
+Customer message ──▶ Agent reads context, drafts reply ──▶ Airlock action created
                                                                     │
                                                          Reviewer approves/edits/rejects
                                                                     │
@@ -26,9 +26,9 @@ The agent never holds a code path that calls the WhatsApp send endpoint on its o
 ```typescript
 import fetch from "node-fetch";
 
-const API = "https://api.impri.dev";
+const API = "https://api.airlock.dev";
 const HEADERS = {
-  Authorization: `Bearer ${process.env.IMPRI_API_KEY}`,
+  Authorization: `Bearer ${process.env.AIRLOCK_API_KEY}`,
   "Content-Type": "application/json",
 };
 
@@ -96,7 +96,7 @@ Setting `editable: ["preview.body"]` matters more for chat replies than for most
 
 ## Boundaries
 
-Impri holds the decision and shows the reviewer the draft — it does not know anything about WhatsApp's messaging policies, template-message rules, or the 24-hour customer-service window. Those constraints live in the WhatsApp Business API itself and your integration needs to respect them regardless of what Impri returns. Impri also isn't reading or moderating the *inbound* message; if that inbound text came from an untrusted source, treat it as data when constructing the draft, not as instructions to your agent.
+Airlock holds the decision and shows the reviewer the draft — it does not know anything about WhatsApp's messaging policies, template-message rules, or the 24-hour customer-service window. Those constraints live in the WhatsApp Business API itself and your integration needs to respect them regardless of what Airlock returns. Airlock also isn't reading or moderating the *inbound* message; if that inbound text came from an untrusted source, treat it as data when constructing the draft, not as instructions to your agent.
 
 ---
 

@@ -22,14 +22,14 @@ Say a worker runs every night, summarizes the day's support tickets, and emails 
 ```typescript
 import { Worker } from "bullmq";
 
-const IMPRI_BASE = process.env.IMPRI_BASE_URL ?? "https://api.impri.dev";
-const IMPRI_KEY = process.env.IMPRI_API_KEY!;
+const AIRLOCK_BASE = process.env.AIRLOCK_BASE_URL ?? "https://api.airlock.dev";
+const AIRLOCK_KEY = process.env.AIRLOCK_API_KEY!;
 
 async function pushAction(title: string, body: string) {
-  const res = await fetch(`${IMPRI_BASE}/v1/actions`, {
+  const res = await fetch(`${AIRLOCK_BASE}/v1/actions`, {
     method: "POST",
     headers: {
-      Authorization: `Bearer ${IMPRI_KEY}`,
+      Authorization: `Bearer ${AIRLOCK_KEY}`,
       "Content-Type": "application/json",
     },
     body: JSON.stringify({
@@ -47,8 +47,8 @@ async function pushAction(title: string, body: string) {
 
 async function awaitDecision(actionId: string) {
   while (true) {
-    const res = await fetch(`${IMPRI_BASE}/v1/actions/${actionId}`, {
-      headers: { Authorization: `Bearer ${IMPRI_KEY}` },
+    const res = await fetch(`${AIRLOCK_BASE}/v1/actions/${actionId}`, {
+      headers: { Authorization: `Bearer ${AIRLOCK_KEY}` },
     });
     const data = await res.json();
     if (data.status !== "pending") return data;
@@ -66,10 +66,10 @@ new Worker("nightly-digest", async (job) => {
   }
 
   await sendEmail(decision.decision.final_preview.body);
-  await fetch(`${IMPRI_BASE}/v1/actions/${action.id}/result`, {
+  await fetch(`${AIRLOCK_BASE}/v1/actions/${action.id}/result`, {
     method: "POST",
     headers: {
-      Authorization: `Bearer ${IMPRI_KEY}`,
+      Authorization: `Bearer ${AIRLOCK_KEY}`,
       "Content-Type": "application/json",
     },
     body: JSON.stringify({ status: "executed" }),
@@ -81,7 +81,7 @@ new Worker("nightly-digest", async (job) => {
 
 ## Why this survives a queue retry
 
-If the process crashes right after `sendEmail()` but before the `/result` call completes, BullMQ will retry the job. On retry, `job.data.date` is the same, so `summarizeTickets()` re-runs and `pushAction()` creates a **new** action — the old one is left dangling as approved-but-unreported, and the retry pushes a fresh approval request rather than silently re-sending. That's the honest behavior given the API surface here: Impri does not track "did the caller actually execute this," only "was it approved" and whatever you report back via `/result`. If you need stronger de-duplication across retries (e.g. a job-id keyed skip), that has to live in your own worker state — Impri's `idempotent` field is a signal shown to the human reviewer, not an automatic dedupe mechanism.
+If the process crashes right after `sendEmail()` but before the `/result` call completes, BullMQ will retry the job. On retry, `job.data.date` is the same, so `summarizeTickets()` re-runs and `pushAction()` creates a **new** action — the old one is left dangling as approved-but-unreported, and the retry pushes a fresh approval request rather than silently re-sending. That's the honest behavior given the API surface here: Airlock does not track "did the caller actually execute this," only "was it approved" and whatever you report back via `/result`. If you need stronger de-duplication across retries (e.g. a job-id keyed skip), that has to live in your own worker state — Airlock's `idempotent` field is a signal shown to the human reviewer, not an automatic dedupe mechanism.
 
 Setting `idempotent: false` matters here specifically because queue systems retry: it puts a "retrying may duplicate this action" warning on the inbox card, which is exactly the risk a background worker's approver needs to know about that a chat-agent approver usually doesn't.
 

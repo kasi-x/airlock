@@ -3,21 +3,21 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Human Approval for AI Content Pipelines — Impri Docs</title>
+<title>Human Approval for AI Content Pipelines — Airlock Docs</title>
 <meta name="description" content="An AI content pipeline that drafts, schedules, and publishes without a human check is one bad prompt away from a public mistake — here's how to gate the…">
 <meta name="theme-color" content="#06070d">
-<meta property="og:title" content="Human Approval for AI Content Pipelines — Impri Docs">
+<meta property="og:title" content="Human Approval for AI Content Pipelines — Airlock Docs">
 <meta property="og:description" content="An AI content pipeline that drafts, schedules, and publishes without a human check is one bad prompt away from a public mistake — here's how to gate the…">
 <meta property="og:type" content="article">
-<meta property="og:url" content="https://impri.dev/docs/human-approval-for-ai-content-pipelines">
-<meta property="og:image" content="https://impri.dev/assets/og/og-docs.png">
+<meta property="og:url" content="https://airlock.dev/docs/human-approval-for-ai-content-pipelines">
+<meta property="og:image" content="https://airlock.dev/assets/og/og-docs.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
-<meta property="og:image:alt" content="Impri — human-in-the-loop approval inbox for AI agents">
+<meta property="og:image:alt" content="Airlock — human-in-the-loop approval inbox for AI agents">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="https://impri.dev/assets/og/og-docs.png">
-<link rel="canonical" href="https://impri.dev/docs/human-approval-for-ai-content-pipelines">
-<script type="application/ld+json">{"@context":"https://schema.org","@type":"TechArticle","headline":"Human Approval for AI Content Pipelines","description":"An AI content pipeline that drafts, schedules, and publishes without a human check is one bad prompt away from a public mistake — here's how to gate the…","url":"https://impri.dev/docs/human-approval-for-ai-content-pipelines","inLanguage":"en","author":{"@type":"Organization","name":"Impri","url":"https://impri.dev"},"publisher":{"@type":"Organization","name":"Impri","url":"https://impri.dev"}}</script>
+<meta name="twitter:image" content="https://airlock.dev/assets/og/og-docs.png">
+<link rel="canonical" href="https://airlock.dev/docs/human-approval-for-ai-content-pipelines">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"TechArticle","headline":"Human Approval for AI Content Pipelines","description":"An AI content pipeline that drafts, schedules, and publishes without a human check is one bad prompt away from a public mistake — here's how to gate the…","url":"https://airlock.dev/docs/human-approval-for-ai-content-pipelines","inLanguage":"en","author":{"@type":"Organization","name":"Airlock","url":"https://airlock.dev"},"publisher":{"@type":"Organization","name":"Airlock","url":"https://airlock.dev"}}</script>
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <link rel="icon" href="/favicon.ico" sizes="32x32">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='9' fill='%236366f1'/%3E%3Cpath d='M9 16.5l4.5 4.5L23 11' stroke='white' stroke-width='3' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
@@ -132,13 +132,13 @@ pre code.hljs{display:block;overflow-x:auto}
 <div class="wrap nav-inner">
   <a class="brand" href="/">
     <span class="mark"><svg viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.5 4.5L19 7.5" stroke="white" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
-    Impri
+    Airlock
   </a>
   <div class="nav-links">
     <a class="link" href="/#how">How it works</a>
     <a class="link" href="/#pricing">Pricing</a>
     <a class="link active-nav" href="../docs">Docs</a>
-    <a class="btn btn-primary btn-sm" href="https://gitlab.com/sekera.radim/impri">GitLab</a>
+    <a class="btn btn-primary btn-sm" href="https://gitlab.com/sekera.radim/airlock">GitLab</a>
   </div>
 </div>
 </nav>
@@ -157,17 +157,17 @@ pre code.hljs{display:block;overflow-x:auto}
 <hr>
 <h2 id="the-failure-mode-this-solves">The failure mode this solves</h2>
 <p>Most content pipelines are already multi-stage: an agent researches a topic, drafts a blog post, generates social snippets from it, and pushes everything live on a schedule. The drafting stages are low-risk — nobody sees a bad draft sitting in a database. The risk concentrates entirely at the <strong>publish</strong> step, because that&#39;s the one with an audience.</p>
-<p>The mistake teams make is putting the review in the wrong place: a Slack message that says &quot;reply 👍 to approve&quot; with no real enforcement behind it, or a cron job that publishes automatically after a fixed delay &quot;in case nobody objects.&quot; Neither actually blocks execution. What blocks execution is a status field the publish code checks before it runs — which is what Impri&#39;s <code>/v1/actions</code> gate gives you.</p>
+<p>The mistake teams make is putting the review in the wrong place: a Slack message that says &quot;reply 👍 to approve&quot; with no real enforcement behind it, or a cron job that publishes automatically after a fixed delay &quot;in case nobody objects.&quot; Neither actually blocks execution. What blocks execution is a status field the publish code checks before it runs — which is what Airlock&#39;s <code>/v1/actions</code> gate gives you.</p>
 <h2 id="wiring-it-into-a-content-pipeline-python">Wiring it into a content pipeline (Python)</h2>
 <p>The publish function is the only place that touches the CMS API, so it&#39;s the only place that needs the gate. Everything upstream — research, drafting, snippet generation — runs unguarded.</p>
 <div class="code-block"><span class="code-lang">python</span><pre><code class="hljs"><span class="hljs-keyword">import</span> time
 <span class="hljs-keyword">import</span> httpx
 
-IMPRI_BASE = <span class="hljs-string">&quot;https://api.impri.dev&quot;</span>
-HEADERS = {<span class="hljs-string">&quot;Authorization&quot;</span>: <span class="hljs-string">f&quot;Bearer <span class="hljs-subst">{IMPRI_API_KEY}</span>&quot;</span>}
+AIRLOCK_BASE = <span class="hljs-string">&quot;https://api.airlock.dev&quot;</span>
+HEADERS = {<span class="hljs-string">&quot;Authorization&quot;</span>: <span class="hljs-string">f&quot;Bearer <span class="hljs-subst">{AIRLOCK_API_KEY}</span>&quot;</span>}
 
 <span class="hljs-keyword">def</span> <span class="hljs-title function_">request_publish_approval</span>(<span class="hljs-params">post</span>):
-    resp = httpx.post(<span class="hljs-string">f&quot;<span class="hljs-subst">{IMPRI_BASE}</span>/v1/actions&quot;</span>, headers=HEADERS, json={
+    resp = httpx.post(<span class="hljs-string">f&quot;<span class="hljs-subst">{AIRLOCK_BASE}</span>/v1/actions&quot;</span>, headers=HEADERS, json={
         <span class="hljs-string">&quot;kind&quot;</span>: <span class="hljs-string">&quot;blog.publish&quot;</span>,
         <span class="hljs-string">&quot;title&quot;</span>: <span class="hljs-string">f&quot;Publish: <span class="hljs-subst">{post[<span class="hljs-string">&#x27;title&#x27;</span>]}</span>&quot;</span>,
         <span class="hljs-string">&quot;preview&quot;</span>: {<span class="hljs-string">&quot;format&quot;</span>: <span class="hljs-string">&quot;markdown&quot;</span>, <span class="hljs-string">&quot;body&quot;</span>: post[<span class="hljs-string">&quot;body&quot;</span>]},
@@ -180,7 +180,7 @@ HEADERS = {<span class="hljs-string">&quot;Authorization&quot;</span>: <span cla
 
 <span class="hljs-keyword">def</span> <span class="hljs-title function_">wait_and_publish</span>(<span class="hljs-params">action_id, post</span>):
     <span class="hljs-keyword">while</span> <span class="hljs-literal">True</span>:
-        r = httpx.get(<span class="hljs-string">f&quot;<span class="hljs-subst">{IMPRI_BASE}</span>/v1/actions/<span class="hljs-subst">{action_id}</span>&quot;</span>, headers=HEADERS).json()
+        r = httpx.get(<span class="hljs-string">f&quot;<span class="hljs-subst">{AIRLOCK_BASE}</span>/v1/actions/<span class="hljs-subst">{action_id}</span>&quot;</span>, headers=HEADERS).json()
         <span class="hljs-keyword">if</span> r[<span class="hljs-string">&quot;status&quot;</span>] != <span class="hljs-string">&quot;pending&quot;</span>:
             <span class="hljs-keyword">break</span>
         time.sleep(<span class="hljs-number">15</span>)
@@ -191,7 +191,7 @@ HEADERS = {<span class="hljs-string">&quot;Authorization&quot;</span>: <span cla
     final_body = r[<span class="hljs-string">&quot;decision&quot;</span>][<span class="hljs-string">&quot;final_preview&quot;</span>][<span class="hljs-string">&quot;body&quot;</span>]  <span class="hljs-comment"># carries any human edits</span>
     cms_publish(post[<span class="hljs-string">&quot;id&quot;</span>], final_body)
 
-    httpx.post(<span class="hljs-string">f&quot;<span class="hljs-subst">{IMPRI_BASE}</span>/v1/actions/<span class="hljs-subst">{action_id}</span>/result&quot;</span>, headers=HEADERS,
+    httpx.post(<span class="hljs-string">f&quot;<span class="hljs-subst">{AIRLOCK_BASE}</span>/v1/actions/<span class="hljs-subst">{action_id}</span>/result&quot;</span>, headers=HEADERS,
                json={<span class="hljs-string">&quot;status&quot;</span>: <span class="hljs-string">&quot;executed&quot;</span>})</code></pre></div>
 <p>The <code>editable: [&quot;preview.body&quot;]</code> field matters here specifically because content review is often an editing pass, not a binary yes/no — a reviewer fixing a headline shouldn&#39;t have to reject and regenerate the whole draft.</p>
 <h2 id="where-the-gate-actually-needs-to-sit">Where the gate actually needs to sit</h2>
@@ -219,14 +219,14 @@ HEADERS = {<span class="hljs-string">&quot;Authorization&quot;</span>: <span cla
 <h2 id="reviewing-from-a-phone-between-meetings">Reviewing from a phone between meetings</h2>
 <p>Content reviewers are rarely at a desk when a draft is ready. Route the notification to <a href="slack-approval">Slack</a> or <a href="telegram-approval">Telegram</a> so approve/reject is a tap, not a context switch back to a dashboard. The <code>target_url</code> field above should point at the actual CMS draft, so a reviewer who wants more context than the markdown preview can jump straight there.</p>
 <h2 id="what-this-doesn39t-cover">What this doesn&#39;t cover</h2>
-<p>Impri doesn&#39;t review content quality — it surfaces the draft to whichever human you&#39;ve routed it to and trusts their judgment. It also isn&#39;t a scheduling engine; if your pipeline needs &quot;publish at 9am on the day with the most engagement,&quot; that logic stays in your pipeline and only the final publish call goes through the gate. And expiry is real: a draft that sits unreviewed past <code>expires_in</code> moves to <code>expired</code> and won&#39;t publish, by design — stale drafts about a news cycle that&#39;s already passed shouldn&#39;t go out just because someone finally checked the inbox.</p>
+<p>Airlock doesn&#39;t review content quality — it surfaces the draft to whichever human you&#39;ve routed it to and trusts their judgment. It also isn&#39;t a scheduling engine; if your pipeline needs &quot;publish at 9am on the day with the most engagement,&quot; that logic stays in your pipeline and only the final publish call goes through the gate. And expiry is real: a draft that sits unreviewed past <code>expires_in</code> moves to <code>expired</code> and won&#39;t publish, by design — stale drafts about a news cycle that&#39;s already passed shouldn&#39;t go out just because someone finally checked the inbox.</p>
 <p>Next: <a href="quickstart">quickstart</a> to get an API key, or <a href="sdk-python">the Python SDK reference</a> if you&#39;d rather not hand-roll the <code>httpx</code> calls above.</p>
 
-    <aside class="doc-cta" aria-label="Try Impri">
+    <aside class="doc-cta" aria-label="Try Airlock">
   <p class="doc-cta-title">Add an approval step to your own agent</p>
-  <p>Start on Impri Cloud: the Free tier includes 100 approvals a month. Or self-host the MIT-licensed core with Docker Compose, with no tier limits.</p>
+  <p>Start on Airlock Cloud: the Free tier includes 100 approvals a month. Or self-host the MIT-licensed core with Docker Compose, with no tier limits.</p>
   <div class="doc-cta-actions">
-    <a class="btn btn-primary btn-sm" href="https://app.impri.dev/?signup=1">Start free on Impri Cloud</a>
+    <a class="btn btn-primary btn-sm" href="https://app.airlock.dev/?signup=1">Start free on Airlock Cloud</a>
     <a class="btn btn-ghost btn-sm" href="../docs/quickstart">Quick start</a>
     <a class="btn btn-ghost btn-sm" href="../docs/self-hosting">Self-host guide</a>
   </div>
@@ -322,19 +322,19 @@ HEADERS = {<span class="hljs-string">&quot;Authorization&quot;</span>: <span cla
 <footer class="footer">
 <div class="wrap footer-inner">
   <a class="brand" href="/">
-    <span class="mark"><svg viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.5 4.5L19 7.5" stroke="white" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Impri
+    <span class="mark"><svg viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.5 4.5L19 7.5" stroke="white" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Airlock
   </a>
   <div>
-    <a href="https://gitlab.com/sekera.radim/impri">GitLab</a>
+    <a href="https://gitlab.com/sekera.radim/airlock">GitLab</a>
     <a href="/docs">Docs</a>
-    <a href="https://gitlab.com/sekera.radim/impri/-/blob/main/LICENSE">MIT License</a>
-    <a href="https://www.npmjs.com/package/@impri/mcp">@impri/mcp</a>
+    <a href="https://gitlab.com/sekera.radim/airlock/-/blob/main/LICENSE">MIT License</a>
+    <a href="https://www.npmjs.com/package/@airlock/mcp">@airlock/mcp</a>
     <a href="/docs/privacy">Privacy</a>
     <a href="/docs/terms">Terms</a>
     <a href="https://sekera.dev">Contact</a>
   </div>
 </div>
-<div class="wrap" style="margin-top:18px"><span class="muted">© 2026 Impri · The imprimatur for your AI agents · Built by <a href="https://sekera.dev" style="color:inherit">Radim Sekera</a>. Also by the same maker: <a href="https://briefgate.dev/?utm_source=impri.dev&amp;utm_medium=referral" style="color:inherit">BriefGate</a> — client intake for agencies and AI agents.</span></div>
+<div class="wrap" style="margin-top:18px"><span class="muted">© 2026 Airlock · The airlockmatur for your AI agents · Built by <a href="https://sekera.dev" style="color:inherit">Radim Sekera</a>. Also by the same maker: <a href="https://briefgate.dev/?utm_source=airlock.dev&amp;utm_medium=referral" style="color:inherit">BriefGate</a> — client intake for agencies and AI agents.</span></div>
 </footer>
 </body>
 </html>

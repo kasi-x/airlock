@@ -6,7 +6,7 @@ submits only the final (possibly edited) text to the Reddit API.
 ## Why this matters
 
 Posting as your brand or personal account without review is risky — wrong tone,
-factual errors, or policy violations can damage your reputation. Impri lets
+factual errors, or policy violations can damage your reputation. Airlock lets
 you automate the *finding* and *drafting* while keeping a human on the
 *posting* trigger.
 
@@ -27,31 +27,31 @@ full context before approving, making review fast and informed.
 ## Requirements
 
 - Node 18+ (no npm install)
-- Impri API key with `actions` scope
-- Running Impri instance
+- Airlock API key with `actions` scope
+- Running Airlock instance
 
 ## Quick start
 
 ```bash
-IMPRI_API_KEY=im_your_key node agent.mjs
+AIRLOCK_API_KEY=im_your_key node agent.mjs
 ```
 
 For real Reddit posting, add your OAuth token:
 
 ```bash
-IMPRI_API_KEY=im_your_key REDDIT_ACCESS_TOKEN=your_token node agent.mjs
+AIRLOCK_API_KEY=im_your_key REDDIT_ACCESS_TOKEN=your_token node agent.mjs
 ```
 
 ## Connecting to a watcher
 
-In production you would pair this with an Impri RSS or reddit_search watcher
+In production you would pair this with an Airlock RSS or reddit_search watcher
 (see recipe #5) so the agent is triggered automatically when new matching
 threads appear:
 
 1. Watcher fires → item lands in inbox as a triage action
 2. Human triages: "yes, draft a reply to this one"
 3. Agent picks up the approved triage, drafts the reply
-4. Impri gates the actual post with a second approval
+4. Airlock gates the actual post with a second approval
 
 That two-step loop (triage → draft → approve) is the full pattern.
 

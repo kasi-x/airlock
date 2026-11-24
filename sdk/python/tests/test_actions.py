@@ -1,4 +1,4 @@
-"""Unit tests for action-related ImpriClient methods.
+"""Unit tests for action-related AirlockClient methods.
 
 All HTTP calls go through MockTransport — no real network required.
 """
@@ -9,16 +9,16 @@ import time
 import unittest
 from unittest.mock import patch
 
-from impri import (
-    ImpriClient,
-    ImpriConflict,
-    ImpriExpired,
-    ImpriNotFound,
-    ImpriRejected,
-    ImpriTimeout,
-    ImpriUnauthorized,
-    ImpriValidationError,
-    ImpriRateLimited,
+from airlock import (
+    AirlockClient,
+    AirlockConflict,
+    AirlockExpired,
+    AirlockNotFound,
+    AirlockRejected,
+    AirlockTimeout,
+    AirlockUnauthorized,
+    AirlockValidationError,
+    AirlockRateLimited,
 )
 from .mock_transport import MockTransport
 
@@ -83,7 +83,7 @@ RESULT_ACK = {
 
 def make_client(*responses):
     transport = MockTransport(list(responses))
-    return ImpriClient(api_key=API_KEY, _transport=transport), transport
+    return AirlockClient(api_key=API_KEY, _transport=transport), transport
 
 
 # ---------------------------------------------------------------------------
@@ -192,18 +192,18 @@ class TestCreateAction(unittest.TestCase):
 
     def test_raises_unauthorized_on_403(self):
         client, _ = make_client((403, {"error": "Forbidden", "message": "Scope \"actions\" required"}))
-        with self.assertRaises(ImpriUnauthorized):
+        with self.assertRaises(AirlockUnauthorized):
             client.create_action(kind="k", title="t", preview={"format": "plain", "body": ""})
 
     def test_raises_validation_error_on_400(self):
         client, _ = make_client((400, {"error": "Bad Request", "issues": [{"code": "too_small"}]}))
-        with self.assertRaises(ImpriValidationError) as ctx:
+        with self.assertRaises(AirlockValidationError) as ctx:
             client.create_action(kind="k", title="t", preview={"format": "plain", "body": ""})
         self.assertEqual(len(ctx.exception.issues), 1)
 
     def test_raises_rate_limited_on_429(self):
         client, _ = make_client((429, {"error": "Too Many Requests", "message": "Rate limit: 60 requests/min"}))
-        with self.assertRaises(ImpriRateLimited):
+        with self.assertRaises(AirlockRateLimited):
             client.create_action(kind="k", title="t", preview={"format": "plain", "body": ""})
 
 
@@ -238,7 +238,7 @@ class TestGetAction(unittest.TestCase):
 
     def test_raises_not_found_on_404(self):
         client, _ = make_client((404, {"error": "Not Found"}))
-        with self.assertRaises(ImpriNotFound):
+        with self.assertRaises(AirlockNotFound):
             client.get_action("act_missing")
 
 
@@ -368,13 +368,13 @@ class TestDecide(unittest.TestCase):
 
     def test_raises_conflict_on_409(self):
         client, _ = make_client((409, {"error": "Conflict", "message": "Already decided", "current_status": "approved"}))
-        with self.assertRaises(ImpriConflict) as ctx:
+        with self.assertRaises(AirlockConflict) as ctx:
             client.decide("act_abc", "approve")
         self.assertEqual(ctx.exception.current_status, "approved")
 
     def test_raises_not_found_on_404(self):
         client, _ = make_client((404, {"error": "Not Found"}))
-        with self.assertRaises(ImpriNotFound):
+        with self.assertRaises(AirlockNotFound):
             client.decide("act_missing", "approve")
 
 
@@ -404,7 +404,7 @@ class TestReportResult(unittest.TestCase):
 
     def test_raises_conflict_when_not_approved(self):
         client, _ = make_client((409, {"error": "Conflict", "message": "Action is in state pending", "current_status": "pending"}))
-        with self.assertRaises(ImpriConflict):
+        with self.assertRaises(AirlockConflict):
             client.report_result("act_abc", "executed")
 
     def test_returns_result_ack(self):
@@ -441,18 +441,18 @@ class TestAwaitDecision(unittest.TestCase):
 
     def test_raises_rejected_on_reject(self):
         client, _ = make_client((200, ACTION_REJECTED))
-        with self.assertRaises(ImpriRejected) as ctx:
+        with self.assertRaises(AirlockRejected) as ctx:
             client.await_decision("act_abc", poll_interval_s=0)
         self.assertEqual(ctx.exception.action_id, "act_abc")
         self.assertEqual(ctx.exception.decision["verdict"], "reject")
 
     def test_raises_expired_on_expired_status(self):
         client, _ = make_client((200, ACTION_EXPIRED))
-        with self.assertRaises(ImpriExpired):
+        with self.assertRaises(AirlockExpired):
             client.await_decision("act_abc", poll_interval_s=0)
 
     def test_raises_timeout_when_still_pending(self):
-        """Timeout elapses while action is still pending — raises ImpriTimeout.
+        """Timeout elapses while action is still pending — raises AirlockTimeout.
 
         Mock monotonic: first call (deadline) returns 0; second call (remaining
         check after first poll) returns 1, which exceeds the deadline of 0.001.
@@ -461,13 +461,13 @@ class TestAwaitDecision(unittest.TestCase):
             (200, ACTION_PENDING),
         )
         with patch("time.sleep"), patch("time.monotonic", side_effect=[0, 1]):
-            with self.assertRaises(ImpriTimeout) as ctx:
+            with self.assertRaises(AirlockTimeout) as ctx:
                 client.await_decision("act_abc", timeout_s=0.001, poll_interval_s=0.001)
         self.assertEqual(ctx.exception.action_id, "act_abc")
 
     def test_raises_not_found_on_404(self):
         client, _ = make_client((404, {"error": "Not Found"}))
-        with self.assertRaises(ImpriNotFound):
+        with self.assertRaises(AirlockNotFound):
             client.await_decision("act_missing", poll_interval_s=0)
 
     def test_approved_action_decision_present(self):
@@ -580,18 +580,18 @@ class TestBulkDecide(unittest.TestCase):
 
     def test_raises_validation_error_on_400(self):
         client, _ = make_client((400, {"error": "Bad Request", "issues": [{"code": "too_big"}]}))
-        with self.assertRaises(ImpriValidationError) as ctx:
+        with self.assertRaises(AirlockValidationError) as ctx:
             client.bulk_decide([], "approve")
         self.assertEqual(len(ctx.exception.issues), 1)
 
     def test_raises_unauthorized_on_403(self):
         client, _ = make_client((403, {"error": "Forbidden", "message": "Scope \"actions\" required"}))
-        with self.assertRaises(ImpriUnauthorized):
+        with self.assertRaises(AirlockUnauthorized):
             client.bulk_decide(["act_1"], "approve")
 
     def test_raises_rate_limited_on_429(self):
         client, _ = make_client((429, {"error": "Too Many Requests", "message": "Rate limit: 10 requests/min", "retry_after": 30}))
-        with self.assertRaises(ImpriRateLimited) as ctx:
+        with self.assertRaises(AirlockRateLimited) as ctx:
             client.bulk_decide(["act_1"], "approve")
         self.assertEqual(ctx.exception.retry_after, 30)
 

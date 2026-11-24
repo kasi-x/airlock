@@ -1,6 +1,6 @@
 # Human Approval for n8n AI Agent Workflows
 
-Add human approval for n8n AI Agent workflows using Impri's REST API in stock HTTP Request and Wait nodes — no custom node, no code beyond one small Function block.
+Add human approval for n8n AI Agent workflows using Airlock's REST API in stock HTTP Request and Wait nodes — no custom node, no code beyond one small Function block.
 
 ---
 
@@ -8,7 +8,7 @@ Add human approval for n8n AI Agent workflows using Impri's REST API in stock HT
 
 A typical setup: a **Zendesk Trigger** node fires on a new ticket, an **AI Agent** node (backed by whatever model you've wired into n8n) drafts a reply, and a final node would normally post that reply straight back to the customer. That last step is the one worth gating — everything upstream is just reasoning, nothing has left the building yet.
 
-The fix isn't a second AI Agent node double-checking the first one's work. It's an external decision the workflow cannot proceed without: Impri holds the draft, a human taps approve or reject, and only the approved branch reaches the node that actually calls the Zendesk API.
+The fix isn't a second AI Agent node double-checking the first one's work. It's an external decision the workflow cannot proceed without: Airlock holds the draft, a human taps approve or reject, and only the approved branch reaches the node that actually calls the Zendesk API.
 
 ---
 
@@ -75,11 +75,11 @@ Route on `status`: only the `approved` path reaches the Zendesk "post reply" nod
 
 ## Skipping the loop with a webhook
 
-Polling every 10 seconds is fine for low-volume ticket queues, but if your n8n instance has a public URL, set `callback_url` in the Code node's JSON to an n8n Webhook node's URL instead. Impri POSTs the decision there the moment a human decides, and you can replace the whole Wait/GET/IF loop with a single Webhook trigger that starts a second workflow. Signature verification for that payload is documented in [webhooks.md](webhooks.md).
+Polling every 10 seconds is fine for low-volume ticket queues, but if your n8n instance has a public URL, set `callback_url` in the Code node's JSON to an n8n Webhook node's URL instead. Airlock POSTs the decision there the moment a human decides, and you can replace the whole Wait/GET/IF loop with a single Webhook trigger that starts a second workflow. Signature verification for that payload is documented in [webhooks.md](webhooks.md).
 
 ## What this doesn't replace
 
-Impri is the approval gate, not the workflow engine — n8n still owns branching, retries, and scheduling. Impri doesn't read the ticket or judge whether the reply is good; it shows the draft to a human and records what they decided. And the gate only holds if the Zendesk API credential lives on the "post reply" node and nowhere else in the workflow — if an earlier node also holds that credential, the AI Agent's output could reach Zendesk through a path that never touches Impri at all.
+Airlock is the approval gate, not the workflow engine — n8n still owns branching, retries, and scheduling. Airlock doesn't read the ticket or judge whether the reply is good; it shows the draft to a human and records what they decided. And the gate only holds if the Zendesk API credential lives on the "post reply" node and nowhere else in the workflow — if an earlier node also holds that credential, the AI Agent's output could reach Zendesk through a path that never touches Airlock at all.
 
 ## Next step
 

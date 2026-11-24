@@ -142,12 +142,12 @@ describe('scrubSentryEvent', () => {
   it('redacts Authorization/Cookie/X-Api-Key headers on request.headers, case-insensitively', () => {
     const event = {
       request: {
-        url: 'https://api.impri.dev/v1/actions',
+        url: 'http://localhost:8484/v1/actions',
         headers: {
           Authorization: 'Bearer im_abcdef',
           Cookie: 'session=xyz',
           'X-Api-Key': 'im_abcdef',
-          'User-Agent': 'impri-agent/1.0',
+          'User-Agent': 'airlock-agent/1.0',
         },
       },
     } as unknown as Sentry.ErrorEvent;
@@ -156,20 +156,20 @@ describe('scrubSentryEvent', () => {
       Authorization: '[REDACTED]',
       Cookie: '[REDACTED]',
       'X-Api-Key': '[REDACTED]',
-      'User-Agent': 'impri-agent/1.0',
+      'User-Agent': 'airlock-agent/1.0',
     });
   });
 
   it('strips the query string from request.url and deletes request.query_string and request.data', () => {
     const event = {
       request: {
-        url: 'https://app.impri.dev/recover?project_id=proj_1&t=secret-recovery-code',
+        url: 'http://localhost:8080/recover?project_id=proj_1&t=secret-recovery-code',
         query_string: 'project_id=proj_1&t=secret-recovery-code',
         data: { recovery_code: 'secret-recovery-code' },
       },
     } as unknown as Sentry.ErrorEvent;
     const scrubbed = scrubSentryEvent(event);
-    expect(scrubbed.request?.url).toBe('https://app.impri.dev/recover');
+    expect(scrubbed.request?.url).toBe('http://localhost:8080/recover');
     expect(scrubbed.request?.query_string).toBeUndefined();
     expect(scrubbed.request?.data).toBeUndefined();
   });

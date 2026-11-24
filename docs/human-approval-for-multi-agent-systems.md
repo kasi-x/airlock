@@ -8,10 +8,10 @@ Gate human approval at the one pipeline step with a real-world side effect — n
 
 A common multi-agent shape: one agent researches a topic, hands its findings to a second agent that drafts content, which hands off to a third agent that publishes. It's tempting to add a "check with a human" step between every handoff. In practice that just slows the pipeline down without adding safety — the research-to-draft handoff and the draft-to-final handoff are internal state transitions. Nothing external happens until the publish step. That's the one that needs a gate.
 
-Impri is not a multi-agent coordination layer — it won't route messages between your agents or manage the handoff logic. That's your orchestrator's job (LangGraph, a custom TypeScript pipeline, whatever you're running). What Impri does is sit at the one node in the graph where an agent is about to take an action a human hasn't seen yet.
+Airlock is not a multi-agent coordination layer — it won't route messages between your agents or manage the handoff logic. That's your orchestrator's job (LangGraph, a custom TypeScript pipeline, whatever you're running). What Airlock does is sit at the one node in the graph where an agent is about to take an action a human hasn't seen yet.
 
 ```
-Research agent ──▶ Writer agent ──▶ [Impri gate] ──▶ Publisher agent
+Research agent ──▶ Writer agent ──▶ [Airlock gate] ──▶ Publisher agent
      (internal)        (internal)      (human)           (external effect)
 ```
 
@@ -19,19 +19,19 @@ Research agent ──▶ Writer agent ──▶ [Impri gate] ──▶ Publisher
 
 ## Gating only the terminal node
 
-Here's a three-agent pipeline in TypeScript where only the last hop — the one that actually publishes — talks to Impri:
+Here's a three-agent pipeline in TypeScript where only the last hop — the one that actually publishes — talks to Airlock:
 
 ```typescript
-import { ImpriClient, ImpriRejected, ImpriExpired, ImpriTimeout } from "@impri/sdk";
+import { AirlockClient, AirlockRejected, AirlockExpired, AirlockTimeout } from "@airlock/sdk";
 
-const impri = new ImpriClient({ apiKey: process.env.IMPRI_API_KEY! });
+const airlock = new AirlockClient({ apiKey: process.env.AIRLOCK_API_KEY! });
 
 async function runPipeline(topic: string) {
   const findings = await researchAgent.run(topic);       // internal, no gate
   const draft = await writerAgent.run(findings);          // internal, no gate
 
-  // Only the node with a real side effect talks to Impri
-  const created = await impri.createAction({
+  // Only the node with a real side effect talks to Airlock
+  const created = await airlock.createAction({
     kind: "blog.publish",
     title: `Draft: ${draft.title}`,
     preview: { format: "markdown", body: draft.body },
@@ -40,13 +40,13 @@ async function runPipeline(topic: string) {
   });
 
   try {
-    const action = await impri.awaitDecision(created.id, { timeoutS: 3600 });
+    const action = await airlock.awaitDecision(created.id, { timeoutS: 3600 });
     const url = await publisherAgent.publish(action.decision!.final_preview!.body);
-    await impri.reportResult(created.id, "executed", { detail: `Published at ${url}` });
+    await airlock.reportResult(created.id, "executed", { detail: `Published at ${url}` });
   } catch (e) {
-    if (e instanceof ImpriRejected || e instanceof ImpriExpired) {
+    if (e instanceof AirlockRejected || e instanceof AirlockExpired) {
       console.log("Pipeline stopped: human did not approve the publish step.");
-    } else if (e instanceof ImpriTimeout) {
+    } else if (e instanceof AirlockTimeout) {
       console.log("Still pending — action remains open server-side.");
     } else {
       throw e;
@@ -55,7 +55,7 @@ async function runPipeline(topic: string) {
 }
 ```
 
-The research and writer agents never import the Impri client at all — they don't need to know a gate exists downstream. That separation matters: if you later swap in a different writer agent, or add a fourth agent to the chain, none of that touches the approval logic, because the approval logic only lives at the publish boundary.
+The research and writer agents never import the Airlock client at all — they don't need to know a gate exists downstream. That separation matters: if you later swap in a different writer agent, or add a fourth agent to the chain, none of that touches the approval logic, because the approval logic only lives at the publish boundary.
 
 ---
 
@@ -75,13 +75,13 @@ Gating every contributing agent individually multiplies review load for no safet
 
 ## Keeping the gate a real chokepoint
 
-This only works as a genuine gate if the publisher agent has no other way to publish. If `publisherAgent.publish()` can be called directly by some other code path with the same credentials, an agent — or a bug, or an injected instruction picked up during research — can route around Impri entirely. Wrap the actual publish call so it only ever runs with an approved `final_preview`, the same pattern described in [the approval guide](how-to-add-human-approval-to-an-ai-agent.md). If your orchestrator is Claude Agent SDK-based, see [the Claude Agent SDK guide](human-approval-claude-agent-sdk.md) for gating its tool calls in the SDK's permission callback rather than in free-floating code.
+This only works as a genuine gate if the publisher agent has no other way to publish. If `publisherAgent.publish()` can be called directly by some other code path with the same credentials, an agent — or a bug, or an injected instruction picked up during research — can route around Airlock entirely. Wrap the actual publish call so it only ever runs with an approved `final_preview`, the same pattern described in [the approval guide](how-to-add-human-approval-to-an-ai-agent.md). If your orchestrator is Claude Agent SDK-based, see [the Claude Agent SDK guide](human-approval-claude-agent-sdk.md) for gating its tool calls in the SDK's permission callback rather than in free-floating code.
 
 ---
 
-## What Impri won't do for your pipeline
+## What Airlock won't do for your pipeline
 
-It won't manage retries between agents, won't decide which agent runs next, and won't detect that a "multi-agent system" is even involved — as far as Impri is concerned, one action came in from one API key. All the orchestration — LangGraph state, queue handoffs, error recovery between agents — stays in your pipeline code. Impri's job starts and ends at: store the action, notify a human, hold the decision until someone makes it.
+It won't manage retries between agents, won't decide which agent runs next, and won't detect that a "multi-agent system" is even involved — as far as Airlock is concerned, one action came in from one API key. All the orchestration — LangGraph state, queue handoffs, error recovery between agents — stays in your pipeline code. Airlock's job starts and ends at: store the action, notify a human, hold the decision until someone makes it.
 
 ---
 

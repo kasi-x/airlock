@@ -19,8 +19,8 @@ try:
 except ImportError:
     _AGENTS_AVAILABLE = False
 
-from impri_openai import ImpriClient, ImpriRejected
-from impri_openai._guardrail import make_guardrail, _AGENTS_AVAILABLE as _GA
+from airlock_openai import AirlockClient, AirlockRejected
+from airlock_openai._guardrail import make_guardrail, _AGENTS_AVAILABLE as _GA
 
 
 # ---------------------------------------------------------------------------
@@ -38,8 +38,8 @@ def _make_response(status: int, body: dict | None = None):
     return resp
 
 
-def _mock_client(action_id: str, verdict: str = "approve") -> ImpriClient:
-    """Return an ImpriClient that creates an action and immediately returns a decision."""
+def _mock_client(action_id: str, verdict: str = "approve") -> AirlockClient:
+    """Return an AirlockClient that creates an action and immediately returns a decision."""
     created = _make_response(201, {
         "id": action_id, "status": "pending", "inbox_url": ""
     })
@@ -58,7 +58,7 @@ def _mock_client(action_id: str, verdict: str = "approve") -> ImpriClient:
     mock_http = AsyncMock()
     mock_http.request = AsyncMock(side_effect=[created, get_action])
     mock_http.aclose = AsyncMock()
-    return ImpriClient(api_key="im_test", http_client=mock_http)
+    return AirlockClient(api_key="im_test", http_client=mock_http)
 
 
 # ---------------------------------------------------------------------------
@@ -71,7 +71,7 @@ class TestMakeGuardrailImportGuard(unittest.TestCase):
         if _AGENTS_AVAILABLE:
             self.skipTest("openai-agents is installed; skip the absence test")
 
-        client = ImpriClient(api_key="im_x")
+        client = AirlockClient(api_key="im_x")
         with self.assertRaises(ImportError) as ctx:
             make_guardrail(client)
         self.assertIn("openai-agents", str(ctx.exception))
@@ -82,7 +82,7 @@ class TestMakeGuardrailImportGuard(unittest.TestCase):
         if not _AGENTS_AVAILABLE:
             self.skipTest("openai-agents not installed")
 
-        client = ImpriClient(api_key="im_x")
+        client = AirlockClient(api_key="im_x")
         guardrail = make_guardrail(client, kind="test", title="Title")
         self.assertIsNotNone(guardrail)
 
@@ -193,7 +193,7 @@ class TestGuardrailBehaviour(unittest.IsolatedAsyncioTestCase):
         self.assertIn("Second line", sent_preview[0]["body"])
 
     async def test_guardrail_name_includes_kind(self):
-        client = ImpriClient(api_key="im_x")
+        client = AirlockClient(api_key="im_x")
         guardrail = make_guardrail(client, kind="custom.kind", title="t")
         self.assertIn("custom.kind", guardrail.name)
 

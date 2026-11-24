@@ -11,25 +11,25 @@
 # no-extra-infra option that is right while write volume is low.
 #
 # Env overrides:
-#   IMPRI_FLY_APP        Fly app name         (default impri-api)
-#   IMPRI_BACKUP_DIR     local backup dir     (default ~/.impri/backups)
-#   IMPRI_BACKUP_KEEP    days to keep         (default 14)
+#   AIRLOCK_FLY_APP        Fly app name         (default airlock-api)
+#   AIRLOCK_BACKUP_DIR     local backup dir     (default ~/.airlock/backups)
+#   AIRLOCK_BACKUP_KEEP    days to keep         (default 14)
 #   FLYCTL               flyctl path          (default ~/.fly/bin/flyctl)
 set -euo pipefail
 
-APP="${IMPRI_FLY_APP:-impri-api}"
-DEST="${IMPRI_BACKUP_DIR:-$HOME/.impri/backups}"
-KEEP="${IMPRI_BACKUP_KEEP:-14}"
+APP="${AIRLOCK_FLY_APP:-airlock-api}"
+DEST="${AIRLOCK_BACKUP_DIR:-$HOME/.airlock/backups}"
+KEEP="${AIRLOCK_BACKUP_KEEP:-14}"
 FLY="${FLYCTL:-$HOME/.fly/bin/flyctl}"
 
 mkdir -p "$DEST"
 TS="$(date +%F-%H%M%S)"
 REMOTE="/data/_bk_${TS}.db"
-LOCAL="$DEST/impri-${TS}.db"
+LOCAL="$DEST/airlock-${TS}.db"
 
 # 1. Consistent online backup inside the machine's volume.
 "$FLY" ssh console -a "$APP" -C \
-  "node -e \"require('/app/node_modules/better-sqlite3')('/data/impri.db').backup('${REMOTE}').then(()=>process.exit(0)).catch(e=>{console.error(e.message);process.exit(1)})\""
+  "node -e \"require('/app/node_modules/better-sqlite3')('/data/airlock.db').backup('${REMOTE}').then(()=>process.exit(0)).catch(e=>{console.error(e.message);process.exit(1)})\""
 
 # 2. Pull it out, then remove the temp copy from the volume.
 "$FLY" ssh sftp get "$REMOTE" "$LOCAL" -a "$APP"
@@ -37,6 +37,6 @@ LOCAL="$DEST/impri-${TS}.db"
 
 # 3. Compress + rotate.
 gzip -f "$LOCAL"
-find "$DEST" -name 'impri-*.db.gz' -mtime "+${KEEP}" -delete 2>/dev/null || true
+find "$DEST" -name 'airlock-*.db.gz' -mtime "+${KEEP}" -delete 2>/dev/null || true
 
 echo "backup ok: ${LOCAL}.gz ($(du -h "${LOCAL}.gz" | cut -f1))"

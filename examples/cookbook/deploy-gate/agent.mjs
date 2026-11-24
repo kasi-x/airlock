@@ -1,24 +1,24 @@
 #!/usr/bin/env node
-// deploy-gate.mjs — Impri cookbook recipe #3
+// deploy-gate.mjs — Airlock cookbook recipe #3
 // No dependencies. Node 18+.
 //
 // Pattern: a CI/CD or release agent proposes a production deployment.
 // A human reviews the diff summary and approves before anything is deployed.
 //
 // Run:
-//   IMPRI_API_KEY=im_xxx node agent.mjs
-//   IMPRI_API_KEY=im_xxx IMPRI_BASE_URL=https://api.impri.dev node agent.mjs
+//   AIRLOCK_API_KEY=im_xxx node agent.mjs
+//   AIRLOCK_API_KEY=im_xxx AIRLOCK_BASE_URL=https://api.airlock.dev node agent.mjs
 //
 // Optional env (to simulate reading from CI):
 //   GIT_SHA=abc1234  GIT_BRANCH=main  DEPLOY_ENV=production
 //
 // Required scope: actions
 
-const API_KEY = process.env.IMPRI_API_KEY;
-const BASE = (process.env.IMPRI_BASE_URL ?? 'http://localhost:8484').replace(/\/+$/, '');
+const API_KEY = process.env.AIRLOCK_API_KEY;
+const BASE = (process.env.AIRLOCK_BASE_URL ?? 'http://localhost:8484').replace(/\/+$/, '');
 
 if (!API_KEY) {
-  console.error('Set IMPRI_API_KEY (it starts with im_).');
+  console.error('Set AIRLOCK_API_KEY (it starts with im_).');
   process.exit(1);
 }
 
@@ -88,7 +88,7 @@ async function runDeploy(d) {
 // Main
 // ---------------------------------------------------------------------------
 async function main() {
-  console.log(`\nImpri deploy-gate → ${BASE}`);
+  console.log(`\nAirlock deploy-gate → ${BASE}`);
   console.log(`  Service: ${deploy.service} → ${deploy.env}`);
   console.log(`  SHA: ${deploy.sha}\n`);
 
@@ -138,7 +138,7 @@ async function main() {
       status: 'executed',
       detail: JSON.stringify(result),
     });
-    console.log('  OK — deployed and reported to Impri.');
+    console.log('  OK — deployed and reported to Airlock.');
     console.log('  Result:', JSON.stringify(result));
   } catch (err) {
     await api(`/actions/${action.id}/result`, 'POST', {

@@ -3,21 +3,21 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Human Approval for AI Agent Price and Inventory Changes — Impri Docs</title>
+<title>Human Approval for AI Agent Price and Inventory Changes — Airlock Docs</title>
 <meta name="description" content="Stop a repricing or inventory-management agent from pushing a bad price or stock count live by routing every change through a human approval card first.">
 <meta name="theme-color" content="#06070d">
-<meta property="og:title" content="Human Approval for AI Agent Price and Inventory Changes — Impri Docs">
+<meta property="og:title" content="Human Approval for AI Agent Price and Inventory Changes — Airlock Docs">
 <meta property="og:description" content="Stop a repricing or inventory-management agent from pushing a bad price or stock count live by routing every change through a human approval card first.">
 <meta property="og:type" content="article">
-<meta property="og:url" content="https://impri.dev/docs/human-approval-for-ai-agent-price-and-inventory-changes">
-<meta property="og:image" content="https://impri.dev/assets/og/og-docs.png">
+<meta property="og:url" content="https://airlock.dev/docs/human-approval-for-ai-agent-price-and-inventory-changes">
+<meta property="og:image" content="https://airlock.dev/assets/og/og-docs.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
-<meta property="og:image:alt" content="Impri — human-in-the-loop approval inbox for AI agents">
+<meta property="og:image:alt" content="Airlock — human-in-the-loop approval inbox for AI agents">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="https://impri.dev/assets/og/og-docs.png">
-<link rel="canonical" href="https://impri.dev/docs/human-approval-for-ai-agent-price-and-inventory-changes">
-<script type="application/ld+json">{"@context":"https://schema.org","@type":"TechArticle","headline":"Human Approval for AI Agent Price and Inventory Changes","description":"Stop a repricing or inventory-management agent from pushing a bad price or stock count live by routing every change through a human approval card first.","url":"https://impri.dev/docs/human-approval-for-ai-agent-price-and-inventory-changes","inLanguage":"en","author":{"@type":"Organization","name":"Impri","url":"https://impri.dev"},"publisher":{"@type":"Organization","name":"Impri","url":"https://impri.dev"}}</script>
+<meta name="twitter:image" content="https://airlock.dev/assets/og/og-docs.png">
+<link rel="canonical" href="https://airlock.dev/docs/human-approval-for-ai-agent-price-and-inventory-changes">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"TechArticle","headline":"Human Approval for AI Agent Price and Inventory Changes","description":"Stop a repricing or inventory-management agent from pushing a bad price or stock count live by routing every change through a human approval card first.","url":"https://airlock.dev/docs/human-approval-for-ai-agent-price-and-inventory-changes","inLanguage":"en","author":{"@type":"Organization","name":"Airlock","url":"https://airlock.dev"},"publisher":{"@type":"Organization","name":"Airlock","url":"https://airlock.dev"}}</script>
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <link rel="icon" href="/favicon.ico" sizes="32x32">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='9' fill='%236366f1'/%3E%3Cpath d='M9 16.5l4.5 4.5L23 11' stroke='white' stroke-width='3' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
@@ -132,13 +132,13 @@ pre code.hljs{display:block;overflow-x:auto}
 <div class="wrap nav-inner">
   <a class="brand" href="/">
     <span class="mark"><svg viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.5 4.5L19 7.5" stroke="white" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
-    Impri
+    Airlock
   </a>
   <div class="nav-links">
     <a class="link" href="/#how">How it works</a>
     <a class="link" href="/#pricing">Pricing</a>
     <a class="link active-nav" href="../docs">Docs</a>
-    <a class="btn btn-primary btn-sm" href="https://gitlab.com/sekera.radim/impri">GitLab</a>
+    <a class="btn btn-primary btn-sm" href="https://gitlab.com/sekera.radim/airlock">GitLab</a>
   </div>
 </div>
 </nav>
@@ -159,7 +159,7 @@ pre code.hljs{display:block;overflow-x:auto}
 <p>A pricing agent that watches competitor prices, demand signals, or stock levels and adjusts your listings accordingly is genuinely useful — until it isn&#39;t. The failure modes are specific and well known in this space: a scraped competitor price of &quot;$9.99&quot; that was actually a shipping fee, a demand model that decides a stockout means &quot;raise price 40%&quot; during a moment that looks bad publicly, or a decimal error that lists a $299 item at $2.99 and sells out the warehouse in ten minutes. None of these look like bugs from inside the agent&#39;s own reasoning — they look like confident, well-justified decisions.</p>
 <p>Unlike a single email or a single blog post, a pricing agent usually wants to change <em>many</em> SKUs in one pass. That changes the shape of the approval problem: reviewing forty individual pop-ups is not realistic for a human, so the gate has to work as a batch, not just a queue of singles.</p>
 <h2 id="the-mcp-flow-one-sku-at-a-time">The MCP flow, one SKU at a time</h2>
-<p>For an agent running inside an MCP client (Claude Code, Claude Desktop, or your own MCP host), each proposed change is one <code>impri_push_action</code> call:</p>
+<p>For an agent running inside an MCP client (Claude Code, Claude Desktop, or your own MCP host), each proposed change is one <code>airlock_push_action</code> call:</p>
 <div class="code-block"><span class="code-lang">typescript</span><pre><code class="hljs"><span class="hljs-keyword">type</span> <span class="hljs-title class_">PriceChange</span> = {
   <span class="hljs-attr">sku</span>: <span class="hljs-built_in">string</span>;
   <span class="hljs-attr">currentPrice</span>: <span class="hljs-built_in">number</span>;
@@ -168,7 +168,7 @@ pre code.hljs{display:block;overflow-x:auto}
 };
 
 <span class="hljs-keyword">async</span> <span class="hljs-keyword">function</span> <span class="hljs-title function_">proposePriceChange</span>(<span class="hljs-params"><span class="hljs-attr">change</span>: <span class="hljs-title class_">PriceChange</span></span>) {
-  <span class="hljs-keyword">const</span> { action_id } = <span class="hljs-keyword">await</span> mcp.<span class="hljs-title function_">call</span>(<span class="hljs-string">&quot;impri_push_action&quot;</span>, {
+  <span class="hljs-keyword">const</span> { action_id } = <span class="hljs-keyword">await</span> mcp.<span class="hljs-title function_">call</span>(<span class="hljs-string">&quot;airlock_push_action&quot;</span>, {
     <span class="hljs-attr">kind</span>: <span class="hljs-string">&quot;price.update&quot;</span>,
     <span class="hljs-attr">title</span>: <span class="hljs-string">`<span class="hljs-subst">${change.sku}</span>: $<span class="hljs-subst">${change.currentPrice}</span> → $<span class="hljs-subst">${change.proposedPrice}</span>`</span>,
     <span class="hljs-attr">preview</span>: {
@@ -184,7 +184,7 @@ pre code.hljs{display:block;overflow-x:auto}
     <span class="hljs-attr">expires_in</span>: <span class="hljs-number">3600</span>,
   });
 
-  <span class="hljs-keyword">const</span> decision = <span class="hljs-keyword">await</span> mcp.<span class="hljs-title function_">call</span>(<span class="hljs-string">&quot;impri_await_decision&quot;</span>, {
+  <span class="hljs-keyword">const</span> decision = <span class="hljs-keyword">await</span> mcp.<span class="hljs-title function_">call</span>(<span class="hljs-string">&quot;airlock_await_decision&quot;</span>, {
     action_id,
     <span class="hljs-attr">timeout_s</span>: <span class="hljs-number">1800</span>,
   });
@@ -192,7 +192,7 @@ pre code.hljs{display:block;overflow-x:auto}
   <span class="hljs-keyword">if</span> (decision.<span class="hljs-property">status</span> !== <span class="hljs-string">&quot;approved&quot;</span>) <span class="hljs-keyword">return</span>; <span class="hljs-comment">// rejected or expired: price stays put</span>
 
   <span class="hljs-keyword">await</span> <span class="hljs-title function_">updateListingPrice</span>(change.<span class="hljs-property">sku</span>, change.<span class="hljs-property">proposedPrice</span>);
-  <span class="hljs-keyword">await</span> mcp.<span class="hljs-title function_">call</span>(<span class="hljs-string">&quot;impri_report_result&quot;</span>, { action_id, <span class="hljs-attr">status</span>: <span class="hljs-string">&quot;executed&quot;</span> });
+  <span class="hljs-keyword">await</span> mcp.<span class="hljs-title function_">call</span>(<span class="hljs-string">&quot;airlock_report_result&quot;</span>, { action_id, <span class="hljs-attr">status</span>: <span class="hljs-string">&quot;executed&quot;</span> });
 }</code></pre></div>
 <p>A one-hour <code>expires_in</code> matches how fast pricing data goes stale — a price change approved eight hours later against a competitor snapshot from that morning is approving something that may no longer be true.</p>
 <h2 id="batching-the-review">Batching the review</h2>
@@ -233,14 +233,14 @@ pre code.hljs{display:block;overflow-x:auto}
 </div>
 <p>Pick thresholds you can defend later, and let the boring, high-confidence cases (small rounding syncs, verified inventory feeds) skip the gate — a gate that fires on everything trains reviewers to rubber-stamp, which defeats the purpose.</p>
 <h2 id="boundaries">Boundaries</h2>
-<p>Impri does not know your pricing model, your margin floor, or your competitor data — it only stores what the agent proposed and holds the human&#39;s decision on it. The threshold logic above belongs in your agent, not in Impri. And this only holds as a real gate if the agent&#39;s price-update function requires an approved decision to run — if it also has a separate cron job that writes prices directly to the store, the gate has a hole in it.</p>
+<p>Airlock does not know your pricing model, your margin floor, or your competitor data — it only stores what the agent proposed and holds the human&#39;s decision on it. The threshold logic above belongs in your agent, not in Airlock. And this only holds as a real gate if the agent&#39;s price-update function requires an approved decision to run — if it also has a separate cron job that writes prices directly to the store, the gate has a hole in it.</p>
 <p>See <a href="how-to-add-human-approval-to-an-ai-agent">the base integration pattern</a> for the full three-call flow, <a href="mcp">MCP setup</a> if you haven&#39;t wired the server in yet, and <a href="integrations">integrations</a> for wrapping the actual store-update call so the approved path is the only path.</p>
 
-    <aside class="doc-cta" aria-label="Try Impri">
+    <aside class="doc-cta" aria-label="Try Airlock">
   <p class="doc-cta-title">Add an approval step to your own agent</p>
-  <p>Start on Impri Cloud: the Free tier includes 100 approvals a month. Or self-host the MIT-licensed core with Docker Compose, with no tier limits.</p>
+  <p>Start on Airlock Cloud: the Free tier includes 100 approvals a month. Or self-host the MIT-licensed core with Docker Compose, with no tier limits.</p>
   <div class="doc-cta-actions">
-    <a class="btn btn-primary btn-sm" href="https://app.impri.dev/?signup=1">Start free on Impri Cloud</a>
+    <a class="btn btn-primary btn-sm" href="https://app.airlock.dev/?signup=1">Start free on Airlock Cloud</a>
     <a class="btn btn-ghost btn-sm" href="../docs/quickstart">Quick start</a>
     <a class="btn btn-ghost btn-sm" href="../docs/self-hosting">Self-host guide</a>
   </div>
@@ -335,19 +335,19 @@ pre code.hljs{display:block;overflow-x:auto}
 <footer class="footer">
 <div class="wrap footer-inner">
   <a class="brand" href="/">
-    <span class="mark"><svg viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.5 4.5L19 7.5" stroke="white" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Impri
+    <span class="mark"><svg viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.5 4.5L19 7.5" stroke="white" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Airlock
   </a>
   <div>
-    <a href="https://gitlab.com/sekera.radim/impri">GitLab</a>
+    <a href="https://gitlab.com/sekera.radim/airlock">GitLab</a>
     <a href="/docs">Docs</a>
-    <a href="https://gitlab.com/sekera.radim/impri/-/blob/main/LICENSE">MIT License</a>
-    <a href="https://www.npmjs.com/package/@impri/mcp">@impri/mcp</a>
+    <a href="https://gitlab.com/sekera.radim/airlock/-/blob/main/LICENSE">MIT License</a>
+    <a href="https://www.npmjs.com/package/@airlock/mcp">@airlock/mcp</a>
     <a href="/docs/privacy">Privacy</a>
     <a href="/docs/terms">Terms</a>
     <a href="https://sekera.dev">Contact</a>
   </div>
 </div>
-<div class="wrap" style="margin-top:18px"><span class="muted">© 2026 Impri · The imprimatur for your AI agents · Built by <a href="https://sekera.dev" style="color:inherit">Radim Sekera</a>. Also by the same maker: <a href="https://briefgate.dev/?utm_source=impri.dev&amp;utm_medium=referral" style="color:inherit">BriefGate</a> — client intake for agencies and AI agents.</span></div>
+<div class="wrap" style="margin-top:18px"><span class="muted">© 2026 Airlock · The airlockmatur for your AI agents · Built by <a href="https://sekera.dev" style="color:inherit">Radim Sekera</a>. Also by the same maker: <a href="https://briefgate.dev/?utm_source=airlock.dev&amp;utm_medium=referral" style="color:inherit">BriefGate</a> — client intake for agencies and AI agents.</span></div>
 </footer>
 </body>
 </html>

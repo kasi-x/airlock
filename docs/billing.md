@@ -1,6 +1,6 @@
 # Billing
 
-Impri is **open-core**: the self-hosted version has no billing, no limits, and no Stripe dependency. Limits only apply to the hosted cloud (`api.impri.dev`), where billing is enforced per project tier.
+Airlock is **open-core**: the self-hosted version has no billing, no limits, and no Stripe dependency. Limits only apply to the hosted cloud (`api.airlock.dev`), where billing is enforced per project tier.
 
 ---
 
@@ -154,7 +154,7 @@ Handled events:
 | `customer.subscription.updated` | Updates tier / status / period_end |
 | `customer.subscription.deleted` | Downgrades project to `free` |
 
-Configure in the Stripe Dashboard as `POST https://api.impri.dev/v1/billing/webhook` (or your self-hosted URL). Required env vars: `STRIPE_SECRET_KEY`, `STRIPE_WEBHOOK_SECRET`.
+Configure in the Stripe Dashboard as `POST https://api.airlock.dev/v1/billing/webhook` (or your self-hosted URL). Required env vars: `STRIPE_SECRET_KEY`, `STRIPE_WEBHOOK_SECRET`.
 
 ---
 

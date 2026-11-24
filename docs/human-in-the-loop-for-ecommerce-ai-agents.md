@@ -1,6 +1,6 @@
 # Human-in-the-Loop for E-commerce AI Agents
 
-Gate AI agent price changes and reorder POs behind a human approval tap in Impri before they touch your store, catching bad scrapes and bad forecasts.
+Gate AI agent price changes and reorder POs behind a human approval tap in Airlock before they touch your store, catching bad scrapes and bad forecasts.
 
 ---
 
@@ -12,16 +12,16 @@ Neither of these is a hypothetical edge case; they're the normal failure mode of
 
 ## The gate: price changes and reorders as pending actions
 
-The fix isn't slower automation — it's an approval gate on exactly two categories of action: **price changes** and **reorder POs above a threshold**. Everything else (updating a product description, tagging inventory, syncing stock counts) can stay fully automated. Impri's job here is narrow: hold the proposed change, show it to a human, and only let the agent proceed once someone taps approve.
+The fix isn't slower automation — it's an approval gate on exactly two categories of action: **price changes** and **reorder POs above a threshold**. Everything else (updating a product description, tagging inventory, syncing stock counts) can stay fully automated. Airlock's job here is narrow: hold the proposed change, show it to a human, and only let the agent proceed once someone taps approve.
 
 ## Wiring it into a Shopify price-and-restock agent (TypeScript)
 
-The agent still does all the analysis — Impri only sits between "decided" and "applied":
+The agent still does all the analysis — Airlock only sits between "decided" and "applied":
 
 ```typescript
-import { ImpriClient, ImpriRejected, ImpriExpired } from "@impri/sdk";
+import { AirlockClient, AirlockRejected, AirlockExpired } from "@airlock/sdk";
 
-const client = new ImpriClient({ apiKey: process.env.IMPRI_API_KEY! });
+const client = new AirlockClient({ apiKey: process.env.AIRLOCK_API_KEY! });
 
 interface PriceChange {
   sku: string;
@@ -56,7 +56,7 @@ async function proposePriceChange(change: PriceChange) {
 
     await client.reportResult(created.id, "executed");
   } catch (e) {
-    if (e instanceof ImpriRejected || e instanceof ImpriExpired) return; // never applied
+    if (e instanceof AirlockRejected || e instanceof AirlockExpired) return; // never applied
     throw e;
   }
 }
@@ -72,9 +72,9 @@ The inbox card is a diff, not a wall of JSON: current price, proposed price, and
 
 If the same agent also handles customer-facing refunds, treat those as a distinct `kind` (e.g. `shopify.refund`) with its own review — refund amounts and reasons need different scrutiny than a catalog price update, and mixing the two in one inbox makes the queue harder to triage. The REST API also accepts an `idempotent` hint on the action body (set `idempotent: false` for refunds, which the inbox shows as a warning badge) — again, send it via a direct `POST /v1/actions` call since the SDK's `createAction` doesn't take that param yet. Either way, approving the same refund action twice should never double-charge a reversal. Discount codes a customer-facing chat bot hands out are a third gate, covered in [human-in-the-loop AI for e-commerce discounts](human-in-the-loop-for-ai-in-ecommerce.md): one card per conversation, the code issued from a signed webhook.
 
-## What Impri is and isn't for e-commerce
+## What Airlock is and isn't for e-commerce
 
-Impri stores the proposed price change or PO, notifies you, and holds the decision — it does not know what a "reasonable" price move looks like, and it does not talk to Shopify itself. Your agent still owns the pricing logic and the actual API call; Impri only owns the yes/no. And it's a real gate only if the agent's Shopify credentials are wrapped so the price-update call cannot run without an approved decision — a credential the agent can use directly bypasses the gate entirely.
+Airlock stores the proposed price change or PO, notifies you, and holds the decision — it does not know what a "reasonable" price move looks like, and it does not talk to Shopify itself. Your agent still owns the pricing logic and the actual API call; Airlock only owns the yes/no. And it's a real gate only if the agent's Shopify credentials are wrapped so the price-update call cannot run without an approved decision — a credential the agent can use directly bypasses the gate entirely.
 
 ---
 

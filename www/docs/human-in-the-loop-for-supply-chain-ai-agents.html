@@ -3,21 +3,21 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Human-in-the-Loop for Supply Chain AI Agents — Impri Docs</title>
+<title>Human-in-the-Loop for Supply Chain AI Agents — Airlock Docs</title>
 <meta name="description" content="An AI agent that reorders stock, renegotiates vendor terms, or reroutes shipments needs a human checkpoint before the money or the goods move — this shows the…">
 <meta name="theme-color" content="#06070d">
-<meta property="og:title" content="Human-in-the-Loop for Supply Chain AI Agents — Impri Docs">
+<meta property="og:title" content="Human-in-the-Loop for Supply Chain AI Agents — Airlock Docs">
 <meta property="og:description" content="An AI agent that reorders stock, renegotiates vendor terms, or reroutes shipments needs a human checkpoint before the money or the goods move — this shows the…">
 <meta property="og:type" content="article">
-<meta property="og:url" content="https://impri.dev/docs/human-in-the-loop-for-supply-chain-ai-agents">
-<meta property="og:image" content="https://impri.dev/assets/og/og-docs.png">
+<meta property="og:url" content="https://airlock.dev/docs/human-in-the-loop-for-supply-chain-ai-agents">
+<meta property="og:image" content="https://airlock.dev/assets/og/og-docs.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
-<meta property="og:image:alt" content="Impri — human-in-the-loop approval inbox for AI agents">
+<meta property="og:image:alt" content="Airlock — human-in-the-loop approval inbox for AI agents">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="https://impri.dev/assets/og/og-docs.png">
-<link rel="canonical" href="https://impri.dev/docs/human-in-the-loop-for-supply-chain-ai-agents">
-<script type="application/ld+json">{"@context":"https://schema.org","@type":"TechArticle","headline":"Human-in-the-Loop for Supply Chain AI Agents","description":"An AI agent that reorders stock, renegotiates vendor terms, or reroutes shipments needs a human checkpoint before the money or the goods move — this shows the…","url":"https://impri.dev/docs/human-in-the-loop-for-supply-chain-ai-agents","inLanguage":"en","author":{"@type":"Organization","name":"Impri","url":"https://impri.dev"},"publisher":{"@type":"Organization","name":"Impri","url":"https://impri.dev"}}</script>
+<meta name="twitter:image" content="https://airlock.dev/assets/og/og-docs.png">
+<link rel="canonical" href="https://airlock.dev/docs/human-in-the-loop-for-supply-chain-ai-agents">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"TechArticle","headline":"Human-in-the-Loop for Supply Chain AI Agents","description":"An AI agent that reorders stock, renegotiates vendor terms, or reroutes shipments needs a human checkpoint before the money or the goods move — this shows the…","url":"https://airlock.dev/docs/human-in-the-loop-for-supply-chain-ai-agents","inLanguage":"en","author":{"@type":"Organization","name":"Airlock","url":"https://airlock.dev"},"publisher":{"@type":"Organization","name":"Airlock","url":"https://airlock.dev"}}</script>
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <link rel="icon" href="/favicon.ico" sizes="32x32">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='9' fill='%236366f1'/%3E%3Cpath d='M9 16.5l4.5 4.5L23 11' stroke='white' stroke-width='3' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
@@ -132,13 +132,13 @@ pre code.hljs{display:block;overflow-x:auto}
 <div class="wrap nav-inner">
   <a class="brand" href="/">
     <span class="mark"><svg viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.5 4.5L19 7.5" stroke="white" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
-    Impri
+    Airlock
   </a>
   <div class="nav-links">
     <a class="link" href="/#how">How it works</a>
     <a class="link" href="/#pricing">Pricing</a>
     <a class="link active-nav" href="../docs">Docs</a>
-    <a class="btn btn-primary btn-sm" href="https://gitlab.com/sekera.radim/impri">GitLab</a>
+    <a class="btn btn-primary btn-sm" href="https://gitlab.com/sekera.radim/airlock">GitLab</a>
   </div>
 </div>
 </nav>
@@ -194,13 +194,13 @@ pre code.hljs{display:block;overflow-x:auto}
 </div>
 <p>The pattern below applies to any of the &quot;yes&quot; rows; a reorder PO is the concrete example.</p>
 <h2 id="gating-a-reorder-decision">Gating a reorder decision</h2>
-<p>The agent proposes the PO as an Impri action instead of calling the supplier API directly. A human — usually whoever owns that supplier relationship — sees the SKU, quantity, and unit cost before it goes out.</p>
+<p>The agent proposes the PO as an Airlock action instead of calling the supplier API directly. A human — usually whoever owns that supplier relationship — sees the SKU, quantity, and unit cost before it goes out.</p>
 <div class="code-block"><span class="code-lang">python</span><pre><code class="hljs"><span class="hljs-keyword">import</span> os
 <span class="hljs-keyword">import</span> time
 <span class="hljs-keyword">import</span> requests
 
-API = <span class="hljs-string">&quot;https://api.impri.dev&quot;</span>
-HEADERS = {<span class="hljs-string">&quot;Authorization&quot;</span>: <span class="hljs-string">f&quot;Bearer <span class="hljs-subst">{os.environ[<span class="hljs-string">&#x27;IMPRI_API_KEY&#x27;</span>]}</span>&quot;</span>}
+API = <span class="hljs-string">&quot;https://api.airlock.dev&quot;</span>
+HEADERS = {<span class="hljs-string">&quot;Authorization&quot;</span>: <span class="hljs-string">f&quot;Bearer <span class="hljs-subst">{os.environ[<span class="hljs-string">&#x27;AIRLOCK_API_KEY&#x27;</span>]}</span>&quot;</span>}
 
 <span class="hljs-keyword">def</span> <span class="hljs-title function_">propose_reorder</span>(<span class="hljs-params">sku: <span class="hljs-built_in">str</span>, qty: <span class="hljs-built_in">int</span>, unit_cost: <span class="hljs-built_in">float</span>, supplier: <span class="hljs-built_in">str</span></span>) -&gt; <span class="hljs-built_in">str</span>:
     body = {
@@ -248,17 +248,17 @@ decision = wait_for_decision(action_id)
 <li><strong>Short <code>expires_in</code></strong> — a reorder recommendation based on today&#39;s stock count is stale in a day. Let it expire rather than have someone approve a decision based on yesterday&#39;s numbers.</li>
 </ul>
 <h2 id="multiple-approvers-one-sku-category">Multiple approvers, one SKU category</h2>
-<p>Procurement teams commonly split ownership by supplier or category rather than having one person approve everything. Route the notification accordingly — Impri&#39;s channel integrations (see <a href="slack-approval">Slack approval</a>) let you point different <code>kind</code> values or title patterns at different channels or reviewers, so the person who owns the Northwind relationship sees Northwind POs, not every SKU in the warehouse.</p>
+<p>Procurement teams commonly split ownership by supplier or category rather than having one person approve everything. Route the notification accordingly — Airlock&#39;s channel integrations (see <a href="slack-approval">Slack approval</a>) let you point different <code>kind</code> values or title patterns at different channels or reviewers, so the person who owns the Northwind relationship sees Northwind POs, not every SKU in the warehouse.</p>
 <h2 id="what-this-doesn39t-solve">What this doesn&#39;t solve</h2>
-<p>Impri holds the decision and shows the reviewer what&#39;s about to happen — it does not evaluate whether the reorder quantity is <em>correct</em>. If your forecasting model is systematically wrong, a human approving a bad PO one at a time won&#39;t catch that pattern; you still need monitoring on the forecast itself. Impri is also not a substitute for your ERP&#39;s own PO validation (budget limits, duplicate-supplier checks) — those should run before the action is even proposed, so the human is approving something already sane on its face.</p>
+<p>Airlock holds the decision and shows the reviewer what&#39;s about to happen — it does not evaluate whether the reorder quantity is <em>correct</em>. If your forecasting model is systematically wrong, a human approving a bad PO one at a time won&#39;t catch that pattern; you still need monitoring on the forecast itself. Airlock is also not a substitute for your ERP&#39;s own PO validation (budget limits, duplicate-supplier checks) — those should run before the action is even proposed, so the human is approving something already sane on its face.</p>
 <hr>
 <p>Next: wire this into your agent&#39;s actual supplier client with the <a href="sdk-python">Python SDK</a>, or read the <a href="quickstart">quickstart</a> to get an API key first. For an audit trail of every reorder decision, see <a href="adding-an-audit-log-to-your-ai-agent">adding an audit log</a>.</p>
 
-    <aside class="doc-cta" aria-label="Try Impri">
+    <aside class="doc-cta" aria-label="Try Airlock">
   <p class="doc-cta-title">Add an approval step to your own agent</p>
-  <p>Start on Impri Cloud: the Free tier includes 100 approvals a month. Or self-host the MIT-licensed core with Docker Compose, with no tier limits.</p>
+  <p>Start on Airlock Cloud: the Free tier includes 100 approvals a month. Or self-host the MIT-licensed core with Docker Compose, with no tier limits.</p>
   <div class="doc-cta-actions">
-    <a class="btn btn-primary btn-sm" href="https://app.impri.dev/?signup=1">Start free on Impri Cloud</a>
+    <a class="btn btn-primary btn-sm" href="https://app.airlock.dev/?signup=1">Start free on Airlock Cloud</a>
     <a class="btn btn-ghost btn-sm" href="../docs/quickstart">Quick start</a>
     <a class="btn btn-ghost btn-sm" href="../docs/self-hosting">Self-host guide</a>
   </div>
@@ -353,19 +353,19 @@ decision = wait_for_decision(action_id)
 <footer class="footer">
 <div class="wrap footer-inner">
   <a class="brand" href="/">
-    <span class="mark"><svg viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.5 4.5L19 7.5" stroke="white" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Impri
+    <span class="mark"><svg viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.5 4.5L19 7.5" stroke="white" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Airlock
   </a>
   <div>
-    <a href="https://gitlab.com/sekera.radim/impri">GitLab</a>
+    <a href="https://gitlab.com/sekera.radim/airlock">GitLab</a>
     <a href="/docs">Docs</a>
-    <a href="https://gitlab.com/sekera.radim/impri/-/blob/main/LICENSE">MIT License</a>
-    <a href="https://www.npmjs.com/package/@impri/mcp">@impri/mcp</a>
+    <a href="https://gitlab.com/sekera.radim/airlock/-/blob/main/LICENSE">MIT License</a>
+    <a href="https://www.npmjs.com/package/@airlock/mcp">@airlock/mcp</a>
     <a href="/docs/privacy">Privacy</a>
     <a href="/docs/terms">Terms</a>
     <a href="https://sekera.dev">Contact</a>
   </div>
 </div>
-<div class="wrap" style="margin-top:18px"><span class="muted">© 2026 Impri · The imprimatur for your AI agents · Built by <a href="https://sekera.dev" style="color:inherit">Radim Sekera</a>. Also by the same maker: <a href="https://briefgate.dev/?utm_source=impri.dev&amp;utm_medium=referral" style="color:inherit">BriefGate</a> — client intake for agencies and AI agents.</span></div>
+<div class="wrap" style="margin-top:18px"><span class="muted">© 2026 Airlock · The airlockmatur for your AI agents · Built by <a href="https://sekera.dev" style="color:inherit">Radim Sekera</a>. Also by the same maker: <a href="https://briefgate.dev/?utm_source=airlock.dev&amp;utm_medium=referral" style="color:inherit">BriefGate</a> — client intake for agencies and AI agents.</span></div>
 </footer>
 </body>
 </html>

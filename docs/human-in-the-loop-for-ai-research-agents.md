@@ -32,8 +32,8 @@ The agent finishes its research, then proposes sending the briefing instead of s
 ```python
 import os, time, requests
 
-BASE = "https://api.impri.dev"
-HEADERS = {"Authorization": f"Bearer {os.environ['IMPRI_API_KEY']}"}
+BASE = "https://api.airlock.dev"
+HEADERS = {"Authorization": f"Bearer {os.environ['AIRLOCK_API_KEY']}"}
 
 def propose_briefing(run_id: str, report_md: str, sources: list[str]) -> dict:
     body = report_md + "\n\n---\n**Sources**\n" + "\n".join(f"- {s}" for s in sources)
@@ -74,7 +74,7 @@ Three details matter here:
 
 ## Make `send_to_client` the only way out
 
-The gate is real only when the approved path is the agent's only path to the side effect. If the agent also holds your SMTP credentials or a Slack token, it can skip the card. Keep the credential inside `send_to_client`, which runs after the approval check, and do not expose it to the model as a tool. With an MCP client, the `impri_push_action`, `impri_await_decision` and `impri_report_result` tools in the [MCP server](mcp.md) cover the same three steps.
+The gate is real only when the approved path is the agent's only path to the side effect. If the agent also holds your SMTP credentials or a Slack token, it can skip the card. Keep the credential inside `send_to_client`, which runs after the approval check, and do not expose it to the model as a tool. With an MCP client, the `airlock_push_action`, `airlock_await_decision` and `airlock_report_result` tools in the [MCP server](mcp.md) cover the same three steps.
 
 ---
 
@@ -84,9 +84,9 @@ The card shows up in the [inbox](inbox.md), and you can be pinged through [email
 
 ---
 
-## What Impri does not do here
+## What Airlock does not do here
 
-Impri is only the approval gate. It stores the proposed action, notifies a person and holds the decision. It does not run the research, check whether the facts are right, or judge the sources; the reviewer does that. It does not send the briefing either, your code does. It is also not a workflow engine, so orchestrating the research steps stays in your agent framework.
+Airlock is only the approval gate. It stores the proposed action, notifies a person and holds the decision. It does not run the research, check whether the facts are right, or judge the sources; the reviewer does that. It does not send the briefing either, your code does. It is also not a workflow engine, so orchestrating the research steps stays in your agent framework.
 
 ---
 

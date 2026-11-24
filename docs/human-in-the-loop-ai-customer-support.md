@@ -36,9 +36,9 @@ Here's a support agent that drafts a reply to a billing complaint and won't send
 ```python
 import os
 import time
-from impri import ImpriClient
+from airlock import AirlockClient
 
-client = ImpriClient(api_key=os.environ["IMPRI_API_KEY"])
+client = AirlockClient(api_key=os.environ["AIRLOCK_API_KEY"])
 
 def handle_billing_ticket(ticket):
     draft = generate_reply(ticket)  # your LLM call, not shown
@@ -82,7 +82,7 @@ For refunds and other actions with financial impact, add `idempotent: false` to 
 
 ## Boundaries worth being explicit about
 
-Impri is the approval gate — it stores the draft reply, notifies the reviewer, and holds the decision. It does not read the support ticket, judge whether the refund amount is reasonable, or understand your helpdesk's data model. That judgment stays with the human reviewer and with your agent's own logic for what to draft in the first place.
+Airlock is the approval gate — it stores the draft reply, notifies the reviewer, and holds the decision. It does not read the support ticket, judge whether the refund amount is reasonable, or understand your helpdesk's data model. That judgment stays with the human reviewer and with your agent's own logic for what to draft in the first place.
 
 It's also only a real gate if `helpdesk.post_reply` and `refund_api.issue` are unreachable except through this code path. If your support agent also holds a raw API key it could call directly, wrap that client so the unapproved path doesn't exist in the code — see [SDK integrations](integrations.md) for the wrapper pattern, and [approve emails before your AI agent sends them](approve-emails-before-your-ai-agent-sends-them.md) if replies go out over email specifically.
 

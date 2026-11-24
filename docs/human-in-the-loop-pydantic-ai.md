@@ -1,6 +1,6 @@
 # Pydantic AI Human-in-the-Loop with an Approval Inbox
 
-Pydantic AI ends a run with DeferredToolRequests when a tool needs approval. Send each call to Impri, save the history, and resume once a person decides.
+Pydantic AI ends a run with DeferredToolRequests when a tool needs approval. Send each call to Airlock, save the history, and resume once a person decides.
 
 ---
 
@@ -8,11 +8,11 @@ Pydantic AI ends a run with DeferredToolRequests when a tool needs approval. Sen
 
 Mark a tool with `requires_approval=True` and add `DeferredToolRequests` to the agent's `output_type`. When the model calls that tool, Pydantic AI doesn't run it. The run ends, and `result.output` is a `DeferredToolRequests` whose `approvals` list holds each pending call: tool name, arguments and `tool_call_id`. You continue with a second run that gets the saved message history plus a `DeferredToolResults` mapping each `tool_call_id` to `ToolApproved` or `ToolDenied`. Leave `DeferredToolRequests` out of `output_type` and the run fails with a `UserError` instead of pausing.
 
-Nothing waits in memory between the two runs. That is what makes the pattern fit an approval inbox: the reviewer can answer from a phone an hour later, after your worker has restarted. The [Pydantic AI deferred tools docs](https://pydantic.dev/docs/ai/tools-toolsets/deferred-tools/) show both runs in one process. Below, the pause becomes a card in Impri, and the second run starts when someone decides it.
+Nothing waits in memory between the two runs. That is what makes the pattern fit an approval inbox: the reviewer can answer from a phone an hour later, after your worker has restarted. The [Pydantic AI deferred tools docs](https://pydantic.dev/docs/ai/tools-toolsets/deferred-tools/) show both runs in one process. Below, the pause becomes a card in Airlock, and the second run starts when someone decides it.
 
 ## The agent and the gated tool
 
-Requirements: `pip install pydantic-ai httpx`, an Impri API key in `IMPRI_API_KEY`.
+Requirements: `pip install pydantic-ai httpx`, an Airlock API key in `AIRLOCK_API_KEY`.
 
 ```python
 import os
@@ -21,9 +21,9 @@ from pydantic_ai import Agent, DeferredToolRequests, RunContext
 
 from mailer import send_email  # your email provider; returns a message id
 
-impri = httpx.Client(
-    base_url=os.environ.get("IMPRI_BASE_URL", "https://api.impri.dev"),
-    headers={"Authorization": f"Bearer {os.environ['IMPRI_API_KEY']}"},
+airlock = httpx.Client(
+    base_url=os.environ.get("AIRLOCK_BASE_URL", "https://api.airlock.dev"),
+    headers={"Authorization": f"Bearer {os.environ['AIRLOCK_API_KEY']}"},
 )
 
 agent = Agent(
@@ -36,13 +36,13 @@ agent = Agent(
 @agent.tool(requires_approval=True)
 def send_customer_email(ctx: RunContext[None], to: str, subject: str, body: str) -> str:
     """Email a customer. A person approves every call before it runs."""
-    action_id = ctx.tool_call_metadata["impri_action_id"]
+    action_id = ctx.tool_call_metadata["airlock_action_id"]
     message_id = send_email(to=to, subject=subject, body=body)
-    impri.post(f"/v1/actions/{action_id}/result", json={"status": "executed", "detail": message_id})
+    airlock.post(f"/v1/actions/{action_id}/result", json={"status": "executed", "detail": message_id})
     return f"Email sent to {to} (message {message_id})."
 ```
 
-The body of `send_customer_email` runs only after approval. `ctx.tool_call_metadata` carries the Impri action id you pass in on resume, so the tool can report the outcome and the card moves from `approved` to `executed`.
+The body of `send_customer_email` runs only after approval. `ctx.tool_call_metadata` carries the Airlock action id you pass in on resume, so the tool can report the outcome and the card moves from `approved` to `executed`.
 
 ## Step 1: turn the pause into a card
 
@@ -60,13 +60,13 @@ def start(conversation_id: str, ticket: str) -> str | None:
     state = {"messages": result.all_messages_json().decode(), "calls": {}}
     for call in result.output.approvals:
         args = call.args_as_dict()
-        r = impri.post("/v1/actions", json={
+        r = airlock.post("/v1/actions", json={
             "kind": "email.send",
             "title": f"Email {args['to']}: {args['subject']}",
             "preview": {"format": "plain", "body": args["body"]},
             "editable": ["preview.body"],
             "idempotency_key": f"{conversation_id}:{call.tool_call_id}",
-            "callback_url": f"https://support.example.com/impri/{conversation_id}",
+            "callback_url": f"https://support.example.com/airlock/{conversation_id}",
         })
         r.raise_for_status()
         state["calls"][call.tool_call_id] = {"action_id": r.json()["id"], "args": args}
@@ -75,7 +75,7 @@ def start(conversation_id: str, ticket: str) -> str | None:
     return None  # paused: no process waits for the reviewer
 ```
 
-Each pending call becomes one action. `preview.body` is the email the customer will get, and `editable: ["preview.body"]` lets the reviewer rewrite it before approving. The `idempotency_key` comes from the tool call id, so a retried POST returns the same card instead of a second one. `callback_url` is where Impri sends a signed webhook when the card is decided or expires ([Webhooks](webhooks.md)): your handler checks the signature and calls `resume()`.
+Each pending call becomes one action. `preview.body` is the email the customer will get, and `editable: ["preview.body"]` lets the reviewer rewrite it before approving. The `idempotency_key` comes from the tool call id, so a retried POST returns the same card instead of a second one. `callback_url` is where Airlock sends a signed webhook when the card is decided or expires ([Webhooks](webhooks.md)): your handler checks the signature and calls `resume()`.
 
 ## Step 2: resume with the decision
 
@@ -92,14 +92,14 @@ def resume(conversation_id: str) -> str | None:
         return None  # already resumed
     results = DeferredToolResults()
     for call_id, call in state["calls"].items():
-        action = impri.get(f"/v1/actions/{call['action_id']}").json()
+        action = airlock.get(f"/v1/actions/{call['action_id']}").json()
         if action["status"] == "pending":
             return None  # wait until every card is decided
         verdict = (action.get("decision") or {}).get("verdict")
         if verdict == "approve":
             body = action["decision"]["final_preview"]["body"]  # the reviewer's edit, if any
             results.approvals[call_id] = ToolApproved(override_args={**call["args"], "body": body})
-            results.metadata[call_id] = {"impri_action_id": call["action_id"]}
+            results.metadata[call_id] = {"airlock_action_id": call["action_id"]}
         elif verdict == "reject":
             results.approvals[call_id] = ToolDenied("A reviewer rejected this email. Do not resend it.")
         else:  # expired: nobody decided in time
@@ -134,16 +134,16 @@ from pydantic_ai import ApprovalRequired
 def send_customer_email(ctx: RunContext[None], to: str, subject: str, body: str) -> str:
     if not to.endswith("@yourcompany.com") and not ctx.tool_call_approved:
         raise ApprovalRequired()
-    ...  # send; report to Impri only when ctx.tool_call_approved is True
+    ...  # send; report to Airlock only when ctx.tool_call_approved is True
 ```
 
 On resume, Pydantic AI runs the function again from the top with `ctx.tool_call_approved=True`. In our run the body was entered twice for one email, so keep side effects below the check. `ctx.tool_call_metadata` is `None` for calls that never needed approval.
 
 ## What we ran
 
-On 2026-11-18, with pydantic-ai 2.70.0 against a local Impri server. The model was Pydantic AI's `FunctionModel` returning a scripted tool call (no LLM API key), and `start()` and every `resume()` ran in separate processes.
+On 2026-11-18, with pydantic-ai 2.70.0 against a local Airlock server. The model was Pydantic AI's `FunctionModel` returning a scripted tool call (no LLM API key), and `start()` and every `resume()` ran in separate processes.
 
-| What happened in Impri | What the model got back | Email sent | Card status |
+| What happened in Airlock | What the model got back | Email sent | Card status |
 |---|---|---|---|
 | Approved with an edited body | `Email sent to dana@example.com (message …)` | once, with the edited text | `executed` |
 | Rejected | "A reviewer rejected this email. Do not resend it." | no | `rejected` |
@@ -151,8 +151,8 @@ On 2026-11-18, with pydantic-ai 2.70.0 against a local Impri server. The model w
 | `resume()` before any decision | nothing: `resume()` returned `None`, the run stayed paused | no | `pending` |
 | `resume()` called a second time | nothing: `resume()` returned `None` | no second email | `executed` |
 
-Impri makes sure a person approved this email, in the exact text the tool then sends. It doesn't check that the agent picked the right customer: that stays in your code, and the gate only holds if `send_customer_email` is the agent's only way to send mail.
+Airlock makes sure a person approved this email, in the exact text the tool then sends. It doesn't check that the agent picked the right customer: that stays in your code, and the gate only holds if `send_customer_email` is the agent's only way to send mail.
 
 ## Next step
 
-[Start free on Impri Cloud](https://app.impri.dev/?signup=1), create an API key and run `start()` on a test ticket: the card appears in your inbox. To keep everything on your own machine, follow [Self-hosting](self-hosting.md) and set `IMPRI_BASE_URL=http://localhost:8484`. The same pattern for other frameworks: [OpenAI Agents SDK](human-in-the-loop-openai-agents-sdk.md), [LangChain Deep Agents](human-in-the-loop-langchain-deep-agents.md).
+[Start free on Airlock Cloud](https://app.airlock.dev/?signup=1), create an API key and run `start()` on a test ticket: the card appears in your inbox. To keep everything on your own machine, follow [Self-hosting](self-hosting.md) and set `AIRLOCK_BASE_URL=http://localhost:8484`. The same pattern for other frameworks: [OpenAI Agents SDK](human-in-the-loop-openai-agents-sdk.md), [LangChain Deep Agents](human-in-the-loop-langchain-deep-agents.md).

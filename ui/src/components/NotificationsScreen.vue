@@ -326,7 +326,7 @@
           </div>
           <p class="text-caption text-medium-emphasis mb-3">
             When enabled, Slack messages include Approve / Reject buttons.
-            Team members decide in Slack without opening Impri.
+            Team members decide in Slack without opening Airlock.
           </p>
           <v-switch
             v-model="form.configSlackApprovalMode"
@@ -490,7 +490,7 @@ U1XXXXXXXX"
                   <div class="setup-step mb-3">
                     <div class="font-weight-medium mb-1">6. Save and get your channel ID</div>
                     <div class="text-medium-emphasis">
-                      Save this channel. Copy the Impri <strong>channel ID</strong>
+                      Save this channel. Copy the Airlock <strong>channel ID</strong>
                       (format: <code>nchan_…</code>) from the channel card.
                     </div>
                   </div>
@@ -500,7 +500,7 @@ U1XXXXXXXX"
                       In the Slack app → <strong>Interactivity &amp; Shortcuts</strong>, toggle Interactivity on.
                       Set the <strong>Request URL</strong> to:<br>
                       <code>{BASE_URL}/v1/integrations/slack/interactions/{channelId}</code><br>
-                      Replace <code>{BASE_URL}</code> with your Impri server's public HTTPS URL
+                      Replace <code>{BASE_URL}</code> with your Airlock server's public HTTPS URL
                       and <code>{channelId}</code> with the ID from step 6.
                       For local dev, expose your server via a tunnel (<code>ngrok http 8484</code>).
                     </div>
@@ -528,7 +528,7 @@ U1XXXXXXXX"
           </div>
           <p class="text-caption text-medium-emphasis mb-3">
             When enabled, Discord messages include Approve / Reject buttons.
-            Team members decide in Discord without opening Impri.
+            Team members decide in Discord without opening Airlock.
           </p>
           <v-switch
             v-model="form.configDiscordApprovalMode"
@@ -667,7 +667,7 @@ U1XXXXXXXX"
                 <code v-if="isEditing && editingChannel">{{ discordInteractionsUrl }}</code>
                 <code v-else>{BASE_URL}/v1/integrations/discord/interactions/<em>{channelId}</em></code>
                 <template v-if="!isEditing"> — the channel ID is shown after saving.</template><br>
-                Discord sends a PING immediately to verify the URL. Impri verifies the Ed25519 signature
+                Discord sends a PING immediately to verify the URL. Airlock verifies the Ed25519 signature
                 and responds with <code>{"type":1}</code>.
               </div>
             </v-alert>
@@ -713,7 +713,7 @@ U1XXXXXXXX"
                   <div class="setup-step mb-3">
                     <div class="font-weight-medium mb-1">5. Save and get your channel ID</div>
                     <div class="text-medium-emphasis">
-                      Save this channel in Impri. Copy the <strong>channel ID</strong>
+                      Save this channel in Airlock. Copy the <strong>channel ID</strong>
                       (<code>nchan_…</code>) from the channel card.
                     </div>
                   </div>
@@ -723,9 +723,9 @@ U1XXXXXXXX"
                       In the Discord Developer Portal → <strong>General Information</strong>,
                       set <strong>Interactions Endpoint URL</strong> to:<br>
                       <code>{BASE_URL}/v1/integrations/discord/interactions/{channelId}</code><br>
-                      Replace <code>{BASE_URL}</code> with your Impri server's public HTTPS URL
+                      Replace <code>{BASE_URL}</code> with your Airlock server's public HTTPS URL
                       and <code>{channelId}</code> with the ID from step 5.
-                      Discord sends a PING immediately; Impri verifies the Ed25519 signature and
+                      Discord sends a PING immediately; Airlock verifies the Ed25519 signature and
                       responds with <code>{"type":1}</code>. For local dev, use a tunnel
                       (<code>ngrok http 8484</code>).
                     </div>
@@ -782,7 +782,7 @@ U1XXXXXXXX"
           </div>
           <p class="text-caption text-medium-emphasis mb-3">
             When enabled, Telegram messages include Approve / Reject buttons.
-            Team members tap in Telegram instead of opening Impri.
+            Team members tap in Telegram instead of opening Airlock.
           </p>
 
           <v-switch
@@ -888,7 +888,7 @@ U1XXXXXXXX"
                   <div class="setup-step mb-3">
                     <div class="font-weight-medium mb-1">4. Webhook registration</div>
                     <div class="text-medium-emphasis">
-                      If your server's <code>BASE_URL</code> is a public HTTPS URL, Impri registers
+                      If your server's <code>BASE_URL</code> is a public HTTPS URL, Airlock registers
                       the Telegram webhook automatically when you save this channel. Check your
                       server logs for <code>[telegram-approval] setWebhook ok</code>.<br>
                       For local dev or self-hosted behind NAT: start a tunnel
@@ -935,7 +935,7 @@ U1XXXXXXXX"
             label="Topic *"
             variant="outlined"
             density="comfortable"
-            placeholder="impri-alerts"
+            placeholder="airlock-alerts"
             hint="Letters, numbers, underscores, hyphens, slashes only. Max 64 chars."
             persistent-hint
             class="mb-4"
@@ -951,7 +951,7 @@ U1XXXXXXXX"
             variant="outlined"
             density="comfortable"
             placeholder="you@example.com"
-            hint="We'll email a confirmation link to this address. Notifications start once it's confirmed. (Self-hosted: requires SMTP on your Impri server.)"
+            hint="We'll email a confirmation link to this address. Notifications start once it's confirmed. (Self-hosted: requires SMTP on your Airlock server.)"
             persistent-hint
             class="mb-4"
           />
@@ -967,7 +967,7 @@ U1XXXXXXXX"
             :placeholder="
               isEditing && secretsAlreadySet.url && !form.configUrl
                 ? 'Leave blank to keep current value'
-                : 'https://your-app.example.com/hooks/impri'
+                : 'https://your-app.example.com/hooks/airlock'
             "
             :hint="
               isEditing && secretsAlreadySet.url
@@ -990,7 +990,7 @@ U1XXXXXXXX"
             :hint="
               isEditing && secretsAlreadySet.hmacSecret
                 ? 'Already set — leave blank to keep, or enter a new secret to replace.'
-                : 'When set, requests are signed via X-Impri-Signature (HMAC-SHA256). Min 16 chars.'
+                : 'When set, requests are signed via X-Airlock-Signature (HMAC-SHA256). Min 16 chars.'
             "
             persistent-hint
             class="mb-4"
@@ -1369,7 +1369,7 @@ const setupGuide = computed<SetupGuide | null>(() => {
               'Go to api.slack.com/apps → Create New App → From scratch.',
               'OAuth & Permissions → add the chat:write bot scope → Install to Workspace → copy the Bot User OAuth Token (xoxb-…).',
               'Basic Information → App Credentials → copy the Signing Secret.',
-              'After saving this channel, Impri shows an Interactivity Request URL — paste it into the Slack app under Interactivity & Shortcuts.',
+              'After saving this channel, Airlock shows an Interactivity Request URL — paste it into the Slack app under Interactivity & Shortcuts.',
             ],
           }
         : {
@@ -1387,7 +1387,7 @@ const setupGuide = computed<SetupGuide | null>(() => {
             steps: [
               'Go to discord.com/developers/applications → New Application.',
               'Bot → Reset Token → copy the bot token; General Information → copy the Public Key.',
-              'After saving this channel, Impri shows an Interactions Endpoint URL — paste it into General Information.',
+              'After saving this channel, Airlock shows an Interactions Endpoint URL — paste it into General Information.',
             ],
           }
         : {
@@ -1418,7 +1418,7 @@ const setupGuide = computed<SetupGuide | null>(() => {
         title: 'What to use as the endpoint URL',
         steps: [
           'The HTTPS URL of your own endpoint that accepts POST requests (your app, a serverless function, or an automation platform).',
-          'Set an HMAC secret below and verify the X-Impri-Signature header on your side.',
+          'Set an HMAC secret below and verify the X-Airlock-Signature header on your side.',
         ],
       }
     default:

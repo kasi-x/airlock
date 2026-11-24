@@ -1,6 +1,6 @@
 # Draft Preview and Diff Review for AI Agent Actions
 
-Show a human the exact draft your AI agent wants to send, let them edit it, and execute only the reviewed version. Draft preview and diff review with Impri, in TypeScript.
+Show a human the exact draft your AI agent wants to send, let them edit it, and execute only the reviewed version. Draft preview and diff review with Airlock, in TypeScript.
 
 ---
 
@@ -15,9 +15,9 @@ The fix is a pattern with three parts: the **preview** is the real artifact, the
 The preview is the full text the agent will act on, not a description of it. Mark the fields the human may change with `editable`.
 
 ```typescript
-const BASE = "https://api.impri.dev";
+const BASE = "https://api.airlock.dev";
 const headers = {
-  Authorization: `Bearer ${process.env.IMPRI_API_KEY}`,
+  Authorization: `Bearer ${process.env.AIRLOCK_API_KEY}`,
   "Content-Type": "application/json",
 };
 
@@ -88,7 +88,7 @@ Two details matter here. First, always publish `decision.final_preview.body`, ne
 
 ## Boundaries worth knowing
 
-- Impri stores the preview, notifies the reviewer and holds the decision. It does not generate the draft, judge its quality, or publish anything.
+- Airlock stores the preview, notifies the reviewer and holds the decision. It does not generate the draft, judge its quality, or publish anything.
 - The diff shows what the human changed in the editable fields. It does not verify that your preview matches what your executor will really do, so build the preview from the same variable you pass to the executor.
 - This is a real gate only if `publishChangelog` is the agent's sole route to publishing. If the agent also holds the raw credential, it can bypass the review.
 

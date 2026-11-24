@@ -12,12 +12,12 @@ But `workflow_dispatch` can run anything a `.github/workflows/*.yml` file define
 
 ## Wrapping the dispatch call
 
-The fix is to make the agent's dispatch function a two-step function: propose to Impri, wait for approval, then call GitHub. The agent never gets a code path that reaches the GitHub API without that middle step.
+The fix is to make the agent's dispatch function a two-step function: propose to Airlock, wait for approval, then call GitHub. The agent never gets a code path that reaches the GitHub API without that middle step.
 
 ```typescript
 import { Octokit } from "octokit";
 
-const IMPRI_KEY = process.env.IMPRI_API_KEY!;
+const AIRLOCK_KEY = process.env.AIRLOCK_API_KEY!;
 const octokit = new Octokit({ auth: process.env.GITHUB_TOKEN });
 
 async function dispatchWorkflowWithApproval(
@@ -27,10 +27,10 @@ async function dispatchWorkflowWithApproval(
   ref: string,
   inputs: Record<string, string>,
 ) {
-  const res = await fetch("https://api.impri.dev/v1/actions", {
+  const res = await fetch("https://api.airlock.dev/v1/actions", {
     method: "POST",
     headers: {
-      Authorization: `Bearer ${IMPRI_KEY}`,
+      Authorization: `Bearer ${AIRLOCK_KEY}`,
       "Content-Type": "application/json",
     },
     body: JSON.stringify({
@@ -49,8 +49,8 @@ async function dispatchWorkflowWithApproval(
   let status = "pending";
   while (status === "pending") {
     await new Promise((r) => setTimeout(r, 5000));
-    const check = await fetch(`https://api.impri.dev/v1/actions/${id}`, {
-      headers: { Authorization: `Bearer ${IMPRI_KEY}` },
+    const check = await fetch(`https://api.airlock.dev/v1/actions/${id}`, {
+      headers: { Authorization: `Bearer ${AIRLOCK_KEY}` },
     });
     status = (await check.json()).status;
   }
@@ -85,4 +85,4 @@ This pattern only holds if the agent process itself can't reach the GitHub API e
 
 ---
 
-New to Impri? Start with the [quickstart](quickstart.md) to get an API key, or read the general [pattern for adding approval to an agent](how-to-add-human-approval-to-an-ai-agent.md) if this is your first gated action. For agents that already use the TypeScript SDK instead of raw `fetch`, see [sdk-typescript](sdk-typescript.md).
+New to Airlock? Start with the [quickstart](quickstart.md) to get an API key, or read the general [pattern for adding approval to an agent](how-to-add-human-approval-to-an-ai-agent.md) if this is your first gated action. For agents that already use the TypeScript SDK instead of raw `fetch`, see [sdk-typescript](sdk-typescript.md).

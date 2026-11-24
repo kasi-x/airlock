@@ -16,13 +16,13 @@ So the approval gate for a RAG agent needs to show more than the proposed action
 
 ## What the approval card should carry
 
-A support-triage RAG agent is a good concrete case: it retrieves past tickets and KB articles, then proposes a reply or a ticket status change. The `preview.body` you send to Impri should include the retrieved snippets alongside the proposed text, not just the final answer, so the human reviewer can check the grounding in the same glance:
+A support-triage RAG agent is a good concrete case: it retrieves past tickets and KB articles, then proposes a reply or a ticket status change. The `preview.body` you send to Airlock should include the retrieved snippets alongside the proposed text, not just the final answer, so the human reviewer can check the grounding in the same glance:
 
 ```python
 import requests
 import os
 
-IMPRI_KEY = os.environ["IMPRI_API_KEY"]
+AIRLOCK_KEY = os.environ["AIRLOCK_API_KEY"]
 
 def push_rag_action(ticket_id, retrieved_chunks, draft_reply):
     citations = "\n".join(
@@ -39,8 +39,8 @@ def push_rag_action(ticket_id, retrieved_chunks, draft_reply):
 {citations}
 """
     resp = requests.post(
-        "https://api.impri.dev/v1/actions",
-        headers={"Authorization": f"Bearer {IMPRI_KEY}"},
+        "https://api.airlock.dev/v1/actions",
+        headers={"Authorization": f"Bearer {AIRLOCK_KEY}"},
         json={
             "kind": "ticket.reply",
             "title": f"RAG reply for ticket #{ticket_id}",
@@ -59,7 +59,7 @@ Putting citations in the same card costs nothing extra — it's one more section
 
 ## Naming the action kind by what it commits to
 
-`kind` is a free-form string Impri doesn't validate, so use it to make the retrieval-driven nature of the action legible to whoever's reviewing the inbox:
+`kind` is a free-form string Airlock doesn't validate, so use it to make the retrieval-driven nature of the action legible to whoever's reviewing the inbox:
 
 | Scenario | Suggested `kind` |
 |---|---|
@@ -74,12 +74,12 @@ A reviewer scanning an inbox of twenty pending actions benefits from being able 
 
 ## Treat retrieved content as untrusted input
 
-If any part of the retrieval corpus comes from outside your control — scraped pages, user-submitted documents, a public wiki — treat that text as data, not instructions, in the agent's system prompt. Impri doesn't parse or interpret the action content it stores; it presents whatever you send it as a card for a human to read. That means Impri can *surface* a suspicious instruction buried in a retrieved chunk (because you included the citation in the preview), but it can't detect or flag it for you. The human reading the card is the actual defense — which is exactly why the citations need to be in the card in the first place, not just the model's output.
+If any part of the retrieval corpus comes from outside your control — scraped pages, user-submitted documents, a public wiki — treat that text as data, not instructions, in the agent's system prompt. Airlock doesn't parse or interpret the action content it stores; it presents whatever you send it as a card for a human to read. That means Airlock can *surface* a suspicious instruction buried in a retrieved chunk (because you included the citation in the preview), but it can't detect or flag it for you. The human reading the card is the actual defense — which is exactly why the citations need to be in the card in the first place, not just the model's output.
 
 ---
 
 ## What this doesn't solve
 
-Impri doesn't rank, verify, or re-retrieve anything. It's not a RAG evaluation tool and it won't tell you whether a citation actually supports the claim next to it — a human still has to make that call. What it gives you is the chokepoint: the agent can propose a reply built on retrieval, but it cannot send, publish, or apply that reply without a stored `approved` decision, and the wrapper around your send/publish function should be the only path to that side effect (see [adding approval to an agent](how-to-add-human-approval-to-an-ai-agent.md) for the wrapper pattern).
+Airlock doesn't rank, verify, or re-retrieve anything. It's not a RAG evaluation tool and it won't tell you whether a citation actually supports the claim next to it — a human still has to make that call. What it gives you is the chokepoint: the agent can propose a reply built on retrieval, but it cannot send, publish, or apply that reply without a stored `approved` decision, and the wrapper around your send/publish function should be the only path to that side effect (see [adding approval to an agent](how-to-add-human-approval-to-an-ai-agent.md) for the wrapper pattern).
 
-For framework-specific RAG integrations, see the [LangChain](human-in-the-loop-for-langchain-agents.md) and [LlamaIndex](human-in-the-loop-llamaindex-agents.md) guides. New to Impri? Start with the [quickstart](quickstart.md).
+For framework-specific RAG integrations, see the [LangChain](human-in-the-loop-for-langchain-agents.md) and [LlamaIndex](human-in-the-loop-llamaindex-agents.md) guides. New to Airlock? Start with the [quickstart](quickstart.md).

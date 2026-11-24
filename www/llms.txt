@@ -1,23 +1,23 @@
-# Impri
+# Airlock
 
 > Human-in-the-loop approval API for AI agents. An agent proposes an action; a human approves or rejects it in a web/mobile inbox; the agent executes only after approval.
 
-## What Impri is
+## What Airlock is
 
-Impri is a purpose-built approval gate for agentic systems. It solves two problems:
+Airlock is a purpose-built approval gate for agentic systems. It solves two problems:
 
 1. **Approval Inbox**: an agent POSTs a proposed action (draft email, SQL statement, publish request) with a preview. A human sees a card in their inbox, taps approve or reject (optionally editing the draft first), and the agent picks up the decision via webhook or polling. The agent never executes without an explicit human decision.
 
 2. **Watchers**: monitor external sources (RSS feeds, Reddit searches, URL changes) for new items matching keyword rules. Matching items are deduplicated and delivered to the inbox as triage actions, or to a webhook.
 
-Impri never executes actions itself. It holds the queue and the signatures; your agent executes after receiving approval.
+Airlock never executes actions itself. It holds the queue and the signatures; your agent executes after receiving approval.
 
-Open-core (MIT), self-hostable. Source: https://gitlab.com/sekera.radim/impri  Docs: https://impri.dev/docs
+Open-core (MIT), self-hostable. Source: https://gitlab.com/sekera.radim/airlock  Docs: https://airlock.dev/docs
 
 ## Base URLs
 
-- Cloud API:              https://api.impri.dev/v1
-- Hosted web inbox:       https://app.impri.dev
+- Cloud API:              https://api.airlock.dev/v1
+- Hosted web inbox:       https://app.airlock.dev
 - Self-hosted API:        http://localhost:8484/v1  (default)
 - Self-hosted inbox:      http://localhost:8080
 
@@ -169,7 +169,7 @@ Channel types and required config fields:
 - `discord`:  `{"url"}` — Discord Webhook URL; approval_mode adds bot_token + application_id + public_key + channel_id + allowed_approver_discord_user_ids + hmac_secret (auto-gen)
 - `telegram`: `{"bot_token", "chat_id"}` — approval_mode adds allowed_approver_user_ids + hmac_secret
 - `ntfy`:     `{"url", "topic"}` — ntfy server root + topic name
-- `email`:    `{"address"}` — requires SMTP env vars; the address must be confirmed via an emailed link before anything else is sent (`verified: false` until then); max 3 confirmation emails per address and 5 per project per 24 h; notification emails capped at IMPRI_EMAIL_DAILY_CAP (default 100) per project per 24 h
+- `email`:    `{"address"}` — requires SMTP env vars; the address must be confirmed via an emailed link before anything else is sent (`verified: false` until then); max 3 confirmation emails per address and 5 per project per 24 h; notification emails capped at AIRLOCK_EMAIL_DAILY_CAP (default 100) per project per 24 h
 - `webhook`:  `{"url", "hmac_secret?"}` — any HTTPS endpoint; optional HMAC signing
 
 `digest_window_sec` (10–3600, default 60): coalesces bursts within the window.
@@ -217,7 +217,7 @@ Discord interaction receiver (public):
   `POST /v1/integrations/discord/interactions/:channelId`
   5-layer security: Ed25519 asymmetric signature (webcrypto.subtle.verify) + button custom_id HMAC dc: prefix + user-id allowlist + project_id binding + UNIQUE constraint.
   Set this URL in Discord Developer Portal → General Information → Interactions Endpoint URL.
-  Discord sends a PING (type 1) on save; Impri verifies the Ed25519 signature and returns {"type":1}.
+  Discord sends a PING (type 1) on save; Airlock verifies the Ed25519 signature and returns {"type":1}.
   Interaction responses use type 7 (UPDATE_MESSAGE) — replaces the message within 3 seconds; no deferred response needed.
   `decisions.decided_by` = `dc:{discord_user_id}` (machine id); `audit_log.actor` = readable
   name (global_name/username, e.g. `Radim (Discord)`).
@@ -242,7 +242,7 @@ POST   /v1/recover         Exchange {project_id, recovery_code} for a new admin 
 POST   /v1/recovery-code   Rotate the recovery code; the new code is returned once (admin scope; 10/min)
 ```
 
-Signup and first-run bootstrap return `recovery_code` once; only its argon2 hash is stored. Guide: https://impri.dev/docs/account-recovery
+Signup and first-run bootstrap return `recovery_code` once; only its argon2 hash is stored. Guide: https://airlock.dev/docs/account-recovery
 
 ### Billing
 
@@ -319,12 +319,12 @@ GET    /.well-known/mcp/server-card.json  MCP server card for directories (publi
 
 ## Webhook delivery
 
-When callback_url is set, Impri POSTs a signed JSON payload after the action is created and again when it is decided or expires (only the first if a rule decides it on creation). Deliveries go out on a 60 s tick and carry the action's status at send time (`pending` on the creation delivery), so the same status can arrive twice: handle deliveries idempotently.
+When callback_url is set, Airlock POSTs a signed JSON payload after the action is created and again when it is decided or expires (only the first if a rule decides it on creation). Deliveries go out on a 60 s tick and carry the action's status at send time (`pending` on the creation delivery), so the same status can arrive twice: handle deliveries idempotently.
 Retry schedule on failure: next tick → 1 min → 5 min → 25 min → 2 h → 12 h → DLQ (6 attempts total).
 Return `410 Gone` to permanently deregister a callback URL.
 
-Signature: `sha256=HMAC-SHA256(WEBHOOK_SECRET, "${X-Impri-Timestamp}.${X-Impri-Nonce}.${rawBody}")`
-Headers: X-Impri-Timestamp, X-Impri-Nonce, X-Impri-Signature.
+Signature: `sha256=HMAC-SHA256(WEBHOOK_SECRET, "${X-Airlock-Timestamp}.${X-Airlock-Nonce}.${rawBody}")`
+Headers: X-Airlock-Timestamp, X-Airlock-Nonce, X-Airlock-Signature.
 Replay protection: reject if |now - timestamp| > 300 s.
 
 Polling (GET /v1/actions/:id) is always available as a fallback; no public URL needed.
@@ -338,14 +338,14 @@ docker compose up -d
 Key environment variables:
 - WEBHOOK_SECRET      Required; change from default; used to sign action-decision webhooks
 - BASE_URL            Public URL; used in inbox links and Telegram webhook setup
-- DB_PATH             SQLite path (default: data/impri.db)
+- DB_PATH             SQLite path (default: data/airlock.db)
 - NTFY_URL / NTFY_TOPIC   ntfy push notifications
 - SMTP_HOST / SMTP_PORT / SMTP_USER / SMTP_PASS / SMTP_FROM / NOTIFY_EMAIL   email notifications (email channels cannot be created without SMTP_HOST)
-- IMPRI_EMAIL_DAILY_CAP   Notification emails per project per rolling 24 h (default 100)
+- AIRLOCK_EMAIL_DAILY_CAP   Notification emails per project per rolling 24 h (default 100)
 - AUDIT_RETENTION_DAYS    Opt-in audit log pruning
 - OPERATOR_PROJECT_ID     Unlocks GET /v1/admin/stats for that project
 - ALLOW_SIGNUP            Enables POST /v1/signup for self-serve onboarding
-- IMPRI_ALLOW_PRIVATE_TARGETS=1   Disable SSRF guard for intranet webhooks/watchers
+- AIRLOCK_ALLOW_PRIVATE_TARGETS=1   Disable SSRF guard for intranet webhooks/watchers
 - VAPID_PUBLIC_KEY / VAPID_PRIVATE_KEY / VAPID_SUBJECT   Browser web push (optional)
 - STRIPE_SECRET_KEY / STRIPE_WEBHOOK_SECRET / STRIPE_PRICE_INDIE* / STRIPE_PRICE_TEAM*   Billing (optional)
 - APP_URL             Stripe Checkout redirect base (defaults to BASE_URL)
@@ -356,7 +356,7 @@ Key environment variables:
 
 Install: `pip install -e sdk/python`. Python 3.10+. No third-party dependencies; stdlib urllib only.
 
-Client: `ImpriClient(api_key="im_...", base_url="http://localhost:8484")`. Falls back to IMPRI_API_KEY / IMPRI_BASE_URL env vars.
+Client: `AirlockClient(api_key="im_...", base_url="http://localhost:8484")`. Falls back to AIRLOCK_API_KEY / AIRLOCK_BASE_URL env vars.
 
 Action methods:
 - `create_action(kind, title, preview, *, payload, target_url, callback_url, expires_in, idempotency_key, editable)` — POST /v1/actions
@@ -405,15 +405,15 @@ Ergonomics:
 - `@client.requires_approval(kind, title, *, preview, editable, timeout_s)` — decorator; gates function; injects edited body
 - `client.approval_gate(kind, title, preview, *, editable, timeout_s)` — context manager; auto-calls report_result
 
-Standalone: `impri.verify_webhook(raw_body, secret, timestamp, nonce, signature)` — raises ImpriWebhookSignatureError on mismatch.
+Standalone: `airlock.verify_webhook(raw_body, secret, timestamp, nonce, signature)` — raises AirlockWebhookSignatureError on mismatch.
 
-Exception hierarchy: ImpriError > ImpriConfigError, ImpriUnauthorized (401/403), ImpriNotFound (404), ImpriConflict (409), ImpriExpired (410), ImpriRateLimited (429, .retry_after), ImpriQuotaExceeded (402, .limit/.tier), ImpriRejected (non-HTTP; await_decision on rejection), ImpriTimeout (non-HTTP; await_decision timeout), ImpriValidationError (400/422, .issues), ImpriApiError (catch-all).
+Exception hierarchy: AirlockError > AirlockConfigError, AirlockUnauthorized (401/403), AirlockNotFound (404), AirlockConflict (409), AirlockExpired (410), AirlockRateLimited (429, .retry_after), AirlockQuotaExceeded (402, .limit/.tier), AirlockRejected (non-HTTP; await_decision on rejection), AirlockTimeout (non-HTTP; await_decision timeout), AirlockValidationError (400/422, .issues), AirlockApiError (catch-all).
 
 ### TypeScript SDK (sdk/typescript/)
 
 Install: `npm install ./sdk/typescript`. Node 18+; native fetch. No runtime dependencies.
 
-Client: `new ImpriClient({ apiKey: 'im_...', baseUrl: 'http://localhost:8484' })`. Falls back to IMPRI_API_KEY / IMPRI_BASE_URL env vars.
+Client: `new AirlockClient({ apiKey: 'im_...', baseUrl: 'http://localhost:8484' })`. Falls back to AIRLOCK_API_KEY / AIRLOCK_BASE_URL env vars.
 
 Action methods:
 - `createAction(params)` — POST /v1/actions; auto-generates idempotency_key from content
@@ -450,10 +450,10 @@ Audit methods (admin scope):
 - `exportAudit(params)` — GET /v1/audit/export; returns string (ndjson or CSV)
 
 Ergonomics:
-- `client.approvalGate(opts)` — returns Promise<{actionId, decision, finalPreview}> on approval; throws ImpriRejected on rejection
+- `client.approvalGate(opts)` — returns Promise<{actionId, decision, finalPreview}> on approval; throws AirlockRejected on rejection
 - `client.requiresApproval(fn, opts)` — higher-order wrapper; returns gated async function
 
-Standalone export: `verifyWebhook(rawBody, secret, timestamp, nonce, signature)` — throws ImpriWebhookSignatureError on mismatch.
+Standalone export: `verifyWebhook(rawBody, secret, timestamp, nonce, signature)` — throws AirlockWebhookSignatureError on mismatch.
 
 ## CLI
 
@@ -465,28 +465,28 @@ cd ../cli && npm install && npm run build && npm install -g .
 
 Requires Node 18+. Single runtime dependency: commander.
 
-Config: `~/.impri/config.json` `{"base_url": "...", "api_key": "im_..."}`.
+Config: `~/.airlock/config.json` `{"base_url": "...", "api_key": "im_..."}`.
 Precedence: env vars > config file > defaults.
 
 Commands:
-- `impri init [--cloud] [--signup] [--demo]` — onboarding wizard
-- `impri login` — alias for init
-- `impri status [--json]` — calls /healthz + GET /v1/project
-- `impri push --kind <k> --title <t> [--body <text>] [--format plain|markdown|diff] [--editable <path>] [--target-url <url>] [--expires-in <s>] [--wait [--timeout <s>]] [--json]`
-- `impri list [--status] [--kind] [--since] [--q] [--limit] [--json]`
-- `impri inbox [--kind] [--limit] [--json]` — shorthand for list --status pending
-- `impri get <id> [--json]` — full detail incl. decision.final_preview and diff
-- `impri approve <id> [--edit <body>] [--json]`
-- `impri reject <id> [--json]`
-- `impri tail [--kind] [--interval] [--json]` — long-poll; min 5 s
-- `impri presets [--category] [--json]`
-- `impri watch add <preset-id> [--param k=v]... [--name] [--schedule] [--json]`
-- `impri watchers list [--status] [--kind] [--json]`
-- `impri watchers get <id> [--json]`
-- `impri watchers delete <id> [--yes]`
-- `impri keys list [--json]`
-- `impri keys create --name <n> --scopes <scopes>`
-- `impri keys revoke <id> [--yes]`
+- `airlock init [--cloud] [--signup] [--demo]` — onboarding wizard
+- `airlock login` — alias for init
+- `airlock status [--json]` — calls /healthz + GET /v1/project
+- `airlock push --kind <k> --title <t> [--body <text>] [--format plain|markdown|diff] [--editable <path>] [--target-url <url>] [--expires-in <s>] [--wait [--timeout <s>]] [--json]`
+- `airlock list [--status] [--kind] [--since] [--q] [--limit] [--json]`
+- `airlock inbox [--kind] [--limit] [--json]` — shorthand for list --status pending
+- `airlock get <id> [--json]` — full detail incl. decision.final_preview and diff
+- `airlock approve <id> [--edit <body>] [--json]`
+- `airlock reject <id> [--json]`
+- `airlock tail [--kind] [--interval] [--json]` — long-poll; min 5 s
+- `airlock presets [--category] [--json]`
+- `airlock watch add <preset-id> [--param k=v]... [--name] [--schedule] [--json]`
+- `airlock watchers list [--status] [--kind] [--json]`
+- `airlock watchers get <id> [--json]`
+- `airlock watchers delete <id> [--yes]`
+- `airlock keys list [--json]`
+- `airlock keys create --name <n> --scopes <scopes>`
+- `airlock keys revoke <id> [--yes]`
 
 Exit codes: 0 success, 1 error, 2 conflict (already decided).
 
@@ -494,41 +494,41 @@ Exit codes: 0 success, 1 error, 2 conflict (already decided).
 
 ### MCP server
 
-Hosted remote endpoint (no install): `https://api.impri.dev/mcp`, Streamable HTTP, stateless, auth via `Authorization: Bearer im_...` on every request. 401 (with `WWW-Authenticate: Bearer`) if missing/invalid. Public metadata card (no auth) at `/.well-known/mcp/server-card.json`. `impri_await_decision`'s `timeout_s` is capped at 20s server-side on this endpoint (poll again if still pending).
+Hosted remote endpoint (no install): `https://api.airlock.dev/mcp`, Streamable HTTP, stateless, auth via `Authorization: Bearer im_...` on every request. 401 (with `WWW-Authenticate: Bearer`) if missing/invalid. Public metadata card (no auth) at `/.well-known/mcp/server-card.json`. `airlock_await_decision`'s `timeout_s` is capped at 20s server-side on this endpoint (poll again if still pending).
 
 ```bash
-claude mcp add --transport http impri https://api.impri.dev/mcp --header "Authorization: Bearer $IMPRI_API_KEY"
+claude mcp add --transport http airlock https://api.airlock.dev/mcp --header "Authorization: Bearer $AIRLOCK_API_KEY"
 ```
 
 Local package (self-hosted servers, or when a client can't do remote HTTP):
 
 ```bash
-IMPRI_API_KEY=im_... npx @impri/mcp
-# IMPRI_BASE_URL=https://api.impri.dev (default: http://localhost:8484)
+AIRLOCK_API_KEY=im_... npx @airlock/mcp
+# AIRLOCK_BASE_URL=https://api.airlock.dev (default: http://localhost:8484)
 ```
 
 Add to ~/.claude/mcp.json, claude_desktop_config.json, or Cursor's mcp.json.
 
 Tools (8 total):
-- `impri_push_action` — POST /v1/actions; returns action_id + inbox_url
-- `impri_await_decision` — polls until decided; wraps untrusted content in safety markers
-- `impri_report_result` — POST /v1/actions/:id/result
-- `impri_inbox_status` — count pending actions
-- `impri_create_watcher` — POST /v1/watchers
-- `impri_list_watchers` — GET /v1/watchers with optional status filter
-- `impri_list_watcher_presets` — GET /v1/watcher-presets grouped by category
-- `impri_create_watcher_from_preset` — POST /v1/watchers/from-preset
+- `airlock_push_action` — POST /v1/actions; returns action_id + inbox_url
+- `airlock_await_decision` — polls until decided; wraps untrusted content in safety markers
+- `airlock_report_result` — POST /v1/actions/:id/result
+- `airlock_inbox_status` — count pending actions
+- `airlock_create_watcher` — POST /v1/watchers
+- `airlock_list_watchers` — GET /v1/watchers with optional status filter
+- `airlock_list_watcher_presets` — GET /v1/watcher-presets grouped by category
+- `airlock_create_watcher_from_preset` — POST /v1/watchers/from-preset
 
 Untrusted-content safety: watcher-delivered previews are wrapped in `<untrusted-external-content>` tags so AI models treat them as data, not instructions.
-Webhook receiver included: runs alongside MCP server; validates X-Impri-Signature.
+Webhook receiver included: runs alongside MCP server; validates X-Airlock-Signature.
 
 ### LangChain / LangGraph (integrations/langchain/)
 
-Python. `ImpriApprovalTool` (BaseTool subclass) + `wrap()` factory. Blocks on approval via approval_gate. Calls report_result on completion.
+Python. `AirlockApprovalTool` (BaseTool subclass) + `wrap()` factory. Blocks on approval via approval_gate. Calls report_result on completion.
 
 ### CrewAI (integrations/crewai/)
 
-Python. `ImpriApprovalTool` (crewai BaseTool) with `ImpriApprovalCallback`. Approval gate via requires_approval / approval_gate.
+Python. `AirlockApprovalTool` (crewai BaseTool) with `AirlockApprovalCallback`. Approval gate via requires_approval / approval_gate.
 
 ### OpenAI Agents SDK (integrations/openai-agents/)
 
@@ -536,13 +536,13 @@ Python. `make_guardrail()` returns InputGuardrail. `tripwire_triggered=False` on
 
 ### Claude tool use, Anthropic SDK (integrations/claude-agent-sdk/)
 
-TypeScript. For a Messages API loop with `@anthropic-ai/sdk`, not for Anthropic's Claude Agent SDK (`@anthropic-ai/claude-agent-sdk`; for that see https://impri.dev/docs/human-approval-claude-agent-sdk). `GatedTool` (via `withImpriApproval()`); intercepts tool_use blocks; calls execute() with possibly human-edited input; reports result automatically.
+TypeScript. For a Messages API loop with `@anthropic-ai/sdk`, not for Anthropic's Claude Agent SDK (`@anthropic-ai/claude-agent-sdk`; for that see https://airlock.dev/docs/human-approval-claude-agent-sdk). `GatedTool` (via `withAirlockApproval()`); intercepts tool_use blocks; calls execute() with possibly human-edited input; reports result automatically.
 
 ```typescript
-const gated = withImpriApproval({
+const gated = withAirlockApproval({
   toolDef: { name: 'send_email', description: '...', input_schema: {...} },
   execute: async ({ to, body }) => { await emailService.send(...); return 'Sent.' },
-  impriClient: impri,
+  airlockClient: airlock,
   kind: 'email.send',
   title: ({ to }) => `Send email to ${to}`,
   preview: ({ body }) => ({ format: 'plain', body: String(body) }),
@@ -557,232 +557,232 @@ Use HTTP Request nodes with `Authorization: Bearer im_...`. Webhook trigger for 
 
 ## Security notes
 
-- SSRF guard (net-guard.ts): `fetchGuarded()` blocks private-IP literals and non-http/https schemes on all user-supplied URLs in channels and watcher configs. `IMPRI_ALLOW_PRIVATE_TARGETS=1` disables for intranet use.
+- SSRF guard (net-guard.ts): `fetchGuarded()` blocks private-IP literals and non-http/https schemes on all user-supplied URLs in channels and watcher configs. `AIRLOCK_ALLOW_PRIVATE_TARGETS=1` disables for intranet use.
 - Untrusted flag: watcher-delivered actions have `payload.untrusted=true`. Python SDK: `action["is_untrusted"]`. TS SDK: `action.is_untrusted`. MCP: wrapped in `<untrusted-external-content>`. Never forward watcher content as LLM instructions.
 - Webhook HMAC: `sha256=HMAC-SHA256(secret, f"{timestamp}.{nonce}.{rawBody}")`. Reject outside 300 s tolerance window.
 - Key storage: argon2-hashed; only prefix stored in plain text; raw value shown once at creation.
 - Audit log: IP in separate erasable pii_log; no secrets (key material, URLs, tokens) in audit rows.
 - Telegram approval: 4-layer security (HMAC header + callback_data HMAC + user-id allowlist + UNIQUE constraint).
 - Slack approval: 5-layer security (HMAC-SHA256 v0 signature + button HMAC sl: + user-id allowlist + project_id binding + UNIQUE constraint). response_url validated against ^https://hooks\.slack\.com/ before use.
-- Discord approval: 5-layer security (Ed25519 signature + button HMAC dc: + user-id allowlist + project_id binding + UNIQUE constraint). Ed25519 is asymmetric — Impri holds only public_key.
+- Discord approval: 5-layer security (Ed25519 signature + button HMAC dc: + user-id allowlist + project_id binding + UNIQUE constraint). Ed25519 is asymmetric — Airlock holds only public_key.
 
 ## Documentation
 
-- Website:                                             https://impri.dev/
-- Pricing (tiers, limits, how billing works):          https://impri.dev/pricing
-- Quickstart (self-hosted, zero to first approved action): https://impri.dev/docs/quickstart
-- What is human-in-the-loop for AI agents:             https://impri.dev/docs/what-is-human-in-the-loop-for-ai-agents
-- What is an approval inbox:                           https://impri.dev/docs/what-is-an-approval-inbox
-- What is an MCP approval server:                      https://impri.dev/docs/what-is-an-mcp-approval-server
-- AI agent approval workflow (overview + use cases):    https://impri.dev/docs/ai-agent-approval-workflow
-- How to add human approval to an AI agent:            https://impri.dev/docs/how-to-add-human-approval-to-an-ai-agent
-- Python SDK reference:                                https://impri.dev/docs/sdk-python
-- TypeScript SDK reference:                            https://impri.dev/docs/sdk-typescript
-- MCP server reference:                                https://impri.dev/docs/mcp
-- Claude tool use (Anthropic SDK) integration:         https://impri.dev/docs/claude-agent-sdk
-- Integrations (LangChain, CrewAI, OpenAI, n8n, Make, Zapier): https://impri.dev/docs/integrations
-- CLI reference:                                       https://impri.dev/docs/cli
-- Inbox UX, keyboard shortcuts, bulk approve/reject:   https://impri.dev/docs/inbox
-- Webhooks (delivery, signature, retry):               https://impri.dev/docs/webhooks
-- Notification channels (Slack, Discord, Telegram, ntfy, email, webhook): https://impri.dev/docs/notifications
-- Telegram approval mode:                              https://impri.dev/docs/telegram-approval
-- Slack approval mode:                                 https://impri.dev/docs/slack-approval
-- Discord approval mode:                               https://impri.dev/docs/discord-approval
-- Rules engine:                                        https://impri.dev/docs/rules
-- Watcher presets (18 presets with params):            https://impri.dev/docs/watcher-presets
-- Audit log (events, query, export, retention):        https://impri.dev/docs/audit-log
-- API keys (scopes, lifecycle, security):              https://impri.dev/docs/api-keys
-- Billing (tiers, limits, Stripe):                     https://impri.dev/docs/billing
-- GDPR (export, erasure):                              https://impri.dev/docs/gdpr
-- Account recovery (lost API key, recovery codes):     https://impri.dev/docs/account-recovery
-- Privacy policy:                                      https://impri.dev/docs/privacy
-- Terms of service:                                    https://impri.dev/docs/terms
-- Web push notifications (VAPID setup):                https://impri.dev/docs/web-push
-- Operator / multi-tenant stats:                       https://impri.dev/docs/operator
-- Self-hosting (docker compose, env vars, HTTPS):      https://impri.dev/docs/self-hosting
-- Observability (/metrics Prometheus, /readyz, /healthz, structured logs, GET /v1/usage): https://impri.dev/docs/observability
-- Cookbook (email, SQL, social, idempotent batches):   https://impri.dev/docs/cookbook
-- OpenAPI spec (live):                                 https://api.impri.dev/v1/openapi.json
+- Website:                                             https://airlock.dev/
+- Pricing (tiers, limits, how billing works):          https://airlock.dev/pricing
+- Quickstart (self-hosted, zero to first approved action): https://airlock.dev/docs/quickstart
+- What is human-in-the-loop for AI agents:             https://airlock.dev/docs/what-is-human-in-the-loop-for-ai-agents
+- What is an approval inbox:                           https://airlock.dev/docs/what-is-an-approval-inbox
+- What is an MCP approval server:                      https://airlock.dev/docs/what-is-an-mcp-approval-server
+- AI agent approval workflow (overview + use cases):    https://airlock.dev/docs/ai-agent-approval-workflow
+- How to add human approval to an AI agent:            https://airlock.dev/docs/how-to-add-human-approval-to-an-ai-agent
+- Python SDK reference:                                https://airlock.dev/docs/sdk-python
+- TypeScript SDK reference:                            https://airlock.dev/docs/sdk-typescript
+- MCP server reference:                                https://airlock.dev/docs/mcp
+- Claude tool use (Anthropic SDK) integration:         https://airlock.dev/docs/claude-agent-sdk
+- Integrations (LangChain, CrewAI, OpenAI, n8n, Make, Zapier): https://airlock.dev/docs/integrations
+- CLI reference:                                       https://airlock.dev/docs/cli
+- Inbox UX, keyboard shortcuts, bulk approve/reject:   https://airlock.dev/docs/inbox
+- Webhooks (delivery, signature, retry):               https://airlock.dev/docs/webhooks
+- Notification channels (Slack, Discord, Telegram, ntfy, email, webhook): https://airlock.dev/docs/notifications
+- Telegram approval mode:                              https://airlock.dev/docs/telegram-approval
+- Slack approval mode:                                 https://airlock.dev/docs/slack-approval
+- Discord approval mode:                               https://airlock.dev/docs/discord-approval
+- Rules engine:                                        https://airlock.dev/docs/rules
+- Watcher presets (18 presets with params):            https://airlock.dev/docs/watcher-presets
+- Audit log (events, query, export, retention):        https://airlock.dev/docs/audit-log
+- API keys (scopes, lifecycle, security):              https://airlock.dev/docs/api-keys
+- Billing (tiers, limits, Stripe):                     https://airlock.dev/docs/billing
+- GDPR (export, erasure):                              https://airlock.dev/docs/gdpr
+- Account recovery (lost API key, recovery codes):     https://airlock.dev/docs/account-recovery
+- Privacy policy:                                      https://airlock.dev/docs/privacy
+- Terms of service:                                    https://airlock.dev/docs/terms
+- Web push notifications (VAPID setup):                https://airlock.dev/docs/web-push
+- Operator / multi-tenant stats:                       https://airlock.dev/docs/operator
+- Self-hosting (docker compose, env vars, HTTPS):      https://airlock.dev/docs/self-hosting
+- Observability (/metrics Prometheus, /readyz, /healthz, structured logs, GET /v1/usage): https://airlock.dev/docs/observability
+- Cookbook (email, SQL, social, idempotent batches):   https://airlock.dev/docs/cookbook
+- OpenAPI spec (live):                                 https://api.airlock.dev/v1/openapi.json
 
 ## Use-case guides (auto-generated)
-- 4 Types of Human-in-the-Loop Tools, Compared: https://impri.dev/docs/hitl-tools-for-llm-agents-compared
-- A Lightweight Alternative to Workflow Engines for HITL: https://impri.dev/docs/lightweight-alternative-to-workflow-engines-for-hitl
-- A Self-Hosted Approval Inbox for AI Agents: https://impri.dev/docs/self-hosted-approval-inbox-for-ai-agents
-- AI Agent Approval Queue: Build vs Buy: https://impri.dev/docs/build-vs-buy-ai-agent-approval-queue
-- AI Agent Guardrails for Real-World Actions: https://impri.dev/docs/ai-agent-guardrails-for-real-world-actions
-- Add Human Approval to Gemini CLI with Impri: https://impri.dev/docs/gemini-cli-human-approval
-- Add Human Approval to a Cron Job Without Blocking: https://impri.dev/docs/gate-a-cron-job-with-human-approval
-- Add a Human Approval Step to Any MCP Tool: https://impri.dev/docs/how-to-add-a-review-step-to-an-mcp-tool
-- Add a Kill Switch to Your AI Agent: https://impri.dev/docs/add-a-kill-switch-to-your-ai-agent
-- Adding Human Approval to CrewAI Agents: https://impri.dev/docs/human-approval-for-crewai-agents
-- Adding an Audit Log to Your AI Agent: https://impri.dev/docs/adding-an-audit-log-to-your-ai-agent
-- Agentic AI Safety Patterns: https://impri.dev/docs/agentic-ai-safety-patterns
-- Alternatives to Building Your Own Agent Approval System: https://impri.dev/docs/alternatives-to-building-your-own-approval-system
-- An Approval Gate for AI Data Pipelines: https://impri.dev/docs/approval-gate-for-ai-data-pipelines
-- An Approval Gate for Agents That Run While You Sleep: https://impri.dev/docs/approval-gate-for-overnight-ai-agents
-- An Approval Gate for Webhook-Triggered Agents: https://impri.dev/docs/approval-gate-for-webhook-triggered-agents
-- An Approval Workflow for AI Marketing Automation: https://impri.dev/docs/approval-workflow-for-ai-marketing-automation
-- An MCP Approval Server for AI Agents: https://impri.dev/docs/mcp-approval-server-for-ai-agents
-- Approval Inbox vs Email Approval Chains: https://impri.dev/docs/approval-inbox-vs-email-approval-chains
-- Approval Inbox vs Slack Buttons: What You Lose: https://impri.dev/docs/approval-inbox-vs-slack-buttons
-- Approval Inbox vs a Shared Spreadsheet: https://impri.dev/docs/approval-inbox-vs-spreadsheet-approval-tracking
-- Approve AI Agent Actions From Discord: https://impri.dev/docs/approve-ai-agent-actions-from-discord
-- Approve AI Agent Actions From Slack: https://impri.dev/docs/approve-ai-agent-actions-from-slack
-- Approve AI Agent Actions From Telegram: https://impri.dev/docs/approve-ai-agent-actions-from-telegram
-- Approve AI Agent Actions From Your Phone: https://impri.dev/docs/approve-ai-agent-actions-from-your-phone
-- Approve AI Agent Actions by Email: https://impri.dev/docs/approve-ai-agent-actions-by-email
-- Approve AI Agent Ad Spend and Marketing Budget Changes: https://impri.dev/docs/approve-ai-agent-ad-spend-and-marketing-budget-changes
-- Approve AI Agent CRM Updates Before They Sync: https://impri.dev/docs/approve-ai-agent-crm-updates
-- Approve AI Agent Calendar Changes Before They're Sent: https://impri.dev/docs/approve-ai-agent-calendar-changes
-- Approve AI Agent Expense Reports and Invoices: https://impri.dev/docs/approve-ai-agent-expense-reports-and-invoices
-- Approve AI Agent Google Sheets and Spreadsheet Changes: https://impri.dev/docs/approve-ai-agent-google-sheets-and-spreadsheet-changes
-- Approve AI Agent IAM and Access Permission Grants: https://impri.dev/docs/approve-ai-agent-access-permission-grants
-- Approve AI Agent Outbound Webhooks and Third-Party API Calls: https://impri.dev/docs/approve-ai-agent-outbound-webhooks-and-api-calls
-- Approve AI Agent Salesforce Updates Before They Save: https://impri.dev/docs/approve-ai-agent-salesforce-updates
-- Approve AI Agent Support Ticket Escalations: https://impri.dev/docs/approve-ai-agent-support-ticket-escalations
-- Approve AI Agent Vendor Contract Terms Before They're Signed: https://impri.dev/docs/approve-ai-agent-vendor-contract-terms
-- Approve AI Agent WhatsApp Business Messages Before They Send: https://impri.dev/docs/approve-ai-agent-whatsapp-business-messages
-- Approve AI Voice Agent Calls Before They Dial: https://impri.dev/docs/approve-ai-voice-agent-calls-before-they-dial
-- Approve AI-Generated Content Before Publishing: https://impri.dev/docs/approve-ai-generated-content-before-publishing
-- Approve Emails Before Your AI Agent Sends Them: https://impri.dev/docs/approve-emails-before-your-ai-agent-sends-them
-- Approve GitHub Actions Runs Triggered by an AI Coding Agent: https://impri.dev/docs/approve-ai-agent-github-actions-workflows
-- Approve Payments Before Your AI Agent Charges a Card: https://impri.dev/docs/approve-ai-agent-payments-and-charges
-- Approve Refunds Issued by an AI Support Agent: https://impri.dev/docs/approve-refunds-issued-by-an-ai-support-agent
-- Approve Slack Messages From an AI Agent: https://impri.dev/docs/approve-slack-messages-from-an-ai-agent
-- Approve Terminal Commands Before Your AI Coding Agent Runs Them: https://impri.dev/docs/approve-ai-coding-agent-terminal-commands
-- Blocking vs Polling for Human Approval in Agents: https://impri.dev/docs/blocking-vs-polling-for-human-approval
-- Build an Audit Trail for AI Agent Actions: https://impri.dev/docs/audit-trail-for-ai-agent-actions
-- Claude Agent SDK Human Approval: canUseTool and defer: https://impri.dev/docs/human-approval-claude-agent-sdk
-- Draft Preview and Diff Review for AI Agent Actions: https://impri.dev/docs/draft-preview-and-diff-review-for-ai-agent-actions
-- Edit AI Agent Drafts Before You Approve Them: https://impri.dev/docs/edit-ai-agent-drafts-before-approving
-- Gate Database Writes From an AI Agent: https://impri.dev/docs/approve-database-writes-from-an-ai-agent
-- Handling Approval Timeouts and Expiry in Agents: https://impri.dev/docs/handling-approval-timeouts-and-expiry-in-agents
-- How to Approve Multiple Pending AI Agent Actions at Once: https://impri.dev/docs/approve-multiple-ai-agent-actions-at-once
-- How to Build a Human-in-the-Loop AI Agent: https://impri.dev/docs/how-to-build-a-human-in-the-loop-ai-agent
-- How to Pause an AI Agent for Human Input: https://impri.dev/docs/how-to-pause-an-ai-agent-for-human-input
-- How to Review AI-Generated Content Before It Goes Out: https://impri.dev/docs/how-to-review-ai-content-before-it-goes-out
-- How to Test an AI Agent's Approval Flow: https://impri.dev/docs/how-to-test-an-ai-agent-approval-flow
-- Human Approval Before a Browser Agent Submits a Form: https://impri.dev/docs/human-approval-before-a-browser-agent-submits-a-form
-- Human Approval Before an AI Agent Automates Your Browser: https://impri.dev/docs/human-approval-for-ai-agent-browser-automation
-- Human Approval Before an AI Agent Deploys Code: https://impri.dev/docs/human-approval-before-deploying-code-with-an-agent
-- Human Approval Before an AI Agent Merges a Pull Request: https://impri.dev/docs/approve-ai-agent-pull-requests-before-merge
-- Human Approval Before an AI Agent Writes to Your Filesystem: https://impri.dev/docs/human-approval-for-ai-agent-file-writes
-- Human Approval Before an Agent Posts to Social Media: https://impri.dev/docs/human-approval-before-an-agent-posts-to-social-media
-- Human Approval Before an Agent Sends SMS: https://impri.dev/docs/human-approval-before-an-agent-sends-sms
-- Human Approval for AI Agencies and Freelancers: https://impri.dev/docs/human-approval-for-ai-agencies
-- Human Approval for AI Agent App Store and Play Store Submissions: https://impri.dev/docs/human-approval-for-ai-agent-app-store-submissions
-- Human Approval for AI Agent Bulk Operations and Mass Updates: https://impri.dev/docs/human-approval-for-ai-agent-bulk-operations
-- Human Approval for AI Agent Customer Data Exports and GDPR Requests: https://impri.dev/docs/human-approval-for-ai-agent-customer-data-exports
-- Human Approval for AI Agent GitHub Issue and Comment Automation: https://impri.dev/docs/human-approval-for-ai-agent-github-issue-and-comment-automation
-- Human Approval for AI Agent Price and Inventory Changes: https://impri.dev/docs/human-approval-for-ai-agent-price-and-inventory-changes
-- Human Approval for AI Agent Secrets and API Key Rotation: https://impri.dev/docs/human-approval-for-ai-agent-secrets-rotation
-- Human Approval for AI Agent Terraform Changes: https://impri.dev/docs/human-approval-for-ai-agent-terraform-changes
-- Human Approval for AI Agents in Education: https://impri.dev/docs/human-approval-for-ai-agents-in-education
-- Human Approval for AI Content Pipelines: https://impri.dev/docs/human-approval-for-ai-content-pipelines
-- Human Approval for AI IT Helpdesk Agents: https://impri.dev/docs/human-approval-for-ai-it-helpdesk-agents
-- Human Approval for AI Insurance Claims Agents: https://impri.dev/docs/human-approval-for-ai-insurance-claims-agents
-- Human Approval for AI Procurement Agents: https://impri.dev/docs/human-approval-for-ai-procurement-agents
-- Human Approval for AI Recruiting Outreach: https://impri.dev/docs/human-approval-for-ai-recruiting-outreach
-- Human Approval for AI Sales Outreach Agents: https://impri.dev/docs/human-approval-for-ai-sales-outreach
-- Human Approval for AI Social Media Management: https://impri.dev/docs/human-approval-for-ai-social-media-management
-- Human Approval for AI Trading Agents: https://impri.dev/docs/human-approval-for-ai-trading-agents
-- Human Approval for Agno Agents: Adding an External Approval Inbox: https://impri.dev/docs/human-approval-agno-agents
-- Human Approval for Amazon Bedrock AgentCore Agents: https://impri.dev/docs/human-approval-amazon-bedrock-agentcore
-- Human Approval for Background AI Workers: https://impri.dev/docs/human-approval-for-background-ai-workers
-- Human Approval for Claude Cowork Browser Agent Actions: https://impri.dev/docs/human-approval-for-claude-cowork-agent
-- Human Approval for Fintech AI Agents: https://impri.dev/docs/human-approval-for-fintech-ai-agents
-- Human Approval for Google Agent Development Kit (ADK) Agents: https://impri.dev/docs/human-approval-google-agent-development-kit
-- Human Approval for Jira AI Agents: https://impri.dev/docs/human-approval-for-jira-ai-agents
-- Human Approval for Legal AI Agents: https://impri.dev/docs/human-approval-for-legal-ai-agents
-- Human Approval for Mastra AI Agents: https://impri.dev/docs/human-approval-mastra-agents
-- Human Approval for Microsoft AutoGen Agents: https://impri.dev/docs/human-approval-autogen-agents
-- Human Approval for OpenAI AgentKit After Agent Builder: https://impri.dev/docs/human-approval-for-openai-agentkit
-- Human Approval for Real Estate AI Agents: https://impri.dev/docs/human-approval-for-real-estate-ai-agents
-- Human Approval for Scheduled AI Scripts: https://impri.dev/docs/human-approval-for-scheduled-ai-scripts
-- Human Approval for Solo-Founder AI Automations: https://impri.dev/docs/human-approval-for-solo-founder-automations
-- Human Approval for Unattended AI Agents: https://impri.dev/docs/human-approval-for-unattended-ai-agents
-- Human Approval for Zapier AI Agents: https://impri.dev/docs/human-approval-zapier-ai-agents
-- Human Approval for n8n AI Agent Workflows: https://impri.dev/docs/human-approval-n8n-ai-agent
-- Human Approval for the Vercel AI SDK: https://impri.dev/docs/human-approval-vercel-ai-sdk
-- Human Approval in Multi-Agent Systems: https://impri.dev/docs/human-approval-for-multi-agent-systems
-- Human Oversight for Agentic AI: https://impri.dev/docs/human-oversight-for-agentic-ai
-- Human Oversight vs Automation in AI Agents: https://impri.dev/docs/human-oversight-vs-automation-in-ai-agents
-- Human-in-the-Loop AI for E-commerce Discounts: https://impri.dev/docs/human-in-the-loop-for-ai-in-ecommerce
-- Human-in-the-Loop Approval for LangChain Agents: https://impri.dev/docs/human-in-the-loop-for-langchain-agents
-- Human-in-the-Loop Checkpoints in LangGraph: https://impri.dev/docs/human-in-the-loop-langgraph
-- Human-in-the-Loop for AI Agent DNS and Infrastructure Changes: https://impri.dev/docs/human-in-the-loop-for-ai-agent-dns-and-infra-changes
-- Human-in-the-Loop for AI Agent Database Migrations: https://impri.dev/docs/human-in-the-loop-for-ai-agent-database-migrations
-- Human-in-the-Loop for AI Agent Incident Response: https://impri.dev/docs/human-in-the-loop-for-ai-agent-incident-response
-- Human-in-the-Loop for AI Customer Support Agents: https://impri.dev/docs/human-in-the-loop-ai-customer-support
-- Human-in-the-Loop for AI HR Onboarding Agents: https://impri.dev/docs/human-in-the-loop-for-ai-hr-onboarding-agents
-- Human-in-the-Loop for AI Newsletter Automation: https://impri.dev/docs/human-in-the-loop-for-ai-newsletter-automation
-- Human-in-the-Loop for AI Research Agents: https://impri.dev/docs/human-in-the-loop-for-ai-research-agents
-- Human-in-the-Loop for AI in HR and Recruiting: https://impri.dev/docs/human-in-the-loop-for-ai-in-hr
-- Human-in-the-Loop for AI in SaaS Operations: https://impri.dev/docs/human-in-the-loop-for-ai-in-saas-operations
-- Human-in-the-Loop for AWS Strands Agents: https://impri.dev/docs/human-in-the-loop-aws-strands-agents
-- Human-in-the-Loop for Autonomous AI Agents: https://impri.dev/docs/human-in-the-loop-for-autonomous-agents
-- Human-in-the-Loop for CI/CD AI Agents: https://impri.dev/docs/human-in-the-loop-ci-cd-ai-agents
-- Human-in-the-Loop for Cloudflare Agents SDK: https://impri.dev/docs/human-in-the-loop-cloudflare-agents
-- Human-in-the-Loop for Computer-Use AI Agents: https://impri.dev/docs/human-in-the-loop-for-computer-use-ai-agents
-- Human-in-the-Loop for CopilotKit and AG-UI Agents: https://impri.dev/docs/human-in-the-loop-copilotkit-ag-ui
-- Human-in-the-Loop for DevOps AI Agents: https://impri.dev/docs/human-in-the-loop-for-devops-ai-agents
-- Human-in-the-Loop for Durable Agent Runtimes: Pause, Approve, Resume: https://impri.dev/docs/human-in-the-loop-agentspan-and-durable-agent-runtimes
-- Human-in-the-Loop for E-commerce AI Agents: https://impri.dev/docs/human-in-the-loop-for-ecommerce-ai-agents
-- Human-in-the-Loop for Healthcare AI Messaging: https://impri.dev/docs/human-in-the-loop-for-healthcare-ai-messaging
-- Human-in-the-Loop for LangChain Deep Agents: https://impri.dev/docs/human-in-the-loop-langchain-deep-agents
-- Human-in-the-Loop for Microsoft Semantic Kernel Agents: https://impri.dev/docs/human-in-the-loop-semantic-kernel
-- Human-in-the-Loop for Personal AI Assistants: https://impri.dev/docs/human-in-the-loop-for-personal-ai-assistants
-- Human-in-the-Loop for RAG Agents That Take Actions: https://impri.dev/docs/human-in-the-loop-for-rag-agents-that-act
-- Human-in-the-Loop for Supply Chain AI Agents: https://impri.dev/docs/human-in-the-loop-for-supply-chain-ai-agents
-- Human-in-the-Loop for Travel Booking AI Agents: https://impri.dev/docs/human-in-the-loop-for-travel-booking-ai-agents
-- Human-in-the-Loop for the OpenAI Agents SDK: https://impri.dev/docs/human-in-the-loop-openai-agents-sdk
-- Human-in-the-Loop in Microsoft Agent Framework: https://impri.dev/docs/human-in-the-loop-microsoft-agent-framework
-- Human-in-the-Loop vs Full Autonomy for AI Agents: https://impri.dev/docs/human-in-the-loop-vs-full-autonomy
-- Human-in-the-Loop, Explained for AI Builders: https://impri.dev/docs/human-in-the-loop-explained
-- Implementing Approval Workflows for LLM Agents: https://impri.dev/docs/implementing-approval-workflows-for-llm-agents
-- Keep an AI Agent in Sandbox Until a Human Approves Going Live: https://impri.dev/docs/keep-an-ai-agent-in-sandbox-until-a-human-approves-going-live
-- LlamaIndex Human-in-the-Loop: Pause a Tool for Approval: https://impri.dev/docs/human-in-the-loop-llamaindex-agents
-- Mobile Approvals for AI Agents: https://impri.dev/docs/mobile-approvals-for-ai-agents
-- One Approval Inbox for All Your AI Agents: https://impri.dev/docs/approval-inbox-for-ai-agents
-- One-Tap Approve/Reject for AI Agent Actions: https://impri.dev/docs/one-tap-approve-reject-for-ai-agents
-- Open-Source Human-in-the-Loop Tools for AI Agents: https://impri.dev/docs/open-source-human-in-the-loop-tools
-- Prevent Prompt Injection From Executing Real Actions: https://impri.dev/docs/prevent-prompt-injection-from-executing-actions
-- Pydantic AI Human-in-the-Loop with an Approval Inbox: https://impri.dev/docs/human-in-the-loop-pydantic-ai
-- REST API vs MCP for Human-in-the-Loop Approval: https://impri.dev/docs/rest-api-vs-mcp-for-human-approval
-- Require Human Approval Before an Agent Deletes Data: https://impri.dev/docs/human-approval-before-an-agent-deletes-data
-- Reversible vs Irreversible AI Agent Actions: What to Gate: https://impri.dev/docs/approve-reversible-vs-irreversible-ai-agent-actions
-- Review AI Agent Decisions Before They Happen: https://impri.dev/docs/review-ai-agent-decisions-before-they-happen
-- Safe Autonomy: Let Agents Act, but Not Blindly: https://impri.dev/docs/safe-autonomy-for-ai-agents
-- Stop Your AI Agent From Sending Emails Without Approval: https://impri.dev/docs/stop-your-ai-agent-sending-emails-without-approval
-- Temporal Human-in-the-Loop with an Approval Inbox: https://impri.dev/docs/human-in-the-loop-temporal-workflows-for-ai-agents
-- The EU AI Act Human Oversight Requirement for AI Agents: https://impri.dev/docs/eu-ai-act-human-oversight-requirement-for-ai-agents
-- The Propose-Approve-Execute Pattern for AI Agents: https://impri.dev/docs/the-propose-approve-execute-pattern
-- The Risks of Autonomous AI Agents Taking Actions: https://impri.dev/docs/the-risks-of-autonomous-ai-agents-taking-actions
-- Trust Boundaries for AI Agents That Take Actions: https://impri.dev/docs/trust-boundaries-for-ai-agents
-- Understanding the Maker-Checker Pattern for AI Agents: https://impri.dev/docs/maker-checker-pattern-for-ai-agents
-- Web Push Notifications for Agent Approvals: https://impri.dev/docs/web-push-notifications-for-agent-approvals
-- What Happens When an AI Agent Acts Without Approval: https://impri.dev/docs/what-happens-when-an-ai-agent-acts-without-approval
-- When Credentials Expire While Your AI Agent Waits for Approval: https://impri.dev/docs/credentials-expire-while-ai-agent-waits-for-approval
-- When to Let an AI Agent Act Autonomously (and When Not To): https://impri.dev/docs/when-to-let-an-ai-agent-act-autonomously
-- Why AI Agents Need Approval Gates: https://impri.dev/docs/why-ai-agents-need-approval-gates
-- Wrapping an Agent Tool With a Human Approval Step: https://impri.dev/docs/wrapping-a-tool-with-a-human-approval-step
-- ntfy Notifications for AI Agent Approvals: https://impri.dev/docs/ntfy-notifications-for-ai-agent-approvals
+- 4 Types of Human-in-the-Loop Tools, Compared: https://airlock.dev/docs/hitl-tools-for-llm-agents-compared
+- A Lightweight Alternative to Workflow Engines for HITL: https://airlock.dev/docs/lightweight-alternative-to-workflow-engines-for-hitl
+- A Self-Hosted Approval Inbox for AI Agents: https://airlock.dev/docs/self-hosted-approval-inbox-for-ai-agents
+- AI Agent Approval Queue: Build vs Buy: https://airlock.dev/docs/build-vs-buy-ai-agent-approval-queue
+- AI Agent Guardrails for Real-World Actions: https://airlock.dev/docs/ai-agent-guardrails-for-real-world-actions
+- Add Human Approval to Gemini CLI with Airlock: https://airlock.dev/docs/gemini-cli-human-approval
+- Add Human Approval to a Cron Job Without Blocking: https://airlock.dev/docs/gate-a-cron-job-with-human-approval
+- Add a Human Approval Step to Any MCP Tool: https://airlock.dev/docs/how-to-add-a-review-step-to-an-mcp-tool
+- Add a Kill Switch to Your AI Agent: https://airlock.dev/docs/add-a-kill-switch-to-your-ai-agent
+- Adding Human Approval to CrewAI Agents: https://airlock.dev/docs/human-approval-for-crewai-agents
+- Adding an Audit Log to Your AI Agent: https://airlock.dev/docs/adding-an-audit-log-to-your-ai-agent
+- Agentic AI Safety Patterns: https://airlock.dev/docs/agentic-ai-safety-patterns
+- Alternatives to Building Your Own Agent Approval System: https://airlock.dev/docs/alternatives-to-building-your-own-approval-system
+- An Approval Gate for AI Data Pipelines: https://airlock.dev/docs/approval-gate-for-ai-data-pipelines
+- An Approval Gate for Agents That Run While You Sleep: https://airlock.dev/docs/approval-gate-for-overnight-ai-agents
+- An Approval Gate for Webhook-Triggered Agents: https://airlock.dev/docs/approval-gate-for-webhook-triggered-agents
+- An Approval Workflow for AI Marketing Automation: https://airlock.dev/docs/approval-workflow-for-ai-marketing-automation
+- An MCP Approval Server for AI Agents: https://airlock.dev/docs/mcp-approval-server-for-ai-agents
+- Approval Inbox vs Email Approval Chains: https://airlock.dev/docs/approval-inbox-vs-email-approval-chains
+- Approval Inbox vs Slack Buttons: What You Lose: https://airlock.dev/docs/approval-inbox-vs-slack-buttons
+- Approval Inbox vs a Shared Spreadsheet: https://airlock.dev/docs/approval-inbox-vs-spreadsheet-approval-tracking
+- Approve AI Agent Actions From Discord: https://airlock.dev/docs/approve-ai-agent-actions-from-discord
+- Approve AI Agent Actions From Slack: https://airlock.dev/docs/approve-ai-agent-actions-from-slack
+- Approve AI Agent Actions From Telegram: https://airlock.dev/docs/approve-ai-agent-actions-from-telegram
+- Approve AI Agent Actions From Your Phone: https://airlock.dev/docs/approve-ai-agent-actions-from-your-phone
+- Approve AI Agent Actions by Email: https://airlock.dev/docs/approve-ai-agent-actions-by-email
+- Approve AI Agent Ad Spend and Marketing Budget Changes: https://airlock.dev/docs/approve-ai-agent-ad-spend-and-marketing-budget-changes
+- Approve AI Agent CRM Updates Before They Sync: https://airlock.dev/docs/approve-ai-agent-crm-updates
+- Approve AI Agent Calendar Changes Before They're Sent: https://airlock.dev/docs/approve-ai-agent-calendar-changes
+- Approve AI Agent Expense Reports and Invoices: https://airlock.dev/docs/approve-ai-agent-expense-reports-and-invoices
+- Approve AI Agent Google Sheets and Spreadsheet Changes: https://airlock.dev/docs/approve-ai-agent-google-sheets-and-spreadsheet-changes
+- Approve AI Agent IAM and Access Permission Grants: https://airlock.dev/docs/approve-ai-agent-access-permission-grants
+- Approve AI Agent Outbound Webhooks and Third-Party API Calls: https://airlock.dev/docs/approve-ai-agent-outbound-webhooks-and-api-calls
+- Approve AI Agent Salesforce Updates Before They Save: https://airlock.dev/docs/approve-ai-agent-salesforce-updates
+- Approve AI Agent Support Ticket Escalations: https://airlock.dev/docs/approve-ai-agent-support-ticket-escalations
+- Approve AI Agent Vendor Contract Terms Before They're Signed: https://airlock.dev/docs/approve-ai-agent-vendor-contract-terms
+- Approve AI Agent WhatsApp Business Messages Before They Send: https://airlock.dev/docs/approve-ai-agent-whatsapp-business-messages
+- Approve AI Voice Agent Calls Before They Dial: https://airlock.dev/docs/approve-ai-voice-agent-calls-before-they-dial
+- Approve AI-Generated Content Before Publishing: https://airlock.dev/docs/approve-ai-generated-content-before-publishing
+- Approve Emails Before Your AI Agent Sends Them: https://airlock.dev/docs/approve-emails-before-your-ai-agent-sends-them
+- Approve GitHub Actions Runs Triggered by an AI Coding Agent: https://airlock.dev/docs/approve-ai-agent-github-actions-workflows
+- Approve Payments Before Your AI Agent Charges a Card: https://airlock.dev/docs/approve-ai-agent-payments-and-charges
+- Approve Refunds Issued by an AI Support Agent: https://airlock.dev/docs/approve-refunds-issued-by-an-ai-support-agent
+- Approve Slack Messages From an AI Agent: https://airlock.dev/docs/approve-slack-messages-from-an-ai-agent
+- Approve Terminal Commands Before Your AI Coding Agent Runs Them: https://airlock.dev/docs/approve-ai-coding-agent-terminal-commands
+- Blocking vs Polling for Human Approval in Agents: https://airlock.dev/docs/blocking-vs-polling-for-human-approval
+- Build an Audit Trail for AI Agent Actions: https://airlock.dev/docs/audit-trail-for-ai-agent-actions
+- Claude Agent SDK Human Approval: canUseTool and defer: https://airlock.dev/docs/human-approval-claude-agent-sdk
+- Draft Preview and Diff Review for AI Agent Actions: https://airlock.dev/docs/draft-preview-and-diff-review-for-ai-agent-actions
+- Edit AI Agent Drafts Before You Approve Them: https://airlock.dev/docs/edit-ai-agent-drafts-before-approving
+- Gate Database Writes From an AI Agent: https://airlock.dev/docs/approve-database-writes-from-an-ai-agent
+- Handling Approval Timeouts and Expiry in Agents: https://airlock.dev/docs/handling-approval-timeouts-and-expiry-in-agents
+- How to Approve Multiple Pending AI Agent Actions at Once: https://airlock.dev/docs/approve-multiple-ai-agent-actions-at-once
+- How to Build a Human-in-the-Loop AI Agent: https://airlock.dev/docs/how-to-build-a-human-in-the-loop-ai-agent
+- How to Pause an AI Agent for Human Input: https://airlock.dev/docs/how-to-pause-an-ai-agent-for-human-input
+- How to Review AI-Generated Content Before It Goes Out: https://airlock.dev/docs/how-to-review-ai-content-before-it-goes-out
+- How to Test an AI Agent's Approval Flow: https://airlock.dev/docs/how-to-test-an-ai-agent-approval-flow
+- Human Approval Before a Browser Agent Submits a Form: https://airlock.dev/docs/human-approval-before-a-browser-agent-submits-a-form
+- Human Approval Before an AI Agent Automates Your Browser: https://airlock.dev/docs/human-approval-for-ai-agent-browser-automation
+- Human Approval Before an AI Agent Deploys Code: https://airlock.dev/docs/human-approval-before-deploying-code-with-an-agent
+- Human Approval Before an AI Agent Merges a Pull Request: https://airlock.dev/docs/approve-ai-agent-pull-requests-before-merge
+- Human Approval Before an AI Agent Writes to Your Filesystem: https://airlock.dev/docs/human-approval-for-ai-agent-file-writes
+- Human Approval Before an Agent Posts to Social Media: https://airlock.dev/docs/human-approval-before-an-agent-posts-to-social-media
+- Human Approval Before an Agent Sends SMS: https://airlock.dev/docs/human-approval-before-an-agent-sends-sms
+- Human Approval for AI Agencies and Freelancers: https://airlock.dev/docs/human-approval-for-ai-agencies
+- Human Approval for AI Agent App Store and Play Store Submissions: https://airlock.dev/docs/human-approval-for-ai-agent-app-store-submissions
+- Human Approval for AI Agent Bulk Operations and Mass Updates: https://airlock.dev/docs/human-approval-for-ai-agent-bulk-operations
+- Human Approval for AI Agent Customer Data Exports and GDPR Requests: https://airlock.dev/docs/human-approval-for-ai-agent-customer-data-exports
+- Human Approval for AI Agent GitHub Issue and Comment Automation: https://airlock.dev/docs/human-approval-for-ai-agent-github-issue-and-comment-automation
+- Human Approval for AI Agent Price and Inventory Changes: https://airlock.dev/docs/human-approval-for-ai-agent-price-and-inventory-changes
+- Human Approval for AI Agent Secrets and API Key Rotation: https://airlock.dev/docs/human-approval-for-ai-agent-secrets-rotation
+- Human Approval for AI Agent Terraform Changes: https://airlock.dev/docs/human-approval-for-ai-agent-terraform-changes
+- Human Approval for AI Agents in Education: https://airlock.dev/docs/human-approval-for-ai-agents-in-education
+- Human Approval for AI Content Pipelines: https://airlock.dev/docs/human-approval-for-ai-content-pipelines
+- Human Approval for AI IT Helpdesk Agents: https://airlock.dev/docs/human-approval-for-ai-it-helpdesk-agents
+- Human Approval for AI Insurance Claims Agents: https://airlock.dev/docs/human-approval-for-ai-insurance-claims-agents
+- Human Approval for AI Procurement Agents: https://airlock.dev/docs/human-approval-for-ai-procurement-agents
+- Human Approval for AI Recruiting Outreach: https://airlock.dev/docs/human-approval-for-ai-recruiting-outreach
+- Human Approval for AI Sales Outreach Agents: https://airlock.dev/docs/human-approval-for-ai-sales-outreach
+- Human Approval for AI Social Media Management: https://airlock.dev/docs/human-approval-for-ai-social-media-management
+- Human Approval for AI Trading Agents: https://airlock.dev/docs/human-approval-for-ai-trading-agents
+- Human Approval for Agno Agents: Adding an External Approval Inbox: https://airlock.dev/docs/human-approval-agno-agents
+- Human Approval for Amazon Bedrock AgentCore Agents: https://airlock.dev/docs/human-approval-amazon-bedrock-agentcore
+- Human Approval for Background AI Workers: https://airlock.dev/docs/human-approval-for-background-ai-workers
+- Human Approval for Claude Cowork Browser Agent Actions: https://airlock.dev/docs/human-approval-for-claude-cowork-agent
+- Human Approval for Fintech AI Agents: https://airlock.dev/docs/human-approval-for-fintech-ai-agents
+- Human Approval for Google Agent Development Kit (ADK) Agents: https://airlock.dev/docs/human-approval-google-agent-development-kit
+- Human Approval for Jira AI Agents: https://airlock.dev/docs/human-approval-for-jira-ai-agents
+- Human Approval for Legal AI Agents: https://airlock.dev/docs/human-approval-for-legal-ai-agents
+- Human Approval for Mastra AI Agents: https://airlock.dev/docs/human-approval-mastra-agents
+- Human Approval for Microsoft AutoGen Agents: https://airlock.dev/docs/human-approval-autogen-agents
+- Human Approval for OpenAI AgentKit After Agent Builder: https://airlock.dev/docs/human-approval-for-openai-agentkit
+- Human Approval for Real Estate AI Agents: https://airlock.dev/docs/human-approval-for-real-estate-ai-agents
+- Human Approval for Scheduled AI Scripts: https://airlock.dev/docs/human-approval-for-scheduled-ai-scripts
+- Human Approval for Solo-Founder AI Automations: https://airlock.dev/docs/human-approval-for-solo-founder-automations
+- Human Approval for Unattended AI Agents: https://airlock.dev/docs/human-approval-for-unattended-ai-agents
+- Human Approval for Zapier AI Agents: https://airlock.dev/docs/human-approval-zapier-ai-agents
+- Human Approval for n8n AI Agent Workflows: https://airlock.dev/docs/human-approval-n8n-ai-agent
+- Human Approval for the Vercel AI SDK: https://airlock.dev/docs/human-approval-vercel-ai-sdk
+- Human Approval in Multi-Agent Systems: https://airlock.dev/docs/human-approval-for-multi-agent-systems
+- Human Oversight for Agentic AI: https://airlock.dev/docs/human-oversight-for-agentic-ai
+- Human Oversight vs Automation in AI Agents: https://airlock.dev/docs/human-oversight-vs-automation-in-ai-agents
+- Human-in-the-Loop AI for E-commerce Discounts: https://airlock.dev/docs/human-in-the-loop-for-ai-in-ecommerce
+- Human-in-the-Loop Approval for LangChain Agents: https://airlock.dev/docs/human-in-the-loop-for-langchain-agents
+- Human-in-the-Loop Checkpoints in LangGraph: https://airlock.dev/docs/human-in-the-loop-langgraph
+- Human-in-the-Loop for AI Agent DNS and Infrastructure Changes: https://airlock.dev/docs/human-in-the-loop-for-ai-agent-dns-and-infra-changes
+- Human-in-the-Loop for AI Agent Database Migrations: https://airlock.dev/docs/human-in-the-loop-for-ai-agent-database-migrations
+- Human-in-the-Loop for AI Agent Incident Response: https://airlock.dev/docs/human-in-the-loop-for-ai-agent-incident-response
+- Human-in-the-Loop for AI Customer Support Agents: https://airlock.dev/docs/human-in-the-loop-ai-customer-support
+- Human-in-the-Loop for AI HR Onboarding Agents: https://airlock.dev/docs/human-in-the-loop-for-ai-hr-onboarding-agents
+- Human-in-the-Loop for AI Newsletter Automation: https://airlock.dev/docs/human-in-the-loop-for-ai-newsletter-automation
+- Human-in-the-Loop for AI Research Agents: https://airlock.dev/docs/human-in-the-loop-for-ai-research-agents
+- Human-in-the-Loop for AI in HR and Recruiting: https://airlock.dev/docs/human-in-the-loop-for-ai-in-hr
+- Human-in-the-Loop for AI in SaaS Operations: https://airlock.dev/docs/human-in-the-loop-for-ai-in-saas-operations
+- Human-in-the-Loop for AWS Strands Agents: https://airlock.dev/docs/human-in-the-loop-aws-strands-agents
+- Human-in-the-Loop for Autonomous AI Agents: https://airlock.dev/docs/human-in-the-loop-for-autonomous-agents
+- Human-in-the-Loop for CI/CD AI Agents: https://airlock.dev/docs/human-in-the-loop-ci-cd-ai-agents
+- Human-in-the-Loop for Cloudflare Agents SDK: https://airlock.dev/docs/human-in-the-loop-cloudflare-agents
+- Human-in-the-Loop for Computer-Use AI Agents: https://airlock.dev/docs/human-in-the-loop-for-computer-use-ai-agents
+- Human-in-the-Loop for CopilotKit and AG-UI Agents: https://airlock.dev/docs/human-in-the-loop-copilotkit-ag-ui
+- Human-in-the-Loop for DevOps AI Agents: https://airlock.dev/docs/human-in-the-loop-for-devops-ai-agents
+- Human-in-the-Loop for Durable Agent Runtimes: Pause, Approve, Resume: https://airlock.dev/docs/human-in-the-loop-agentspan-and-durable-agent-runtimes
+- Human-in-the-Loop for E-commerce AI Agents: https://airlock.dev/docs/human-in-the-loop-for-ecommerce-ai-agents
+- Human-in-the-Loop for Healthcare AI Messaging: https://airlock.dev/docs/human-in-the-loop-for-healthcare-ai-messaging
+- Human-in-the-Loop for LangChain Deep Agents: https://airlock.dev/docs/human-in-the-loop-langchain-deep-agents
+- Human-in-the-Loop for Microsoft Semantic Kernel Agents: https://airlock.dev/docs/human-in-the-loop-semantic-kernel
+- Human-in-the-Loop for Personal AI Assistants: https://airlock.dev/docs/human-in-the-loop-for-personal-ai-assistants
+- Human-in-the-Loop for RAG Agents That Take Actions: https://airlock.dev/docs/human-in-the-loop-for-rag-agents-that-act
+- Human-in-the-Loop for Supply Chain AI Agents: https://airlock.dev/docs/human-in-the-loop-for-supply-chain-ai-agents
+- Human-in-the-Loop for Travel Booking AI Agents: https://airlock.dev/docs/human-in-the-loop-for-travel-booking-ai-agents
+- Human-in-the-Loop for the OpenAI Agents SDK: https://airlock.dev/docs/human-in-the-loop-openai-agents-sdk
+- Human-in-the-Loop in Microsoft Agent Framework: https://airlock.dev/docs/human-in-the-loop-microsoft-agent-framework
+- Human-in-the-Loop vs Full Autonomy for AI Agents: https://airlock.dev/docs/human-in-the-loop-vs-full-autonomy
+- Human-in-the-Loop, Explained for AI Builders: https://airlock.dev/docs/human-in-the-loop-explained
+- Implementing Approval Workflows for LLM Agents: https://airlock.dev/docs/implementing-approval-workflows-for-llm-agents
+- Keep an AI Agent in Sandbox Until a Human Approves Going Live: https://airlock.dev/docs/keep-an-ai-agent-in-sandbox-until-a-human-approves-going-live
+- LlamaIndex Human-in-the-Loop: Pause a Tool for Approval: https://airlock.dev/docs/human-in-the-loop-llamaindex-agents
+- Mobile Approvals for AI Agents: https://airlock.dev/docs/mobile-approvals-for-ai-agents
+- One Approval Inbox for All Your AI Agents: https://airlock.dev/docs/approval-inbox-for-ai-agents
+- One-Tap Approve/Reject for AI Agent Actions: https://airlock.dev/docs/one-tap-approve-reject-for-ai-agents
+- Open-Source Human-in-the-Loop Tools for AI Agents: https://airlock.dev/docs/open-source-human-in-the-loop-tools
+- Prevent Prompt Injection From Executing Real Actions: https://airlock.dev/docs/prevent-prompt-injection-from-executing-actions
+- Pydantic AI Human-in-the-Loop with an Approval Inbox: https://airlock.dev/docs/human-in-the-loop-pydantic-ai
+- REST API vs MCP for Human-in-the-Loop Approval: https://airlock.dev/docs/rest-api-vs-mcp-for-human-approval
+- Require Human Approval Before an Agent Deletes Data: https://airlock.dev/docs/human-approval-before-an-agent-deletes-data
+- Reversible vs Irreversible AI Agent Actions: What to Gate: https://airlock.dev/docs/approve-reversible-vs-irreversible-ai-agent-actions
+- Review AI Agent Decisions Before They Happen: https://airlock.dev/docs/review-ai-agent-decisions-before-they-happen
+- Safe Autonomy: Let Agents Act, but Not Blindly: https://airlock.dev/docs/safe-autonomy-for-ai-agents
+- Stop Your AI Agent From Sending Emails Without Approval: https://airlock.dev/docs/stop-your-ai-agent-sending-emails-without-approval
+- Temporal Human-in-the-Loop with an Approval Inbox: https://airlock.dev/docs/human-in-the-loop-temporal-workflows-for-ai-agents
+- The EU AI Act Human Oversight Requirement for AI Agents: https://airlock.dev/docs/eu-ai-act-human-oversight-requirement-for-ai-agents
+- The Propose-Approve-Execute Pattern for AI Agents: https://airlock.dev/docs/the-propose-approve-execute-pattern
+- The Risks of Autonomous AI Agents Taking Actions: https://airlock.dev/docs/the-risks-of-autonomous-ai-agents-taking-actions
+- Trust Boundaries for AI Agents That Take Actions: https://airlock.dev/docs/trust-boundaries-for-ai-agents
+- Understanding the Maker-Checker Pattern for AI Agents: https://airlock.dev/docs/maker-checker-pattern-for-ai-agents
+- Web Push Notifications for Agent Approvals: https://airlock.dev/docs/web-push-notifications-for-agent-approvals
+- What Happens When an AI Agent Acts Without Approval: https://airlock.dev/docs/what-happens-when-an-ai-agent-acts-without-approval
+- When Credentials Expire While Your AI Agent Waits for Approval: https://airlock.dev/docs/credentials-expire-while-ai-agent-waits-for-approval
+- When to Let an AI Agent Act Autonomously (and When Not To): https://airlock.dev/docs/when-to-let-an-ai-agent-act-autonomously
+- Why AI Agents Need Approval Gates: https://airlock.dev/docs/why-ai-agents-need-approval-gates
+- Wrapping an Agent Tool With a Human Approval Step: https://airlock.dev/docs/wrapping-a-tool-with-a-human-approval-step
+- ntfy Notifications for AI Agent Approvals: https://airlock.dev/docs/ntfy-notifications-for-ai-agent-approvals
 
 ## Install per agent
-- Overview: https://impri.dev/docs/how-to-get-human-approval-into-your-coding-agent
-- Claude Code: https://impri.dev/docs/claude-code-human-approval
-- OpenAI Codex: https://impri.dev/docs/codex-human-approval
-- Cursor: https://impri.dev/docs/cursor-human-approval
-- Windsurf: https://impri.dev/docs/windsurf-human-approval
+- Overview: https://airlock.dev/docs/how-to-get-human-approval-into-your-coding-agent
+- Claude Code: https://airlock.dev/docs/claude-code-human-approval
+- OpenAI Codex: https://airlock.dev/docs/codex-human-approval
+- Cursor: https://airlock.dev/docs/cursor-human-approval
+- Windsurf: https://airlock.dev/docs/windsurf-human-approval
 
 ## Use cases
-- Use cases index: https://impri.dev/use-cases
-- Approve AI-generated content before it publishes: https://impri.dev/use-cases/content-publishing
-- Human approval before an AI agent deploys or changes infra: https://impri.dev/use-cases/deploy-and-infra-changes
-- Gate destructive database operations from an AI agent: https://impri.dev/use-cases/destructive-database-ops
-- Approve emails, Slack and SMS an AI agent wants to send: https://impri.dev/use-cases/outbound-email-and-messages
-- Let a coding agent run overnight, approve from your phone: https://impri.dev/use-cases/overnight-coding-agent
-- Approve refunds and charges an AI support agent wants to issue: https://impri.dev/use-cases/refunds-and-payments
+- Use cases index: https://airlock.dev/use-cases
+- Approve AI-generated content before it publishes: https://airlock.dev/use-cases/content-publishing
+- Human approval before an AI agent deploys or changes infra: https://airlock.dev/use-cases/deploy-and-infra-changes
+- Gate destructive database operations from an AI agent: https://airlock.dev/use-cases/destructive-database-ops
+- Approve emails, Slack and SMS an AI agent wants to send: https://airlock.dev/use-cases/outbound-email-and-messages
+- Let a coding agent run overnight, approve from your phone: https://airlock.dev/use-cases/overnight-coding-agent
+- Approve refunds and charges an AI support agent wants to issue: https://airlock.dev/use-cases/refunds-and-payments
 
 ## For AI agents
-- Impri for AI agents — human approval over MCP: https://impri.dev/agents
+- Airlock for AI agents — human approval over MCP: https://airlock.dev/agents

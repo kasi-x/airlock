@@ -3,21 +3,21 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>The EU AI Act Human Oversight Requirement for AI Agents — Impri Docs</title>
+<title>The EU AI Act Human Oversight Requirement for AI Agents — Airlock Docs</title>
 <meta name="description" content="The EU AI Act requires human oversight for high-risk AI systems — here is where a real approval gate satisfies that, and where it cannot.">
 <meta name="theme-color" content="#06070d">
-<meta property="og:title" content="The EU AI Act Human Oversight Requirement for AI Agents — Impri Docs">
+<meta property="og:title" content="The EU AI Act Human Oversight Requirement for AI Agents — Airlock Docs">
 <meta property="og:description" content="The EU AI Act requires human oversight for high-risk AI systems — here is where a real approval gate satisfies that, and where it cannot.">
 <meta property="og:type" content="article">
-<meta property="og:url" content="https://impri.dev/docs/eu-ai-act-human-oversight-requirement-for-ai-agents">
-<meta property="og:image" content="https://impri.dev/assets/og/og-docs.png">
+<meta property="og:url" content="https://airlock.dev/docs/eu-ai-act-human-oversight-requirement-for-ai-agents">
+<meta property="og:image" content="https://airlock.dev/assets/og/og-docs.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
-<meta property="og:image:alt" content="Impri — human-in-the-loop approval inbox for AI agents">
+<meta property="og:image:alt" content="Airlock — human-in-the-loop approval inbox for AI agents">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="https://impri.dev/assets/og/og-docs.png">
-<link rel="canonical" href="https://impri.dev/docs/eu-ai-act-human-oversight-requirement-for-ai-agents">
-<script type="application/ld+json">{"@context":"https://schema.org","@type":"TechArticle","headline":"The EU AI Act Human Oversight Requirement for AI Agents","description":"The EU AI Act requires human oversight for high-risk AI systems — here is where a real approval gate satisfies that, and where it cannot.","url":"https://impri.dev/docs/eu-ai-act-human-oversight-requirement-for-ai-agents","inLanguage":"en","author":{"@type":"Organization","name":"Impri","url":"https://impri.dev"},"publisher":{"@type":"Organization","name":"Impri","url":"https://impri.dev"}}</script>
+<meta name="twitter:image" content="https://airlock.dev/assets/og/og-docs.png">
+<link rel="canonical" href="https://airlock.dev/docs/eu-ai-act-human-oversight-requirement-for-ai-agents">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"TechArticle","headline":"The EU AI Act Human Oversight Requirement for AI Agents","description":"The EU AI Act requires human oversight for high-risk AI systems — here is where a real approval gate satisfies that, and where it cannot.","url":"https://airlock.dev/docs/eu-ai-act-human-oversight-requirement-for-ai-agents","inLanguage":"en","author":{"@type":"Organization","name":"Airlock","url":"https://airlock.dev"},"publisher":{"@type":"Organization","name":"Airlock","url":"https://airlock.dev"}}</script>
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <link rel="icon" href="/favicon.ico" sizes="32x32">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='9' fill='%236366f1'/%3E%3Cpath d='M9 16.5l4.5 4.5L23 11' stroke='white' stroke-width='3' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
@@ -132,13 +132,13 @@ pre code.hljs{display:block;overflow-x:auto}
 <div class="wrap nav-inner">
   <a class="brand" href="/">
     <span class="mark"><svg viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.5 4.5L19 7.5" stroke="white" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
-    Impri
+    Airlock
   </a>
   <div class="nav-links">
     <a class="link" href="/#how">How it works</a>
     <a class="link" href="/#pricing">Pricing</a>
     <a class="link active-nav" href="../docs">Docs</a>
-    <a class="btn btn-primary btn-sm" href="https://gitlab.com/sekera.radim/impri">GitLab</a>
+    <a class="btn btn-primary btn-sm" href="https://gitlab.com/sekera.radim/airlock">GitLab</a>
   </div>
 </div>
 </nav>
@@ -158,7 +158,7 @@ pre code.hljs{display:block;overflow-x:auto}
 <h2 id="what-the-regulation-actually-asks-for">What the regulation actually asks for</h2>
 <p>Article 14 of the EU AI Act requires that high-risk AI systems be designed so a human can effectively oversee them — including the ability to &quot;decide not to use&quot; an output, or &quot;intervene... or interrupt the system through a &#39;stop&#39; button.&quot; The text is deliberately about <em>capability to oversee</em>, not a specific implementation. It doesn&#39;t mandate a particular API or vendor. What it does imply, in practice, is that the oversight has to be real: the human needs enough information to make an informed decision, a genuine ability to say no, and — for anything you&#39;d need to demonstrate later — a record that the oversight happened.</p>
 <p>This is a compliance question your legal team owns, not something a piece of software can certify for you. What follows is the technical shape of one way to satisfy the &quot;a human can stop this&quot; and &quot;there is a record&quot; parts, for the subset of an AI system that is an agent about to take an external action.</p>
-<p><strong>Important caveat up front: Impri is not a compliance product and does not claim to satisfy the AI Act on its own.</strong> It is a gate and an audit log. Whether that gate, combined with your risk classification, your documentation, and your process around it, satisfies Article 14 for your specific system is a legal determination outside what this page (or Impri) can tell you.</p>
+<p><strong>Important caveat up front: Airlock is not a compliance product and does not claim to satisfy the AI Act on its own.</strong> It is a gate and an audit log. Whether that gate, combined with your risk classification, your documentation, and your process around it, satisfies Article 14 for your specific system is a legal determination outside what this page (or Airlock) can tell you.</p>
 <hr>
 <h2 id="the-part-a-technical-gate-can-address-a-real-stop-button">The part a technical gate can address: a real stop button</h2>
 <p>&quot;Human oversight&quot; is not satisfied by a disclaimer in a system prompt telling the agent to pause — that is not intervention capability, it&#39;s a suggestion the model can override under the wrong input. What Article 14 is describing technically is closer to: the action does not happen without a human decision in the loop.</p>
@@ -166,12 +166,12 @@ pre code.hljs{display:block;overflow-x:auto}
 <span class="hljs-keyword">import</span> time
 <span class="hljs-keyword">import</span> requests
 
-IMPRI_BASE = <span class="hljs-string">&quot;https://api.impri.dev&quot;</span>
-HEADERS = {<span class="hljs-string">&quot;Authorization&quot;</span>: <span class="hljs-string">f&quot;Bearer <span class="hljs-subst">{os.environ[<span class="hljs-string">&#x27;IMPRI_API_KEY&#x27;</span>]}</span>&quot;</span>}
+AIRLOCK_BASE = <span class="hljs-string">&quot;https://api.airlock.dev&quot;</span>
+HEADERS = {<span class="hljs-string">&quot;Authorization&quot;</span>: <span class="hljs-string">f&quot;Bearer <span class="hljs-subst">{os.environ[<span class="hljs-string">&#x27;AIRLOCK_API_KEY&#x27;</span>]}</span>&quot;</span>}
 
 <span class="hljs-keyword">def</span> <span class="hljs-title function_">request_oversight</span>(<span class="hljs-params">kind: <span class="hljs-built_in">str</span>, title: <span class="hljs-built_in">str</span>, body: <span class="hljs-built_in">str</span>, undo: <span class="hljs-built_in">str</span></span>):
     resp = requests.post(
-        <span class="hljs-string">f&quot;<span class="hljs-subst">{IMPRI_BASE}</span>/v1/actions&quot;</span>,
+        <span class="hljs-string">f&quot;<span class="hljs-subst">{AIRLOCK_BASE}</span>/v1/actions&quot;</span>,
         headers=HEADERS,
         json={
             <span class="hljs-string">&quot;kind&quot;</span>: kind,
@@ -186,7 +186,7 @@ HEADERS = {<span class="hljs-string">&quot;Authorization&quot;</span>: <span cla
 
 <span class="hljs-keyword">def</span> <span class="hljs-title function_">await_decision</span>(<span class="hljs-params">action_id: <span class="hljs-built_in">str</span>, poll_seconds: <span class="hljs-built_in">int</span> = <span class="hljs-number">15</span></span>) -&gt; <span class="hljs-built_in">dict</span>:
     <span class="hljs-keyword">while</span> <span class="hljs-literal">True</span>:
-        resp = requests.get(<span class="hljs-string">f&quot;<span class="hljs-subst">{IMPRI_BASE}</span>/v1/actions/<span class="hljs-subst">{action_id}</span>&quot;</span>, headers=HEADERS)
+        resp = requests.get(<span class="hljs-string">f&quot;<span class="hljs-subst">{AIRLOCK_BASE}</span>/v1/actions/<span class="hljs-subst">{action_id}</span>&quot;</span>, headers=HEADERS)
         data = resp.json()
         <span class="hljs-keyword">if</span> data[<span class="hljs-string">&quot;status&quot;</span>] != <span class="hljs-string">&quot;pending&quot;</span>:
             <span class="hljs-keyword">return</span> data
@@ -207,7 +207,7 @@ HEADERS = {<span class="hljs-string">&quot;Authorization&quot;</span>: <span cla
     escalate_for_manual_review()</code></pre></div>
 <hr>
 <h2 id="the-part-it-can39t-address">The part it can&#39;t address</h2>
-<p>A gate proves <em>that</em> a human made a decision. It says nothing about whether the human was qualified to make it, had enough time and context, or wasn&#39;t just clicking approve on autopilot — all things regulators and auditors will actually ask about. Article 14 also covers requirements Impri has no bearing on at all: risk management documentation, technical robustness, training data governance, and the conformity assessment itself. Those live in your compliance process, not in an API call.</p>
+<p>A gate proves <em>that</em> a human made a decision. It says nothing about whether the human was qualified to make it, had enough time and context, or wasn&#39;t just clicking approve on autopilot — all things regulators and auditors will actually ask about. Article 14 also covers requirements Airlock has no bearing on at all: risk management documentation, technical robustness, training data governance, and the conformity assessment itself. Those live in your compliance process, not in an API call.</p>
 <div class="table-wrap"><table>
 <thead>
 <tr>
@@ -217,7 +217,7 @@ HEADERS = {<span class="hljs-string">&quot;Authorization&quot;</span>: <span cla
 </thead>
 <tbody><tr>
 <td>Human can review the proposed action before it takes effect</td>
-<td>An Impri action gate</td>
+<td>An Airlock action gate</td>
 </tr>
 <tr>
 <td>Human can decline / stop the action</td>
@@ -229,24 +229,24 @@ HEADERS = {<span class="hljs-string">&quot;Authorization&quot;</span>: <span cla
 </tr>
 <tr>
 <td>Human was competent and adequately informed</td>
-<td>Your review process, not Impri</td>
+<td>Your review process, not Airlock</td>
 </tr>
 <tr>
 <td>Risk classification, conformity assessment, documentation</td>
-<td>Your compliance program, not Impri</td>
+<td>Your compliance program, not Airlock</td>
 </tr>
 </tbody></table>
 </div>
 <hr>
 <h2 id="self-hosting-for-data-residency">Self-hosting for data residency</h2>
-<p>Some high-risk deployments need the oversight data to stay in-region or off a third-party&#39;s cloud entirely. Impri&#39;s core is MIT-licensed and self-hostable — see <a href="self-hosting">self-hosting</a> — which keeps the action records and audit trail on your own infrastructure rather than <code>api.impri.dev</code>, if that&#39;s a constraint your compliance team has.</p>
+<p>Some high-risk deployments need the oversight data to stay in-region or off a third-party&#39;s cloud entirely. Airlock&#39;s core is MIT-licensed and self-hostable — see <a href="self-hosting">self-hosting</a> — which keeps the action records and audit trail on your own infrastructure rather than <code>api.airlock.dev</code>, if that&#39;s a constraint your compliance team has.</p>
 <p>For the base three-call integration pattern this is built on, start with <a href="how-to-add-human-approval-to-an-ai-agent">How to Add Human Approval to an AI Agent</a>, then talk to your legal counsel about whether it covers what your specific system needs.</p>
 
-    <aside class="doc-cta" aria-label="Try Impri">
+    <aside class="doc-cta" aria-label="Try Airlock">
   <p class="doc-cta-title">Add an approval step to your own agent</p>
-  <p>Start on Impri Cloud: the Free tier includes 100 approvals a month. Or self-host the MIT-licensed core with Docker Compose, with no tier limits.</p>
+  <p>Start on Airlock Cloud: the Free tier includes 100 approvals a month. Or self-host the MIT-licensed core with Docker Compose, with no tier limits.</p>
   <div class="doc-cta-actions">
-    <a class="btn btn-primary btn-sm" href="https://app.impri.dev/?signup=1">Start free on Impri Cloud</a>
+    <a class="btn btn-primary btn-sm" href="https://app.airlock.dev/?signup=1">Start free on Airlock Cloud</a>
     <a class="btn btn-ghost btn-sm" href="../docs/quickstart">Quick start</a>
     <a class="btn btn-ghost btn-sm" href="../docs/self-hosting">Self-host guide</a>
   </div>
@@ -340,19 +340,19 @@ HEADERS = {<span class="hljs-string">&quot;Authorization&quot;</span>: <span cla
 <footer class="footer">
 <div class="wrap footer-inner">
   <a class="brand" href="/">
-    <span class="mark"><svg viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.5 4.5L19 7.5" stroke="white" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Impri
+    <span class="mark"><svg viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.5 4.5L19 7.5" stroke="white" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Airlock
   </a>
   <div>
-    <a href="https://gitlab.com/sekera.radim/impri">GitLab</a>
+    <a href="https://gitlab.com/sekera.radim/airlock">GitLab</a>
     <a href="/docs">Docs</a>
-    <a href="https://gitlab.com/sekera.radim/impri/-/blob/main/LICENSE">MIT License</a>
-    <a href="https://www.npmjs.com/package/@impri/mcp">@impri/mcp</a>
+    <a href="https://gitlab.com/sekera.radim/airlock/-/blob/main/LICENSE">MIT License</a>
+    <a href="https://www.npmjs.com/package/@airlock/mcp">@airlock/mcp</a>
     <a href="/docs/privacy">Privacy</a>
     <a href="/docs/terms">Terms</a>
     <a href="https://sekera.dev">Contact</a>
   </div>
 </div>
-<div class="wrap" style="margin-top:18px"><span class="muted">© 2026 Impri · The imprimatur for your AI agents · Built by <a href="https://sekera.dev" style="color:inherit">Radim Sekera</a>. Also by the same maker: <a href="https://briefgate.dev/?utm_source=impri.dev&amp;utm_medium=referral" style="color:inherit">BriefGate</a> — client intake for agencies and AI agents.</span></div>
+<div class="wrap" style="margin-top:18px"><span class="muted">© 2026 Airlock · The airlockmatur for your AI agents · Built by <a href="https://sekera.dev" style="color:inherit">Radim Sekera</a>. Also by the same maker: <a href="https://briefgate.dev/?utm_source=airlock.dev&amp;utm_medium=referral" style="color:inherit">BriefGate</a> — client intake for agencies and AI agents.</span></div>
 </footer>
 </body>
 </html>

@@ -15,15 +15,15 @@ The fix isn't "make the model more careful." It's structural: the agent proposes
 ## The workflow
 
 1. Claims agent reads the intake (policy, incident report, attached photos/documents), drafts a recommendation: approve, deny, or approve-with-adjusted-amount.
-2. Agent pushes that recommendation to Impri as a pending action instead of writing to the payout system.
+2. Agent pushes that recommendation to Airlock as a pending action instead of writing to the payout system.
 3. An adjuster reviews the recommendation and supporting summary in their inbox, edits the payout amount if needed, and approves or rejects.
 4. Only on `approved` does the agent call the actual payout/denial-letter API, using the adjuster's final numbers — never its own draft.
 
 ```python
 import os, time, requests
 
-API = "https://api.impri.dev"
-HEADERS = {"Authorization": f"Bearer {os.environ['IMPRI_API_KEY']}"}
+API = "https://api.airlock.dev"
+HEADERS = {"Authorization": f"Bearer {os.environ['AIRLOCK_API_KEY']}"}
 
 def submit_claim_decision(claim_id: str, recommendation: str, amount_cents: int, rationale: str):
     resp = requests.post(f"{API}/v1/actions", headers=HEADERS, json={
@@ -63,7 +63,7 @@ New to the API shape? Start with the [quickstart](quickstart.md) — it covers g
 
 ## What the adjuster's card should carry
 
-Impri shows whatever you put in `preview.body`, so the recommendation needs to be self-contained — the adjuster shouldn't have to tab over to the claims system to make a call.
+Airlock shows whatever you put in `preview.body`, so the recommendation needs to be self-contained — the adjuster shouldn't have to tab over to the claims system to make a call.
 
 | Claim type | What belongs in the preview | `editable` field worth setting |
 |---|---|---|
@@ -83,6 +83,6 @@ Insurance payouts are the textbook case for the `idempotent: false` flag: if you
 
 ## What this doesn't solve
 
-Impri gates the payout call — it does not adjudicate the claim, verify documents, or detect fraud. Those stay the agent's (and adjuster's) job. And the gate only holds if the payout system's credentials live behind the wrapper that waits for `approved`; if the agent also has direct access to the disbursement API "just in case," it can route around the review entirely. Wrap the disbursement call itself, not just the recommendation step.
+Airlock gates the payout call — it does not adjudicate the claim, verify documents, or detect fraud. Those stay the agent's (and adjuster's) job. And the gate only holds if the payout system's credentials live behind the wrapper that waits for `approved`; if the agent also has direct access to the disbursement API "just in case," it can route around the review entirely. Wrap the disbursement call itself, not just the recommendation step.
 
 Next: see [how to add human approval to an AI agent](how-to-add-human-approval-to-an-ai-agent.md) for the full mechanics of the approve/reject loop.

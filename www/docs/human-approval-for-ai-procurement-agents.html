@@ -3,21 +3,21 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Human Approval for AI Procurement Agents — Impri Docs</title>
+<title>Human Approval for AI Procurement Agents — Airlock Docs</title>
 <meta name="description" content="An AI agent that can generate a purchase order is one bad supplier match away from a real invoice. This is the pattern for putting a human sign-off between…">
 <meta name="theme-color" content="#06070d">
-<meta property="og:title" content="Human Approval for AI Procurement Agents — Impri Docs">
+<meta property="og:title" content="Human Approval for AI Procurement Agents — Airlock Docs">
 <meta property="og:description" content="An AI agent that can generate a purchase order is one bad supplier match away from a real invoice. This is the pattern for putting a human sign-off between…">
 <meta property="og:type" content="article">
-<meta property="og:url" content="https://impri.dev/docs/human-approval-for-ai-procurement-agents">
-<meta property="og:image" content="https://impri.dev/assets/og/og-docs.png">
+<meta property="og:url" content="https://airlock.dev/docs/human-approval-for-ai-procurement-agents">
+<meta property="og:image" content="https://airlock.dev/assets/og/og-docs.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
-<meta property="og:image:alt" content="Impri — human-in-the-loop approval inbox for AI agents">
+<meta property="og:image:alt" content="Airlock — human-in-the-loop approval inbox for AI agents">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="https://impri.dev/assets/og/og-docs.png">
-<link rel="canonical" href="https://impri.dev/docs/human-approval-for-ai-procurement-agents">
-<script type="application/ld+json">{"@context":"https://schema.org","@type":"TechArticle","headline":"Human Approval for AI Procurement Agents","description":"An AI agent that can generate a purchase order is one bad supplier match away from a real invoice. This is the pattern for putting a human sign-off between…","url":"https://impri.dev/docs/human-approval-for-ai-procurement-agents","inLanguage":"en","author":{"@type":"Organization","name":"Impri","url":"https://impri.dev"},"publisher":{"@type":"Organization","name":"Impri","url":"https://impri.dev"}}</script>
+<meta name="twitter:image" content="https://airlock.dev/assets/og/og-docs.png">
+<link rel="canonical" href="https://airlock.dev/docs/human-approval-for-ai-procurement-agents">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"TechArticle","headline":"Human Approval for AI Procurement Agents","description":"An AI agent that can generate a purchase order is one bad supplier match away from a real invoice. This is the pattern for putting a human sign-off between…","url":"https://airlock.dev/docs/human-approval-for-ai-procurement-agents","inLanguage":"en","author":{"@type":"Organization","name":"Airlock","url":"https://airlock.dev"},"publisher":{"@type":"Organization","name":"Airlock","url":"https://airlock.dev"}}</script>
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <link rel="icon" href="/favicon.ico" sizes="32x32">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='9' fill='%236366f1'/%3E%3Cpath d='M9 16.5l4.5 4.5L23 11' stroke='white' stroke-width='3' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
@@ -132,13 +132,13 @@ pre code.hljs{display:block;overflow-x:auto}
 <div class="wrap nav-inner">
   <a class="brand" href="/">
     <span class="mark"><svg viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.5 4.5L19 7.5" stroke="white" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
-    Impri
+    Airlock
   </a>
   <div class="nav-links">
     <a class="link" href="/#how">How it works</a>
     <a class="link" href="/#pricing">Pricing</a>
     <a class="link active-nav" href="../docs">Docs</a>
-    <a class="btn btn-primary btn-sm" href="https://gitlab.com/sekera.radim/impri">GitLab</a>
+    <a class="btn btn-primary btn-sm" href="https://gitlab.com/sekera.radim/airlock">GitLab</a>
   </div>
 </div>
 </nav>
@@ -164,8 +164,8 @@ pre code.hljs{display:block;overflow-x:auto}
 <span class="hljs-keyword">import</span> time
 <span class="hljs-keyword">import</span> requests
 
-IMPRI_BASE = <span class="hljs-string">&quot;https://api.impri.dev&quot;</span>
-HEADERS = {<span class="hljs-string">&quot;Authorization&quot;</span>: <span class="hljs-string">f&quot;Bearer <span class="hljs-subst">{os.environ[<span class="hljs-string">&#x27;IMPRI_API_KEY&#x27;</span>]}</span>&quot;</span>}
+AIRLOCK_BASE = <span class="hljs-string">&quot;https://api.airlock.dev&quot;</span>
+HEADERS = {<span class="hljs-string">&quot;Authorization&quot;</span>: <span class="hljs-string">f&quot;Bearer <span class="hljs-subst">{os.environ[<span class="hljs-string">&#x27;AIRLOCK_API_KEY&#x27;</span>]}</span>&quot;</span>}
 
 <span class="hljs-keyword">def</span> <span class="hljs-title function_">propose_purchase_order</span>(<span class="hljs-params">vendor, items, total_usd</span>):
     body = {
@@ -185,12 +185,12 @@ HEADERS = {<span class="hljs-string">&quot;Authorization&quot;</span>: <span cla
         <span class="hljs-string">&quot;idempotent&quot;</span>: <span class="hljs-literal">False</span>,  <span class="hljs-comment"># submitting the same PO twice creates a duplicate order</span>
         <span class="hljs-string">&quot;undo&quot;</span>: <span class="hljs-string">&quot;Cancel PO via ERP &gt; Purchase Orders &gt; Cancel (before vendor acknowledges)&quot;</span>,
     }
-    resp = requests.post(<span class="hljs-string">f&quot;<span class="hljs-subst">{IMPRI_BASE}</span>/v1/actions&quot;</span>, headers=HEADERS, json=body)
+    resp = requests.post(<span class="hljs-string">f&quot;<span class="hljs-subst">{AIRLOCK_BASE}</span>/v1/actions&quot;</span>, headers=HEADERS, json=body)
     <span class="hljs-keyword">return</span> resp.json()[<span class="hljs-string">&quot;id&quot;</span>]
 
 <span class="hljs-keyword">def</span> <span class="hljs-title function_">wait_for_decision</span>(<span class="hljs-params">action_id, poll_seconds=<span class="hljs-number">15</span></span>):
     <span class="hljs-keyword">while</span> <span class="hljs-literal">True</span>:
-        resp = requests.get(<span class="hljs-string">f&quot;<span class="hljs-subst">{IMPRI_BASE}</span>/v1/actions/<span class="hljs-subst">{action_id}</span>&quot;</span>, headers=HEADERS)
+        resp = requests.get(<span class="hljs-string">f&quot;<span class="hljs-subst">{AIRLOCK_BASE}</span>/v1/actions/<span class="hljs-subst">{action_id}</span>&quot;</span>, headers=HEADERS)
         data = resp.json()
         <span class="hljs-keyword">if</span> data[<span class="hljs-string">&quot;status&quot;</span>] != <span class="hljs-string">&quot;pending&quot;</span>:
             <span class="hljs-keyword">return</span> data
@@ -206,7 +206,7 @@ decision = wait_for_decision(action_id)
 <span class="hljs-keyword">if</span> decision[<span class="hljs-string">&quot;status&quot;</span>] == <span class="hljs-string">&quot;approved&quot;</span>:
     final_body = decision[<span class="hljs-string">&quot;decision&quot;</span>][<span class="hljs-string">&quot;final_preview&quot;</span>][<span class="hljs-string">&quot;body&quot;</span>]
     <span class="hljs-comment"># submit_po_to_erp(final_body) — your actual ERP call</span>
-    requests.post(<span class="hljs-string">f&quot;<span class="hljs-subst">{IMPRI_BASE}</span>/v1/actions/<span class="hljs-subst">{action_id}</span>/result&quot;</span>, headers=HEADERS,
+    requests.post(<span class="hljs-string">f&quot;<span class="hljs-subst">{AIRLOCK_BASE}</span>/v1/actions/<span class="hljs-subst">{action_id}</span>/result&quot;</span>, headers=HEADERS,
                   json={<span class="hljs-string">&quot;status&quot;</span>: <span class="hljs-string">&quot;executed&quot;</span>, <span class="hljs-string">&quot;payload&quot;</span>: {<span class="hljs-string">&quot;erp_po_number&quot;</span>: <span class="hljs-string">&quot;PO-88213&quot;</span>}})
 <span class="hljs-keyword">else</span>:
     <span class="hljs-built_in">print</span>(<span class="hljs-string">f&quot;PO not submitted — decision was <span class="hljs-subst">{decision[<span class="hljs-string">&#x27;status&#x27;</span>]}</span>&quot;</span>)</code></pre></div>
@@ -216,17 +216,17 @@ decision = wait_for_decision(action_id)
 <p>Procurement drafts often need a small correction — a quantity typo, a unit price the agent misread from a quote PDF — rather than an outright rejection. Setting <code>editable: [&quot;preview.body&quot;]</code> lets the person approving the PO fix the draft directly in the inbox card instead of rejecting it and asking the agent to redo the whole thing. <code>decision.diff</code> on the response shows exactly what was changed, which matters when finance later asks why a PO total doesn&#39;t match the original AI-generated draft.</p>
 <hr>
 <h2 id="audit-trail-for-finance-and-compliance">Audit trail for finance and compliance</h2>
-<p>Every procurement approval Impri holds becomes a queryable record: who approved it, when, and what the final approved content was versus what the agent originally proposed. For a finance or compliance review, that&#39;s the artifact that answers &quot;why did this vendor get paid&quot; without anyone having to reconstruct it from Slack messages or email threads. See <a href="audit-log">the audit log docs</a> for what&#39;s retained and for how long.</p>
+<p>Every procurement approval Airlock holds becomes a queryable record: who approved it, when, and what the final approved content was versus what the agent originally proposed. For a finance or compliance review, that&#39;s the artifact that answers &quot;why did this vendor get paid&quot; without anyone having to reconstruct it from Slack messages or email threads. See <a href="audit-log">the audit log docs</a> for what&#39;s retained and for how long.</p>
 <hr>
-<h2 id="what-impri-does-not-do-here">What Impri does not do here</h2>
-<p>Impri does not talk to your ERP, does not check the PO against a budget, and does not validate that the vendor and pricing are legitimate — all of that is the agent&#39;s job before the action is ever created. Impri&#39;s only responsibility is holding the &quot;submit or don&#39;t&quot; decision and making sure the ERP call in your code is unreachable without an <code>approved</code> status. If the agent still holds a credential that can call the ERP directly, wrap that credential so the approved decision is genuinely the only path — see <a href="sdk-python">SDK integrations</a> for how to structure that wrapper.</p>
-<p>Next step: if this is your first Impri integration, start with the <a href="quickstart">quickstart</a> to get an API key, then come back and adapt the code above to your ERP.</p>
+<h2 id="what-airlock-does-not-do-here">What Airlock does not do here</h2>
+<p>Airlock does not talk to your ERP, does not check the PO against a budget, and does not validate that the vendor and pricing are legitimate — all of that is the agent&#39;s job before the action is ever created. Airlock&#39;s only responsibility is holding the &quot;submit or don&#39;t&quot; decision and making sure the ERP call in your code is unreachable without an <code>approved</code> status. If the agent still holds a credential that can call the ERP directly, wrap that credential so the approved decision is genuinely the only path — see <a href="sdk-python">SDK integrations</a> for how to structure that wrapper.</p>
+<p>Next step: if this is your first Airlock integration, start with the <a href="quickstart">quickstart</a> to get an API key, then come back and adapt the code above to your ERP.</p>
 
-    <aside class="doc-cta" aria-label="Try Impri">
+    <aside class="doc-cta" aria-label="Try Airlock">
   <p class="doc-cta-title">Add an approval step to your own agent</p>
-  <p>Start on Impri Cloud: the Free tier includes 100 approvals a month. Or self-host the MIT-licensed core with Docker Compose, with no tier limits.</p>
+  <p>Start on Airlock Cloud: the Free tier includes 100 approvals a month. Or self-host the MIT-licensed core with Docker Compose, with no tier limits.</p>
   <div class="doc-cta-actions">
-    <a class="btn btn-primary btn-sm" href="https://app.impri.dev/?signup=1">Start free on Impri Cloud</a>
+    <a class="btn btn-primary btn-sm" href="https://app.airlock.dev/?signup=1">Start free on Airlock Cloud</a>
     <a class="btn btn-ghost btn-sm" href="../docs/quickstart">Quick start</a>
     <a class="btn btn-ghost btn-sm" href="../docs/self-hosting">Self-host guide</a>
   </div>
@@ -313,7 +313,7 @@ decision = wait_for_decision(action_id)
 <li class="ptoc-h2"><a href="#the-purchase-order-approval-flow">The purchase order approval flow</a></li>
 <li class="ptoc-h2"><a href="#let-the-reviewer-edit-numbers-before-they-commit">Let the reviewer edit numbers before they commit</a></li>
 <li class="ptoc-h2"><a href="#audit-trail-for-finance-and-compliance">Audit trail for finance and compliance</a></li>
-<li class="ptoc-h2"><a href="#what-impri-does-not-do-here">What Impri does not do here</a></li></ul>
+<li class="ptoc-h2"><a href="#what-airlock-does-not-do-here">What Airlock does not do here</a></li></ul>
 </nav>
   </aside>
 </div>
@@ -321,19 +321,19 @@ decision = wait_for_decision(action_id)
 <footer class="footer">
 <div class="wrap footer-inner">
   <a class="brand" href="/">
-    <span class="mark"><svg viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.5 4.5L19 7.5" stroke="white" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Impri
+    <span class="mark"><svg viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.5 4.5L19 7.5" stroke="white" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Airlock
   </a>
   <div>
-    <a href="https://gitlab.com/sekera.radim/impri">GitLab</a>
+    <a href="https://gitlab.com/sekera.radim/airlock">GitLab</a>
     <a href="/docs">Docs</a>
-    <a href="https://gitlab.com/sekera.radim/impri/-/blob/main/LICENSE">MIT License</a>
-    <a href="https://www.npmjs.com/package/@impri/mcp">@impri/mcp</a>
+    <a href="https://gitlab.com/sekera.radim/airlock/-/blob/main/LICENSE">MIT License</a>
+    <a href="https://www.npmjs.com/package/@airlock/mcp">@airlock/mcp</a>
     <a href="/docs/privacy">Privacy</a>
     <a href="/docs/terms">Terms</a>
     <a href="https://sekera.dev">Contact</a>
   </div>
 </div>
-<div class="wrap" style="margin-top:18px"><span class="muted">© 2026 Impri · The imprimatur for your AI agents · Built by <a href="https://sekera.dev" style="color:inherit">Radim Sekera</a>. Also by the same maker: <a href="https://briefgate.dev/?utm_source=impri.dev&amp;utm_medium=referral" style="color:inherit">BriefGate</a> — client intake for agencies and AI agents.</span></div>
+<div class="wrap" style="margin-top:18px"><span class="muted">© 2026 Airlock · The airlockmatur for your AI agents · Built by <a href="https://sekera.dev" style="color:inherit">Radim Sekera</a>. Also by the same maker: <a href="https://briefgate.dev/?utm_source=airlock.dev&amp;utm_medium=referral" style="color:inherit">BriefGate</a> — client intake for agencies and AI agents.</span></div>
 </footer>
 </body>
 </html>

@@ -1,20 +1,20 @@
 # Web Push Notifications for Agent Approvals
 
-Wire browser-native web push into Impri so a pending AI agent action pops a real OS notification on your desktop the instant it lands, no Slack workspace or polling tab required.
+Wire browser-native web push into Airlock so a pending AI agent action pops a real OS notification on your desktop the instant it lands, no Slack workspace or polling tab required.
 
 ---
 
 ## Why polling a tab isn't enough
 
-An on-call incident-response agent doesn't wait for business hours. It watches your alerting feed, drafts a remediation (restart a pod, roll back a deploy, silence a noisy alert) and pushes it to Impri as a pending action. If the only way you find out is by refreshing the web inbox, you'll miss the ones that matter — the whole point of gating the agent's actions is that a human actually looks at them before they run.
+An on-call incident-response agent doesn't wait for business hours. It watches your alerting feed, drafts a remediation (restart a pod, roll back a deploy, silence a noisy alert) and pushes it to Airlock as a pending action. If the only way you find out is by refreshing the web inbox, you'll miss the ones that matter — the whole point of gating the agent's actions is that a human actually looks at them before they run.
 
-Impri's web push support closes that gap. It's built directly into the web inbox at `app.impri.dev` (or your self-hosted instance) using the standard Web Push API and VAPID — no Firebase project, no Google account, no extra SaaS dependency. Keep the inbox open in a pinned tab and your OS notification tray does the rest.
+Airlock's web push support closes that gap. It's built directly into the web inbox at `app.airlock.dev` (or your self-hosted instance) using the standard Web Push API and VAPID — no Firebase project, no Google account, no extra SaaS dependency. Keep the inbox open in a pinned tab and your OS notification tray does the rest.
 
 ---
 
 ## How the subscription flow works
 
-The browser talks to two things: the browser's own push service (Chrome/FCM, Safari/APNs, etc.) and Impri's `/v1/push` endpoints. Once a tab subscribes, Impri pushes to it on every new pending action — no polling loop needed on the client side.
+The browser talks to two things: the browser's own push service (Chrome/FCM, Safari/APNs, etc.) and Airlock's `/v1/push` endpoints. Once a tab subscribes, Airlock pushes to it on every new pending action — no polling loop needed on the client side.
 
 ```javascript
 // Run once, e.g. when the ops dashboard tab loads and the user opts in
@@ -28,10 +28,10 @@ const subscription = await registration.pushManager.subscribe({
 
 const { endpoint, keys } = subscription.toJSON()
 
-await fetch('https://api.impri.dev/v1/push/subscribe', {
+await fetch('https://api.airlock.dev/v1/push/subscribe', {
   method: 'POST',
   headers: {
-    Authorization: `Bearer ${IMPRI_API_KEY}`,
+    Authorization: `Bearer ${AIRLOCK_API_KEY}`,
     'Content-Type': 'application/json',
   },
   body: JSON.stringify({ endpoint, keys }),
@@ -44,7 +44,7 @@ That's the entire client integration. From here, every pending action your incid
 
 ## Server setup if you self-host
 
-Impri Cloud has web push enabled out of the box. Self-hosting it yourself means generating a VAPID key pair and setting three environment variables before the endpoints will respond:
+Airlock Cloud has web push enabled out of the box. Self-hosting it yourself means generating a VAPID key pair and setting three environment variables before the endpoints will respond:
 
 ```bash
 npx web-push generate-vapid-keys   # prints a public + private key pair

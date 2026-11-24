@@ -13,7 +13,7 @@ build/
 
 # Internal dev / build / launch / research docs — never commit.
 # These are AI-generated working notes and business/strategy docs kept locally
-# only. Public product docs (docs/*.md that build impri.dev/docs), the root
+# only. Public product docs (docs/*.md that build the docs site), the root
 # README and component READMEs stay tracked.
 /ARCHITECTURE.md
 /MONETIZATION.md

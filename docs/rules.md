@@ -1,6 +1,6 @@
 # Rules Engine
 
-Impri's rules engine lets you automate routine approval decisions without touching code. Rules are project-scoped and evaluated on every `POST /v1/actions` call before the action is saved. A matching rule can auto-approve, auto-reject, shorten the expiry window, or mark the action as escalated — instantly, with no polling lag.
+Airlock's rules engine lets you automate routine approval decisions without touching code. Rules are project-scoped and evaluated on every `POST /v1/actions` call before the action is saved. A matching rule can auto-approve, auto-reject, shorten the expiry window, or mark the action as escalated — instantly, with no polling lag.
 
 Rules are evaluated **once per action at creation time** — they do not re-run when an action's status changes. Without rules, every action starts as `pending` and waits for a human.
 

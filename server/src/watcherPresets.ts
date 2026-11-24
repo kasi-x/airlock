@@ -146,7 +146,7 @@ export const PRESET_CATALOG: Preset[] = [
     ],
     defaultScheduleEvery: '30m',
     buildNotes:
-      'config.url = `https://hnrss.org/newest?q=${encodeURIComponent(keyword)}&points=${min_points ?? 10}`. hnrss.org already filters server-side, so keyword matching in Impri is informational: keywords = [{pattern: keyword, points: 10}], min_score = 0. Validate min_points as integer 1–500 before interpolation. keyword must be non-empty and <= 200 chars.',
+      'config.url = `https://hnrss.org/newest?q=${encodeURIComponent(keyword)}&points=${min_points ?? 10}`. hnrss.org already filters server-side, so keyword matching in Airlock is informational: keywords = [{pattern: keyword, points: 10}], min_score = 0. Validate min_points as integer 1–500 before interpolation. keyword must be non-empty and <= 200 chars.',
   },
   {
     id: 'hn-show-ask',
@@ -332,7 +332,7 @@ export const PRESET_CATALOG: Preset[] = [
     ],
     defaultScheduleEvery: '6h',
     buildNotes:
-      'config.url = url (http/https, SSRF-guarded). url_diff computes SHA-256 of the full fetched page text; any content change triggers a watcher.triage action regardless of keyword scoring. Set min_score = 0 and keywords = []. The scheduler respects robots.txt: if the Impri-Watcher UA is disallowed, the watcher is degraded with error robots_disallowed rather than crawling anyway.',
+      'config.url = url (http/https, SSRF-guarded). url_diff computes SHA-256 of the full fetched page text; any content change triggers a watcher.triage action regardless of keyword scoring. Set min_score = 0 and keywords = []. The scheduler respects robots.txt: if the Airlock-Watcher UA is disallowed, the watcher is degraded with error robots_disallowed rather than crawling anyway.',
   },
   {
     id: 'changelog-status',

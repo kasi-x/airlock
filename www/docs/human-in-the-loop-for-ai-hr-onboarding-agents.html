@@ -3,21 +3,21 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Human-in-the-Loop for AI HR Onboarding Agents — Impri Docs</title>
+<title>Human-in-the-Loop for AI HR Onboarding Agents — Airlock Docs</title>
 <meta name="description" content="Before an onboarding agent creates accounts or grants access for a new hire, human-in-the-loop review catches the wrong start date, wrong team, or wrong system.">
 <meta name="theme-color" content="#06070d">
-<meta property="og:title" content="Human-in-the-Loop for AI HR Onboarding Agents — Impri Docs">
+<meta property="og:title" content="Human-in-the-Loop for AI HR Onboarding Agents — Airlock Docs">
 <meta property="og:description" content="Before an onboarding agent creates accounts or grants access for a new hire, human-in-the-loop review catches the wrong start date, wrong team, or wrong system.">
 <meta property="og:type" content="article">
-<meta property="og:url" content="https://impri.dev/docs/human-in-the-loop-for-ai-hr-onboarding-agents">
-<meta property="og:image" content="https://impri.dev/assets/og/og-docs.png">
+<meta property="og:url" content="https://airlock.dev/docs/human-in-the-loop-for-ai-hr-onboarding-agents">
+<meta property="og:image" content="https://airlock.dev/assets/og/og-docs.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
-<meta property="og:image:alt" content="Impri — human-in-the-loop approval inbox for AI agents">
+<meta property="og:image:alt" content="Airlock — human-in-the-loop approval inbox for AI agents">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="https://impri.dev/assets/og/og-docs.png">
-<link rel="canonical" href="https://impri.dev/docs/human-in-the-loop-for-ai-hr-onboarding-agents">
-<script type="application/ld+json">{"@context":"https://schema.org","@type":"TechArticle","headline":"Human-in-the-Loop for AI HR Onboarding Agents","description":"Before an onboarding agent creates accounts or grants access for a new hire, human-in-the-loop review catches the wrong start date, wrong team, or wrong system.","url":"https://impri.dev/docs/human-in-the-loop-for-ai-hr-onboarding-agents","inLanguage":"en","author":{"@type":"Organization","name":"Impri","url":"https://impri.dev"},"publisher":{"@type":"Organization","name":"Impri","url":"https://impri.dev"}}</script>
+<meta name="twitter:image" content="https://airlock.dev/assets/og/og-docs.png">
+<link rel="canonical" href="https://airlock.dev/docs/human-in-the-loop-for-ai-hr-onboarding-agents">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"TechArticle","headline":"Human-in-the-Loop for AI HR Onboarding Agents","description":"Before an onboarding agent creates accounts or grants access for a new hire, human-in-the-loop review catches the wrong start date, wrong team, or wrong system.","url":"https://airlock.dev/docs/human-in-the-loop-for-ai-hr-onboarding-agents","inLanguage":"en","author":{"@type":"Organization","name":"Airlock","url":"https://airlock.dev"},"publisher":{"@type":"Organization","name":"Airlock","url":"https://airlock.dev"}}</script>
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <link rel="icon" href="/favicon.ico" sizes="32x32">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='9' fill='%236366f1'/%3E%3Cpath d='M9 16.5l4.5 4.5L23 11' stroke='white' stroke-width='3' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
@@ -132,13 +132,13 @@ pre code.hljs{display:block;overflow-x:auto}
 <div class="wrap nav-inner">
   <a class="brand" href="/">
     <span class="mark"><svg viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.5 4.5L19 7.5" stroke="white" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
-    Impri
+    Airlock
   </a>
   <div class="nav-links">
     <a class="link" href="/#how">How it works</a>
     <a class="link" href="/#pricing">Pricing</a>
     <a class="link active-nav" href="../docs">Docs</a>
-    <a class="btn btn-primary btn-sm" href="https://gitlab.com/sekera.radim/impri">GitLab</a>
+    <a class="btn btn-primary btn-sm" href="https://gitlab.com/sekera.radim/airlock">GitLab</a>
   </div>
 </div>
 </nav>
@@ -199,10 +199,10 @@ pre code.hljs{display:block;overflow-x:auto}
 <p>An onboarding agent is usually right — it reads the HRIS record, matches the role to a template, and drafts the right set of actions. The problem is what happens on the days it&#39;s wrong: a start date pulled from a stale record, a contractor mapped to the full-time template, a role matched to the wrong department&#39;s access list. None of those show up as an error. The agent just confidently provisions the wrong thing, and by the time anyone notices, a contractor has prod access or a new hire got added to a channel two teams over.</p>
 <p>HR data also has a compliance angle most agent actions don&#39;t: account creation and access grants for a real person are the kind of change an auditor will ask about later. A human approval step means that trail exists by construction, not by someone remembering to write it down.</p>
 <h2 id="gating-the-provisioning-actions">Gating the provisioning actions</h2>
-<p>The drafting stays agentic. Only the three actions in the right-hand column above go through Impri. Using the TypeScript SDK&#39;s <code>requiresApproval</code> wrapper keeps the approval logic out of the provisioning functions themselves:</p>
-<div class="code-block"><span class="code-lang">typescript</span><pre><code class="hljs"><span class="hljs-keyword">import</span> { <span class="hljs-title class_">ImpriClient</span>, <span class="hljs-title class_">ImpriRejected</span> } <span class="hljs-keyword">from</span> <span class="hljs-string">&#x27;@impri/sdk&#x27;</span>
+<p>The drafting stays agentic. Only the three actions in the right-hand column above go through Airlock. Using the TypeScript SDK&#39;s <code>requiresApproval</code> wrapper keeps the approval logic out of the provisioning functions themselves:</p>
+<div class="code-block"><span class="code-lang">typescript</span><pre><code class="hljs"><span class="hljs-keyword">import</span> { <span class="hljs-title class_">AirlockClient</span>, <span class="hljs-title class_">AirlockRejected</span> } <span class="hljs-keyword">from</span> <span class="hljs-string">&#x27;@airlock/sdk&#x27;</span>
 
-<span class="hljs-keyword">const</span> client = <span class="hljs-keyword">new</span> <span class="hljs-title class_">ImpriClient</span>({ <span class="hljs-attr">apiKey</span>: process.<span class="hljs-property">env</span>.<span class="hljs-property">IMPRI_API_KEY</span>! })
+<span class="hljs-keyword">const</span> client = <span class="hljs-keyword">new</span> <span class="hljs-title class_">AirlockClient</span>({ <span class="hljs-attr">apiKey</span>: process.<span class="hljs-property">env</span>.<span class="hljs-property">AIRLOCK_API_KEY</span>! })
 
 <span class="hljs-keyword">async</span> <span class="hljs-keyword">function</span> <span class="hljs-title function_">createSsoAccount</span>(<span class="hljs-params"><span class="hljs-attr">employee</span>: { name: <span class="hljs-built_in">string</span>; email: <span class="hljs-built_in">string</span>; role: <span class="hljs-built_in">string</span> }</span>) {
   <span class="hljs-keyword">await</span> sso.<span class="hljs-title function_">createUser</span>({ <span class="hljs-attr">email</span>: employee.<span class="hljs-property">email</span>, <span class="hljs-attr">displayName</span>: employee.<span class="hljs-property">name</span>, <span class="hljs-attr">role</span>: employee.<span class="hljs-property">role</span> })
@@ -221,7 +221,7 @@ pre code.hljs{display:block;overflow-x:auto}
 <span class="hljs-keyword">try</span> {
   <span class="hljs-keyword">await</span> <span class="hljs-title function_">gatedCreateSsoAccount</span>({ <span class="hljs-attr">name</span>: <span class="hljs-string">&#x27;Jordan Lee&#x27;</span>, <span class="hljs-attr">email</span>: <span class="hljs-string">&#x27;jordan.lee@company.com&#x27;</span>, <span class="hljs-attr">role</span>: <span class="hljs-string">&#x27;backend-engineer&#x27;</span> })
 } <span class="hljs-keyword">catch</span> (err) {
-  <span class="hljs-keyword">if</span> (err <span class="hljs-keyword">instanceof</span> <span class="hljs-title class_">ImpriRejected</span>) {
+  <span class="hljs-keyword">if</span> (err <span class="hljs-keyword">instanceof</span> <span class="hljs-title class_">AirlockRejected</span>) {
     <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-string">&#x27;HR rejected — likely a data mismatch, check the HRIS record before retrying.&#x27;</span>)
   } <span class="hljs-keyword">else</span> {
     <span class="hljs-keyword">throw</span> err
@@ -235,11 +235,11 @@ pre code.hljs{display:block;overflow-x:auto}
 <h2 id="next-step">Next step</h2>
 <p>If your onboarding agent runs as an MCP tool inside an internal ops assistant rather than a standalone script, see the <a href="mcp">MCP integration</a> for the equivalent three-call flow without writing HTTP or SDK code directly. For notifying HR over Slack instead of the web inbox, see <a href="slack-approval">Slack approval</a>.</p>
 
-    <aside class="doc-cta" aria-label="Try Impri">
+    <aside class="doc-cta" aria-label="Try Airlock">
   <p class="doc-cta-title">Add an approval step to your own agent</p>
-  <p>Start on Impri Cloud: the Free tier includes 100 approvals a month. Or self-host the MIT-licensed core with Docker Compose, with no tier limits.</p>
+  <p>Start on Airlock Cloud: the Free tier includes 100 approvals a month. Or self-host the MIT-licensed core with Docker Compose, with no tier limits.</p>
   <div class="doc-cta-actions">
-    <a class="btn btn-primary btn-sm" href="https://app.impri.dev/?signup=1">Start free on Impri Cloud</a>
+    <a class="btn btn-primary btn-sm" href="https://app.airlock.dev/?signup=1">Start free on Airlock Cloud</a>
     <a class="btn btn-ghost btn-sm" href="../docs/quickstart">Quick start</a>
     <a class="btn btn-ghost btn-sm" href="../docs/self-hosting">Self-host guide</a>
   </div>
@@ -334,19 +334,19 @@ pre code.hljs{display:block;overflow-x:auto}
 <footer class="footer">
 <div class="wrap footer-inner">
   <a class="brand" href="/">
-    <span class="mark"><svg viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.5 4.5L19 7.5" stroke="white" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Impri
+    <span class="mark"><svg viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.5 4.5L19 7.5" stroke="white" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Airlock
   </a>
   <div>
-    <a href="https://gitlab.com/sekera.radim/impri">GitLab</a>
+    <a href="https://gitlab.com/sekera.radim/airlock">GitLab</a>
     <a href="/docs">Docs</a>
-    <a href="https://gitlab.com/sekera.radim/impri/-/blob/main/LICENSE">MIT License</a>
-    <a href="https://www.npmjs.com/package/@impri/mcp">@impri/mcp</a>
+    <a href="https://gitlab.com/sekera.radim/airlock/-/blob/main/LICENSE">MIT License</a>
+    <a href="https://www.npmjs.com/package/@airlock/mcp">@airlock/mcp</a>
     <a href="/docs/privacy">Privacy</a>
     <a href="/docs/terms">Terms</a>
     <a href="https://sekera.dev">Contact</a>
   </div>
 </div>
-<div class="wrap" style="margin-top:18px"><span class="muted">© 2026 Impri · The imprimatur for your AI agents · Built by <a href="https://sekera.dev" style="color:inherit">Radim Sekera</a>. Also by the same maker: <a href="https://briefgate.dev/?utm_source=impri.dev&amp;utm_medium=referral" style="color:inherit">BriefGate</a> — client intake for agencies and AI agents.</span></div>
+<div class="wrap" style="margin-top:18px"><span class="muted">© 2026 Airlock · The airlockmatur for your AI agents · Built by <a href="https://sekera.dev" style="color:inherit">Radim Sekera</a>. Also by the same maker: <a href="https://briefgate.dev/?utm_source=airlock.dev&amp;utm_medium=referral" style="color:inherit">BriefGate</a> — client intake for agencies and AI agents.</span></div>
 </footer>
 </body>
 </html>

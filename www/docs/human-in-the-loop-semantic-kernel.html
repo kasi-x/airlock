@@ -3,21 +3,21 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Human-in-the-Loop for Microsoft Semantic Kernel Agents — Impri Docs</title>
+<title>Human-in-the-Loop for Microsoft Semantic Kernel Agents — Airlock Docs</title>
 <meta name="description" content="Add a human approval gate to Semantic Kernel function calling so a plugin can't send, post, or spend money until a person taps approve on the actual generated…">
 <meta name="theme-color" content="#06070d">
-<meta property="og:title" content="Human-in-the-Loop for Microsoft Semantic Kernel Agents — Impri Docs">
+<meta property="og:title" content="Human-in-the-Loop for Microsoft Semantic Kernel Agents — Airlock Docs">
 <meta property="og:description" content="Add a human approval gate to Semantic Kernel function calling so a plugin can't send, post, or spend money until a person taps approve on the actual generated…">
 <meta property="og:type" content="article">
-<meta property="og:url" content="https://impri.dev/docs/human-in-the-loop-semantic-kernel">
-<meta property="og:image" content="https://impri.dev/assets/og/og-docs.png">
+<meta property="og:url" content="https://airlock.dev/docs/human-in-the-loop-semantic-kernel">
+<meta property="og:image" content="https://airlock.dev/assets/og/og-docs.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
-<meta property="og:image:alt" content="Impri — human-in-the-loop approval inbox for AI agents">
+<meta property="og:image:alt" content="Airlock — human-in-the-loop approval inbox for AI agents">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="https://impri.dev/assets/og/og-docs.png">
-<link rel="canonical" href="https://impri.dev/docs/human-in-the-loop-semantic-kernel">
-<script type="application/ld+json">{"@context":"https://schema.org","@type":"TechArticle","headline":"Human-in-the-Loop for Microsoft Semantic Kernel Agents","description":"Add a human approval gate to Semantic Kernel function calling so a plugin can't send, post, or spend money until a person taps approve on the actual generated…","url":"https://impri.dev/docs/human-in-the-loop-semantic-kernel","inLanguage":"en","author":{"@type":"Organization","name":"Impri","url":"https://impri.dev"},"publisher":{"@type":"Organization","name":"Impri","url":"https://impri.dev"}}</script>
+<meta name="twitter:image" content="https://airlock.dev/assets/og/og-docs.png">
+<link rel="canonical" href="https://airlock.dev/docs/human-in-the-loop-semantic-kernel">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"TechArticle","headline":"Human-in-the-Loop for Microsoft Semantic Kernel Agents","description":"Add a human approval gate to Semantic Kernel function calling so a plugin can't send, post, or spend money until a person taps approve on the actual generated…","url":"https://airlock.dev/docs/human-in-the-loop-semantic-kernel","inLanguage":"en","author":{"@type":"Organization","name":"Airlock","url":"https://airlock.dev"},"publisher":{"@type":"Organization","name":"Airlock","url":"https://airlock.dev"}}</script>
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <link rel="icon" href="/favicon.ico" sizes="32x32">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='9' fill='%236366f1'/%3E%3Cpath d='M9 16.5l4.5 4.5L23 11' stroke='white' stroke-width='3' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
@@ -132,13 +132,13 @@ pre code.hljs{display:block;overflow-x:auto}
 <div class="wrap nav-inner">
   <a class="brand" href="/">
     <span class="mark"><svg viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.5 4.5L19 7.5" stroke="white" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
-    Impri
+    Airlock
   </a>
   <div class="nav-links">
     <a class="link" href="/#how">How it works</a>
     <a class="link" href="/#pricing">Pricing</a>
     <a class="link active-nav" href="../docs">Docs</a>
-    <a class="btn btn-primary btn-sm" href="https://gitlab.com/sekera.radim/impri">GitLab</a>
+    <a class="btn btn-primary btn-sm" href="https://gitlab.com/sekera.radim/airlock">GitLab</a>
   </div>
 </div>
 </nav>
@@ -157,16 +157,16 @@ pre code.hljs{display:block;overflow-x:auto}
 <hr>
 <h2 id="where-the-gap-is-in-semantic-kernel">Where the gap is in Semantic Kernel</h2>
 <p>Semantic Kernel&#39;s <code>FunctionInvocationFilter</code> gives you a hook that runs before and after any plugin function the kernel decides to call. That&#39;s the right layer to intercept — but &quot;intercept&quot; usually means either an in-process <code>Console.ReadLine()</code> prompt (useless once the agent runs unattended on a server) or nothing at all. Neither gets you a real approval record, a mobile-friendly approve/reject, or the ability to let a reviewer edit the draft before it goes out.</p>
-<p>Impri fills that specific gap: it&#39;s a gate that stores the proposed function call, notifies a human on their phone or desktop, and holds the decision — nothing more. Semantic Kernel still owns planning and function orchestration; Impri only owns the yes/no.</p>
+<p>Airlock fills that specific gap: it&#39;s a gate that stores the proposed function call, notifies a human on their phone or desktop, and holds the decision — nothing more. Semantic Kernel still owns planning and function orchestration; Airlock only owns the yes/no.</p>
 <hr>
 <h2 id="wiring-the-filter">Wiring the filter</h2>
-<p>Register an <code>IFunctionInvocationFilter</code> that intercepts sensitive plugin functions — here, an <code>EmailPlugin.SendEmail</code> function — and routes the call through Impri instead of letting it execute directly.</p>
-<div class="code-block"><span class="code-lang">csharp</span><pre><code class="hljs"><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title">ImpriApprovalFilter</span> : <span class="hljs-title">IFunctionInvocationFilter</span>
+<p>Register an <code>IFunctionInvocationFilter</code> that intercepts sensitive plugin functions — here, an <code>EmailPlugin.SendEmail</code> function — and routes the call through Airlock instead of letting it execute directly.</p>
+<div class="code-block"><span class="code-lang">csharp</span><pre><code class="hljs"><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title">AirlockApprovalFilter</span> : <span class="hljs-title">IFunctionInvocationFilter</span>
 {
     <span class="hljs-keyword">private</span> <span class="hljs-keyword">readonly</span> HttpClient _http;
     <span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">readonly</span> HashSet&lt;<span class="hljs-built_in">string</span>&gt; GatedFunctions = <span class="hljs-keyword">new</span>() { <span class="hljs-string">&quot;SendEmail&quot;</span>, <span class="hljs-string">&quot;PostToSlack&quot;</span> };
 
-    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-title">ImpriApprovalFilter</span>(<span class="hljs-params">HttpClient http</span>)</span> =&gt; _http = http;
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-title">AirlockApprovalFilter</span>(<span class="hljs-params">HttpClient http</span>)</span> =&gt; _http = http;
 
     <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">async</span> Task <span class="hljs-title">OnFunctionInvocationAsync</span>(<span class="hljs-params">
         FunctionInvocationContext context, Func&lt;FunctionInvocationContext, Task&gt; next</span>)</span>
@@ -179,7 +179,7 @@ pre code.hljs{display:block;overflow-x:auto}
 
         <span class="hljs-keyword">var</span> body = <span class="hljs-built_in">string</span>.Join(<span class="hljs-string">&quot;\n&quot;</span>, context.Arguments.Select(a =&gt; <span class="hljs-string">$&quot;<span class="hljs-subst">{a.Key}</span>: <span class="hljs-subst">{a.Value}</span>&quot;</span>));
 
-        <span class="hljs-keyword">var</span> createResp = <span class="hljs-keyword">await</span> _http.PostAsJsonAsync(<span class="hljs-string">&quot;https://api.impri.dev/v1/actions&quot;</span>, <span class="hljs-keyword">new</span>
+        <span class="hljs-keyword">var</span> createResp = <span class="hljs-keyword">await</span> _http.PostAsJsonAsync(<span class="hljs-string">&quot;https://api.airlock.dev/v1/actions&quot;</span>, <span class="hljs-keyword">new</span>
         {
             kind = <span class="hljs-string">&quot;email.send&quot;</span>,
             title = <span class="hljs-string">$&quot;Semantic Kernel: <span class="hljs-subst">{context.Function.Name}</span>&quot;</span>,
@@ -187,14 +187,14 @@ pre code.hljs{display:block;overflow-x:auto}
             expires_in = <span class="hljs-number">3600</span>,
             editable = <span class="hljs-keyword">new</span>[] { <span class="hljs-string">&quot;preview.body&quot;</span> }
         });
-        <span class="hljs-keyword">var</span> action = <span class="hljs-keyword">await</span> createResp.Content.ReadFromJsonAsync&lt;ImpriAction&gt;();
+        <span class="hljs-keyword">var</span> action = <span class="hljs-keyword">await</span> createResp.Content.ReadFromJsonAsync&lt;AirlockAction&gt;();
 
-        ImpriDecision decision;
+        AirlockDecision decision;
         <span class="hljs-keyword">while</span> (<span class="hljs-literal">true</span>)
         {
             <span class="hljs-keyword">await</span> Task.Delay(TimeSpan.FromSeconds(<span class="hljs-number">10</span>));
-            <span class="hljs-keyword">var</span> poll = <span class="hljs-keyword">await</span> _http.GetFromJsonAsync&lt;ImpriDecision&gt;(
-                <span class="hljs-string">$&quot;https://api.impri.dev/v1/actions/<span class="hljs-subst">{action.Id}</span>&quot;</span>);
+            <span class="hljs-keyword">var</span> poll = <span class="hljs-keyword">await</span> _http.GetFromJsonAsync&lt;AirlockDecision&gt;(
+                <span class="hljs-string">$&quot;https://api.airlock.dev/v1/actions/<span class="hljs-subst">{action.Id}</span>&quot;</span>);
             <span class="hljs-keyword">if</span> (poll.Status != <span class="hljs-string">&quot;pending&quot;</span>) { decision = poll; <span class="hljs-keyword">break</span>; }
         }
 
@@ -209,7 +209,7 @@ pre code.hljs{display:block;overflow-x:auto}
         <span class="hljs-keyword">await</span> next(context);
 
         <span class="hljs-keyword">await</span> _http.PostAsJsonAsync(
-            <span class="hljs-string">$&quot;https://api.impri.dev/v1/actions/<span class="hljs-subst">{action.Id}</span>/result&quot;</span>, <span class="hljs-keyword">new</span> { status = <span class="hljs-string">&quot;executed&quot;</span> });
+            <span class="hljs-string">$&quot;https://api.airlock.dev/v1/actions/<span class="hljs-subst">{action.Id}</span>/result&quot;</span>, <span class="hljs-keyword">new</span> { status = <span class="hljs-string">&quot;executed&quot;</span> });
     }
 }</code></pre></div>
 <p>Register it on the kernel:</p>
@@ -217,13 +217,13 @@ pre code.hljs{display:block;overflow-x:auto}
     .AddOpenAIChatCompletion(modelId, apiKey)
     .Build();
 
-kernel.FunctionInvocationFilters.Add(<span class="hljs-keyword">new</span> ImpriApprovalFilter(httpClient));
+kernel.FunctionInvocationFilters.Add(<span class="hljs-keyword">new</span> AirlockApprovalFilter(httpClient));
 kernel.ImportPluginFromType&lt;EmailPlugin&gt;();</code></pre></div>
 <p>The critical line is <code>if (decision.Status != &quot;approved&quot;) { ...; return; }</code> — the filter&#39;s <code>next(context)</code> delegate is what actually invokes <code>EmailPlugin.SendEmail</code>, and it&#39;s simply never called on rejection or expiry. There&#39;s no code path where a non-approved call reaches the plugin.</p>
 <hr>
 <h2 id="why-the-filter-not-the-planner">Why the filter, not the planner</h2>
 <p>You could try gating at the planner level instead — inspecting the plan before the kernel executes any step. That works for stopping a whole plan, but it loses granularity: a plan might legitimately read a calendar, summarize a document, <em>and</em> send an email, and you only want to gate the last one. The <code>FunctionInvocationFilter</code> runs per-function-call, so read-only plugins run freely and only the ones you list in <code>GatedFunctions</code> pause for a human.</p>
-<p>This is also why Impri only works as a real gate if <code>EmailPlugin</code> (or whatever wraps the actual side effect) has no other way to fire — if the kernel or a separate service account can call the mail API directly outside this filter, the agent has a bypass. See <a href="integrations">the Semantic Kernel integration notes</a> for wrapping the underlying client so the filter is the only path.</p>
+<p>This is also why Airlock only works as a real gate if <code>EmailPlugin</code> (or whatever wraps the actual side effect) has no other way to fire — if the kernel or a separate service account can call the mail API directly outside this filter, the agent has a bypass. See <a href="integrations">the Semantic Kernel integration notes</a> for wrapping the underlying client so the filter is the only path.</p>
 <hr>
 <h2 id="what-you-get-and-what-you-don39t">What you get, and what you don&#39;t</h2>
 <div class="table-wrap"><table>
@@ -235,36 +235,36 @@ kernel.ImportPluginFromType&lt;EmailPlugin&gt;();</code></pre></div>
 </thead>
 <tbody><tr>
 <td>Deciding <em>whether</em> the plan should include sending an email</td>
-<td>Semantic Kernel planner — Impri has no opinion here</td>
+<td>Semantic Kernel planner — Airlock has no opinion here</td>
 </tr>
 <tr>
 <td>Holding execution until a human decides</td>
-<td>Impri</td>
+<td>Airlock</td>
 </tr>
 <tr>
 <td>Letting the reviewer edit the email body before it sends</td>
-<td>Impri (<code>editable</code> + <code>final_preview</code>)</td>
+<td>Airlock (<code>editable</code> + <code>final_preview</code>)</td>
 </tr>
 <tr>
 <td>Audit record of who approved what, when</td>
-<td>Impri</td>
+<td>Airlock</td>
 </tr>
 <tr>
 <td>Retrying or branching the plan on rejection</td>
-<td>Your filter&#39;s <code>else</code> branch — Impri just reports the status</td>
+<td>Your filter&#39;s <code>else</code> branch — Airlock just reports the status</td>
 </tr>
 </tbody></table>
 </div>
-<p>Impri doesn&#39;t understand Semantic Kernel plans, functions, or plugins — it sees a title, a markdown preview, and a decision. All the C#-specific wiring above is yours to write; Impri&#39;s job stops at <code>{ status: &quot;approved&quot; | &quot;rejected&quot; | &quot;expired&quot; }</code>.</p>
+<p>Airlock doesn&#39;t understand Semantic Kernel plans, functions, or plugins — it sees a title, a markdown preview, and a decision. All the C#-specific wiring above is yours to write; Airlock&#39;s job stops at <code>{ status: &quot;approved&quot; | &quot;rejected&quot; | &quot;expired&quot; }</code>.</p>
 <hr>
 <h2 id="next-step">Next step</h2>
-<p>Start with the <a href="quickstart">quickstart</a> to get an API key, then read <a href="mcp">the MCP integration</a> if you&#39;d rather have Semantic Kernel call <code>impri_push_action</code> as a plugin function directly instead of hand-rolling the HTTP calls above.</p>
+<p>Start with the <a href="quickstart">quickstart</a> to get an API key, then read <a href="mcp">the MCP integration</a> if you&#39;d rather have Semantic Kernel call <code>airlock_push_action</code> as a plugin function directly instead of hand-rolling the HTTP calls above.</p>
 
-    <aside class="doc-cta" aria-label="Try Impri">
+    <aside class="doc-cta" aria-label="Try Airlock">
   <p class="doc-cta-title">Add an approval step to your own agent</p>
-  <p>Start on Impri Cloud: the Free tier includes 100 approvals a month. Or self-host the MIT-licensed core with Docker Compose, with no tier limits.</p>
+  <p>Start on Airlock Cloud: the Free tier includes 100 approvals a month. Or self-host the MIT-licensed core with Docker Compose, with no tier limits.</p>
   <div class="doc-cta-actions">
-    <a class="btn btn-primary btn-sm" href="https://app.impri.dev/?signup=1">Start free on Impri Cloud</a>
+    <a class="btn btn-primary btn-sm" href="https://app.airlock.dev/?signup=1">Start free on Airlock Cloud</a>
     <a class="btn btn-ghost btn-sm" href="../docs/quickstart">Quick start</a>
     <a class="btn btn-ghost btn-sm" href="../docs/self-hosting">Self-host guide</a>
   </div>
@@ -359,19 +359,19 @@ kernel.ImportPluginFromType&lt;EmailPlugin&gt;();</code></pre></div>
 <footer class="footer">
 <div class="wrap footer-inner">
   <a class="brand" href="/">
-    <span class="mark"><svg viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.5 4.5L19 7.5" stroke="white" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Impri
+    <span class="mark"><svg viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.5 4.5L19 7.5" stroke="white" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Airlock
   </a>
   <div>
-    <a href="https://gitlab.com/sekera.radim/impri">GitLab</a>
+    <a href="https://gitlab.com/sekera.radim/airlock">GitLab</a>
     <a href="/docs">Docs</a>
-    <a href="https://gitlab.com/sekera.radim/impri/-/blob/main/LICENSE">MIT License</a>
-    <a href="https://www.npmjs.com/package/@impri/mcp">@impri/mcp</a>
+    <a href="https://gitlab.com/sekera.radim/airlock/-/blob/main/LICENSE">MIT License</a>
+    <a href="https://www.npmjs.com/package/@airlock/mcp">@airlock/mcp</a>
     <a href="/docs/privacy">Privacy</a>
     <a href="/docs/terms">Terms</a>
     <a href="https://sekera.dev">Contact</a>
   </div>
 </div>
-<div class="wrap" style="margin-top:18px"><span class="muted">© 2026 Impri · The imprimatur for your AI agents · Built by <a href="https://sekera.dev" style="color:inherit">Radim Sekera</a>. Also by the same maker: <a href="https://briefgate.dev/?utm_source=impri.dev&amp;utm_medium=referral" style="color:inherit">BriefGate</a> — client intake for agencies and AI agents.</span></div>
+<div class="wrap" style="margin-top:18px"><span class="muted">© 2026 Airlock · The airlockmatur for your AI agents · Built by <a href="https://sekera.dev" style="color:inherit">Radim Sekera</a>. Also by the same maker: <a href="https://briefgate.dev/?utm_source=airlock.dev&amp;utm_medium=referral" style="color:inherit">BriefGate</a> — client intake for agencies and AI agents.</span></div>
 </footer>
 </body>
 </html>

@@ -21,9 +21,9 @@ Instead of one generic "approve this" gate, agencies get more value from splitti
 ## Routing each client's approvals to the right reviewer
 
 ```typescript
-import { ImpriClient, ImpriRejected, ImpriExpired, ImpriTimeout } from "@impri/sdk";
+import { AirlockClient, AirlockRejected, AirlockExpired, AirlockTimeout } from "@airlock/sdk";
 
-const client = new ImpriClient({ apiKey: process.env.IMPRI_API_KEY! });
+const client = new AirlockClient({ apiKey: process.env.AIRLOCK_API_KEY! });
 
 interface ClientAction {
   clientId: string;
@@ -48,7 +48,7 @@ async function proposeForClient(a: ClientAction) {
     // The reviewer may have edited the copy before approving.
     finalBody = action.decision?.final_preview?.body ?? a.body;
   } catch (e) {
-    if (e instanceof ImpriRejected || e instanceof ImpriExpired || e instanceof ImpriTimeout) {
+    if (e instanceof AirlockRejected || e instanceof AirlockExpired || e instanceof AirlockTimeout) {
       console.log(`[${a.clientName}] ${a.kind} not sent: ${e.name}`);
       return;
     }
@@ -69,18 +69,18 @@ The `[${a.clientName}]` prefix in the title matters more here than in a single-t
 
 ## Keeping client work out of one shared inbox
 
-Prefixing titles works for a small team checking one inbox, but it doesn't scope who's *allowed* to approve what. Inside one Impri project, every notification channel gets every pending action: Impri doesn't route by client. Two ways agencies handle that as they grow past a couple of clients:
+Prefixing titles works for a small team checking one inbox, but it doesn't scope who's *allowed* to approve what. Inside one Airlock project, every notification channel gets every pending action: Airlock doesn't route by client. Two ways agencies handle that as they grow past a couple of clients:
 
 | Approach | When it fits |
 |---|---|
-| A separate Impri project per client: its own API keys, inbox, audit log and notification channels, e.g. that account manager's [Slack](slack-approval.md) or [Telegram](telegram-approval.md) | Each client has a dedicated account manager, or wants its own record of approvals |
+| A separate Airlock project per client: its own API keys, inbox, audit log and notification channels, e.g. that account manager's [Slack](slack-approval.md) or [Telegram](telegram-approval.md) | Each client has a dedicated account manager, or wants its own record of approvals |
 | One project, client name in the title, one `kind` per surface; reviewers filter the inbox by kind | Small team, everyone reviews everything |
 
-Neither needs Impri to know your client roster: it's how you split projects and where each project's notifications go.
+Neither needs Airlock to know your client roster: it's how you split projects and where each project's notifications go.
 
 ## What this doesn't solve
 
-Impri holds the pending action and the decision — it doesn't manage client relationships, doesn't track retainer hours, and doesn't know which account manager owns which client; that mapping lives in your own agent code or a lookup table you maintain. It also isn't a substitute for a client-facing approval step if your contract requires the *client* to sign off before publishing — that's a second, separate action your agent should push once your internal reviewer has approved it. And as always, the gate only holds if the agent's posting/invoicing credentials are wrapped so `executeForClient` can't run on a path that skips the approval call — see [the propose-approve-execute pattern](the-propose-approve-execute-pattern.md).
+Airlock holds the pending action and the decision — it doesn't manage client relationships, doesn't track retainer hours, and doesn't know which account manager owns which client; that mapping lives in your own agent code or a lookup table you maintain. It also isn't a substitute for a client-facing approval step if your contract requires the *client* to sign off before publishing — that's a second, separate action your agent should push once your internal reviewer has approved it. And as always, the gate only holds if the agent's posting/invoicing credentials are wrapped so `executeForClient` can't run on a path that skips the approval call — see [the propose-approve-execute pattern](the-propose-approve-execute-pattern.md).
 
 It also doesn't collect what you need from clients before the agent can start — logos, copy, logins, answers. That is a different shape of human input: a portal link with typed fields, uploads and automatic reminders rather than an approval card. [BriefGate](https://briefgate.dev/use-cases/ai-agency-client-intake), from the same developer, covers that part.
 

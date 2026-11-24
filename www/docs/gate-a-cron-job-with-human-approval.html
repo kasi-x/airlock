@@ -3,21 +3,21 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Add Human Approval to a Cron Job Without Blocking — Impri Docs</title>
-<meta name="description" content="Let the cron job propose instead of act: the first run files an Impri card keyed to its slot, later runs read the decision and send the approved text once.">
+<title>Add Human Approval to a Cron Job Without Blocking — Airlock Docs</title>
+<meta name="description" content="Let the cron job propose instead of act: the first run files an Airlock card keyed to its slot, later runs read the decision and send the approved text once.">
 <meta name="theme-color" content="#06070d">
-<meta property="og:title" content="Add Human Approval to a Cron Job Without Blocking — Impri Docs">
-<meta property="og:description" content="Let the cron job propose instead of act: the first run files an Impri card keyed to its slot, later runs read the decision and send the approved text once.">
+<meta property="og:title" content="Add Human Approval to a Cron Job Without Blocking — Airlock Docs">
+<meta property="og:description" content="Let the cron job propose instead of act: the first run files an Airlock card keyed to its slot, later runs read the decision and send the approved text once.">
 <meta property="og:type" content="article">
-<meta property="og:url" content="https://impri.dev/docs/gate-a-cron-job-with-human-approval">
-<meta property="og:image" content="https://impri.dev/assets/og/og-docs.png">
+<meta property="og:url" content="https://airlock.dev/docs/gate-a-cron-job-with-human-approval">
+<meta property="og:image" content="https://airlock.dev/assets/og/og-docs.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
-<meta property="og:image:alt" content="Impri — human-in-the-loop approval inbox for AI agents">
+<meta property="og:image:alt" content="Airlock — human-in-the-loop approval inbox for AI agents">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="https://impri.dev/assets/og/og-docs.png">
-<link rel="canonical" href="https://impri.dev/docs/gate-a-cron-job-with-human-approval">
-<script type="application/ld+json">{"@context":"https://schema.org","@type":"TechArticle","headline":"Add Human Approval to a Cron Job Without Blocking","description":"Let the cron job propose instead of act: the first run files an Impri card keyed to its slot, later runs read the decision and send the approved text once.","url":"https://impri.dev/docs/gate-a-cron-job-with-human-approval","inLanguage":"en","author":{"@type":"Organization","name":"Impri","url":"https://impri.dev"},"publisher":{"@type":"Organization","name":"Impri","url":"https://impri.dev"}}</script>
+<meta name="twitter:image" content="https://airlock.dev/assets/og/og-docs.png">
+<link rel="canonical" href="https://airlock.dev/docs/gate-a-cron-job-with-human-approval">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"TechArticle","headline":"Add Human Approval to a Cron Job Without Blocking","description":"Let the cron job propose instead of act: the first run files an Airlock card keyed to its slot, later runs read the decision and send the approved text once.","url":"https://airlock.dev/docs/gate-a-cron-job-with-human-approval","inLanguage":"en","author":{"@type":"Organization","name":"Airlock","url":"https://airlock.dev"},"publisher":{"@type":"Organization","name":"Airlock","url":"https://airlock.dev"}}</script>
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <link rel="icon" href="/favicon.ico" sizes="32x32">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='9' fill='%236366f1'/%3E%3Cpath d='M9 16.5l4.5 4.5L23 11' stroke='white' stroke-width='3' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
@@ -132,13 +132,13 @@ pre code.hljs{display:block;overflow-x:auto}
 <div class="wrap nav-inner">
   <a class="brand" href="/">
     <span class="mark"><svg viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.5 4.5L19 7.5" stroke="white" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
-    Impri
+    Airlock
   </a>
   <div class="nav-links">
     <a class="link" href="/#how">How it works</a>
     <a class="link" href="/#pricing">Pricing</a>
     <a class="link active-nav" href="../docs">Docs</a>
-    <a class="btn btn-primary btn-sm" href="https://gitlab.com/sekera.radim/impri">GitLab</a>
+    <a class="btn btn-primary btn-sm" href="https://gitlab.com/sekera.radim/airlock">GitLab</a>
   </div>
 </div>
 </nav>
@@ -153,15 +153,15 @@ pre code.hljs{display:block;overflow-x:auto}
       <span>Add Human Approval to a Cron Job Without Blocking</span>
     </nav>
     <h1>Add Human Approval to a Cron Job Without Blocking</h1>
-<p>Let the cron job propose instead of act: the first run files an Impri card keyed to its slot, later runs read the decision and send the approved text once.</p>
-<p>Each run is a short check; Impri holds the state between runs. The script below was run end to end on 2026-11-22 against a local Impri server built from the repository (Python 3.12, httpx 0.28.1, every run a separate process). What those runs showed is listed after the code.</p>
+<p>Let the cron job propose instead of act: the first run files an Airlock card keyed to its slot, later runs read the decision and send the approved text once.</p>
+<p>Each run is a short check; Airlock holds the state between runs. The script below was run end to end on 2026-11-22 against a local Airlock server built from the repository (Python 3.12, httpx 0.28.1, every run a separate process). What those runs showed is listed after the code.</p>
 <hr>
 <h2 id="why-not-wait-inside-the-cron-run">Why not wait inside the cron run</h2>
 <p>The obvious version pushes the draft and then polls <code>GET /v1/actions/:id</code> until someone decides. On a cron schedule that breaks in three ways:</p>
 <ul>
 <li>The process lives for hours. If the next tick fires while it waits, a second copy starts and pushes a second card.</li>
 <li>A reboot or a deploy kills the waiting process, and the decision arrives to nobody.</li>
-<li>A retry or a manual rerun opens another card. Without an <code>idempotency_key</code>, Impri only folds a repeat into an existing card when kind, title and body are identical and still pending, and an LLM-written draft is never identical twice.</li>
+<li>A retry or a manual rerun opens another card. Without an <code>idempotency_key</code>, Airlock only folds a repeat into an existing card when kind, title and body are identical and still pending, and an LLM-written draft is never identical twice.</li>
 </ul>
 <p>So each run looks up the card for its slot and does whatever the card&#39;s status says.</p>
 <hr>
@@ -198,7 +198,7 @@ pre code.hljs{display:block;overflow-x:auto}
 <div class="code-block"><span class="code-lang">python</span><pre><code class="hljs"><span class="hljs-comment">#!/usr/bin/env python3</span>
 <span class="hljs-string">&quot;&quot;&quot;weekly_newsletter.py: cron runs this every 10 minutes on Mondays.
 
-The first run of the week proposes the draft as an Impri card. Later runs
+The first run of the week proposes the draft as an Airlock card. Later runs
 look the card up and send the approved text once. Nothing waits in between.
 &quot;&quot;&quot;</span>
 <span class="hljs-keyword">import</span> datetime <span class="hljs-keyword">as</span> dt
@@ -208,9 +208,9 @@ look the card up and send the approved text once. Nothing waits in between.
 <span class="hljs-keyword">import</span> httpx
 
 KIND = <span class="hljs-string">&quot;newsletter.send&quot;</span>
-impri = httpx.Client(
-    base_url=os.environ.get(<span class="hljs-string">&quot;IMPRI_BASE_URL&quot;</span>, <span class="hljs-string">&quot;https://api.impri.dev&quot;</span>),
-    headers={<span class="hljs-string">&quot;Authorization&quot;</span>: <span class="hljs-string">f&quot;Bearer <span class="hljs-subst">{os.environ[<span class="hljs-string">&#x27;IMPRI_API_KEY&#x27;</span>]}</span>&quot;</span>},
+airlock = httpx.Client(
+    base_url=os.environ.get(<span class="hljs-string">&quot;AIRLOCK_BASE_URL&quot;</span>, <span class="hljs-string">&quot;https://api.airlock.dev&quot;</span>),
+    headers={<span class="hljs-string">&quot;Authorization&quot;</span>: <span class="hljs-string">f&quot;Bearer <span class="hljs-subst">{os.environ[<span class="hljs-string">&#x27;AIRLOCK_API_KEY&#x27;</span>]}</span>&quot;</span>},
     timeout=<span class="hljs-number">15</span>,
 )
 
@@ -232,13 +232,13 @@ impri = httpx.Client(
 
 
 <span class="hljs-keyword">def</span> <span class="hljs-title function_">find_card</span>(<span class="hljs-params">key: <span class="hljs-built_in">str</span>, since: <span class="hljs-built_in">int</span></span>) -&gt; <span class="hljs-built_in">dict</span> | <span class="hljs-literal">None</span>:
-    r = impri.get(<span class="hljs-string">&quot;/v1/actions&quot;</span>, params={<span class="hljs-string">&quot;kind&quot;</span>: KIND, <span class="hljs-string">&quot;since&quot;</span>: since, <span class="hljs-string">&quot;limit&quot;</span>: <span class="hljs-number">100</span>})
+    r = airlock.get(<span class="hljs-string">&quot;/v1/actions&quot;</span>, params={<span class="hljs-string">&quot;kind&quot;</span>: KIND, <span class="hljs-string">&quot;since&quot;</span>: since, <span class="hljs-string">&quot;limit&quot;</span>: <span class="hljs-number">100</span>})
     r.raise_for_status()
     <span class="hljs-keyword">return</span> <span class="hljs-built_in">next</span>((a <span class="hljs-keyword">for</span> a <span class="hljs-keyword">in</span> r.json()[<span class="hljs-string">&quot;items&quot;</span>] <span class="hljs-keyword">if</span> a.get(<span class="hljs-string">&quot;idempotency_key&quot;</span>) == key), <span class="hljs-literal">None</span>)
 
 
 <span class="hljs-keyword">def</span> <span class="hljs-title function_">report</span>(<span class="hljs-params">action_id: <span class="hljs-built_in">str</span>, status: <span class="hljs-built_in">str</span>, detail: <span class="hljs-built_in">str</span></span>) -&gt; <span class="hljs-literal">None</span>:
-    r = impri.post(<span class="hljs-string">f&quot;/v1/actions/<span class="hljs-subst">{action_id}</span>/result&quot;</span>,
+    r = airlock.post(<span class="hljs-string">f&quot;/v1/actions/<span class="hljs-subst">{action_id}</span>/result&quot;</span>,
                    json={<span class="hljs-string">&quot;status&quot;</span>: status, <span class="hljs-string">&quot;detail&quot;</span>: detail[:<span class="hljs-number">500</span>]})
     r.raise_for_status()
 
@@ -249,7 +249,7 @@ impri = httpx.Client(
     card = find_card(key, since)
 
     <span class="hljs-keyword">if</span> card <span class="hljs-keyword">is</span> <span class="hljs-literal">None</span>:
-        r = impri.post(<span class="hljs-string">&quot;/v1/actions&quot;</span>, json={
+        r = airlock.post(<span class="hljs-string">&quot;/v1/actions&quot;</span>, json={
             <span class="hljs-string">&quot;kind&quot;</span>: KIND,
             <span class="hljs-string">&quot;title&quot;</span>: <span class="hljs-string">f&quot;Weekly newsletter <span class="hljs-subst">{week}</span>&quot;</span>,
             <span class="hljs-string">&quot;preview&quot;</span>: {<span class="hljs-string">&quot;format&quot;</span>: <span class="hljs-string">&quot;markdown&quot;</span>, <span class="hljs-string">&quot;body&quot;</span>: draft_newsletter()},
@@ -267,7 +267,7 @@ impri = httpx.Client(
         <span class="hljs-built_in">print</span>(<span class="hljs-string">f&quot;<span class="hljs-subst">{card[<span class="hljs-string">&#x27;id&#x27;</span>]}</span> is <span class="hljs-subst">{card[<span class="hljs-string">&#x27;status&#x27;</span>]}</span>&quot;</span>)
         <span class="hljs-keyword">return</span> <span class="hljs-number">0</span>
 
-    r = impri.get(<span class="hljs-string">f&quot;/v1/actions/<span class="hljs-subst">{card[<span class="hljs-string">&#x27;id&#x27;</span>]}</span>&quot;</span>)
+    r = airlock.get(<span class="hljs-string">f&quot;/v1/actions/<span class="hljs-subst">{card[<span class="hljs-string">&#x27;id&#x27;</span>]}</span>&quot;</span>)
     r.raise_for_status()
     body = r.json()[<span class="hljs-string">&quot;decision&quot;</span>][<span class="hljs-string">&quot;final_preview&quot;</span>][<span class="hljs-string">&quot;body&quot;</span>]  <span class="hljs-comment"># with the reviewer&#x27;s edits</span>
     <span class="hljs-keyword">try</span>:
@@ -283,7 +283,7 @@ impri = httpx.Client(
 <span class="hljs-keyword">if</span> __name__ == <span class="hljs-string">&quot;__main__&quot;</span>:
     sys.exit(main())</code></pre></div>
 <p>The crontab runs it every 10 minutes from 07:00 to 18:50 on Mondays. <code>flock -n</code> skips a run while the previous one still holds the lock:</p>
-<div class="code-block"><span class="code-lang">cron</span><pre><code class="hljs">IMPRI_API_KEY=im_...
+<div class="code-block"><span class="code-lang">cron</span><pre><code class="hljs">AIRLOCK_API_KEY=im_...
 */10 7-18 * * 1  flock -n /tmp/weekly-newsletter.lock /opt/jobs/venv/bin/python /opt/jobs/weekly_newsletter.py</code></pre></div>
 <p>Every call in the script needs only the <code>actions</code> scope, so give the job a key with nothing else. <code>expires_in</code> of 10 hours closes a card proposed at 07:00 at 17:00; the runs after that find it <code>expired</code> and leave the week alone.</p>
 <hr>
@@ -302,7 +302,7 @@ impri = httpx.Client(
 <p><strong>The monthly limit on the cloud plans.</strong> Cloud plans count decisions per month (100 on Free). Once a project has used them, <code>POST /v1/actions</code> returns <code>402</code>, today also for a repeat of a key that already has a card. The script reads with <code>GET</code>, which the limit does not touch, so a card approved before the limit still goes out; only next week&#39;s proposal waits.</p>
 <hr>
 <h2 id="picking-expiresin-for-a-schedule">Picking <code>expires_in</code> for a schedule</h2>
-<p>Size the window to how long the side effect is still worth doing. Impri accepts 300 seconds to 30 days; the default is 72 hours, too long for most schedules. The run interval sets the delay between approval and execution: with runs every 10 minutes, an approved newsletter goes out within 10 minutes. More on choosing windows in <a href="handling-approval-timeouts-and-expiry-in-agents">handling approval timeouts and expiry</a>.</p>
+<p>Size the window to how long the side effect is still worth doing. Airlock accepts 300 seconds to 30 days; the default is 72 hours, too long for most schedules. The run interval sets the delay between approval and execution: with runs every 10 minutes, an approved newsletter goes out within 10 minutes. More on choosing windows in <a href="handling-approval-timeouts-and-expiry-in-agents">handling approval timeouts and expiry</a>.</p>
 <hr>
 <h2 id="related-patterns">Related patterns</h2>
 <ul>
@@ -312,13 +312,13 @@ impri = httpx.Client(
 </ul>
 <hr>
 <h2 id="next-step">Next step</h2>
-<p>Run the script against your own inbox. <a href="quickstart">Self-host Impri</a> with <code>docker compose</code> and set <code>IMPRI_BASE_URL</code> to your server, or <a href="https://app.impri.dev/?signup=1" target="_blank" rel="noopener">start free on the cloud</a> and <a href="api-keys">create an `actions`-scoped key</a>. Then set up <a href="notifications">notifications</a> so the Monday card reaches your phone.</p>
+<p>Run the script against your own inbox. <a href="quickstart">Self-host Airlock</a> with <code>docker compose</code> and set <code>AIRLOCK_BASE_URL</code> to your server, or <a href="https://app.airlock.dev/?signup=1" target="_blank" rel="noopener">start free on the cloud</a> and <a href="api-keys">create an `actions`-scoped key</a>. Then set up <a href="notifications">notifications</a> so the Monday card reaches your phone.</p>
 
-    <aside class="doc-cta" aria-label="Try Impri">
+    <aside class="doc-cta" aria-label="Try Airlock">
   <p class="doc-cta-title">Add an approval step to your own agent</p>
-  <p>Start on Impri Cloud: the Free tier includes 100 approvals a month. Or self-host the MIT-licensed core with Docker Compose, with no tier limits.</p>
+  <p>Start on Airlock Cloud: the Free tier includes 100 approvals a month. Or self-host the MIT-licensed core with Docker Compose, with no tier limits.</p>
   <div class="doc-cta-actions">
-    <a class="btn btn-primary btn-sm" href="https://app.impri.dev/?signup=1">Start free on Impri Cloud</a>
+    <a class="btn btn-primary btn-sm" href="https://app.airlock.dev/?signup=1">Start free on Airlock Cloud</a>
     <a class="btn btn-ghost btn-sm" href="../docs/quickstart">Quick start</a>
     <a class="btn btn-ghost btn-sm" href="../docs/self-hosting">Self-host guide</a>
   </div>
@@ -416,19 +416,19 @@ impri = httpx.Client(
 <footer class="footer">
 <div class="wrap footer-inner">
   <a class="brand" href="/">
-    <span class="mark"><svg viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.5 4.5L19 7.5" stroke="white" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Impri
+    <span class="mark"><svg viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.5 4.5L19 7.5" stroke="white" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Airlock
   </a>
   <div>
-    <a href="https://gitlab.com/sekera.radim/impri">GitLab</a>
+    <a href="https://gitlab.com/sekera.radim/airlock">GitLab</a>
     <a href="/docs">Docs</a>
-    <a href="https://gitlab.com/sekera.radim/impri/-/blob/main/LICENSE">MIT License</a>
-    <a href="https://www.npmjs.com/package/@impri/mcp">@impri/mcp</a>
+    <a href="https://gitlab.com/sekera.radim/airlock/-/blob/main/LICENSE">MIT License</a>
+    <a href="https://www.npmjs.com/package/@airlock/mcp">@airlock/mcp</a>
     <a href="/docs/privacy">Privacy</a>
     <a href="/docs/terms">Terms</a>
     <a href="https://sekera.dev">Contact</a>
   </div>
 </div>
-<div class="wrap" style="margin-top:18px"><span class="muted">© 2026 Impri · The imprimatur for your AI agents · Built by <a href="https://sekera.dev" style="color:inherit">Radim Sekera</a>. Also by the same maker: <a href="https://briefgate.dev/?utm_source=impri.dev&amp;utm_medium=referral" style="color:inherit">BriefGate</a> — client intake for agencies and AI agents.</span></div>
+<div class="wrap" style="margin-top:18px"><span class="muted">© 2026 Airlock · The airlockmatur for your AI agents · Built by <a href="https://sekera.dev" style="color:inherit">Radim Sekera</a>. Also by the same maker: <a href="https://briefgate.dev/?utm_source=airlock.dev&amp;utm_medium=referral" style="color:inherit">BriefGate</a> — client intake for agencies and AI agents.</span></div>
 </footer>
 </body>
 </html>

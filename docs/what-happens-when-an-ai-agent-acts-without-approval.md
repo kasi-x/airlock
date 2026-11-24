@@ -38,15 +38,15 @@ There is no code path that depends on a human's answer — `sendEmail` runs when
 Human approval is a data dependency, not a suggestion — the executor function checks an external status before it's allowed to run:
 
 ```typescript
-const IMPRI = process.env.IMPRI_BASE_URL ?? "https://api.impri.dev";
+const AIRLOCK = process.env.AIRLOCK_BASE_URL ?? "https://api.airlock.dev";
 const headers = {
-  Authorization: `Bearer ${process.env.IMPRI_API_KEY}`,
+  Authorization: `Bearer ${process.env.AIRLOCK_API_KEY}`,
   "Content-Type": "application/json",
 };
 
 async function runTool(call: ToolCall) {
   if (call.name === "send_email") {
-    const created = await fetch(`${IMPRI}/v1/actions`, {
+    const created = await fetch(`${AIRLOCK}/v1/actions`, {
       method: "POST",
       headers,
       body: JSON.stringify({
@@ -61,7 +61,7 @@ async function runTool(call: ToolCall) {
     let decision;
     do {
       await new Promise((r) => setTimeout(r, 5000));
-      decision = await fetch(`${IMPRI}/v1/actions/${created.id}`, { headers }).then((r) => r.json());
+      decision = await fetch(`${AIRLOCK}/v1/actions/${created.id}`, { headers }).then((r) => r.json());
     } while (decision.status === "pending");
 
     if (decision.status !== "approved") {
@@ -70,7 +70,7 @@ async function runTool(call: ToolCall) {
 
     const result = await sendEmail(call.args.to, decision.decision.final_preview.body);
 
-    await fetch(`${IMPRI}/v1/actions/${created.id}/result`, {
+    await fetch(`${AIRLOCK}/v1/actions/${created.id}/result`, {
       method: "POST",
       headers,
       body: JSON.stringify({ status: "executed" }),
@@ -85,7 +85,7 @@ async function runTool(call: ToolCall) {
 
 ## What you get that a prompt-based confirmation can't give you
 
-| Without a gate | With Impri in the loop |
+| Without a gate | With Airlock in the loop |
 |---|---|
 | "The agent said it would ask first" — unverifiable after the fact | A recorded decision: who approved, when, what they saw |
 | A prompt-injected instruction can reach the send/post/pay code directly | The code path to send/post/pay requires a stored `approved` status |
@@ -94,7 +94,7 @@ async function runTool(call: ToolCall) {
 
 ## The honest limit
 
-This only holds if the approved path is the agent's *only* route to the side effect. If the agent (or a library it calls) also has the raw `SMTP` credentials or API key needed to send directly, it can route around the gate entirely — Impri doesn't intercept network calls, it just stores actions and decisions for code that chooses to call it. The fix above works because `sendEmail` is only invoked from inside the gated branch; if another code path in the same agent can call `sendEmail` directly, the gate isn't actually load-bearing.
+This only holds if the approved path is the agent's *only* route to the side effect. If the agent (or a library it calls) also has the raw `SMTP` credentials or API key needed to send directly, it can route around the gate entirely — Airlock doesn't intercept network calls, it just stores actions and decisions for code that chooses to call it. The fix above works because `sendEmail` is only invoked from inside the gated branch; if another code path in the same agent can call `sendEmail` directly, the gate isn't actually load-bearing.
 
 ## Next step
 

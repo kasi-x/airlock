@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest'
 import { createHmac } from 'node:crypto'
-import { verifyWebhook, ImpriWebhookSignatureError } from '../src/index.js'
+import { verifyWebhook, AirlockWebhookSignatureError } from '../src/index.js'
 
 // ─── Helpers ─────────────────────────────────────────────────────────────────
 
@@ -34,49 +34,49 @@ describe('verifyWebhook', () => {
     expect(() => verifyWebhook(buf, SECRET, TS, NONCE, VALID_SIG)).not.toThrow()
   })
 
-  it('throws ImpriWebhookSignatureError for a wrong secret', () => {
+  it('throws AirlockWebhookSignatureError for a wrong secret', () => {
     const wrongSig = sign('wrong_secret', TS, NONCE, BODY)
     expect(() => verifyWebhook(BODY, SECRET, TS, NONCE, wrongSig)).toThrow(
-      ImpriWebhookSignatureError,
+      AirlockWebhookSignatureError,
     )
   })
 
-  it('throws ImpriWebhookSignatureError for a tampered body', () => {
+  it('throws AirlockWebhookSignatureError for a tampered body', () => {
     const tampered = BODY.replace('approve', 'reject')
     expect(() => verifyWebhook(tampered, SECRET, TS, NONCE, VALID_SIG)).toThrow(
-      ImpriWebhookSignatureError,
+      AirlockWebhookSignatureError,
     )
   })
 
-  it('throws ImpriWebhookSignatureError for a tampered nonce', () => {
+  it('throws AirlockWebhookSignatureError for a tampered nonce', () => {
     const wrongNonce = 'ffffffff9999'
     expect(() => verifyWebhook(BODY, SECRET, TS, wrongNonce, VALID_SIG)).toThrow(
-      ImpriWebhookSignatureError,
+      AirlockWebhookSignatureError,
     )
   })
 
-  it('throws ImpriWebhookSignatureError when signature prefix is not sha256=', () => {
+  it('throws AirlockWebhookSignatureError when signature prefix is not sha256=', () => {
     const badSig = VALID_SIG.replace('sha256=', 'md5=')
     expect(() => verifyWebhook(BODY, SECRET, TS, NONCE, badSig)).toThrow(
-      ImpriWebhookSignatureError,
+      AirlockWebhookSignatureError,
     )
   })
 
-  it('throws ImpriWebhookSignatureError for an empty signature', () => {
-    expect(() => verifyWebhook(BODY, SECRET, TS, NONCE, '')).toThrow(ImpriWebhookSignatureError)
+  it('throws AirlockWebhookSignatureError for an empty signature', () => {
+    expect(() => verifyWebhook(BODY, SECRET, TS, NONCE, '')).toThrow(AirlockWebhookSignatureError)
   })
 
-  it('throws ImpriWebhookSignatureError for a non-numeric timestamp', () => {
+  it('throws AirlockWebhookSignatureError for a non-numeric timestamp', () => {
     expect(() => verifyWebhook(BODY, SECRET, 'not-a-number', NONCE, VALID_SIG)).toThrow(
-      ImpriWebhookSignatureError,
+      AirlockWebhookSignatureError,
     )
   })
 
-  it('throws ImpriWebhookSignatureError for a timestamp older than toleranceSec', () => {
+  it('throws AirlockWebhookSignatureError for a timestamp older than toleranceSec', () => {
     const staleTs = String(NOW_SEC - 400) // 400s ago, default tolerance is 300s
     const staleSig = sign(SECRET, staleTs, NONCE, BODY)
     expect(() => verifyWebhook(BODY, SECRET, staleTs, NONCE, staleSig)).toThrow(
-      ImpriWebhookSignatureError,
+      AirlockWebhookSignatureError,
     )
   })
 
@@ -92,7 +92,7 @@ describe('verifyWebhook', () => {
     // Tolerance of 30s should reject a 60s-old timestamp
     expect(() =>
       verifyWebhook(BODY, SECRET, mildlyStaleTs, NONCE, sig, { toleranceSec: 30 }),
-    ).toThrow(ImpriWebhookSignatureError)
+    ).toThrow(AirlockWebhookSignatureError)
   })
 
   it('respects a custom toleranceSec — accepts within that window', () => {

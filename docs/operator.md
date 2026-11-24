@@ -1,6 +1,6 @@
 # Operator / Multi-tenant Self-hosting
 
-When you run Impri as a shared platform for multiple teams or users, you need visibility into the whole instance — not just your own project. The operator endpoint provides platform-wide stats without exposing individual project data.
+When you run Airlock as a shared platform for multiple teams or users, you need visibility into the whole instance — not just your own project. The operator endpoint provides platform-wide stats without exposing individual project data.
 
 ---
 
@@ -97,7 +97,7 @@ could have reached the previous one — so two definitions are narrower than
 - **"Real" action** (`first_action`, and the action side of `first_decision`/
   `activated_last_7d/30d`) excludes the built-in demo/test actions — the
   onboarding "Send a test approval" button (`ui/src/components/GettingStarted.vue`)
-  creates an action with `kind = 'demo'`, and `impri init --demo` (the CLI onboarding
+  creates an action with `kind = 'demo'`, and `airlock init --demo` (the CLI onboarding
   wizard) creates `kind = 'demo.email'` / `kind = 'demo.publish'`. Both are excluded by
   a `kind = 'demo' OR kind LIKE 'demo.%'` filter so clicking the onboarding button once
   doesn't count as activation. This kind is reliably distinguishable, so there is no
@@ -164,10 +164,10 @@ and when.
 
 ```python
 import os
-from impri import ImpriClient
+from airlock import AirlockClient
 
 operator_key = os.environ["OPERATOR_API_KEY"]  # admin key for OPERATOR_PROJECT_ID
-client = ImpriClient(api_key=operator_key, base_url="http://localhost:8484")
+client = AirlockClient(api_key=operator_key, base_url="http://localhost:8484")
 
 # The SDK doesn't have a dedicated method — call the raw endpoint
 import urllib.request, json, os
@@ -192,7 +192,7 @@ print(f"Actions this week: {stats['activity']['actions_7d']}")
 |----------|---------|
 | `OPERATOR_PROJECT_ID` | Unlocks `GET /v1/admin/stats` for that project's admin keys |
 | `ALLOW_SIGNUP` | When set to `1` or `true`, enables `POST /v1/signup` for self-serve project creation |
-| `DB_PATH` | SQLite database path (default: `data/impri.db`) |
+| `DB_PATH` | SQLite database path (default: `data/airlock.db`) |
 | `BASE_URL` | Public base URL shown in inbox links |
 
 See [Self-hosting](self-hosting.md) for the full environment variable reference.

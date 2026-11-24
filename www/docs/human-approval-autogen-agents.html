@@ -3,21 +3,21 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Human Approval for Microsoft AutoGen Agents — Impri Docs</title>
+<title>Human Approval for Microsoft AutoGen Agents — Airlock Docs</title>
 <meta name="description" content="AutoGen agents can run the shell commands they write, on their own — add a human approval gate so nothing touches a real server until you say yes.">
 <meta name="theme-color" content="#06070d">
-<meta property="og:title" content="Human Approval for Microsoft AutoGen Agents — Impri Docs">
+<meta property="og:title" content="Human Approval for Microsoft AutoGen Agents — Airlock Docs">
 <meta property="og:description" content="AutoGen agents can run the shell commands they write, on their own — add a human approval gate so nothing touches a real server until you say yes.">
 <meta property="og:type" content="article">
-<meta property="og:url" content="https://impri.dev/docs/human-approval-autogen-agents">
-<meta property="og:image" content="https://impri.dev/assets/og/og-docs.png">
+<meta property="og:url" content="https://airlock.dev/docs/human-approval-autogen-agents">
+<meta property="og:image" content="https://airlock.dev/assets/og/og-docs.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
-<meta property="og:image:alt" content="Impri — human-in-the-loop approval inbox for AI agents">
+<meta property="og:image:alt" content="Airlock — human-in-the-loop approval inbox for AI agents">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="https://impri.dev/assets/og/og-docs.png">
-<link rel="canonical" href="https://impri.dev/docs/human-approval-autogen-agents">
-<script type="application/ld+json">{"@context":"https://schema.org","@type":"TechArticle","headline":"Human Approval for Microsoft AutoGen Agents","description":"AutoGen agents can run the shell commands they write, on their own — add a human approval gate so nothing touches a real server until you say yes.","url":"https://impri.dev/docs/human-approval-autogen-agents","inLanguage":"en","author":{"@type":"Organization","name":"Impri","url":"https://impri.dev"},"publisher":{"@type":"Organization","name":"Impri","url":"https://impri.dev"}}</script>
+<meta name="twitter:image" content="https://airlock.dev/assets/og/og-docs.png">
+<link rel="canonical" href="https://airlock.dev/docs/human-approval-autogen-agents">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"TechArticle","headline":"Human Approval for Microsoft AutoGen Agents","description":"AutoGen agents can run the shell commands they write, on their own — add a human approval gate so nothing touches a real server until you say yes.","url":"https://airlock.dev/docs/human-approval-autogen-agents","inLanguage":"en","author":{"@type":"Organization","name":"Airlock","url":"https://airlock.dev"},"publisher":{"@type":"Organization","name":"Airlock","url":"https://airlock.dev"}}</script>
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <link rel="icon" href="/favicon.ico" sizes="32x32">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='9' fill='%236366f1'/%3E%3Cpath d='M9 16.5l4.5 4.5L23 11' stroke='white' stroke-width='3' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
@@ -132,13 +132,13 @@ pre code.hljs{display:block;overflow-x:auto}
 <div class="wrap nav-inner">
   <a class="brand" href="/">
     <span class="mark"><svg viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.5 4.5L19 7.5" stroke="white" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
-    Impri
+    Airlock
   </a>
   <div class="nav-links">
     <a class="link" href="/#how">How it works</a>
     <a class="link" href="/#pricing">Pricing</a>
     <a class="link active-nav" href="../docs">Docs</a>
-    <a class="btn btn-primary btn-sm" href="https://gitlab.com/sekera.radim/impri">GitLab</a>
+    <a class="btn btn-primary btn-sm" href="https://gitlab.com/sekera.radim/airlock">GitLab</a>
   </div>
 </div>
 </nav>
@@ -161,15 +161,15 @@ pre code.hljs{display:block;overflow-x:auto}
 <p>AutoGen ships a softer control, <code>human_input_mode=&quot;ALWAYS&quot;</code>, which pauses the chat and asks for input at the terminal. That works only for whoever is sitting there at that moment — it does nothing for an agent kicked off from a cron job or a pipeline where nobody is watching.</p>
 <hr>
 <h2 id="gate-the-executor-not-the-agent">Gate the executor, not the agent</h2>
-<p>The fix is to stop letting AutoGen auto-execute code at all, and instead give the assistant a single function tool that proposes a command, waits for a human decision through Impri, and only then runs it.</p>
+<p>The fix is to stop letting AutoGen auto-execute code at all, and instead give the assistant a single function tool that proposes a command, waits for a human decision through Airlock, and only then runs it.</p>
 <div class="code-block"><span class="code-lang">python</span><pre><code class="hljs"><span class="hljs-keyword">import</span> os, subprocess, time, requests
 
-IMPRI = <span class="hljs-string">&quot;https://api.impri.dev&quot;</span>
-H = {<span class="hljs-string">&quot;Authorization&quot;</span>: <span class="hljs-string">f&quot;Bearer <span class="hljs-subst">{os.environ[<span class="hljs-string">&#x27;IMPRI_API_KEY&#x27;</span>]}</span>&quot;</span>, <span class="hljs-string">&quot;Content-Type&quot;</span>: <span class="hljs-string">&quot;application/json&quot;</span>}
+AIRLOCK = <span class="hljs-string">&quot;https://api.airlock.dev&quot;</span>
+H = {<span class="hljs-string">&quot;Authorization&quot;</span>: <span class="hljs-string">f&quot;Bearer <span class="hljs-subst">{os.environ[<span class="hljs-string">&#x27;AIRLOCK_API_KEY&#x27;</span>]}</span>&quot;</span>, <span class="hljs-string">&quot;Content-Type&quot;</span>: <span class="hljs-string">&quot;application/json&quot;</span>}
 
 <span class="hljs-keyword">def</span> <span class="hljs-title function_">propose_and_run_shell</span>(<span class="hljs-params">command: <span class="hljs-built_in">str</span>, purpose: <span class="hljs-built_in">str</span></span>) -&gt; <span class="hljs-built_in">str</span>:
     <span class="hljs-string">&quot;&quot;&quot;Propose a shell command for human approval, then run it if approved.&quot;&quot;&quot;</span>
-    action = requests.post(<span class="hljs-string">f&quot;<span class="hljs-subst">{IMPRI}</span>/v1/actions&quot;</span>, headers=H, json={
+    action = requests.post(<span class="hljs-string">f&quot;<span class="hljs-subst">{AIRLOCK}</span>/v1/actions&quot;</span>, headers=H, json={
         <span class="hljs-string">&quot;kind&quot;</span>: <span class="hljs-string">&quot;code.execute&quot;</span>,
         <span class="hljs-string">&quot;title&quot;</span>: <span class="hljs-string">f&quot;Run: <span class="hljs-subst">{command[:<span class="hljs-number">60</span>]}</span>&quot;</span>,
         <span class="hljs-string">&quot;preview&quot;</span>: {<span class="hljs-string">&quot;format&quot;</span>: <span class="hljs-string">&quot;markdown&quot;</span>, <span class="hljs-string">&quot;body&quot;</span>: <span class="hljs-string">f&quot;**Purpose:** <span class="hljs-subst">{purpose}</span>\n\n```bash\n<span class="hljs-subst">{command}</span>\n```&quot;</span>},
@@ -179,7 +179,7 @@ H = {<span class="hljs-string">&quot;Authorization&quot;</span>: <span class="hl
     }).json()
 
     <span class="hljs-keyword">while</span> <span class="hljs-literal">True</span>:
-        state = requests.get(<span class="hljs-string">f&quot;<span class="hljs-subst">{IMPRI}</span>/v1/actions/<span class="hljs-subst">{action[<span class="hljs-string">&#x27;id&#x27;</span>]}</span>&quot;</span>, headers=H).json()
+        state = requests.get(<span class="hljs-string">f&quot;<span class="hljs-subst">{AIRLOCK}</span>/v1/actions/<span class="hljs-subst">{action[<span class="hljs-string">&#x27;id&#x27;</span>]}</span>&quot;</span>, headers=H).json()
         <span class="hljs-keyword">if</span> state[<span class="hljs-string">&quot;status&quot;</span>] != <span class="hljs-string">&quot;pending&quot;</span>:
             <span class="hljs-keyword">break</span>
         time.sleep(<span class="hljs-number">10</span>)
@@ -189,7 +189,7 @@ H = {<span class="hljs-string">&quot;Authorization&quot;</span>: <span class="hl
 
     result = subprocess.run(command, shell=<span class="hljs-literal">True</span>, capture_output=<span class="hljs-literal">True</span>, text=<span class="hljs-literal">True</span>, timeout=<span class="hljs-number">120</span>)
 
-    requests.post(<span class="hljs-string">f&quot;<span class="hljs-subst">{IMPRI}</span>/v1/actions/<span class="hljs-subst">{action[<span class="hljs-string">&#x27;id&#x27;</span>]}</span>/result&quot;</span>, headers=H, json={
+    requests.post(<span class="hljs-string">f&quot;<span class="hljs-subst">{AIRLOCK}</span>/v1/actions/<span class="hljs-subst">{action[<span class="hljs-string">&#x27;id&#x27;</span>]}</span>/result&quot;</span>, headers=H, json={
         <span class="hljs-string">&quot;status&quot;</span>: <span class="hljs-string">&quot;executed&quot;</span> <span class="hljs-keyword">if</span> result.returncode == <span class="hljs-number">0</span> <span class="hljs-keyword">else</span> <span class="hljs-string">&quot;execute_failed&quot;</span>,
         <span class="hljs-string">&quot;payload&quot;</span>: {<span class="hljs-string">&quot;exit_code&quot;</span>: result.returncode, <span class="hljs-string">&quot;stdout&quot;</span>: result.stdout[-<span class="hljs-number">2000</span>:]},
     })
@@ -224,7 +224,7 @@ register_function(
 )
 
 executor.initiate_chat(assistant, message=<span class="hljs-string">&quot;Restart the staging worker and confirm it&#x27;s healthy.&quot;</span>)</code></pre></div>
-<p>With <code>code_execution_config=False</code>, a code block the assistant writes into the chat transcript is inert text. The only executable path left is <code>propose_and_run_shell</code>, which is exactly the function that goes through Impri first.</p>
+<p>With <code>code_execution_config=False</code>, a code block the assistant writes into the chat transcript is inert text. The only executable path left is <code>propose_and_run_shell</code>, which is exactly the function that goes through Airlock first.</p>
 <hr>
 <h2 id="marking-risky-commands-honestly">Marking risky commands honestly</h2>
 <p>Two of the optional fields on <code>POST /v1/actions</code> exist for exactly this scenario. <code>idempotent: false</code> tells the reviewer that approving the same command twice is not safe — the inbox card shows a warning badge instead of staying silent about it. <code>undo</code> is a plain-English note on how to walk the change back if it turns out to be wrong; for commands with no clean undo, saying so directly (&quot;no automatic rollback&quot;) is more honest than leaving the field blank.</p>
@@ -235,7 +235,7 @@ executor.initiate_chat(assistant, message=<span class="hljs-string">&quot;Restar
 <tr>
 <th></th>
 <th>AutoGen&#39;s <code>human_input_mode</code></th>
-<th>The Impri gate</th>
+<th>The Airlock gate</th>
 </tr>
 </thead>
 <tbody><tr>
@@ -262,17 +262,17 @@ executor.initiate_chat(assistant, message=<span class="hljs-string">&quot;Restar
 </div>
 <p>The two are not mutually exclusive. Keep <code>human_input_mode=&quot;NEVER&quot;</code> for unattended runs and rely on the function-level gate for side effects; turn it back on for interactive debugging where you are already watching the terminal.</p>
 <hr>
-<h2 id="what-impri-does-and-doesn39t-do">What Impri does and doesn&#39;t do</h2>
-<p>Impri stores the proposed command, notifies you, and holds the decision — it does not read the command, judge whether it is safe, or run it. That last part is still <code>subprocess.run</code> in your own code, gated on <code>status == &quot;approved&quot;</code>. The gate only holds if <code>propose_and_run_shell</code> is genuinely the agent&#39;s only way to reach a shell; leave a second, ungated code executor configured anywhere in the same chat and this becomes decorative.</p>
+<h2 id="what-airlock-does-and-doesn39t-do">What Airlock does and doesn&#39;t do</h2>
+<p>Airlock stores the proposed command, notifies you, and holds the decision — it does not read the command, judge whether it is safe, or run it. That last part is still <code>subprocess.run</code> in your own code, gated on <code>status == &quot;approved&quot;</code>. The gate only holds if <code>propose_and_run_shell</code> is genuinely the agent&#39;s only way to reach a shell; leave a second, ungated code executor configured anywhere in the same chat and this becomes decorative.</p>
 <hr>
 <h2 id="next-step">Next step</h2>
 <p>Start with the <a href="quickstart">quickstart</a> for an API key with the <code>actions</code> scope, read <a href="how-to-add-human-approval-to-an-ai-agent">how to add human approval to an AI agent</a> for the full propose → approve → execute contract, and use the <a href="sdk-python">Python SDK</a> instead of raw <code>requests</code> calls once this moves past a prototype.</p>
 
-    <aside class="doc-cta" aria-label="Try Impri">
+    <aside class="doc-cta" aria-label="Try Airlock">
   <p class="doc-cta-title">Add an approval step to your own agent</p>
-  <p>Start on Impri Cloud: the Free tier includes 100 approvals a month. Or self-host the MIT-licensed core with Docker Compose, with no tier limits.</p>
+  <p>Start on Airlock Cloud: the Free tier includes 100 approvals a month. Or self-host the MIT-licensed core with Docker Compose, with no tier limits.</p>
   <div class="doc-cta-actions">
-    <a class="btn btn-primary btn-sm" href="https://app.impri.dev/?signup=1">Start free on Impri Cloud</a>
+    <a class="btn btn-primary btn-sm" href="https://app.airlock.dev/?signup=1">Start free on Airlock Cloud</a>
     <a class="btn btn-ghost btn-sm" href="../docs/quickstart">Quick start</a>
     <a class="btn btn-ghost btn-sm" href="../docs/self-hosting">Self-host guide</a>
   </div>
@@ -360,7 +360,7 @@ executor.initiate_chat(assistant, message=<span class="hljs-string">&quot;Restar
 <li class="ptoc-h2"><a href="#wiring-it-into-the-agents">Wiring it into the agents</a></li>
 <li class="ptoc-h2"><a href="#marking-risky-commands-honestly">Marking risky commands honestly</a></li>
 <li class="ptoc-h2"><a href="#how-this-compares-to-humaninputmode">How this compares to human_input_mode</a></li>
-<li class="ptoc-h2"><a href="#what-impri-does-and-doesn39t-do">What Impri does and doesn't do</a></li>
+<li class="ptoc-h2"><a href="#what-airlock-does-and-doesn39t-do">What Airlock does and doesn't do</a></li>
 <li class="ptoc-h2"><a href="#next-step">Next step</a></li></ul>
 </nav>
   </aside>
@@ -369,19 +369,19 @@ executor.initiate_chat(assistant, message=<span class="hljs-string">&quot;Restar
 <footer class="footer">
 <div class="wrap footer-inner">
   <a class="brand" href="/">
-    <span class="mark"><svg viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.5 4.5L19 7.5" stroke="white" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Impri
+    <span class="mark"><svg viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.5 4.5L19 7.5" stroke="white" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Airlock
   </a>
   <div>
-    <a href="https://gitlab.com/sekera.radim/impri">GitLab</a>
+    <a href="https://gitlab.com/sekera.radim/airlock">GitLab</a>
     <a href="/docs">Docs</a>
-    <a href="https://gitlab.com/sekera.radim/impri/-/blob/main/LICENSE">MIT License</a>
-    <a href="https://www.npmjs.com/package/@impri/mcp">@impri/mcp</a>
+    <a href="https://gitlab.com/sekera.radim/airlock/-/blob/main/LICENSE">MIT License</a>
+    <a href="https://www.npmjs.com/package/@airlock/mcp">@airlock/mcp</a>
     <a href="/docs/privacy">Privacy</a>
     <a href="/docs/terms">Terms</a>
     <a href="https://sekera.dev">Contact</a>
   </div>
 </div>
-<div class="wrap" style="margin-top:18px"><span class="muted">© 2026 Impri · The imprimatur for your AI agents · Built by <a href="https://sekera.dev" style="color:inherit">Radim Sekera</a>. Also by the same maker: <a href="https://briefgate.dev/?utm_source=impri.dev&amp;utm_medium=referral" style="color:inherit">BriefGate</a> — client intake for agencies and AI agents.</span></div>
+<div class="wrap" style="margin-top:18px"><span class="muted">© 2026 Airlock · The airlockmatur for your AI agents · Built by <a href="https://sekera.dev" style="color:inherit">Radim Sekera</a>. Also by the same maker: <a href="https://briefgate.dev/?utm_source=airlock.dev&amp;utm_medium=referral" style="color:inherit">BriefGate</a> — client intake for agencies and AI agents.</span></div>
 </footer>
 </body>
 </html>

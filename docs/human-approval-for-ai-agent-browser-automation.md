@@ -12,19 +12,19 @@ That means the gate has to sit *before* the interaction that matters, not around
 
 ## Wiring it into a Playwright agent
 
-The pattern is the same three calls as any other Impri integration — push, poll, execute — but the "preview" is a description of the DOM action, and "execute" is the actual Playwright call:
+The pattern is the same three calls as any other Airlock integration — push, poll, execute — but the "preview" is a description of the DOM action, and "execute" is the actual Playwright call:
 
 ```python
 import os
 import time
 import requests
 
-IMPRI = "https://api.impri.dev"
-HEADERS = {"Authorization": f"Bearer {os.environ['IMPRI_API_KEY']}"}
+AIRLOCK = "https://api.airlock.dev"
+HEADERS = {"Authorization": f"Bearer {os.environ['AIRLOCK_API_KEY']}"}
 
 def request_approval(kind: str, title: str, body: str, editable=None) -> dict:
     resp = requests.post(
-        f"{IMPRI}/v1/actions",
+        f"{AIRLOCK}/v1/actions",
         headers=HEADERS,
         json={
             "kind": kind,
@@ -38,7 +38,7 @@ def request_approval(kind: str, title: str, body: str, editable=None) -> dict:
 
 def wait_for_decision(action_id: str, poll_every=5) -> dict:
     while True:
-        resp = requests.get(f"{IMPRI}/v1/actions/{action_id}", headers=HEADERS).json()
+        resp = requests.get(f"{AIRLOCK}/v1/actions/{action_id}", headers=HEADERS).json()
         if resp["status"] != "pending":
             return resp
         time.sleep(poll_every)
@@ -55,7 +55,7 @@ decision = wait_for_decision(action["id"])
 if decision["status"] == "approved":
     page.click("#place-order")
     requests.post(
-        f"{IMPRI}/v1/actions/{action['id']}/result",
+        f"{AIRLOCK}/v1/actions/{action['id']}/result",
         headers=HEADERS,
         json={"status": "executed"},
     )
@@ -75,13 +75,13 @@ The approval card shows the `title` and `preview.body` you constructed, not a sc
 | Posting a public comment | "Post reply on r/webdev thread 'best CI tool'" | "Do the browser thing" |
 | Changing account settings | "Update billing email to ops@acme.com" | "Update settings" |
 
-If you need the human to be able to fix a typo in the value before it's typed into the page — a shipping address, a comment body — list that field in `editable` and read it back from `decision.final_preview` rather than your original draft, the same as any other Impri integration.
+If you need the human to be able to fix a typo in the value before it's typed into the page — a shipping address, a comment body — list that field in `editable` and read it back from `decision.final_preview` rather than your original draft, the same as any other Airlock integration.
 
 ## Where this boundary actually sits
 
-Be precise about what this does and doesn't cover. Impri gates the *decision*, not the browser session. If your agent process holds a logged-in session and can call `page.click()` anywhere in its code, a bug or a prompt-injected instruction from a page it's scraping could still trigger the click without ever calling `request_approval`. The gate is only real if the checkout/submit/post code path is physically unreachable without a stored `approved` decision — which usually means putting the approval check inside the one function that's allowed to touch those selectors, and not giving the rest of the agent's code a shortcut around it.
+Be precise about what this does and doesn't cover. Airlock gates the *decision*, not the browser session. If your agent process holds a logged-in session and can call `page.click()` anywhere in its code, a bug or a prompt-injected instruction from a page it's scraping could still trigger the click without ever calling `request_approval`. The gate is only real if the checkout/submit/post code path is physically unreachable without a stored `approved` decision — which usually means putting the approval check inside the one function that's allowed to touch those selectors, and not giving the rest of the agent's code a shortcut around it.
 
-Impri does not render the page, does not verify the DOM matches your description, and does not click anything itself — it stores the proposed action and the decision, nothing more.
+Airlock does not render the page, does not verify the DOM matches your description, and does not click anything itself — it stores the proposed action and the decision, nothing more.
 
 ## Next step
 

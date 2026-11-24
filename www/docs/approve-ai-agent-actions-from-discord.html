@@ -3,21 +3,21 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Approve AI Agent Actions From Discord — Impri Docs</title>
+<title>Approve AI Agent Actions From Discord — Airlock Docs</title>
 <meta name="description" content="Route your AI agent's pending actions straight into the Discord server your team already lives in, and approve or reject them with a single button click.">
 <meta name="theme-color" content="#06070d">
-<meta property="og:title" content="Approve AI Agent Actions From Discord — Impri Docs">
+<meta property="og:title" content="Approve AI Agent Actions From Discord — Airlock Docs">
 <meta property="og:description" content="Route your AI agent's pending actions straight into the Discord server your team already lives in, and approve or reject them with a single button click.">
 <meta property="og:type" content="article">
-<meta property="og:url" content="https://impri.dev/docs/approve-ai-agent-actions-from-discord">
-<meta property="og:image" content="https://impri.dev/assets/og/og-docs.png">
+<meta property="og:url" content="https://airlock.dev/docs/approve-ai-agent-actions-from-discord">
+<meta property="og:image" content="https://airlock.dev/assets/og/og-docs.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
-<meta property="og:image:alt" content="Impri — human-in-the-loop approval inbox for AI agents">
+<meta property="og:image:alt" content="Airlock — human-in-the-loop approval inbox for AI agents">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="https://impri.dev/assets/og/og-docs.png">
-<link rel="canonical" href="https://impri.dev/docs/approve-ai-agent-actions-from-discord">
-<script type="application/ld+json">{"@context":"https://schema.org","@type":"TechArticle","headline":"Approve AI Agent Actions From Discord","description":"Route your AI agent's pending actions straight into the Discord server your team already lives in, and approve or reject them with a single button click.","url":"https://impri.dev/docs/approve-ai-agent-actions-from-discord","inLanguage":"en","author":{"@type":"Organization","name":"Impri","url":"https://impri.dev"},"publisher":{"@type":"Organization","name":"Impri","url":"https://impri.dev"}}</script>
+<meta name="twitter:image" content="https://airlock.dev/assets/og/og-docs.png">
+<link rel="canonical" href="https://airlock.dev/docs/approve-ai-agent-actions-from-discord">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"TechArticle","headline":"Approve AI Agent Actions From Discord","description":"Route your AI agent's pending actions straight into the Discord server your team already lives in, and approve or reject them with a single button click.","url":"https://airlock.dev/docs/approve-ai-agent-actions-from-discord","inLanguage":"en","author":{"@type":"Organization","name":"Airlock","url":"https://airlock.dev"},"publisher":{"@type":"Organization","name":"Airlock","url":"https://airlock.dev"}}</script>
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <link rel="icon" href="/favicon.ico" sizes="32x32">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='9' fill='%236366f1'/%3E%3Cpath d='M9 16.5l4.5 4.5L23 11' stroke='white' stroke-width='3' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
@@ -132,13 +132,13 @@ pre code.hljs{display:block;overflow-x:auto}
 <div class="wrap nav-inner">
   <a class="brand" href="/">
     <span class="mark"><svg viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.5 4.5L19 7.5" stroke="white" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
-    Impri
+    Airlock
   </a>
   <div class="nav-links">
     <a class="link" href="/#how">How it works</a>
     <a class="link" href="/#pricing">Pricing</a>
     <a class="link active-nav" href="../docs">Docs</a>
-    <a class="btn btn-primary btn-sm" href="https://gitlab.com/sekera.radim/impri">GitLab</a>
+    <a class="btn btn-primary btn-sm" href="https://gitlab.com/sekera.radim/airlock">GitLab</a>
   </div>
 </div>
 </nav>
@@ -156,10 +156,10 @@ pre code.hljs{display:block;overflow-x:auto}
 <p>Route your AI agent&#39;s pending actions straight into the Discord server your team already lives in, and approve or reject them with a single button click.</p>
 <hr>
 <h2 id="why-discord-instead-of-a-separate-inbox">Why Discord instead of a separate inbox</h2>
-<p>If your team runs a dev-ops or coding agent overnight — merging branches, triggering deploys, filing issues — the last place you want a decision to sit is an email you check once a day. Most dev teams already have Discord open all day in a <code>#ops</code> or <code>#deploys</code> channel. Impri&#39;s Discord integration puts the approve/reject decision exactly there: the agent proposes an action, a rich embed with <strong>✅ Approve</strong> / <strong>❌ Reject</strong> buttons shows up in the channel, and anyone with permission can decide without switching tools.</p>
-<p>This is not a separate product — it&#39;s the same <a href="how-to-add-human-approval-to-an-ai-agent">approval gate</a> Impri always runs, just delivered over a different notification channel.</p>
+<p>If your team runs a dev-ops or coding agent overnight — merging branches, triggering deploys, filing issues — the last place you want a decision to sit is an email you check once a day. Most dev teams already have Discord open all day in a <code>#ops</code> or <code>#deploys</code> channel. Airlock&#39;s Discord integration puts the approve/reject decision exactly there: the agent proposes an action, a rich embed with <strong>✅ Approve</strong> / <strong>❌ Reject</strong> buttons shows up in the channel, and anyone with permission can decide without switching tools.</p>
+<p>This is not a separate product — it&#39;s the same <a href="how-to-add-human-approval-to-an-ai-agent">approval gate</a> Airlock always runs, just delivered over a different notification channel.</p>
 <h2 id="the-flow">The flow</h2>
-<div class="code-block"><pre><code class="hljs">Agent               Impri                    Discord channel
+<div class="code-block"><pre><code class="hljs">Agent               Airlock                    Discord channel
   │                    │                            │
   ├─ POST /v1/actions ─▶ stores action, notifies ───▶ embed + buttons
   │                    │                            │
@@ -172,16 +172,16 @@ pre code.hljs{display:block;overflow-x:auto}
   │
   ├─ execute with decision.final_preview
   └─ POST /v1/actions/:id/result</code></pre></div>
-<p>Discord delivers the button click as an interaction to Impri&#39;s endpoint. Impri verifies the request signature, checks the <code>custom_id</code> HMAC, and confirms the clicking user is on the channel&#39;s allow-list before it ever records a decision — a teammate cannot approve just by seeing the embed, they have to be an authorized reviewer.</p>
+<p>Discord delivers the button click as an interaction to Airlock&#39;s endpoint. Airlock verifies the request signature, checks the <code>custom_id</code> HMAC, and confirms the clicking user is on the channel&#39;s allow-list before it ever records a decision — a teammate cannot approve just by seeing the embed, they have to be an authorized reviewer.</p>
 <h2 id="setting-up-the-channel">Setting up the channel</h2>
 <p>The Discord bot setup (invite the bot, get the channel ID, turn on <code>approval_mode</code>) is covered in full in <a href="discord-approval">Discord Approval Bot</a>. Once <code>approval_mode: true</code> is set for the channel, every action routed there gets buttons automatically — no per-action flag needed on the agent side.</p>
 <h2 id="wiring-the-agent">Wiring the agent</h2>
-<p>Here&#39;s a Node/TypeScript agent that watches a repo for stale PRs and asks a human to approve auto-merging them, using the Impri MCP server so the agent doesn&#39;t touch raw HTTP:</p>
+<p>Here&#39;s a Node/TypeScript agent that watches a repo for stale PRs and asks a human to approve auto-merging them, using the Airlock MCP server so the agent doesn&#39;t touch raw HTTP:</p>
 <div class="code-block"><span class="code-lang">typescript</span><pre><code class="hljs"><span class="hljs-keyword">import</span> { <span class="hljs-title class_">Client</span> } <span class="hljs-keyword">from</span> <span class="hljs-string">&quot;@modelcontextprotocol/sdk/client/index.js&quot;</span>;
 
 <span class="hljs-keyword">async</span> <span class="hljs-keyword">function</span> <span class="hljs-title function_">proposeMerge</span>(<span class="hljs-params"><span class="hljs-attr">client</span>: <span class="hljs-title class_">Client</span>, <span class="hljs-attr">pr</span>: { <span class="hljs-built_in">number</span>: <span class="hljs-built_in">number</span>; title: <span class="hljs-built_in">string</span>; diffSummary: <span class="hljs-built_in">string</span> }</span>) {
   <span class="hljs-keyword">const</span> pushed = <span class="hljs-keyword">await</span> client.<span class="hljs-title function_">callTool</span>({
-    <span class="hljs-attr">name</span>: <span class="hljs-string">&quot;impri_push_action&quot;</span>,
+    <span class="hljs-attr">name</span>: <span class="hljs-string">&quot;airlock_push_action&quot;</span>,
     <span class="hljs-attr">arguments</span>: {
       <span class="hljs-attr">kind</span>: <span class="hljs-string">&quot;github.merge&quot;</span>,
       <span class="hljs-attr">title</span>: <span class="hljs-string">`Auto-merge PR #<span class="hljs-subst">${pr.<span class="hljs-built_in">number</span>}</span>: <span class="hljs-subst">${pr.title}</span>`</span>,
@@ -193,12 +193,12 @@ pre code.hljs{display:block;overflow-x:auto}
     },
   });
 
-  <span class="hljs-comment">// Impri&#x27;s MCP tools set `structuredContent` alongside the text content</span>
+  <span class="hljs-comment">// Airlock&#x27;s MCP tools set `structuredContent` alongside the text content</span>
   <span class="hljs-comment">// block — read the typed fields from there, not off the result directly.</span>
   <span class="hljs-keyword">const</span> { <span class="hljs-attr">action_id</span>: actionId } = pushed.<span class="hljs-property">structuredContent</span> <span class="hljs-keyword">as</span> { <span class="hljs-attr">action_id</span>: <span class="hljs-built_in">string</span> };
 
   <span class="hljs-keyword">const</span> decision = <span class="hljs-keyword">await</span> client.<span class="hljs-title function_">callTool</span>({
-    <span class="hljs-attr">name</span>: <span class="hljs-string">&quot;impri_await_decision&quot;</span>,
+    <span class="hljs-attr">name</span>: <span class="hljs-string">&quot;airlock_await_decision&quot;</span>,
     <span class="hljs-attr">arguments</span>: { <span class="hljs-attr">action_id</span>: actionId, <span class="hljs-attr">timeout_s</span>: <span class="hljs-number">39600</span> },
   });
 
@@ -210,23 +210,23 @@ pre code.hljs{display:block;overflow-x:auto}
 
   <span class="hljs-keyword">await</span> <span class="hljs-title function_">mergePullRequest</span>(pr.<span class="hljs-property">number</span>); <span class="hljs-comment">// your GitHub API call</span>
   <span class="hljs-keyword">await</span> client.<span class="hljs-title function_">callTool</span>({
-    <span class="hljs-attr">name</span>: <span class="hljs-string">&quot;impri_report_result&quot;</span>,
+    <span class="hljs-attr">name</span>: <span class="hljs-string">&quot;airlock_report_result&quot;</span>,
     <span class="hljs-attr">arguments</span>: { <span class="hljs-attr">action_id</span>: actionId, <span class="hljs-attr">status</span>: <span class="hljs-string">&quot;executed&quot;</span> },
   });
 }</code></pre></div>
-<p>The agent code never mentions Discord — it just calls the three MCP tools. Which channel the notification lands on is configuration on the Impri side, set once when you wire up the Discord bot.</p>
+<p>The agent code never mentions Discord — it just calls the three MCP tools. Which channel the notification lands on is configuration on the Airlock side, set once when you wire up the Discord bot.</p>
 <h2 id="what-a-reviewer-sees-and-does">What a reviewer sees and does</h2>
-<p>The embed shows the title, the markdown preview rendered inline, and an expiry countdown. A click on <strong>Approve</strong> or <strong>Reject</strong> updates the message in place (so there&#39;s no race between two people clicking at once — the first click wins, the embed updates to show who decided and when) and the agent&#39;s <code>impri_await_decision</code> call returns within its next poll cycle.</p>
+<p>The embed shows the title, the markdown preview rendered inline, and an expiry countdown. A click on <strong>Approve</strong> or <strong>Reject</strong> updates the message in place (so there&#39;s no race between two people clicking at once — the first click wins, the embed updates to show who decided and when) and the agent&#39;s <code>airlock_await_decision</code> call returns within its next poll cycle.</p>
 <h2 id="boundaries">Boundaries</h2>
-<p>Impri&#39;s Discord channel is a notification and decision-capture surface — it does not run your merge, does not inspect the diff for correctness, and does not replace CI. The actual gate is still the pattern from <a href="how-to-add-human-approval-to-an-ai-agent">the integration guide</a>: your agent&#39;s execution code must only run after <code>status: &quot;approved&quot;</code> comes back, and the wrapper around <code>mergePullRequest</code> needs to be the agent&#39;s only path to actually merging — otherwise a determined agent (or a bug) can route around the approval entirely.</p>
+<p>Airlock&#39;s Discord channel is a notification and decision-capture surface — it does not run your merge, does not inspect the diff for correctness, and does not replace CI. The actual gate is still the pattern from <a href="how-to-add-human-approval-to-an-ai-agent">the integration guide</a>: your agent&#39;s execution code must only run after <code>status: &quot;approved&quot;</code> comes back, and the wrapper around <code>mergePullRequest</code> needs to be the agent&#39;s only path to actually merging — otherwise a determined agent (or a bug) can route around the approval entirely.</p>
 <h2 id="next-step">Next step</h2>
 <p>If you haven&#39;t set up an API key yet, start with the <a href="quickstart">quickstart</a>, then follow <a href="discord-approval">Discord Approval Bot</a> to invite the bot and flip on <code>approval_mode</code> for your channel.</p>
 
-    <aside class="doc-cta" aria-label="Try Impri">
+    <aside class="doc-cta" aria-label="Try Airlock">
   <p class="doc-cta-title">Add an approval step to your own agent</p>
-  <p>Start on Impri Cloud: the Free tier includes 100 approvals a month. Or self-host the MIT-licensed core with Docker Compose, with no tier limits.</p>
+  <p>Start on Airlock Cloud: the Free tier includes 100 approvals a month. Or self-host the MIT-licensed core with Docker Compose, with no tier limits.</p>
   <div class="doc-cta-actions">
-    <a class="btn btn-primary btn-sm" href="https://app.impri.dev/?signup=1">Start free on Impri Cloud</a>
+    <a class="btn btn-primary btn-sm" href="https://app.airlock.dev/?signup=1">Start free on Airlock Cloud</a>
     <a class="btn btn-ghost btn-sm" href="../docs/quickstart">Quick start</a>
     <a class="btn btn-ghost btn-sm" href="../docs/self-hosting">Self-host guide</a>
   </div>
@@ -323,19 +323,19 @@ pre code.hljs{display:block;overflow-x:auto}
 <footer class="footer">
 <div class="wrap footer-inner">
   <a class="brand" href="/">
-    <span class="mark"><svg viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.5 4.5L19 7.5" stroke="white" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Impri
+    <span class="mark"><svg viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.5 4.5L19 7.5" stroke="white" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Airlock
   </a>
   <div>
-    <a href="https://gitlab.com/sekera.radim/impri">GitLab</a>
+    <a href="https://gitlab.com/sekera.radim/airlock">GitLab</a>
     <a href="/docs">Docs</a>
-    <a href="https://gitlab.com/sekera.radim/impri/-/blob/main/LICENSE">MIT License</a>
-    <a href="https://www.npmjs.com/package/@impri/mcp">@impri/mcp</a>
+    <a href="https://gitlab.com/sekera.radim/airlock/-/blob/main/LICENSE">MIT License</a>
+    <a href="https://www.npmjs.com/package/@airlock/mcp">@airlock/mcp</a>
     <a href="/docs/privacy">Privacy</a>
     <a href="/docs/terms">Terms</a>
     <a href="https://sekera.dev">Contact</a>
   </div>
 </div>
-<div class="wrap" style="margin-top:18px"><span class="muted">© 2026 Impri · The imprimatur for your AI agents · Built by <a href="https://sekera.dev" style="color:inherit">Radim Sekera</a>. Also by the same maker: <a href="https://briefgate.dev/?utm_source=impri.dev&amp;utm_medium=referral" style="color:inherit">BriefGate</a> — client intake for agencies and AI agents.</span></div>
+<div class="wrap" style="margin-top:18px"><span class="muted">© 2026 Airlock · The airlockmatur for your AI agents · Built by <a href="https://sekera.dev" style="color:inherit">Radim Sekera</a>. Also by the same maker: <a href="https://briefgate.dev/?utm_source=airlock.dev&amp;utm_medium=referral" style="color:inherit">BriefGate</a> — client intake for agencies and AI agents.</span></div>
 </footer>
 </body>
 </html>

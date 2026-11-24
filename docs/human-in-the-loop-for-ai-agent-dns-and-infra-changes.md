@@ -21,9 +21,9 @@ That makes the human's job clear: read a precise before/after and confirm it. Th
 The agent reads the current record set from your DNS provider, builds the desired state, and pushes both into the preview. The reviewer sees the delta, and only on approval does your code call the provider.
 
 ```typescript
-const BASE = "https://api.impri.dev";
+const BASE = "https://api.airlock.dev";
 const headers = {
-  Authorization: `Bearer ${process.env.IMPRI_API_KEY}`,
+  Authorization: `Bearer ${process.env.AIRLOCK_API_KEY}`,
   "Content-Type": "application/json",
 };
 
@@ -92,7 +92,7 @@ if (decision.status === "approved") {
 }
 ```
 
-Here `dnsProvider` stands for whatever client you use (Cloudflare, Route 53, your registrar). Impri never talks to it.
+Here `dnsProvider` stands for whatever client you use (Cloudflare, Route 53, your registrar). Airlock never talks to it.
 
 ---
 
@@ -110,9 +110,9 @@ Here `dnsProvider` stands for whatever client you use (Cloudflare, Route 53, you
 
 ## Boundaries
 
-- **Impri is only the gate.** It stores the proposed change, notifies you and holds the decision. It does not check whether the record is valid, run a plan, or apply anything.
+- **Airlock is only the gate.** It stores the proposed change, notifies you and holds the decision. It does not check whether the record is valid, run a plan, or apply anything.
 - **The gate holds only if the agent can't bypass it.** Keep the DNS API token in the wrapper that requires an approved decision, not in the agent's general toolset. If the agent can call the provider directly, it can route around the approval.
-- **This is not infrastructure-as-code review.** For declarative stacks you may already use plan review; see [approving Terraform changes](human-approval-for-ai-agent-terraform-changes.md) for that shape. Impri fits the imperative, API-call style of change.
+- **This is not infrastructure-as-code review.** For declarative stacks you may already use plan review; see [approving Terraform changes](human-approval-for-ai-agent-terraform-changes.md) for that shape. Airlock fits the imperative, API-call style of change.
 
 Approvals can arrive through [Telegram](telegram-approval.md) if you want to confirm a change from your phone during an incident, and the [audit log](audit-log.md) records who approved which change and when.
 
@@ -120,4 +120,4 @@ Approvals can arrive through [Telegram](telegram-approval.md) if you want to con
 
 ## Next step
 
-Follow the [quickstart](quickstart.md) to get an API key, or use the [MCP server](mcp.md) if your agent runs in Claude Code or another MCP client. Impri is open-core, MIT-licensed and self-hostable.
+Follow the [quickstart](quickstart.md) to get an API key, or use the [MCP server](mcp.md) if your agent runs in Claude Code or another MCP client. Airlock is open-core, MIT-licensed and self-hostable.

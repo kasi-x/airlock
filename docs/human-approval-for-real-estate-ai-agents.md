@@ -15,8 +15,8 @@ The fix isn't a stricter prompt. It's making the send/confirm call structurally 
 ```typescript
 import fetch from "node-fetch";
 
-const BASE = "https://api.impri.dev";
-const KEY = process.env.IMPRI_API_KEY!;
+const BASE = "https://api.airlock.dev";
+const KEY = process.env.AIRLOCK_API_KEY!;
 const headers = {
   Authorization: `Bearer ${KEY}`,
   "Content-Type": "application/json",
@@ -81,11 +81,11 @@ Set `expires_in` per `kind` rather than using one value everywhere — a stale l
 
 Set `editable: ["preview.body"]` and a broker can tighten a lead reply's tone or correct a detail the agent got wrong, right on the approval card, before it goes out. `decision.diff` gives a record of what they changed — useful if a client later disputes what was said about a listing. Execute with `decision.final_preview.body`, not the agent's original draft; the API never lets the original slip back in.
 
-## Impri is the gate, not the CRM
+## Airlock is the gate, not the CRM
 
-Impri doesn't know your MLS data, doesn't verify a listing is still active, and doesn't check a calendar for conflicts — it stores the proposed action, notifies whoever should review it, and holds the decision until they respond. That's the whole job. If your agent still holds a raw CRM or SMTP credential it can call directly instead of going through the wrapped send function, the gate can be routed around — wire the approval into the actual send path, not next to it (see the [integrations guide](integrations.md)).
+Airlock doesn't know your MLS data, doesn't verify a listing is still active, and doesn't check a calendar for conflicts — it stores the proposed action, notifies whoever should review it, and holds the decision until they respond. That's the whole job. If your agent still holds a raw CRM or SMTP credential it can call directly instead of going through the wrapped send function, the gate can be routed around — wire the approval into the actual send path, not next to it (see the [integrations guide](integrations.md)).
 
-It's also not a scheduling engine — if you need real calendar-conflict resolution across multiple agents and showings, that logic belongs in your CRM or booking tool, with Impri sitting in front of the one step that sends a message to a client.
+It's also not a scheduling engine — if you need real calendar-conflict resolution across multiple agents and showings, that logic belongs in your CRM or booking tool, with Airlock sitting in front of the one step that sends a message to a client.
 
 ## Next step
 

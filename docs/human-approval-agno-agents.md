@@ -1,6 +1,6 @@
 # Human Approval for Agno Agents: Adding an External Approval Inbox
 
-Add human approval to an Agno agent with an external inbox: wrap risky tools so they push to Impri, wait for a decision, and act only after an approve.
+Add human approval to an Agno agent with an external inbox: wrap risky tools so they push to Airlock, wait for a decision, and act only after an approve.
 
 ---
 
@@ -10,7 +10,7 @@ Agent frameworks typically pause a run and ask the operator to confirm. That wor
 
 An external inbox moves the question to where you are: a push notification, an email, a Slack or Telegram message. The agent's tool blocks until a person decides.
 
-Impri is only the approval gate. It stores the proposal, notifies a human and holds the decision. It doesn't run your agent, interpret the action or execute anything.
+Airlock is only the approval gate. It stores the proposal, notifies a human and holds the decision. It doesn't run your agent, interpret the action or execute anything.
 
 ---
 
@@ -24,8 +24,8 @@ import os
 import time
 import requests
 
-BASE = os.environ.get("IMPRI_BASE_URL", "https://api.impri.dev")
-HEADERS = {"Authorization": f"Bearer {os.environ['IMPRI_API_KEY']}"}
+BASE = os.environ.get("AIRLOCK_BASE_URL", "https://api.airlock.dev")
+HEADERS = {"Authorization": f"Bearer {os.environ['AIRLOCK_API_KEY']}"}
 
 
 def _ask_human(kind: str, title: str, body: str) -> dict:
@@ -96,7 +96,7 @@ Then register `post_release_notes` in the agent's tool list the same way you reg
 
 **Always use `final_preview`.** The reviewer may have edited the notes. Publishing the agent's original text would silently ignore their correction.
 
-**Blocking vs. not blocking.** The loop above blocks the tool call, which is simplest for a chat-style agent. For long waits, don't hold a worker thread open; see [the MCP route](mcp.md), where `impri_await_decision` does the waiting for you.
+**Blocking vs. not blocking.** The loop above blocks the tool call, which is simplest for a chat-style agent. For long waits, don't hold a worker thread open; see [the MCP route](mcp.md), where `airlock_await_decision` does the waiting for you.
 
 ---
 
@@ -104,7 +104,7 @@ Then register `post_release_notes` in the agent's tool list the same way you reg
 
 This is the honest limit. If your agent also has a general shell tool, or a second function that can call the changelog API directly, the model can route around the wrapped tool. Put the credential for the side effect behind the gated function only, and keep it out of the agent's other tools.
 
-Impri also doesn't judge the content. A reviewer sees the proposed text and decides; there is no automatic moderation.
+Airlock also doesn't judge the content. A reviewer sees the proposed text and decides; there is no automatic moderation.
 
 ---
 

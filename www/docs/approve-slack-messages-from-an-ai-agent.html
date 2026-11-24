@@ -3,21 +3,21 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Approve Slack Messages From an AI Agent — Impri Docs</title>
+<title>Approve Slack Messages From an AI Agent — Airlock Docs</title>
 <meta name="description" content="Put a human approval step in front of every Slack message your AI agent sends — review, edit, or reject the exact wording before chat.postMessage fires.">
 <meta name="theme-color" content="#06070d">
-<meta property="og:title" content="Approve Slack Messages From an AI Agent — Impri Docs">
+<meta property="og:title" content="Approve Slack Messages From an AI Agent — Airlock Docs">
 <meta property="og:description" content="Put a human approval step in front of every Slack message your AI agent sends — review, edit, or reject the exact wording before chat.postMessage fires.">
 <meta property="og:type" content="article">
-<meta property="og:url" content="https://impri.dev/docs/approve-slack-messages-from-an-ai-agent">
-<meta property="og:image" content="https://impri.dev/assets/og/og-docs.png">
+<meta property="og:url" content="https://airlock.dev/docs/approve-slack-messages-from-an-ai-agent">
+<meta property="og:image" content="https://airlock.dev/assets/og/og-docs.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
-<meta property="og:image:alt" content="Impri — human-in-the-loop approval inbox for AI agents">
+<meta property="og:image:alt" content="Airlock — human-in-the-loop approval inbox for AI agents">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="https://impri.dev/assets/og/og-docs.png">
-<link rel="canonical" href="https://impri.dev/docs/approve-slack-messages-from-an-ai-agent">
-<script type="application/ld+json">{"@context":"https://schema.org","@type":"TechArticle","headline":"Approve Slack Messages From an AI Agent","description":"Put a human approval step in front of every Slack message your AI agent sends — review, edit, or reject the exact wording before chat.postMessage fires.","url":"https://impri.dev/docs/approve-slack-messages-from-an-ai-agent","inLanguage":"en","author":{"@type":"Organization","name":"Impri","url":"https://impri.dev"},"publisher":{"@type":"Organization","name":"Impri","url":"https://impri.dev"}}</script>
+<meta name="twitter:image" content="https://airlock.dev/assets/og/og-docs.png">
+<link rel="canonical" href="https://airlock.dev/docs/approve-slack-messages-from-an-ai-agent">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"TechArticle","headline":"Approve Slack Messages From an AI Agent","description":"Put a human approval step in front of every Slack message your AI agent sends — review, edit, or reject the exact wording before chat.postMessage fires.","url":"https://airlock.dev/docs/approve-slack-messages-from-an-ai-agent","inLanguage":"en","author":{"@type":"Organization","name":"Airlock","url":"https://airlock.dev"},"publisher":{"@type":"Organization","name":"Airlock","url":"https://airlock.dev"}}</script>
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <link rel="icon" href="/favicon.ico" sizes="32x32">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='9' fill='%236366f1'/%3E%3Cpath d='M9 16.5l4.5 4.5L23 11' stroke='white' stroke-width='3' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
@@ -132,13 +132,13 @@ pre code.hljs{display:block;overflow-x:auto}
 <div class="wrap nav-inner">
   <a class="brand" href="/">
     <span class="mark"><svg viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.5 4.5L19 7.5" stroke="white" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
-    Impri
+    Airlock
   </a>
   <div class="nav-links">
     <a class="link" href="/#how">How it works</a>
     <a class="link" href="/#pricing">Pricing</a>
     <a class="link active-nav" href="../docs">Docs</a>
-    <a class="btn btn-primary btn-sm" href="https://gitlab.com/sekera.radim/impri">GitLab</a>
+    <a class="btn btn-primary btn-sm" href="https://gitlab.com/sekera.radim/airlock">GitLab</a>
   </div>
 </div>
 </nav>
@@ -156,7 +156,7 @@ pre code.hljs{display:block;overflow-x:auto}
 <p>Put a human approval step in front of every Slack message your AI agent sends — review, edit, or reject the exact wording before <code>chat.postMessage</code> fires.</p>
 <hr>
 <h2 id="two-different-quotslackquot-problems">Two different &quot;Slack&quot; problems</h2>
-<p>There are two unrelated things people mean by &quot;Slack&quot; and Impri approvals, and it&#39;s worth being explicit about which one this page covers. <a href="approve-ai-agent-actions-from-slack">Approve AI agent actions from Slack</a> is about using Slack as your <em>notification channel</em> — approval cards for any kind of action (emails, GitHub issues, refunds) show up in a Slack DM with buttons. This page is the other direction: your agent&#39;s job <em>is</em> to post messages into Slack, and you want a human to read the exact text before it goes out. The action being gated has <code>kind: &quot;slack.message.send&quot;</code>, not the notification transport.</p>
+<p>There are two unrelated things people mean by &quot;Slack&quot; and Airlock approvals, and it&#39;s worth being explicit about which one this page covers. <a href="approve-ai-agent-actions-from-slack">Approve AI agent actions from Slack</a> is about using Slack as your <em>notification channel</em> — approval cards for any kind of action (emails, GitHub issues, refunds) show up in a Slack DM with buttons. This page is the other direction: your agent&#39;s job <em>is</em> to post messages into Slack, and you want a human to read the exact text before it goes out. The action being gated has <code>kind: &quot;slack.message.send&quot;</code>, not the notification transport.</p>
 <p>You can combine both — get the review card in Slack for an action that itself posts to Slack — but for a customer-facing channel, most teams don&#39;t want approve/reject noise landing in the same workspace the customer can see, so the example below routes notifications elsewhere.</p>
 <hr>
 <h2 id="scenario-a-bot-in-a-shared-support-channel">Scenario: a bot in a shared support channel</h2>
@@ -166,16 +166,16 @@ pre code.hljs{display:block;overflow-x:auto}
 <span class="hljs-keyword">import</span> httpx
 <span class="hljs-keyword">from</span> slack_sdk <span class="hljs-keyword">import</span> WebClient
 
-IMPRI_API_KEY = os.environ[<span class="hljs-string">&quot;IMPRI_API_KEY&quot;</span>]
-IMPRI_BASE = <span class="hljs-string">&quot;https://api.impri.dev&quot;</span>
+AIRLOCK_API_KEY = os.environ[<span class="hljs-string">&quot;AIRLOCK_API_KEY&quot;</span>]
+AIRLOCK_BASE = <span class="hljs-string">&quot;https://api.airlock.dev&quot;</span>
 slack = WebClient(token=os.environ[<span class="hljs-string">&quot;SLACK_BOT_TOKEN&quot;</span>])
 
 
 <span class="hljs-keyword">def</span> <span class="hljs-title function_">propose_and_wait</span>(<span class="hljs-params">channel: <span class="hljs-built_in">str</span>, draft: <span class="hljs-built_in">str</span></span>) -&gt; <span class="hljs-built_in">tuple</span>[<span class="hljs-built_in">str</span>, <span class="hljs-built_in">str</span>] | <span class="hljs-literal">None</span>:
     <span class="hljs-string">&quot;&quot;&quot;Push a Slack reply draft for approval. Returns (action_id, approved_text), or None.&quot;&quot;&quot;</span>
     resp = httpx.post(
-        <span class="hljs-string">f&quot;<span class="hljs-subst">{IMPRI_BASE}</span>/v1/actions&quot;</span>,
-        headers={<span class="hljs-string">&quot;Authorization&quot;</span>: <span class="hljs-string">f&quot;Bearer <span class="hljs-subst">{IMPRI_API_KEY}</span>&quot;</span>},
+        <span class="hljs-string">f&quot;<span class="hljs-subst">{AIRLOCK_BASE}</span>/v1/actions&quot;</span>,
+        headers={<span class="hljs-string">&quot;Authorization&quot;</span>: <span class="hljs-string">f&quot;Bearer <span class="hljs-subst">{AIRLOCK_API_KEY}</span>&quot;</span>},
         json={
             <span class="hljs-string">&quot;kind&quot;</span>: <span class="hljs-string">&quot;slack.message.send&quot;</span>,
             <span class="hljs-string">&quot;title&quot;</span>: <span class="hljs-string">f&quot;Reply in #<span class="hljs-subst">{channel}</span>&quot;</span>,
@@ -190,8 +190,8 @@ slack = WebClient(token=os.environ[<span class="hljs-string">&quot;SLACK_BOT_TOK
 
     <span class="hljs-keyword">while</span> <span class="hljs-literal">True</span>:
         poll = httpx.get(
-            <span class="hljs-string">f&quot;<span class="hljs-subst">{IMPRI_BASE}</span>/v1/actions/<span class="hljs-subst">{action_id}</span>&quot;</span>,
-            headers={<span class="hljs-string">&quot;Authorization&quot;</span>: <span class="hljs-string">f&quot;Bearer <span class="hljs-subst">{IMPRI_API_KEY}</span>&quot;</span>},
+            <span class="hljs-string">f&quot;<span class="hljs-subst">{AIRLOCK_BASE}</span>/v1/actions/<span class="hljs-subst">{action_id}</span>&quot;</span>,
+            headers={<span class="hljs-string">&quot;Authorization&quot;</span>: <span class="hljs-string">f&quot;Bearer <span class="hljs-subst">{AIRLOCK_API_KEY}</span>&quot;</span>},
             timeout=<span class="hljs-number">10</span>,
         ).json()
         <span class="hljs-keyword">if</span> poll[<span class="hljs-string">&quot;status&quot;</span>] != <span class="hljs-string">&quot;pending&quot;</span>:
@@ -213,15 +213,15 @@ slack = WebClient(token=os.environ[<span class="hljs-string">&quot;SLACK_BOT_TOK
     slack.chat_postMessage(channel=channel_id, text=approved_text)
 
     httpx.post(
-        <span class="hljs-string">f&quot;<span class="hljs-subst">{IMPRI_BASE}</span>/v1/actions/<span class="hljs-subst">{action_id}</span>/result&quot;</span>,
-        headers={<span class="hljs-string">&quot;Authorization&quot;</span>: <span class="hljs-string">f&quot;Bearer <span class="hljs-subst">{IMPRI_API_KEY}</span>&quot;</span>},
+        <span class="hljs-string">f&quot;<span class="hljs-subst">{AIRLOCK_BASE}</span>/v1/actions/<span class="hljs-subst">{action_id}</span>/result&quot;</span>,
+        headers={<span class="hljs-string">&quot;Authorization&quot;</span>: <span class="hljs-string">f&quot;Bearer <span class="hljs-subst">{AIRLOCK_API_KEY}</span>&quot;</span>},
         json={<span class="hljs-string">&quot;status&quot;</span>: <span class="hljs-string">&quot;executed&quot;</span>},
         timeout=<span class="hljs-number">10</span>,
     )</code></pre></div>
 <p><code>handle_customer_message</code> never calls <code>slack.chat_postMessage</code> on a rejected or expired draft — <code>propose_and_wait</code> returns <code>None</code> and the function exits before reaching the Slack client at all.</p>
 <hr>
 <h2 id="what-the-reviewer-sees-and-can-change">What the reviewer sees and can change</h2>
-<p>Because <code>editable</code> includes <code>preview.body</code>, the approver can fix a tone problem or a factual slip directly in the Impri card before tapping approve. <code>poll[&quot;decision&quot;][&quot;final_preview&quot;][&quot;body&quot;]</code> always carries whatever the reviewer left — the edited version if they changed it, the original otherwise — so <code>handle_customer_message</code> never needs to check whether an edit happened; it just uses the field.</p>
+<p>Because <code>editable</code> includes <code>preview.body</code>, the approver can fix a tone problem or a factual slip directly in the Airlock card before tapping approve. <code>poll[&quot;decision&quot;][&quot;final_preview&quot;][&quot;body&quot;]</code> always carries whatever the reviewer left — the edited version if they changed it, the original otherwise — so <code>handle_customer_message</code> never needs to check whether an edit happened; it just uses the field.</p>
 <div class="table-wrap"><table>
 <thead>
 <tr>
@@ -252,7 +252,7 @@ slack = WebClient(token=os.environ[<span class="hljs-string">&quot;SLACK_BOT_TOK
 <p>Nothing about this pattern requires the approval card itself to avoid Slack — you can route it to a Slack channel via <a href="slack-approval">Slack approval</a> exactly as described there, as long as it&#39;s a different, internal channel from the one the bot posts into. If you&#39;d rather not stand up Slack OAuth just for reviewing outbound bot messages, a push notification through <a href="notifications">ntfy or web push</a> gets a reviewer the same one-tap approve/reject without opening Slack at all.</p>
 <hr>
 <h2 id="where-this-breaks-down">Where this breaks down</h2>
-<p>This gate only holds if <code>slack.chat_postMessage</code>(or your equivalent Slack call) is unreachable except through <code>handle_customer_message</code>. If the bot process also has a cron job, a webhook handler, or another code path that holds the same <code>SLACK_BOT_TOKEN</code> and can post independently, that path bypasses the gate — Impri has no way to intercept a Slack API call it never sees. Keep the bot token scoped to the one function that calls <code>propose_and_wait</code> first.</p>
+<p>This gate only holds if <code>slack.chat_postMessage</code>(or your equivalent Slack call) is unreachable except through <code>handle_customer_message</code>. If the bot process also has a cron job, a webhook handler, or another code path that holds the same <code>SLACK_BOT_TOKEN</code> and can post independently, that path bypasses the gate — Airlock has no way to intercept a Slack API call it never sees. Keep the bot token scoped to the one function that calls <code>propose_and_wait</code> first.</p>
 <hr>
 <h2 id="next-step">Next step</h2>
 <ul>
@@ -261,11 +261,11 @@ slack = WebClient(token=os.environ[<span class="hljs-string">&quot;SLACK_BOT_TOK
 <li><a href="approve-ai-agent-actions-from-slack">Approve AI agent actions from Slack</a> — the other direction: getting approval notifications delivered inside Slack</li>
 </ul>
 
-    <aside class="doc-cta" aria-label="Try Impri">
+    <aside class="doc-cta" aria-label="Try Airlock">
   <p class="doc-cta-title">Add an approval step to your own agent</p>
-  <p>Start on Impri Cloud: the Free tier includes 100 approvals a month. Or self-host the MIT-licensed core with Docker Compose, with no tier limits.</p>
+  <p>Start on Airlock Cloud: the Free tier includes 100 approvals a month. Or self-host the MIT-licensed core with Docker Compose, with no tier limits.</p>
   <div class="doc-cta-actions">
-    <a class="btn btn-primary btn-sm" href="https://app.impri.dev/?signup=1">Start free on Impri Cloud</a>
+    <a class="btn btn-primary btn-sm" href="https://app.airlock.dev/?signup=1">Start free on Airlock Cloud</a>
     <a class="btn btn-ghost btn-sm" href="../docs/quickstart">Quick start</a>
     <a class="btn btn-ghost btn-sm" href="../docs/self-hosting">Self-host guide</a>
   </div>
@@ -361,19 +361,19 @@ slack = WebClient(token=os.environ[<span class="hljs-string">&quot;SLACK_BOT_TOK
 <footer class="footer">
 <div class="wrap footer-inner">
   <a class="brand" href="/">
-    <span class="mark"><svg viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.5 4.5L19 7.5" stroke="white" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Impri
+    <span class="mark"><svg viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.5 4.5L19 7.5" stroke="white" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Airlock
   </a>
   <div>
-    <a href="https://gitlab.com/sekera.radim/impri">GitLab</a>
+    <a href="https://gitlab.com/sekera.radim/airlock">GitLab</a>
     <a href="/docs">Docs</a>
-    <a href="https://gitlab.com/sekera.radim/impri/-/blob/main/LICENSE">MIT License</a>
-    <a href="https://www.npmjs.com/package/@impri/mcp">@impri/mcp</a>
+    <a href="https://gitlab.com/sekera.radim/airlock/-/blob/main/LICENSE">MIT License</a>
+    <a href="https://www.npmjs.com/package/@airlock/mcp">@airlock/mcp</a>
     <a href="/docs/privacy">Privacy</a>
     <a href="/docs/terms">Terms</a>
     <a href="https://sekera.dev">Contact</a>
   </div>
 </div>
-<div class="wrap" style="margin-top:18px"><span class="muted">© 2026 Impri · The imprimatur for your AI agents · Built by <a href="https://sekera.dev" style="color:inherit">Radim Sekera</a>. Also by the same maker: <a href="https://briefgate.dev/?utm_source=impri.dev&amp;utm_medium=referral" style="color:inherit">BriefGate</a> — client intake for agencies and AI agents.</span></div>
+<div class="wrap" style="margin-top:18px"><span class="muted">© 2026 Airlock · The airlockmatur for your AI agents · Built by <a href="https://sekera.dev" style="color:inherit">Radim Sekera</a>. Also by the same maker: <a href="https://briefgate.dev/?utm_source=airlock.dev&amp;utm_medium=referral" style="color:inherit">BriefGate</a> — client intake for agencies and AI agents.</span></div>
 </footer>
 </body>
 </html>

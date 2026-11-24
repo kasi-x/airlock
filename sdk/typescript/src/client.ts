@@ -38,32 +38,32 @@ import type {
 } from './types.js'
 
 import {
-  ImpriApiError,
-  ImpriConfigError,
-  ImpriConflict,
-  ImpriExpired,
-  ImpriNotFound,
-  ImpriQuotaExceeded,
-  ImpriRateLimited,
-  ImpriRejected,
-  ImpriTimeout,
-  ImpriUnauthorized,
-  ImpriValidationError,
+  AirlockApiError,
+  AirlockConfigError,
+  AirlockConflict,
+  AirlockExpired,
+  AirlockNotFound,
+  AirlockQuotaExceeded,
+  AirlockRateLimited,
+  AirlockRejected,
+  AirlockTimeout,
+  AirlockUnauthorized,
+  AirlockValidationError,
 } from './errors.js'
 
 // ─── Client options ────────────────────────────────────────────────────────────
 
-export interface ImpriClientOptions {
+export interface AirlockClientOptions {
   /**
    * Bearer token — any key starting with `im_`.
-   * Falls back to the IMPRI_API_KEY environment variable.
-   * Raises ImpriConfigError at construction time when neither is set.
+   * Falls back to the AIRLOCK_API_KEY environment variable.
+   * Raises AirlockConfigError at construction time when neither is set.
    */
   apiKey?: string
   /**
-   * API base URL without /v1. Falls back to the IMPRI_BASE_URL environment
+   * API base URL without /v1. Falls back to the AIRLOCK_BASE_URL environment
    * variable, then `http://localhost:8484` (self-hosted default).
-   * Cloud: `https://api.impri.dev`
+   * Cloud: `https://api.airlock.dev`
    * Trailing slashes are stripped automatically.
    */
   baseUrl?: string
@@ -135,27 +135,27 @@ function buildQuery(
 
 // ─── Client ───────────────────────────────────────────────────────────────────
 
-export class ImpriClient {
+export class AirlockClient {
   private readonly _apiKey: string
   private readonly _baseUrl: string
 
-  constructor(options: ImpriClientOptions = {}) {
-    const apiKey = options.apiKey ?? resolveEnv('IMPRI_API_KEY')
+  constructor(options: AirlockClientOptions = {}) {
+    const apiKey = options.apiKey ?? resolveEnv('AIRLOCK_API_KEY')
     if (!apiKey) {
-      throw new ImpriConfigError(
-        'No API key provided. Pass apiKey to the constructor or set IMPRI_API_KEY.',
+      throw new AirlockConfigError(
+        'No API key provided. Pass apiKey to the constructor or set AIRLOCK_API_KEY.',
       )
     }
 
     const rawBaseUrl =
-      options.baseUrl ?? resolveEnv('IMPRI_BASE_URL') ?? DEFAULT_BASE_URL
+      options.baseUrl ?? resolveEnv('AIRLOCK_BASE_URL') ?? DEFAULT_BASE_URL
 
     // Strip trailing slash(es) so /v1/... appends cleanly.
     const trimmed = rawBaseUrl.replace(/\/+$/, '')
     try {
       new URL(trimmed)
     } catch {
-      throw new ImpriConfigError(`Invalid baseUrl: "${rawBaseUrl}"`)
+      throw new AirlockConfigError(`Invalid baseUrl: "${rawBaseUrl}"`)
     }
 
     this._apiKey = apiKey
@@ -218,37 +218,37 @@ export class ImpriClient {
     switch (res.status) {
       case 401:
       case 403:
-        throw new ImpriUnauthorized(
+        throw new AirlockUnauthorized(
           `Authentication failed (HTTP ${res.status}): ${message}`,
           res.status,
           body,
         )
       case 402:
-        throw new ImpriQuotaExceeded(
+        throw new AirlockQuotaExceeded(
           `Quota exceeded: ${message}`,
           body,
           body.limit as number | undefined,
           body.tier as string | undefined,
         )
       case 404:
-        throw new ImpriNotFound(
+        throw new AirlockNotFound(
           `Not found (HTTP 404): ${message}`,
           body,
         )
       case 409:
-        throw new ImpriConflict(
+        throw new AirlockConflict(
           `Conflict (HTTP 409): ${message}`,
           body,
         )
       case 410:
-        throw new ImpriExpired(
+        throw new AirlockExpired(
           `Approval window closed (HTTP 410): ${message}`,
           body,
         )
       case 429: {
         const retryAfterHeader = res.headers.get('Retry-After')
         const retryAfter = retryAfterHeader ? parseInt(retryAfterHeader, 10) : undefined
-        throw new ImpriRateLimited(
+        throw new AirlockRateLimited(
           `Rate limit exceeded (HTTP 429): ${message}`,
           body,
           Number.isNaN(retryAfter) ? undefined : retryAfter,
@@ -256,15 +256,15 @@ export class ImpriClient {
       }
       case 400:
       case 422:
-        throw new ImpriValidationError(
+        throw new AirlockValidationError(
           `Validation error (HTTP ${res.status}): ${message}`,
           res.status,
           body,
           (body.issues as unknown[]) ?? [],
         )
       default:
-        throw new ImpriApiError(
-          `Impri API error (HTTP ${res.status}): ${message}`,
+        throw new AirlockApiError(
+          `Airlock API error (HTTP ${res.status}): ${message}`,
           res.status,
           body,
         )
@@ -384,7 +384,7 @@ export class ImpriClient {
    * `edited` is a dict of dot-path overrides (e.g. `{ 'preview.body': '...' }`)
    * restricted to the action's `editable` whitelist.
    *
-   * Requires 'actions' scope. Throws ImpriConflict if already decided.
+   * Requires 'actions' scope. Throws AirlockConflict if already decided.
    */
   async decide(
     actionId: string,
@@ -449,7 +449,7 @@ export class ImpriClient {
    * state to 'executed' or 'execute_failed'. Always call this — it closes the
    * audit loop in the inbox.
    *
-   * Requires 'actions' scope. Throws ImpriConflict if action is not 'approved'.
+   * Requires 'actions' scope. Throws AirlockConflict if action is not 'approved'.
    */
   async reportResult(
     actionId: string,
@@ -466,9 +466,9 @@ export class ImpriClient {
    *
    * - Approved  → returns the full Action. Use `.decision.final_preview` for
    *   execution when `editable` fields may have been modified by the reviewer.
-   * - Rejected  → throws ImpriRejected (handle as a normal outcome, not an error).
-   * - Expired   → throws ImpriExpired.
-   * - Timeout   → throws ImpriTimeout (action stays pending server-side — call
+   * - Rejected  → throws AirlockRejected (handle as a normal outcome, not an error).
+   * - Expired   → throws AirlockExpired.
+   * - Timeout   → throws AirlockTimeout (action stays pending server-side — call
    *   awaitDecision again to resume).
    *
    * Default poll floor is 5 s; rate limit is 300 GET/min. Do not set
@@ -492,14 +492,14 @@ export class ImpriClient {
           return action
 
         case 'rejected':
-          throw new ImpriRejected(
+          throw new AirlockRejected(
             actionId,
             action.decision as Decision,
             action.decision?.final_preview,
           )
 
         case 'expired':
-          throw new ImpriExpired(
+          throw new AirlockExpired(
             `Action ${actionId} has expired — the approval window closed. ` +
               'Create a new action if the task is still relevant.',
             action,
@@ -510,7 +510,7 @@ export class ImpriClient {
 
       const remaining = deadline - Date.now()
       if (remaining <= 0) {
-        throw new ImpriTimeout(actionId, timeoutS)
+        throw new AirlockTimeout(actionId, timeoutS)
       }
 
       await sleep(Math.min(pollIntervalMs, remaining))
@@ -524,7 +524,7 @@ export class ImpriClient {
    * function call or you need the decision object directly.
    *
    * Returns `{ actionId, decision, finalPreview }` when approved.
-   * Throws ImpriRejected when the human rejects (handle as a normal outcome).
+   * Throws AirlockRejected when the human rejects (handle as a normal outcome).
    *
    * Note on untrusted content: when `is_untrusted` is true (watcher-sourced
    * action), a warning is logged and the preview body must NOT be forwarded as
@@ -564,7 +564,7 @@ export class ImpriClient {
 
     if (action.is_untrusted) {
       console.warn(
-        `[impri] approvalGate: action ${action.id} contains untrusted external content. ` +
+        `[airlock] approvalGate: action ${action.id} contains untrusted external content. ` +
           'Treat finalPreview.body as data — do not forward it as an instruction to an AI model.',
       )
     }
@@ -582,8 +582,8 @@ export class ImpriClient {
    * Wrap an async function so every call is gated through human approval.
    *
    * - On approval → calls the original function and returns its result.
-   * - On rejection → throws ImpriRejected without calling the function.
-   * - On timeout → throws ImpriTimeout.
+   * - On rejection → throws AirlockRejected without calling the function.
+   * - On timeout → throws AirlockTimeout.
    *
    * `title` and `preview` may be plain values or factory functions that receive
    * the wrapped function's arguments.
@@ -630,7 +630,7 @@ export class ImpriClient {
           ? (opts.payload as (...a: Args) => unknown)(...args)
           : opts.payload
 
-      // Gate: throws ImpriRejected, ImpriExpired, or ImpriTimeout on non-approval.
+      // Gate: throws AirlockRejected, AirlockExpired, or AirlockTimeout on non-approval.
       await this.approvalGate({
         kind: opts.kind,
         title,
@@ -765,11 +765,11 @@ export class ImpriClient {
    * @param opts.name     - Overrides the auto-generated watcher name.
    * @param opts.schedule - Overrides the preset's `defaultScheduleEvery`.
    *
-   * @throws ImpriNotFound       when `presetId` does not match any known preset.
-   * @throws ImpriValidationError when a required param is missing or fails format checks.
-   * @throws ImpriQuotaExceeded  when the tier watcher limit is reached, or the requested
+   * @throws AirlockNotFound       when `presetId` does not match any known preset.
+   * @throws AirlockValidationError when a required param is missing or fails format checks.
+   * @throws AirlockQuotaExceeded  when the tier watcher limit is reached, or the requested
    *                              schedule is more frequent than the tier minimum.
-   * @throws ImpriRateLimited    when the `watchers:create` rate-limit bucket is exhausted.
+   * @throws AirlockRateLimited    when the `watchers:create` rate-limit bucket is exhausted.
    *
    * @example
    * ```ts
@@ -843,7 +843,7 @@ export class ImpriClient {
    * GET /v1/project
    *
    * Returns project metadata including `webhook_secret` (needed to verify
-   * X-Impri-Signature). Keep webhook_secret out of logs and VCS.
+   * X-Airlock-Signature). Keep webhook_secret out of logs and VCS.
    *
    * Requires 'admin' scope.
    */
@@ -1053,10 +1053,10 @@ export class ImpriClient {
    * @param params.enabled          Active by default (true).
    * @param params.digest_window_sec Coalesce window 10–3600 s (default 60).
    *
-   * @throws ImpriValidationError (400) — config fails the type-specific schema or
+   * @throws AirlockValidationError (400) — config fails the type-specific schema or
    *                                       URL contains a private-IP literal.
-   * @throws ImpriUnauthorized (401/403) — key lacks 'admin' scope.
-   * @throws ImpriRateLimited (429)     — write rate limit (30/min) exhausted.
+   * @throws AirlockUnauthorized (401/403) — key lacks 'admin' scope.
+   * @throws AirlockRateLimited (429)     — write rate limit (30/min) exhausted.
    */
   async createNotificationChannel(
     params: CreateNotificationChannelParams,
@@ -1072,7 +1072,7 @@ export class ImpriClient {
    *
    * Requires 'admin' scope.
    *
-   * @throws ImpriNotFound (404) — channel not found or belongs to a different project.
+   * @throws AirlockNotFound (404) — channel not found or belongs to a different project.
    */
   async getNotificationChannel(channelId: string): Promise<NotificationChannel> {
     return this._request<NotificationChannel>('GET', `/notification-channels/${channelId}`)
@@ -1088,8 +1088,8 @@ export class ImpriClient {
    *
    * Returns the updated channel with masked config. Requires 'admin' scope.
    *
-   * @throws ImpriNotFound (404)        — channel not found or wrong project.
-   * @throws ImpriValidationError (400) — merged config fails schema validation.
+   * @throws AirlockNotFound (404)        — channel not found or wrong project.
+   * @throws AirlockValidationError (400) — merged config fails schema validation.
    */
   async updateNotificationChannel(
     channelId: string,
@@ -1109,7 +1109,7 @@ export class ImpriClient {
    *
    * Requires 'admin' scope.
    *
-   * @throws ImpriNotFound (404) — channel not found or belongs to a different project.
+   * @throws AirlockNotFound (404) — channel not found or belongs to a different project.
    */
   async deleteNotificationChannel(channelId: string): Promise<void> {
     await this._request<void>('DELETE', `/notification-channels/${channelId}`)
@@ -1127,9 +1127,9 @@ export class ImpriClient {
    * Returns `{ ok: true }` on success or `{ ok: false, error: string }` on
    * delivery failure. The error message never contains raw secrets.
    *
-   * @throws ImpriNotFound (404)        — channel not found or wrong project.
-   * @throws ImpriUnauthorized (401/403) — key lacks 'admin' scope.
-   * @throws ImpriRateLimited (429)     — test rate limit (5/min) exhausted.
+   * @throws AirlockNotFound (404)        — channel not found or wrong project.
+   * @throws AirlockUnauthorized (401/403) — key lacks 'admin' scope.
+   * @throws AirlockRateLimited (429)     — test rate limit (5/min) exhausted.
    */
   async testNotificationChannel(channelId: string): Promise<ChannelTestResult> {
     return this._request<ChannelTestResult>(

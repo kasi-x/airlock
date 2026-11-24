@@ -3,21 +3,21 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>GDPR &amp; Data Management — Impri Docs</title>
-<meta name="description" content="Impri provides two GDPR-compliant data management endpoints under your project's admin scope: a full data export and a hard erasure. Both are project-scoped …">
+<title>GDPR &amp; Data Management — Airlock Docs</title>
+<meta name="description" content="Airlock provides two GDPR-compliant data management endpoints under your project's admin scope: a full data export and a hard erasure. Both are project-scoped …">
 <meta name="theme-color" content="#06070d">
-<meta property="og:title" content="GDPR &amp; Data Management — Impri Docs">
-<meta property="og:description" content="Impri provides two GDPR-compliant data management endpoints under your project's admin scope: a full data export and a hard erasure. Both are project-scoped …">
+<meta property="og:title" content="GDPR &amp; Data Management — Airlock Docs">
+<meta property="og:description" content="Airlock provides two GDPR-compliant data management endpoints under your project's admin scope: a full data export and a hard erasure. Both are project-scoped …">
 <meta property="og:type" content="article">
-<meta property="og:url" content="https://impri.dev/docs/gdpr">
-<meta property="og:image" content="https://impri.dev/assets/og/og-docs.png">
+<meta property="og:url" content="https://airlock.dev/docs/gdpr">
+<meta property="og:image" content="https://airlock.dev/assets/og/og-docs.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
-<meta property="og:image:alt" content="Impri — human-in-the-loop approval inbox for AI agents">
+<meta property="og:image:alt" content="Airlock — human-in-the-loop approval inbox for AI agents">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="https://impri.dev/assets/og/og-docs.png">
-<link rel="canonical" href="https://impri.dev/docs/gdpr">
-<script type="application/ld+json">{"@context":"https://schema.org","@type":"TechArticle","headline":"GDPR & Data Management","description":"Impri provides two GDPR-compliant data management endpoints under your project's admin scope: a full data export and a hard erasure. Both are project-scoped …","url":"https://impri.dev/docs/gdpr","inLanguage":"en","author":{"@type":"Organization","name":"Impri","url":"https://impri.dev"},"publisher":{"@type":"Organization","name":"Impri","url":"https://impri.dev"}}</script>
+<meta name="twitter:image" content="https://airlock.dev/assets/og/og-docs.png">
+<link rel="canonical" href="https://airlock.dev/docs/gdpr">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"TechArticle","headline":"GDPR & Data Management","description":"Airlock provides two GDPR-compliant data management endpoints under your project's admin scope: a full data export and a hard erasure. Both are project-scoped …","url":"https://airlock.dev/docs/gdpr","inLanguage":"en","author":{"@type":"Organization","name":"Airlock","url":"https://airlock.dev"},"publisher":{"@type":"Organization","name":"Airlock","url":"https://airlock.dev"}}</script>
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <link rel="icon" href="/favicon.ico" sizes="32x32">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='9' fill='%236366f1'/%3E%3Cpath d='M9 16.5l4.5 4.5L23 11' stroke='white' stroke-width='3' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
@@ -132,13 +132,13 @@ pre code.hljs{display:block;overflow-x:auto}
 <div class="wrap nav-inner">
   <a class="brand" href="/">
     <span class="mark"><svg viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.5 4.5L19 7.5" stroke="white" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
-    Impri
+    Airlock
   </a>
   <div class="nav-links">
     <a class="link" href="/#how">How it works</a>
     <a class="link" href="/#pricing">Pricing</a>
     <a class="link active-nav" href="../docs">Docs</a>
-    <a class="btn btn-primary btn-sm" href="https://gitlab.com/sekera.radim/impri">GitLab</a>
+    <a class="btn btn-primary btn-sm" href="https://gitlab.com/sekera.radim/airlock">GitLab</a>
   </div>
 </div>
 </nav>
@@ -153,11 +153,11 @@ pre code.hljs{display:block;overflow-x:auto}
       <span>GDPR &amp; Data Management</span>
     </nav>
     <h1>GDPR &amp; Data Management</h1>
-<p>Impri provides two GDPR-compliant data management endpoints under your project&#39;s admin scope: a full data export and a hard erasure. Both are project-scoped — cross-project data access is impossible regardless of the key used.</p>
+<p>Airlock provides two GDPR-compliant data management endpoints under your project&#39;s admin scope: a full data export and a hard erasure. Both are project-scoped — cross-project data access is impossible regardless of the key used.</p>
 <hr>
 <h2 id="data-controller-amp-contact">Data controller &amp; contact</h2>
-<p><strong>Self-hosted:</strong> you run the server, so <strong>you are the data controller</strong>. Impri sends no telemetry and nothing phones home; all data stays on your machine or VPS.</p>
-<p><strong>Hosted cloud</strong> (<code>app.impri.dev</code> / <code>api.impri.dev</code>): the data controller is <strong>Radim Sekera</strong>. Data is stored in the EU (Fly.io, Frankfurt). To exercise your data-subject rights (access, rectification, erasure, portability) you can use the self-service <code>GET /v1/project/export</code> and <code>DELETE /v1/project/data</code> endpoints below, or reach out:</p>
+<p><strong>Self-hosted:</strong> you run the server, so <strong>you are the data controller</strong>. Airlock sends no telemetry and nothing phones home; all data stays on your machine or VPS.</p>
+<p><strong>Hosted cloud</strong> (<code>app.airlock.dev</code> / <code>api.airlock.dev</code>): the data controller is <strong>Radim Sekera</strong>. Data is stored in the EU (Fly.io, Frankfurt). To exercise your data-subject rights (access, rectification, erasure, portability) you can use the self-service <code>GET /v1/project/export</code> and <code>DELETE /v1/project/data</code> endpoints below, or reach out:</p>
 <ul>
 <li><strong>Contact:</strong> <a href="https://sekera.dev" target="_blank" rel="noopener">sekera.dev</a></li>
 </ul>
@@ -199,7 +199,7 @@ pre code.hljs{display:block;overflow-x:auto}
 <h3 id="using-the-export">Using the export</h3>
 <div class="code-block"><span class="code-lang">bash</span><pre><code class="hljs"><span class="hljs-comment"># Save the export to a file</span>
 curl -H <span class="hljs-string">&quot;Authorization: Bearer im_...&quot;</span> \
-     https://api.impri.dev/v1/project/export \
+     https://api.airlock.dev/v1/project/export \
      -o <span class="hljs-built_in">export</span>-$(<span class="hljs-built_in">date</span> +%Y%m%d).json
 
 <span class="hljs-comment"># Or with the SDK:</span>
@@ -246,7 +246,7 @@ counts = client.erase_project_data()
 <span class="hljs-keyword">const</span> { actions, watchers } = <span class="hljs-keyword">await</span> client.<span class="hljs-title function_">eraseProjectData</span>()
 <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-string">`Erased <span class="hljs-subst">${actions}</span> actions and <span class="hljs-subst">${watchers}</span> watchers`</span>)</code></pre></div>
 <hr>
-<h2 id="what-data-impri-stores">What data Impri stores</h2>
+<h2 id="what-data-airlock-stores">What data Airlock stores</h2>
 <div class="table-wrap"><table>
 <thead>
 <tr>
@@ -398,7 +398,7 @@ counts = client.erase_project_data()
 <li class="ptoc-h3"><a href="#using-the-export">Using the export</a></li>
 <li class="ptoc-h2"><a href="#data-erasure">Data erasure</a></li>
 <li class="ptoc-h3"><a href="#sdk">SDK</a></li>
-<li class="ptoc-h2"><a href="#what-data-impri-stores">What data Impri stores</a></li>
+<li class="ptoc-h2"><a href="#what-data-airlock-stores">What data Airlock stores</a></li>
 <li class="ptoc-h2"><a href="#audit-events">Audit events</a></li>
 <li class="ptoc-h2"><a href="#retention-policy">Retention policy</a></li></ul>
 </nav>
@@ -408,19 +408,19 @@ counts = client.erase_project_data()
 <footer class="footer">
 <div class="wrap footer-inner">
   <a class="brand" href="/">
-    <span class="mark"><svg viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.5 4.5L19 7.5" stroke="white" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Impri
+    <span class="mark"><svg viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.5 4.5L19 7.5" stroke="white" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Airlock
   </a>
   <div>
-    <a href="https://gitlab.com/sekera.radim/impri">GitLab</a>
+    <a href="https://gitlab.com/sekera.radim/airlock">GitLab</a>
     <a href="/docs">Docs</a>
-    <a href="https://gitlab.com/sekera.radim/impri/-/blob/main/LICENSE">MIT License</a>
-    <a href="https://www.npmjs.com/package/@impri/mcp">@impri/mcp</a>
+    <a href="https://gitlab.com/sekera.radim/airlock/-/blob/main/LICENSE">MIT License</a>
+    <a href="https://www.npmjs.com/package/@airlock/mcp">@airlock/mcp</a>
     <a href="/docs/privacy">Privacy</a>
     <a href="/docs/terms">Terms</a>
     <a href="https://sekera.dev">Contact</a>
   </div>
 </div>
-<div class="wrap" style="margin-top:18px"><span class="muted">© 2026 Impri · The imprimatur for your AI agents · Built by <a href="https://sekera.dev" style="color:inherit">Radim Sekera</a>. Also by the same maker: <a href="https://briefgate.dev/?utm_source=impri.dev&amp;utm_medium=referral" style="color:inherit">BriefGate</a> — client intake for agencies and AI agents.</span></div>
+<div class="wrap" style="margin-top:18px"><span class="muted">© 2026 Airlock · The airlockmatur for your AI agents · Built by <a href="https://sekera.dev" style="color:inherit">Radim Sekera</a>. Also by the same maker: <a href="https://briefgate.dev/?utm_source=airlock.dev&amp;utm_medium=referral" style="color:inherit">BriefGate</a> — client intake for agencies and AI agents.</span></div>
 </footer>
 </body>
 </html>

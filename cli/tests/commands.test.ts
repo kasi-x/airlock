@@ -3,7 +3,7 @@
  * builds the right SDK call without network access.
  */
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
-import { ImpriClient } from '@impri/sdk'
+import { AirlockClient } from '@airlock/sdk'
 
 // ─── Fixtures ────────────────────────────────────────────────────────────────
 
@@ -41,13 +41,13 @@ function createdAction(id = ACT_ID) {
   return {
     id,
     status: 'pending' as const,
-    inbox_url: `https://app.impri.dev/inbox/${id}`,
+    inbox_url: `https://app.airlock.dev/inbox/${id}`,
     expires_at: 1720086400,
     created_at: 1720000000,
   }
 }
 
-function mockClient(overrides: Partial<ImpriClient> = {}): ImpriClient {
+function mockClient(overrides: Partial<AirlockClient> = {}): AirlockClient {
   return {
     createAction: vi.fn().mockResolvedValue(createdAction()),
     getAction: vi.fn().mockResolvedValue(pendingAction()),
@@ -87,7 +87,7 @@ function mockClient(overrides: Partial<ImpriClient> = {}): ImpriClient {
       id: 'proj_1', name: 'Test Project', timezone: 'UTC', created_at: 1720000000,
     }),
     ...overrides,
-  } as unknown as ImpriClient
+  } as unknown as AirlockClient
 }
 
 // Silence stdout/stderr for all tests
@@ -115,7 +115,7 @@ describe('push command', () => {
     const p = new Command()
     registerPush(p)
 
-    await p.parseAsync(['node', 'impri', 'push', '--kind', 'db.exec', '--title', 'Run migration', '--body', 'SELECT 1'])
+    await p.parseAsync(['node', 'airlock', 'push', '--kind', 'db.exec', '--title', 'Run migration', '--body', 'SELECT 1'])
 
     expect(client.createAction).toHaveBeenCalledWith(
       expect.objectContaining({
@@ -135,7 +135,7 @@ describe('push command', () => {
     const p = new Command()
     registerPush(p)
 
-    await p.parseAsync(['node', 'impri', 'push', '--kind', 'x', '--title', 'y', '--body', 'z', '--format', 'markdown'])
+    await p.parseAsync(['node', 'airlock', 'push', '--kind', 'x', '--title', 'y', '--body', 'z', '--format', 'markdown'])
 
     expect(client.createAction).toHaveBeenCalledWith(
       expect.objectContaining({ preview: expect.objectContaining({ format: 'markdown' }) }),
@@ -154,7 +154,7 @@ describe('push command', () => {
     registerPush(p)
 
     await expect(
-      p.parseAsync(['node', 'impri', 'push', '--kind', 'x', '--title', 'y', '--body', 'z', '--wait']),
+      p.parseAsync(['node', 'airlock', 'push', '--kind', 'x', '--title', 'y', '--body', 'z', '--wait']),
     ).rejects.toThrow('exit:0')
 
     expect(client.awaitDecision).toHaveBeenCalled()
@@ -180,7 +180,7 @@ describe('list command', () => {
     const p = new Command()
     registerList(p)
 
-    await p.parseAsync(['node', 'impri', 'list', '--status', 'approved'])
+    await p.parseAsync(['node', 'airlock', 'list', '--status', 'approved'])
     expect(client.listActions).toHaveBeenCalledWith(expect.objectContaining({ status: 'approved' }))
   })
 
@@ -193,7 +193,7 @@ describe('list command', () => {
     const p = new Command()
     registerInbox(p)
 
-    await p.parseAsync(['node', 'impri', 'inbox'])
+    await p.parseAsync(['node', 'airlock', 'inbox'])
     expect(client.listActions).toHaveBeenCalledWith(expect.objectContaining({ status: 'pending' }))
   })
 
@@ -206,7 +206,7 @@ describe('list command', () => {
     const p = new Command()
     registerList(p)
 
-    await p.parseAsync(['node', 'impri', 'list', '--since', '2024-07-01T00:00:00Z'])
+    await p.parseAsync(['node', 'airlock', 'list', '--since', '2024-07-01T00:00:00Z'])
     expect(client.listActions).toHaveBeenCalledWith(
       expect.objectContaining({ since: Math.floor(Date.parse('2024-07-01T00:00:00Z') / 1000) }),
     )
@@ -233,7 +233,7 @@ describe('approve command', () => {
     const p = new Command()
     registerApprove(p)
 
-    await expect(p.parseAsync(['node', 'impri', 'approve', ACT_ID])).rejects.toThrow('exit')
+    await expect(p.parseAsync(['node', 'airlock', 'approve', ACT_ID])).rejects.toThrow('exit')
     expect(client.decide).toHaveBeenCalledWith(ACT_ID, 'approve', expect.objectContaining({ edited: undefined }))
   })
 
@@ -253,7 +253,7 @@ describe('approve command', () => {
     registerApprove(p)
 
     await expect(
-      p.parseAsync(['node', 'impri', 'approve', ACT_ID, '--edit', 'new body']),
+      p.parseAsync(['node', 'airlock', 'approve', ACT_ID, '--edit', 'new body']),
     ).rejects.toThrow('exit')
     expect(client.decide).toHaveBeenCalledWith(ACT_ID, 'approve', { edited: { 'preview.body': 'new body' } })
   })
@@ -277,14 +277,14 @@ describe('reject command', () => {
     const p = new Command()
     registerReject(p)
 
-    await expect(p.parseAsync(['node', 'impri', 'reject', ACT_ID])).rejects.toThrow('exit')
+    await expect(p.parseAsync(['node', 'airlock', 'reject', ACT_ID])).rejects.toThrow('exit')
     expect(client.decide).toHaveBeenCalledWith(ACT_ID, 'reject')
   })
 
-  it('exits 2 on ImpriConflict', async () => {
-    // Import ImpriConflict from the same (fresh) module instance that the command will use
+  it('exits 2 on AirlockConflict', async () => {
+    // Import AirlockConflict from the same (fresh) module instance that the command will use
     // so that instanceof checks match across the module boundary.
-    const { ImpriConflict: FreshConflict } = await import('@impri/sdk')
+    const { AirlockConflict: FreshConflict } = await import('@airlock/sdk')
     const { makeClient: mk } = await import('../src/client-factory.js')
     const client = mockClient({
       decide: vi.fn().mockRejectedValue(new FreshConflict('Already decided', {})),
@@ -300,7 +300,7 @@ describe('reject command', () => {
     const p = new Command()
     registerReject(p)
 
-    await expect(p.parseAsync(['node', 'impri', 'reject', ACT_ID])).rejects.toThrow('exit:2')
+    await expect(p.parseAsync(['node', 'airlock', 'reject', ACT_ID])).rejects.toThrow('exit:2')
   })
 })
 
@@ -323,7 +323,7 @@ describe('watchers list', () => {
     const p = new Command()
     registerWatchers(p)
 
-    await p.parseAsync(['node', 'impri', 'watchers', 'list'])
+    await p.parseAsync(['node', 'airlock', 'watchers', 'list'])
     expect(client.listWatchers).toHaveBeenCalled()
   })
 })
@@ -347,7 +347,7 @@ describe('presets', () => {
     const p = new Command()
     registerPresets(p)
 
-    await p.parseAsync(['node', 'impri', 'presets'])
+    await p.parseAsync(['node', 'airlock', 'presets'])
     expect(client.listWatcherPresets).toHaveBeenCalled()
   })
 })
@@ -371,7 +371,7 @@ describe('keys list', () => {
     const p = new Command()
     registerKeys(p)
 
-    await p.parseAsync(['node', 'impri', 'keys', 'list'])
+    await p.parseAsync(['node', 'airlock', 'keys', 'list'])
     expect(client.listKeys).toHaveBeenCalled()
   })
 })

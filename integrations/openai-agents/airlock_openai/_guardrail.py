@@ -1,24 +1,24 @@
-"""OpenAI Agents SDK integration for Impri.
+"""OpenAI Agents SDK integration for Airlock.
 
-This module is **optional** — the core ``impri_openai`` package works without
+This module is **optional** — the core ``airlock_openai`` package works without
 the ``openai-agents`` package installed.  Import only when you need the
 InputGuardrail integration::
 
-    from impri_openai.guardrail import make_guardrail
+    from airlock_openai.guardrail import make_guardrail
 
 Requires::
 
-    pip install 'impri-openai[openai-agents]'
+    pip install 'airlock-openai[openai-agents]'
 """
 from __future__ import annotations
 
 import warnings
 from typing import TYPE_CHECKING, Any
 
-from ._errors import ImpriRejected
+from ._errors import AirlockRejected
 
 if TYPE_CHECKING:
-    from ._client import ImpriClient
+    from ._client import AirlockClient
 
 # ---------------------------------------------------------------------------
 # Guard: import OpenAI Agents SDK types
@@ -43,7 +43,7 @@ except ImportError:
 
 
 def make_guardrail(
-    client: "ImpriClient",
+    client: "AirlockClient",
     *,
     kind: str = "agent.run",
     title: str = "Agent run requires human approval",
@@ -52,9 +52,9 @@ def make_guardrail(
     editable: list[str] | None = None,
     **push_kwargs: Any,
 ) -> Any:
-    """Create an OpenAI Agents SDK ``InputGuardrail`` backed by Impri.
+    """Create an OpenAI Agents SDK ``InputGuardrail`` backed by Airlock.
 
-    The guardrail submits an Impri approval request for **every agent run**
+    The guardrail submits an Airlock approval request for **every agent run**
     and blocks until the human decides:
 
     - **Approved** → ``tripwire_triggered=False`` (the agent proceeds normally).
@@ -62,19 +62,19 @@ def make_guardrail(
       raises ``InputGuardrailTripwireTriggered``).
 
     The ``output_info`` dict always contains ``action_id`` and ``verdict`` so
-    calling code can access the Impri action after the guardrail returns.
+    calling code can access the Airlock action after the guardrail returns.
 
     Requires the ``openai-agents`` package::
 
-        pip install 'impri-openai[openai-agents]'
+        pip install 'airlock-openai[openai-agents]'
 
     Usage::
 
         from agents import Agent, Runner
-        from impri_openai import ImpriClient
-        from impri_openai.guardrail import make_guardrail
+        from airlock_openai import AirlockClient
+        from airlock_openai.guardrail import make_guardrail
 
-        client = ImpriClient()
+        client = AirlockClient()
         approval = make_guardrail(
             client,
             kind='agent.run',
@@ -90,18 +90,18 @@ def make_guardrail(
         result = await Runner.run(agent, 'Summarise my emails')
 
     For tool-level (not run-level) gating, use
-    :meth:`ImpriClient.requires_approval` instead.
+    :meth:`AirlockClient.requires_approval` instead.
 
     Args:
-        client: An :class:`ImpriClient` instance.
-        kind: Action kind submitted to Impri (default ``'agent.run'``).
-        title: Title shown in the Impri inbox card.
+        client: An :class:`AirlockClient` instance.
+        kind: Action kind submitted to Airlock (default ``'agent.run'``).
+        title: Title shown in the Airlock inbox card.
         preview_from_input: When True, uses the user's input as the preview
             body so the reviewer sees exactly what the agent was asked to do.
         timeout_s: Seconds to wait for a human decision (default 300).
         editable: Dot-path list of fields the reviewer may edit before
             approving (e.g. ``['preview.body']``).
-        **push_kwargs: Forwarded to :meth:`~ImpriClient.create_action`
+        **push_kwargs: Forwarded to :meth:`~AirlockClient.create_action`
             (e.g. ``target_url``, ``expires_in``).
 
     Returns:
@@ -113,7 +113,7 @@ def make_guardrail(
     if not _AGENTS_AVAILABLE:
         raise ImportError(
             "openai-agents is not installed. "
-            "Install it with:  pip install 'impri-openai[openai-agents]'"
+            "Install it with:  pip install 'airlock-openai[openai-agents]'"
         )
 
     async def _guardrail_fn(
@@ -157,7 +157,7 @@ def make_guardrail(
             )
             action_id = created["id"]
 
-            # Block here until human decides (raises ImpriRejected on reject)
+            # Block here until human decides (raises AirlockRejected on reject)
             await client.await_decision(action_id, timeout_s=timeout_s)
 
             return GuardrailFunctionOutput(
@@ -165,10 +165,10 @@ def make_guardrail(
                 tripwire_triggered=False,
             )
 
-        except ImpriRejected as exc:
+        except AirlockRejected as exc:
             # Trip the guardrail — runner raises InputGuardrailTripwireTriggered
             warnings.warn(
-                f"Impri guardrail: action {exc.action_id!r} was rejected by the "
+                f"Airlock guardrail: action {exc.action_id!r} was rejected by the "
                 "human reviewer. The agent run has been halted.",
                 stacklevel=0,
             )
@@ -182,5 +182,5 @@ def make_guardrail(
 
     return InputGuardrail(
         guardrail_function=_guardrail_fn,
-        name=f"impri:{kind}",
+        name=f"airlock:{kind}",
     )

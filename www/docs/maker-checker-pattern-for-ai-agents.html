@@ -3,21 +3,21 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Understanding the Maker-Checker Pattern for AI Agents — Impri Docs</title>
+<title>Understanding the Maker-Checker Pattern for AI Agents — Airlock Docs</title>
 <meta name="description" content="Maker-checker means the identity that proposes an AI agent action is never the one that approves it — a rule agents break unless you wire the split yourself.">
 <meta name="theme-color" content="#06070d">
-<meta property="og:title" content="Understanding the Maker-Checker Pattern for AI Agents — Impri Docs">
+<meta property="og:title" content="Understanding the Maker-Checker Pattern for AI Agents — Airlock Docs">
 <meta property="og:description" content="Maker-checker means the identity that proposes an AI agent action is never the one that approves it — a rule agents break unless you wire the split yourself.">
 <meta property="og:type" content="article">
-<meta property="og:url" content="https://impri.dev/docs/maker-checker-pattern-for-ai-agents">
-<meta property="og:image" content="https://impri.dev/assets/og/og-docs.png">
+<meta property="og:url" content="https://airlock.dev/docs/maker-checker-pattern-for-ai-agents">
+<meta property="og:image" content="https://airlock.dev/assets/og/og-docs.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
-<meta property="og:image:alt" content="Impri — human-in-the-loop approval inbox for AI agents">
+<meta property="og:image:alt" content="Airlock — human-in-the-loop approval inbox for AI agents">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="https://impri.dev/assets/og/og-docs.png">
-<link rel="canonical" href="https://impri.dev/docs/maker-checker-pattern-for-ai-agents">
-<script type="application/ld+json">{"@context":"https://schema.org","@type":"TechArticle","headline":"Understanding the Maker-Checker Pattern for AI Agents","description":"Maker-checker means the identity that proposes an AI agent action is never the one that approves it — a rule agents break unless you wire the split yourself.","url":"https://impri.dev/docs/maker-checker-pattern-for-ai-agents","inLanguage":"en","author":{"@type":"Organization","name":"Impri","url":"https://impri.dev"},"publisher":{"@type":"Organization","name":"Impri","url":"https://impri.dev"}}</script>
+<meta name="twitter:image" content="https://airlock.dev/assets/og/og-docs.png">
+<link rel="canonical" href="https://airlock.dev/docs/maker-checker-pattern-for-ai-agents">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"TechArticle","headline":"Understanding the Maker-Checker Pattern for AI Agents","description":"Maker-checker means the identity that proposes an AI agent action is never the one that approves it — a rule agents break unless you wire the split yourself.","url":"https://airlock.dev/docs/maker-checker-pattern-for-ai-agents","inLanguage":"en","author":{"@type":"Organization","name":"Airlock","url":"https://airlock.dev"},"publisher":{"@type":"Organization","name":"Airlock","url":"https://airlock.dev"}}</script>
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <link rel="icon" href="/favicon.ico" sizes="32x32">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='9' fill='%236366f1'/%3E%3Cpath d='M9 16.5l4.5 4.5L23 11' stroke='white' stroke-width='3' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
@@ -132,13 +132,13 @@ pre code.hljs{display:block;overflow-x:auto}
 <div class="wrap nav-inner">
   <a class="brand" href="/">
     <span class="mark"><svg viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.5 4.5L19 7.5" stroke="white" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
-    Impri
+    Airlock
   </a>
   <div class="nav-links">
     <a class="link" href="/#how">How it works</a>
     <a class="link" href="/#pricing">Pricing</a>
     <a class="link active-nav" href="../docs">Docs</a>
-    <a class="btn btn-primary btn-sm" href="https://gitlab.com/sekera.radim/impri">GitLab</a>
+    <a class="btn btn-primary btn-sm" href="https://gitlab.com/sekera.radim/airlock">GitLab</a>
   </div>
 </div>
 </nav>
@@ -160,8 +160,8 @@ pre code.hljs{display:block;overflow-x:auto}
 <p>That distinction matters more for an AI agent than it ever did for a human clerk. A human asking a colleague for sign-off is a different brain making an independent judgment. An agent that calls a tool, and then calls another tool to &quot;approve&quot; what it just proposed, is the same model checking its own work — there&#39;s no second judgment in the loop at all, just an extra API call.</p>
 <hr>
 <h2 id="what-quotmakerquot-and-quotcheckerquot-map-to-in-practice">What &quot;maker&quot; and &quot;checker&quot; map to in practice</h2>
-<p>For an agent wired to Impri, the maker is whatever pushes the pending action:</p>
-<div class="code-block"><span class="code-lang">bash</span><pre><code class="hljs">curl -X POST https://api.impri.dev/v1/actions \
+<p>For an agent wired to Airlock, the maker is whatever pushes the pending action:</p>
+<div class="code-block"><span class="code-lang">bash</span><pre><code class="hljs">curl -X POST https://api.airlock.dev/v1/actions \
   -H <span class="hljs-string">&quot;Authorization: Bearer <span class="hljs-variable">$AGENT_KEY</span>&quot;</span> \
   -H <span class="hljs-string">&quot;Content-Type: application/json&quot;</span> \
   -d <span class="hljs-string">&#x27;{
@@ -203,29 +203,29 @@ pre code.hljs{display:block;overflow-x:auto}
 </div>
 <p>(Source: <code>server/src/interactive-decision.ts</code> builds the chat identities; <code>server/src/routes/actions.ts</code> records <code>key.keyId</code> for web and API decisions.)</p>
 <hr>
-<h2 id="what-impri-does-not-enforce">What Impri does <em>not</em> enforce</h2>
-<p>This is the part worth being honest about: Impri doesn&#39;t have a separate &quot;propose&quot; scope and &quot;decide&quot; scope. Both <code>POST /v1/actions</code> and <code>POST /v1/actions/:id/decision</code> check the same <code>actions</code> scope. If you hand your agent process a key with that scope and your own code calls the decision endpoint with it, nothing in Impri stops it — the separation has to come from how you wire the agent, not from a permission the API refuses to grant.</p>
+<h2 id="what-airlock-does-not-enforce">What Airlock does <em>not</em> enforce</h2>
+<p>This is the part worth being honest about: Airlock doesn&#39;t have a separate &quot;propose&quot; scope and &quot;decide&quot; scope. Both <code>POST /v1/actions</code> and <code>POST /v1/actions/:id/decision</code> check the same <code>actions</code> scope. If you hand your agent process a key with that scope and your own code calls the decision endpoint with it, nothing in Airlock stops it — the separation has to come from how you wire the agent, not from a permission the API refuses to grant.</p>
 <p>Two habits make the split real instead of cosmetic:</p>
 <ul>
 <li><strong>Give the agent a key it is never asked to decide with.</strong> Code the agent to call <code>POST /v1/actions</code> and <code>GET /v1/actions/:id</code> only. Don&#39;t give it a code path to the decision endpoints.</li>
 <li><strong>Put the human decision behind a channel the agent doesn&#39;t control.</strong> Slack/Discord/Telegram buttons are the cleanest, because the platform — not your key management — authenticates who clicked. A human deciding through the web inbox should log in with their own key, not the agent&#39;s.</li>
 </ul>
-<p>There&#39;s also no quorum feature: <code>decisions</code> has a <code>UNIQUE(action_id)</code> constraint, so exactly one verdict is recorded per action, first writer wins. If your policy needs two independent humans to sign off, Impri won&#39;t do that natively — you&#39;d chain two actions yourself (e.g. treat the first approval as provisional and gate execution behind a second review your own code requests).</p>
+<p>There&#39;s also no quorum feature: <code>decisions</code> has a <code>UNIQUE(action_id)</code> constraint, so exactly one verdict is recorded per action, first writer wins. If your policy needs two independent humans to sign off, Airlock won&#39;t do that natively — you&#39;d chain two actions yourself (e.g. treat the first approval as provisional and gate execution behind a second review your own code requests).</p>
 <hr>
 <h2 id="verifying-the-split-after-the-fact">Verifying the split after the fact</h2>
 <p>Because <code>action.created</code> and <code>action.approved</code>/<code>action.rejected</code> are separate audit rows with their own <code>actor</code>, you can check — not just assume — that no key approved its own action:</p>
-<div class="code-block"><span class="code-lang">bash</span><pre><code class="hljs">curl -s <span class="hljs-string">&quot;https://api.impri.dev/v1/audit?entity_id=act_9f2&quot;</span> \
+<div class="code-block"><span class="code-lang">bash</span><pre><code class="hljs">curl -s <span class="hljs-string">&quot;https://api.airlock.dev/v1/audit?entity_id=act_9f2&quot;</span> \
   -H <span class="hljs-string">&quot;Authorization: Bearer <span class="hljs-variable">$ADMIN_KEY</span>&quot;</span> | jq <span class="hljs-string">&#x27;.items[] | {event, actor, channel}&#x27;</span></code></pre></div>
 <p>A healthy result shows <code>action.created</code> with the agent&#39;s key ID and <code>action.approved</code> with a different actor — a Slack name, a Discord handle, or a distinct key ID. If both rows show the same actor, your maker-checker split exists in your head but not in the record.</p>
 <hr>
 <h2 id="next-step">Next step</h2>
 <p>Set up the two credentials — see <a href="api-keys">API keys</a> for scoping an agent-only key, <a href="slack-approval">Slack approval</a> for a checker identity the agent can&#39;t touch, and <a href="audit-log">the audit log</a> for querying <code>actor</code> across an action&#39;s lifecycle. For the underlying push/poll/report flow, start with <a href="how-to-add-human-approval-to-an-ai-agent">how to add human approval to an AI agent</a>.</p>
 
-    <aside class="doc-cta" aria-label="Try Impri">
+    <aside class="doc-cta" aria-label="Try Airlock">
   <p class="doc-cta-title">Add an approval step to your own agent</p>
-  <p>Start on Impri Cloud: the Free tier includes 100 approvals a month. Or self-host the MIT-licensed core with Docker Compose, with no tier limits.</p>
+  <p>Start on Airlock Cloud: the Free tier includes 100 approvals a month. Or self-host the MIT-licensed core with Docker Compose, with no tier limits.</p>
   <div class="doc-cta-actions">
-    <a class="btn btn-primary btn-sm" href="https://app.impri.dev/?signup=1">Start free on Impri Cloud</a>
+    <a class="btn btn-primary btn-sm" href="https://app.airlock.dev/?signup=1">Start free on Airlock Cloud</a>
     <a class="btn btn-ghost btn-sm" href="../docs/quickstart">Quick start</a>
     <a class="btn btn-ghost btn-sm" href="../docs/self-hosting">Self-host guide</a>
   </div>
@@ -310,7 +310,7 @@ pre code.hljs{display:block;overflow-x:auto}
 <div class="ptoc-label">On this page</div>
 <ul><li class="ptoc-h2"><a href="#where-the-pattern-comes-from">Where the pattern comes from</a></li>
 <li class="ptoc-h2"><a href="#what-quotmakerquot-and-quotcheckerquot-map-to-in-practice">What &quot;maker&quot; and &quot;checker&quot; map to in practice</a></li>
-<li class="ptoc-h2"><a href="#what-impri-does-not-enforce">What Impri does not enforce</a></li>
+<li class="ptoc-h2"><a href="#what-airlock-does-not-enforce">What Airlock does not enforce</a></li>
 <li class="ptoc-h2"><a href="#verifying-the-split-after-the-fact">Verifying the split after the fact</a></li>
 <li class="ptoc-h2"><a href="#next-step">Next step</a></li></ul>
 </nav>
@@ -320,19 +320,19 @@ pre code.hljs{display:block;overflow-x:auto}
 <footer class="footer">
 <div class="wrap footer-inner">
   <a class="brand" href="/">
-    <span class="mark"><svg viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.5 4.5L19 7.5" stroke="white" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Impri
+    <span class="mark"><svg viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.5 4.5L19 7.5" stroke="white" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Airlock
   </a>
   <div>
-    <a href="https://gitlab.com/sekera.radim/impri">GitLab</a>
+    <a href="https://gitlab.com/sekera.radim/airlock">GitLab</a>
     <a href="/docs">Docs</a>
-    <a href="https://gitlab.com/sekera.radim/impri/-/blob/main/LICENSE">MIT License</a>
-    <a href="https://www.npmjs.com/package/@impri/mcp">@impri/mcp</a>
+    <a href="https://gitlab.com/sekera.radim/airlock/-/blob/main/LICENSE">MIT License</a>
+    <a href="https://www.npmjs.com/package/@airlock/mcp">@airlock/mcp</a>
     <a href="/docs/privacy">Privacy</a>
     <a href="/docs/terms">Terms</a>
     <a href="https://sekera.dev">Contact</a>
   </div>
 </div>
-<div class="wrap" style="margin-top:18px"><span class="muted">© 2026 Impri · The imprimatur for your AI agents · Built by <a href="https://sekera.dev" style="color:inherit">Radim Sekera</a>. Also by the same maker: <a href="https://briefgate.dev/?utm_source=impri.dev&amp;utm_medium=referral" style="color:inherit">BriefGate</a> — client intake for agencies and AI agents.</span></div>
+<div class="wrap" style="margin-top:18px"><span class="muted">© 2026 Airlock · The airlockmatur for your AI agents · Built by <a href="https://sekera.dev" style="color:inherit">Radim Sekera</a>. Also by the same maker: <a href="https://briefgate.dev/?utm_source=airlock.dev&amp;utm_medium=referral" style="color:inherit">BriefGate</a> — client intake for agencies and AI agents.</span></div>
 </footer>
 </body>
 </html>

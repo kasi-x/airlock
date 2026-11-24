@@ -21,8 +21,8 @@ require 'net/http'
 require 'json'
 require 'uri'
 
-BASE = 'https://api.impri.dev'
-HEADERS = { 'Authorization' => "Bearer #{ENV['IMPRI_API_KEY']}", 'Content-Type' => 'application/json' }
+BASE = 'https://api.airlock.dev'
+HEADERS = { 'Authorization' => "Bearer #{ENV['AIRLOCK_API_KEY']}", 'Content-Type' => 'application/json' }
 
 def push_wiki_edit(page_slug, diff_summary, new_body)
   uri = URI("#{BASE}/v1/actions")
@@ -87,7 +87,7 @@ Once a few actions have gone through, `GET /v1/audit?entity_id=<action_id>` retu
 | Comes free from routing through the gate | Still your responsibility |
 |---|---|
 | Who approved or rejected each action, by name where the decision came from a chat button | Deciding which of your agent's calls are risky enough to gate in the first place |
-| Immutable created/approved/executed timeline per action | Structured receipts in `result.payload` — Impri doesn't know what "done" looks like for your integration |
+| Immutable created/approved/executed timeline per action | Structured receipts in `result.payload` — Airlock doesn't know what "done" looks like for your integration |
 | Project-scoped, admin-only read access to the log | Retention policy beyond the built-in `AUDIT_RETENTION_DAYS` setting, if you need something more granular |
 
 ---

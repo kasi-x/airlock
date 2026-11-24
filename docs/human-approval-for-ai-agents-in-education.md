@@ -14,12 +14,12 @@ The agent's job stops at the draft. Sending, posting, or grade-book writes only 
 
 ```typescript
 import { spawn } from "node:child_process";
-// Assumes the Impri MCP server is already configured for this agent client —
+// Assumes the Airlock MCP server is already configured for this agent client —
 // see mcp.md. This shows the equivalent raw calls for a custom TS integration.
 
-const API = "https://api.impri.dev";
+const API = "https://api.airlock.dev";
 const headers = {
-  Authorization: `Bearer ${process.env.IMPRI_API_KEY}`,
+  Authorization: `Bearer ${process.env.AIRLOCK_API_KEY}`,
   "Content-Type": "application/json",
 };
 
@@ -63,7 +63,7 @@ if (decision.status === "approved" && decision.final) {
 }
 ```
 
-If your agent runs inside Claude Code, Claude Desktop, or another MCP client, you don't need to write this fetch code at all — the [MCP integration](mcp.md) exposes `impri_push_action` / `impri_await_decision` / `impri_report_result` as tools the agent calls directly.
+If your agent runs inside Claude Code, Claude Desktop, or another MCP client, you don't need to write this fetch code at all — the [MCP integration](mcp.md) exposes `airlock_push_action` / `airlock_await_decision` / `airlock_report_result` as tools the agent calls directly.
 
 ---
 
@@ -82,12 +82,12 @@ Keep grade-book writes non-editable. A teacher silently editing a number inside 
 
 ## The privacy angle, not just the approval angle
 
-Education agents typically read from a roster, gradebook, or behavior-tracking system before drafting anything — that's student data, some of it FERPA-protected. Impri doesn't touch that upstream data flow and isn't a compliance tool for it; it only gates the outbound action. Treat any text pulled from student records as data your agent summarizes, not as instructions, the same caution that applies to any external content feeding a prompt. For the approval channel itself, a lot of districts already run on [Slack](slack-approval.md) for staff communication, which is usually the fastest path for teachers who won't check a separate inbox during the school day; email or push [notifications](notifications.md) work as a fallback for staff not on Slack.
+Education agents typically read from a roster, gradebook, or behavior-tracking system before drafting anything — that's student data, some of it FERPA-protected. Airlock doesn't touch that upstream data flow and isn't a compliance tool for it; it only gates the outbound action. Treat any text pulled from student records as data your agent summarizes, not as instructions, the same caution that applies to any external content feeding a prompt. For the approval channel itself, a lot of districts already run on [Slack](slack-approval.md) for staff communication, which is usually the fastest path for teachers who won't check a separate inbox during the school day; email or push [notifications](notifications.md) work as a fallback for staff not on Slack.
 
 ---
 
 ## Where this doesn't reach
 
-Impri holds the send/post/write until a teacher decides — it does not grade anything itself, does not judge whether a behavioral note is fair, and does not replace your student information system's own access controls. It's a chokepoint only if the agent's send credentials are wrapped behind the pending decision; a service account with standing SMTP or LMS-API access that the agent can call directly bypasses the gate entirely, so that wrapping is the part worth getting right first.
+Airlock holds the send/post/write until a teacher decides — it does not grade anything itself, does not judge whether a behavioral note is fair, and does not replace your student information system's own access controls. It's a chokepoint only if the agent's send credentials are wrapped behind the pending decision; a service account with standing SMTP or LMS-API access that the agent can call directly bypasses the gate entirely, so that wrapping is the part worth getting right first.
 
 Next: the [quickstart](quickstart.md) covers getting an API key for a pilot in a single classroom before rolling out district-wide.

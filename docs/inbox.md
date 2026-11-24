@@ -341,7 +341,7 @@ async def bulk_decide(
     ...
 ```
 
-Raises `ImpriValidationError` on 400, `ImpriRateLimited` on 429. Individual item
+Raises `AirlockValidationError` on 400, `AirlockRateLimited` on 429. Individual item
 failures are surfaced in `BulkDecisionResponse.results`, not as exceptions.
 
 ---

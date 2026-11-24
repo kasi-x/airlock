@@ -1,5 +1,5 @@
 import { Command } from 'commander'
-import { ImpriClient, ImpriUnauthorized, ImpriError } from '@impri/sdk'
+import { AirlockClient, AirlockUnauthorized, AirlockError } from '@airlock/sdk'
 import { resolveCredentials, redactKey } from '../config.js'
 import { bold, green, red, dim, printError, printJson, ok } from '../output.js'
 
@@ -12,11 +12,11 @@ export function registerStatus(program: Command): void {
       const creds = resolveCredentials()
 
       if (!creds.apiKey) {
-        printError("No API key configured. Run 'impri init' first, or set IMPRI_API_KEY.")
+        printError("No API key configured. Run 'airlock init' first, or set AIRLOCK_API_KEY.")
         process.exit(1)
       }
 
-      const client = new ImpriClient({ apiKey: creds.apiKey, baseUrl: creds.baseUrl })
+      const client = new AirlockClient({ apiKey: creds.apiKey, baseUrl: creds.baseUrl })
 
       // Check health first
       let healthy = false
@@ -37,8 +37,8 @@ export function registerStatus(program: Command): void {
       try {
         project = await client.getProject() as { name: string; id: string }
       } catch (err) {
-        if (err instanceof ImpriUnauthorized) {
-          printError('API key is invalid or lacks admin scope. Run \'impri login\' to update it.')
+        if (err instanceof AirlockUnauthorized) {
+          printError('API key is invalid or lacks admin scope. Run \'airlock login\' to update it.')
           process.exit(1)
         }
         printError(`Error: ${(err as Error).message}`)
@@ -72,7 +72,7 @@ export function registerStatus(program: Command): void {
       ok(`Connected to ${bold(creds.baseUrl)}`)
       process.stdout.write(`  Project:  ${bold(project.name)} (${dim(project.id)})\n`)
       process.stdout.write(`  API key:  ${dim(redactKey(creds.apiKey))}`)
-      if (creds.keyFromEnv) process.stdout.write(dim('  (from IMPRI_API_KEY env)'))
+      if (creds.keyFromEnv) process.stdout.write(dim('  (from AIRLOCK_API_KEY env)'))
       process.stdout.write('\n')
       process.stdout.write(`  Pending:  ${pendingCount > 0 ? bold(String(pendingCount)) : dim('0')} action${pendingCount !== 1 ? 's' : ''} awaiting decision\n`)
     })

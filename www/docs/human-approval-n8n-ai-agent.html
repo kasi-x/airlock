@@ -3,21 +3,21 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Human Approval for n8n AI Agent Workflows — Impri Docs</title>
-<meta name="description" content="Add human approval for n8n AI Agent workflows using Impri's REST API in stock HTTP Request and Wait nodes — no custom node, no code beyond one small Function…">
+<title>Human Approval for n8n AI Agent Workflows — Airlock Docs</title>
+<meta name="description" content="Add human approval for n8n AI Agent workflows using Airlock's REST API in stock HTTP Request and Wait nodes — no custom node, no code beyond one small Function…">
 <meta name="theme-color" content="#06070d">
-<meta property="og:title" content="Human Approval for n8n AI Agent Workflows — Impri Docs">
-<meta property="og:description" content="Add human approval for n8n AI Agent workflows using Impri's REST API in stock HTTP Request and Wait nodes — no custom node, no code beyond one small Function…">
+<meta property="og:title" content="Human Approval for n8n AI Agent Workflows — Airlock Docs">
+<meta property="og:description" content="Add human approval for n8n AI Agent workflows using Airlock's REST API in stock HTTP Request and Wait nodes — no custom node, no code beyond one small Function…">
 <meta property="og:type" content="article">
-<meta property="og:url" content="https://impri.dev/docs/human-approval-n8n-ai-agent">
-<meta property="og:image" content="https://impri.dev/assets/og/og-docs.png">
+<meta property="og:url" content="https://airlock.dev/docs/human-approval-n8n-ai-agent">
+<meta property="og:image" content="https://airlock.dev/assets/og/og-docs.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
-<meta property="og:image:alt" content="Impri — human-in-the-loop approval inbox for AI agents">
+<meta property="og:image:alt" content="Airlock — human-in-the-loop approval inbox for AI agents">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="https://impri.dev/assets/og/og-docs.png">
-<link rel="canonical" href="https://impri.dev/docs/human-approval-n8n-ai-agent">
-<script type="application/ld+json">{"@context":"https://schema.org","@type":"TechArticle","headline":"Human Approval for n8n AI Agent Workflows","description":"Add human approval for n8n AI Agent workflows using Impri's REST API in stock HTTP Request and Wait nodes — no custom node, no code beyond one small Function…","url":"https://impri.dev/docs/human-approval-n8n-ai-agent","inLanguage":"en","author":{"@type":"Organization","name":"Impri","url":"https://impri.dev"},"publisher":{"@type":"Organization","name":"Impri","url":"https://impri.dev"}}</script>
+<meta name="twitter:image" content="https://airlock.dev/assets/og/og-docs.png">
+<link rel="canonical" href="https://airlock.dev/docs/human-approval-n8n-ai-agent">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"TechArticle","headline":"Human Approval for n8n AI Agent Workflows","description":"Add human approval for n8n AI Agent workflows using Airlock's REST API in stock HTTP Request and Wait nodes — no custom node, no code beyond one small Function…","url":"https://airlock.dev/docs/human-approval-n8n-ai-agent","inLanguage":"en","author":{"@type":"Organization","name":"Airlock","url":"https://airlock.dev"},"publisher":{"@type":"Organization","name":"Airlock","url":"https://airlock.dev"}}</script>
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <link rel="icon" href="/favicon.ico" sizes="32x32">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='9' fill='%236366f1'/%3E%3Cpath d='M9 16.5l4.5 4.5L23 11' stroke='white' stroke-width='3' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
@@ -132,13 +132,13 @@ pre code.hljs{display:block;overflow-x:auto}
 <div class="wrap nav-inner">
   <a class="brand" href="/">
     <span class="mark"><svg viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.5 4.5L19 7.5" stroke="white" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
-    Impri
+    Airlock
   </a>
   <div class="nav-links">
     <a class="link" href="/#how">How it works</a>
     <a class="link" href="/#pricing">Pricing</a>
     <a class="link active-nav" href="../docs">Docs</a>
-    <a class="btn btn-primary btn-sm" href="https://gitlab.com/sekera.radim/impri">GitLab</a>
+    <a class="btn btn-primary btn-sm" href="https://gitlab.com/sekera.radim/airlock">GitLab</a>
   </div>
 </div>
 </nav>
@@ -153,11 +153,11 @@ pre code.hljs{display:block;overflow-x:auto}
       <span>Human Approval for n8n AI Agent Workflows</span>
     </nav>
     <h1>Human Approval for n8n AI Agent Workflows</h1>
-<p>Add human approval for n8n AI Agent workflows using Impri&#39;s REST API in stock HTTP Request and Wait nodes — no custom node, no code beyond one small Function block.</p>
+<p>Add human approval for n8n AI Agent workflows using Airlock&#39;s REST API in stock HTTP Request and Wait nodes — no custom node, no code beyond one small Function block.</p>
 <hr>
 <h2 id="where-the-gate-goes-in-the-workflow">Where the gate goes in the workflow</h2>
 <p>A typical setup: a <strong>Zendesk Trigger</strong> node fires on a new ticket, an <strong>AI Agent</strong> node (backed by whatever model you&#39;ve wired into n8n) drafts a reply, and a final node would normally post that reply straight back to the customer. That last step is the one worth gating — everything upstream is just reasoning, nothing has left the building yet.</p>
-<p>The fix isn&#39;t a second AI Agent node double-checking the first one&#39;s work. It&#39;s an external decision the workflow cannot proceed without: Impri holds the draft, a human taps approve or reject, and only the approved branch reaches the node that actually calls the Zendesk API.</p>
+<p>The fix isn&#39;t a second AI Agent node double-checking the first one&#39;s work. It&#39;s an external decision the workflow cannot proceed without: Airlock holds the draft, a human taps approve or reject, and only the approved branch reaches the node that actually calls the Zendesk API.</p>
 <hr>
 <h2 id="the-node-pattern">The node pattern</h2>
 <p>Five nodes cover the whole loop:</p>
@@ -225,17 +225,17 @@ pre code.hljs{display:block;overflow-x:auto}
 <span class="hljs-punctuation">}</span></code></pre></div>
 <p>Route on <code>status</code>: only the <code>approved</code> path reaches the Zendesk &quot;post reply&quot; node, and it must read <code>decision.final_preview.body</code>, never the Code node&#39;s original <code>draft</code> — the reviewer may have tightened the wording before approving.</p>
 <h2 id="skipping-the-loop-with-a-webhook">Skipping the loop with a webhook</h2>
-<p>Polling every 10 seconds is fine for low-volume ticket queues, but if your n8n instance has a public URL, set <code>callback_url</code> in the Code node&#39;s JSON to an n8n Webhook node&#39;s URL instead. Impri POSTs the decision there the moment a human decides, and you can replace the whole Wait/GET/IF loop with a single Webhook trigger that starts a second workflow. Signature verification for that payload is documented in <a href="webhooks">webhooks.md</a>.</p>
+<p>Polling every 10 seconds is fine for low-volume ticket queues, but if your n8n instance has a public URL, set <code>callback_url</code> in the Code node&#39;s JSON to an n8n Webhook node&#39;s URL instead. Airlock POSTs the decision there the moment a human decides, and you can replace the whole Wait/GET/IF loop with a single Webhook trigger that starts a second workflow. Signature verification for that payload is documented in <a href="webhooks">webhooks.md</a>.</p>
 <h2 id="what-this-doesn39t-replace">What this doesn&#39;t replace</h2>
-<p>Impri is the approval gate, not the workflow engine — n8n still owns branching, retries, and scheduling. Impri doesn&#39;t read the ticket or judge whether the reply is good; it shows the draft to a human and records what they decided. And the gate only holds if the Zendesk API credential lives on the &quot;post reply&quot; node and nowhere else in the workflow — if an earlier node also holds that credential, the AI Agent&#39;s output could reach Zendesk through a path that never touches Impri at all.</p>
+<p>Airlock is the approval gate, not the workflow engine — n8n still owns branching, retries, and scheduling. Airlock doesn&#39;t read the ticket or judge whether the reply is good; it shows the draft to a human and records what they decided. And the gate only holds if the Zendesk API credential lives on the &quot;post reply&quot; node and nowhere else in the workflow — if an earlier node also holds that credential, the AI Agent&#39;s output could reach Zendesk through a path that never touches Airlock at all.</p>
 <h2 id="next-step">Next step</h2>
 <p>Start from <a href="quickstart">Quickstart</a> to get a key and push your first action, or see the accurate n8n reference pattern in <a href="integrations">Integrations</a>.</p>
 
-    <aside class="doc-cta" aria-label="Try Impri">
+    <aside class="doc-cta" aria-label="Try Airlock">
   <p class="doc-cta-title">Add an approval step to your own agent</p>
-  <p>Start on Impri Cloud: the Free tier includes 100 approvals a month. Or self-host the MIT-licensed core with Docker Compose, with no tier limits.</p>
+  <p>Start on Airlock Cloud: the Free tier includes 100 approvals a month. Or self-host the MIT-licensed core with Docker Compose, with no tier limits.</p>
   <div class="doc-cta-actions">
-    <a class="btn btn-primary btn-sm" href="https://app.impri.dev/?signup=1">Start free on Impri Cloud</a>
+    <a class="btn btn-primary btn-sm" href="https://app.airlock.dev/?signup=1">Start free on Airlock Cloud</a>
     <a class="btn btn-ghost btn-sm" href="../docs/quickstart">Quick start</a>
     <a class="btn btn-ghost btn-sm" href="../docs/self-hosting">Self-host guide</a>
   </div>
@@ -333,19 +333,19 @@ pre code.hljs{display:block;overflow-x:auto}
 <footer class="footer">
 <div class="wrap footer-inner">
   <a class="brand" href="/">
-    <span class="mark"><svg viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.5 4.5L19 7.5" stroke="white" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Impri
+    <span class="mark"><svg viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.5 4.5L19 7.5" stroke="white" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Airlock
   </a>
   <div>
-    <a href="https://gitlab.com/sekera.radim/impri">GitLab</a>
+    <a href="https://gitlab.com/sekera.radim/airlock">GitLab</a>
     <a href="/docs">Docs</a>
-    <a href="https://gitlab.com/sekera.radim/impri/-/blob/main/LICENSE">MIT License</a>
-    <a href="https://www.npmjs.com/package/@impri/mcp">@impri/mcp</a>
+    <a href="https://gitlab.com/sekera.radim/airlock/-/blob/main/LICENSE">MIT License</a>
+    <a href="https://www.npmjs.com/package/@airlock/mcp">@airlock/mcp</a>
     <a href="/docs/privacy">Privacy</a>
     <a href="/docs/terms">Terms</a>
     <a href="https://sekera.dev">Contact</a>
   </div>
 </div>
-<div class="wrap" style="margin-top:18px"><span class="muted">© 2026 Impri · The imprimatur for your AI agents · Built by <a href="https://sekera.dev" style="color:inherit">Radim Sekera</a>. Also by the same maker: <a href="https://briefgate.dev/?utm_source=impri.dev&amp;utm_medium=referral" style="color:inherit">BriefGate</a> — client intake for agencies and AI agents.</span></div>
+<div class="wrap" style="margin-top:18px"><span class="muted">© 2026 Airlock · The airlockmatur for your AI agents · Built by <a href="https://sekera.dev" style="color:inherit">Radim Sekera</a>. Also by the same maker: <a href="https://briefgate.dev/?utm_source=airlock.dev&amp;utm_medium=referral" style="color:inherit">BriefGate</a> — client intake for agencies and AI agents.</span></div>
 </footer>
 </body>
 </html>

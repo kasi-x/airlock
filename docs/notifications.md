@@ -1,6 +1,6 @@
 # Notification Channels
 
-Impri can push a notification to your team's tools the moment an action
+Airlock can push a notification to your team's tools the moment an action
 lands in the inbox. Notification channels are per-project, configurable
 via the Settings screen in the web inbox or via the REST API, and require
 an **admin-scope** API key.
@@ -132,7 +132,7 @@ your team can decide without opening the web inbox:
 | `approval_mode` | boolean | `false` | When `true`, single-action sends include interactive Approve / Reject buttons. Digest batches always fall back to a plain notification. |
 | `allowed_approver_slack_user_ids` | string[] | `[]` | Slack user IDs (`U...`) allowed to click the buttons. Max 50. Must be non-empty when `approval_mode` is `true`. |
 
-When `approval_mode` is `true`, Impri receives interaction payloads at:
+When `approval_mode` is `true`, Airlock receives interaction payloads at:
 
 ```
 POST /v1/integrations/slack/interactions/:channelId
@@ -194,14 +194,14 @@ your team can decide without opening the web inbox:
 | `approval_mode` | boolean | `false` | When `true`, single-action sends include interactive Approve / Reject buttons. Digest batches always fall back to a plain embed. |
 | `allowed_approver_discord_user_ids` | string[] | `[]` | Discord user snowflake IDs allowed to click the buttons. Max 50. Must be non-empty when `approval_mode` is `true`. |
 
-When `approval_mode` is `true`, Impri receives interaction payloads at:
+When `approval_mode` is `true`, Airlock receives interaction payloads at:
 
 ```
 POST /v1/integrations/discord/interactions/:channelId
 ```
 
 Discord uses Ed25519 asymmetric signatures — the platform holds the
-private key; Impri verifies using `public_key` only. Decisions recorded
+private key; Airlock verifies using `public_key` only. Decisions recorded
 via this endpoint appear in the audit log with
 `decided_by = "dc:{discord_user_id}"`.
 
@@ -265,7 +265,7 @@ buttons** so your team can decide without opening the web inbox:
 | `hmac_secret` | string | auto-generated | 16–256 character secret used to sign button payloads and derive the Telegram webhook verification token. Auto-generated on channel creation if omitted. Masked (`****{last4}`) in all responses. Rotate via PATCH. |
 
 When `approval_mode` is `true` and `BASE_URL` is a publicly reachable
-URL, Impri automatically registers a Telegram webhook at:
+URL, Airlock automatically registers a Telegram webhook at:
 
 ```
 POST /v1/integrations/telegram/webhook/:channelId
@@ -288,7 +288,7 @@ instructions, config reference, security model, and troubleshooting.
   "type": "ntfy",
   "config": {
     "url": "https://ntfy.sh",
-    "topic": "my-impri-alerts"
+    "topic": "my-airlock-alerts"
   }
 }
 ```
@@ -322,7 +322,7 @@ headers — identical to the global ntfy adapter in `notify.ts`.
 Sends a plain-text email using the SMTP transport configured via
 environment variables (`SMTP_HOST`, `SMTP_PORT`, `SMTP_SECURE`,
 `SMTP_USER`, `SMTP_PASS`, `SMTP_FROM`). On the hosted cloud this is
-already set up; mail comes from `notifications@impri.dev`.
+already set up; mail comes from `notifications@airlock.dev`.
 
 Without `SMTP_HOST`, creating an email channel (or changing its address)
 returns `400 Email delivery is not configured on this server`, and a
@@ -332,10 +332,10 @@ email went out.
 
 `address` is validated as an e-mail address by Zod. It is not a secret
 and is returned as-is in API responses. **The address must be confirmed
-before Impri sends it anything but the confirmation email** — see
+before Airlock sends it anything but the confirmation email** — see
 [Email address confirmation](#email-address-confirmation).
 
-The email subject is `[Impri] {title}` with CR/LF stripped (header
+The email subject is `[Airlock] {title}` with CR/LF stripped (header
 injection guard). The body is plain text only — no HTML — to avoid
 template injection surface. It contains the action title, kind and a
 link into the inbox, plus a footer saying why the email arrives and how
@@ -343,7 +343,7 @@ to stop it (disable or delete the channel).
 
 ### Email address confirmation
 
-An Impri project does not need an email address, so an email channel's
+An Airlock project does not need an email address, so an email channel's
 address is unverified input. Creating an email channel therefore sends
 one **confirmation email** (fixed text, nothing from your project in it)
 with a link that is valid for 7 days. The limits below are checked
@@ -394,7 +394,7 @@ Returns `{ "ok": true, "channel": {…} }`, `400` for a non-email channel,
 | Per project | 5 per rolling 24 h |
 
 **Daily cap on notification emails:** a project sends at most
-`IMPRI_EMAIL_DAILY_CAP` notification emails (default 100, test sends
+`AIRLOCK_EMAIL_DAILY_CAP` notification emails (default 100, test sends
 included) per rolling 24 h. When the cap is reached, notifications stay
 queued in the channel's digest and go out once the window frees up;
 this does not count as a delivery failure and never auto-disables the
@@ -418,7 +418,7 @@ resume once the link is opened.
 {
   "type": "webhook",
   "config": {
-    "url": "https://your-service.example.com/impri-hook",
+    "url": "https://your-service.example.com/airlock-hook",
     "hmac_secret": "optional-signing-secret-min-16-chars"
   }
 }
@@ -432,7 +432,7 @@ POSTs a JSON payload to `url` on every pending action:
   "action_id": "act_...",
   "title": "...",
   "kind": "...",
-  "inbox_url": "https://app.impri.dev/inbox/act_...",
+  "inbox_url": "https://app.airlock.dev/inbox/act_...",
   "triggered_at": 1720003600,
   "escalate": false
 }
@@ -447,9 +447,9 @@ HMAC-SHA256 signature headers used by the existing webhook delivery
 system:
 
 ```
-X-Impri-Signature: sha256={sig}
-X-Impri-Timestamp: {unix-sec}
-X-Impri-Nonce: {hex}
+X-Airlock-Signature: sha256={sig}
+X-Airlock-Timestamp: {unix-sec}
+X-Airlock-Nonce: {hex}
 ```
 
 Signature is computed over `{timestamp}.{nonce}.{rawBody}` using
@@ -559,7 +559,7 @@ and then re-enable (`"enabled": true` in the same or a separate PATCH).
 Updating the config resets `fail_count` to 0 automatically.
 
 The threshold (default 5) will be configurable via
-`IMPRI_CHANNEL_MAX_FAILS` in a future release.
+`AIRLOCK_CHANNEL_MAX_FAILS` in a future release.
 
 ---
 
@@ -597,7 +597,7 @@ Any config value shorter than 5 characters is replaced entirely with
 Secrets are stored as plaintext JSON in the SQLite `config` column. The
 column is only reachable via admin-scope API keys. A future hardening
 step will encrypt the config column at rest using AES-256-GCM with a
-key from `IMPRI_CONFIG_KEY`.
+key from `AIRLOCK_CONFIG_KEY`.
 
 Secrets are never interpolated into log messages. Structured error logs
 record only `channelId`, `type`, `projectId`, and a sanitised error
@@ -620,8 +620,8 @@ Zod validation at write time provides an additional early-rejection
 layer: private IP literals and invalid protocols are rejected before any
 value reaches the database.
 
-The `IMPRI_ALLOW_PRIVATE_TARGETS=1` opt-out (used by operators running
-Impri on a private network) disables SSRF checks for all outbound
+The `AIRLOCK_ALLOW_PRIVATE_TARGETS=1` opt-out (used by operators running
+Airlock on a private network) disables SSRF checks for all outbound
 requests, including channel delivery.
 
 ---
@@ -681,7 +681,7 @@ Python example:
 import httpx
 
 headers = {"Authorization": "Bearer im_..."}
-base = "https://api.impri.dev/v1"  # or "http://localhost:8484/v1" self-hosted
+base = "https://api.airlock.dev/v1"  # or "http://localhost:8484/v1" self-hosted
 
 # Create a Slack channel
 r = httpx.post(f"{base}/notification-channels", headers=headers, json={
@@ -734,10 +734,10 @@ in the database.
 | `SMTP_SECURE` | Set to `"true"` for implicit TLS (port 465). |
 | `SMTP_USER` | SMTP username (omit for open relay). |
 | `SMTP_PASS` | SMTP password. |
-| `SMTP_FROM` | From address used in outbound emails (default `impri@localhost`). |
+| `SMTP_FROM` | From address used in outbound emails (default `airlock@localhost`). |
 | `BASE_URL` | Public API URL; the confirmation link points to `${BASE_URL}/v1/notification-channels/verify`. |
-| `IMPRI_EMAIL_DAILY_CAP` | Notification emails a project may send per rolling 24 h (default 100). |
-| `IMPRI_ALLOW_PRIVATE_TARGETS` | Set to `"1"` to allow channel URLs that resolve to private/RFC1918 addresses (intranet use). Off by default. |
+| `AIRLOCK_EMAIL_DAILY_CAP` | Notification emails a project may send per rolling 24 h (default 100). |
+| `AIRLOCK_ALLOW_PRIVATE_TARGETS` | Set to `"1"` to allow channel URLs that resolve to private/RFC1918 addresses (intranet use). Off by default. |
 
 The global `NTFY_URL` / `NTFY_TOPIC` variables configure the
 **instance-wide** ntfy notification that fires for all projects (via

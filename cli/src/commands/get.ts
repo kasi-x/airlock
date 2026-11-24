@@ -1,5 +1,5 @@
 import { Command } from 'commander'
-import { ImpriError } from '@impri/sdk'
+import { AirlockError } from '@airlock/sdk'
 import { makeClient } from '../client-factory.js'
 import { bold, dim, cyan, statusBadge, fmtTs, printError, printJson } from '../output.js'
 
@@ -62,7 +62,7 @@ export function registerGet(program: Command): void {
 }
 
 function handleError(err: unknown): never {
-  if (err instanceof ImpriError) {
+  if (err instanceof AirlockError) {
     printError(err.message)
   } else {
     printError(String(err))

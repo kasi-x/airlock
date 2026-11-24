@@ -1,6 +1,6 @@
 # Human Approval for Google Agent Development Kit (ADK) Agents
 
-Add a human approval step to a Google ADK agent before it deletes cloud resources, using ADK's native MCP support and Impri's approval tools.
+Add a human approval step to a Google ADK agent before it deletes cloud resources, using ADK's native MCP support and Airlock's approval tools.
 
 ---
 
@@ -10,19 +10,19 @@ A cost-control agent built with Google ADK scans a GCP project, finds BigQuery d
 
 ADK agents call tools through the standard `google.adk.tools` interface, and since ADK speaks MCP natively, the cleanest way to add a gate is to give the agent an MCP-based approval tool rather than hand-rolling REST calls inside a custom function tool.
 
-## Setup: adding Impri as an MCP toolset
+## Setup: adding Airlock as an MCP toolset
 
 ```python
 from google.adk.agents import Agent
 from google.adk.tools.mcp_tool import MCPToolset, StdioServerParameters
 
-impri_toolset = MCPToolset(
+airlock_toolset = MCPToolset(
     connection_params=StdioServerParameters(
         command="npx",
-        args=["@impri/mcp"],
+        args=["@airlock/mcp"],
         env={
-            "IMPRI_API_KEY": "im_your_key_here",
-            "IMPRI_BASE_URL": "https://api.impri.dev",
+            "AIRLOCK_API_KEY": "im_your_key_here",
+            "AIRLOCK_BASE_URL": "https://api.airlock.dev",
         },
     )
 )
@@ -32,15 +32,15 @@ cleanup_agent = Agent(
     model="gemini-2.5-pro",
     instruction=(
         "Find unused BigQuery datasets and GCS buckets. Before deleting anything, "
-        "push an impri_push_action with kind='gcp.resource.delete' describing what "
-        "you found and why, then wait on impri_await_decision. Only call the delete "
+        "push an airlock_push_action with kind='gcp.resource.delete' describing what "
+        "you found and why, then wait on airlock_await_decision. Only call the delete "
         "tool if the decision status is 'approved'."
     ),
-    tools=[find_unused_resources, delete_gcp_resource, *impri_toolset.get_tools()],
+    tools=[find_unused_resources, delete_gcp_resource, *airlock_toolset.get_tools()],
 )
 ```
 
-The agent now has three tool families: one to find candidates, one to actually delete, and Impri's `impri_push_action` / `impri_await_decision` / `impri_report_result` to gate the path between them.
+The agent now has three tool families: one to find candidates, one to actually delete, and Airlock's `airlock_push_action` / `airlock_await_decision` / `airlock_report_result` to gate the path between them.
 
 ## Why the instruction alone isn't the gate
 
@@ -48,14 +48,14 @@ Notice the instruction *tells* the model to check for approval before deleting �
 
 ```python
 def delete_gcp_resource(resource_id: str, approved_action_id: str) -> dict:
-    """Deletes a GCP resource. Requires an Impri action_id with status 'approved'."""
-    status = check_impri_action_status(approved_action_id)  # calls GET /v1/actions/:id
+    """Deletes a GCP resource. Requires an Airlock action_id with status 'approved'."""
+    status = check_airlock_action_status(approved_action_id)  # calls GET /v1/actions/:id
     if status["status"] != "approved":
         return {"error": f"action {approved_action_id} is {status['status']}, not approved"}
 
     resource_type, name = resource_id.split(":", 1)
     _do_delete(resource_type, name)  # actual GCP client call
-    report_impri_result(approved_action_id, "executed")
+    report_airlock_result(approved_action_id, "executed")
     return {"deleted": resource_id}
 ```
 
@@ -71,12 +71,12 @@ Now the model *can* call `delete_gcp_resource` directly, but the function refuse
 | `expires_in` | `259200` (default 72h — plenty of time to double-check with the data team) |
 | `undo` | "Dataset was exported to gs://backups/pre-delete/ before removal; restore with `bq load`" |
 
-Setting `undo` matters here specifically because dataset deletion is not reversible through the API itself — Impri just displays the plain-English escape hatch on the card so the reviewer knows one exists before approving.
+Setting `undo` matters here specifically because dataset deletion is not reversible through the API itself — Airlock just displays the plain-English escape hatch on the card so the reviewer knows one exists before approving.
 
 ---
 
 ## What this doesn't cover
 
-Impri doesn't inspect the GCP resource, doesn't know if the dataset is actually safe to delete, and doesn't talk to the GCP API at all — that's entirely `delete_gcp_resource`'s job. It also isn't IAM: it doesn't restrict *who* can technically call the delete function, only whether a human signed off before that specific call ran with that specific resource ID. Keep IAM scoped tightly regardless of whether Impri is in the loop.
+Airlock doesn't inspect the GCP resource, doesn't know if the dataset is actually safe to delete, and doesn't talk to the GCP API at all — that's entirely `delete_gcp_resource`'s job. It also isn't IAM: it doesn't restrict *who* can technically call the delete function, only whether a human signed off before that specific call ran with that specific resource ID. Keep IAM scoped tightly regardless of whether Airlock is in the loop.
 
 For the underlying MCP tool contract, see [mcp](mcp.md). For the same wrapper pattern applied to other SDKs, see [integrations](integrations.md), and for getting an API key first, the [quickstart](quickstart.md).

@@ -3,21 +3,21 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Human-in-the-Loop for Durable Agent Runtimes: Pause… — Impri Docs</title>
+<title>Human-in-the-Loop for Durable Agent Runtimes: Pause… — Airlock Docs</title>
 <meta name="description" content="Durable execution frameworks checkpoint every step so an agent can survive a crash — this shows how to make &quot;waiting for a human&quot; one of those…">
 <meta name="theme-color" content="#06070d">
-<meta property="og:title" content="Human-in-the-Loop for Durable Agent Runtimes: Pause… — Impri Docs">
+<meta property="og:title" content="Human-in-the-Loop for Durable Agent Runtimes: Pause… — Airlock Docs">
 <meta property="og:description" content="Durable execution frameworks checkpoint every step so an agent can survive a crash — this shows how to make &quot;waiting for a human&quot; one of those…">
 <meta property="og:type" content="article">
-<meta property="og:url" content="https://impri.dev/docs/human-in-the-loop-agentspan-and-durable-agent-runtimes">
-<meta property="og:image" content="https://impri.dev/assets/og/og-docs.png">
+<meta property="og:url" content="https://airlock.dev/docs/human-in-the-loop-agentspan-and-durable-agent-runtimes">
+<meta property="og:image" content="https://airlock.dev/assets/og/og-docs.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
-<meta property="og:image:alt" content="Impri — human-in-the-loop approval inbox for AI agents">
+<meta property="og:image:alt" content="Airlock — human-in-the-loop approval inbox for AI agents">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="https://impri.dev/assets/og/og-docs.png">
-<link rel="canonical" href="https://impri.dev/docs/human-in-the-loop-agentspan-and-durable-agent-runtimes">
-<script type="application/ld+json">{"@context":"https://schema.org","@type":"TechArticle","headline":"Human-in-the-Loop for Durable Agent Runtimes: Pause, Approve, Resume","description":"Durable execution frameworks checkpoint every step so an agent can survive a crash — this shows how to make \"waiting for a human\" one of those durable steps…","url":"https://impri.dev/docs/human-in-the-loop-agentspan-and-durable-agent-runtimes","inLanguage":"en","author":{"@type":"Organization","name":"Impri","url":"https://impri.dev"},"publisher":{"@type":"Organization","name":"Impri","url":"https://impri.dev"}}</script>
+<meta name="twitter:image" content="https://airlock.dev/assets/og/og-docs.png">
+<link rel="canonical" href="https://airlock.dev/docs/human-in-the-loop-agentspan-and-durable-agent-runtimes">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"TechArticle","headline":"Human-in-the-Loop for Durable Agent Runtimes: Pause, Approve, Resume","description":"Durable execution frameworks checkpoint every step so an agent can survive a crash — this shows how to make \"waiting for a human\" one of those durable steps…","url":"https://airlock.dev/docs/human-in-the-loop-agentspan-and-durable-agent-runtimes","inLanguage":"en","author":{"@type":"Organization","name":"Airlock","url":"https://airlock.dev"},"publisher":{"@type":"Organization","name":"Airlock","url":"https://airlock.dev"}}</script>
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <link rel="icon" href="/favicon.ico" sizes="32x32">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='9' fill='%236366f1'/%3E%3Cpath d='M9 16.5l4.5 4.5L23 11' stroke='white' stroke-width='3' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
@@ -132,13 +132,13 @@ pre code.hljs{display:block;overflow-x:auto}
 <div class="wrap nav-inner">
   <a class="brand" href="/">
     <span class="mark"><svg viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.5 4.5L19 7.5" stroke="white" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
-    Impri
+    Airlock
   </a>
   <div class="nav-links">
     <a class="link" href="/#how">How it works</a>
     <a class="link" href="/#pricing">Pricing</a>
     <a class="link active-nav" href="../docs">Docs</a>
-    <a class="btn btn-primary btn-sm" href="https://gitlab.com/sekera.radim/impri">GitLab</a>
+    <a class="btn btn-primary btn-sm" href="https://gitlab.com/sekera.radim/airlock">GitLab</a>
   </div>
 </div>
 </nav>
@@ -162,9 +162,9 @@ pre code.hljs{display:block;overflow-x:auto}
 <h2 id="the-shape-checkpoint-before-you-wait-resume-on-the-decision">The shape: checkpoint before you wait, resume on the decision</h2>
 <p>Instead of a worker sitting in a poll loop for two days, the pattern is:</p>
 <ol>
-<li>Push the action to Impri, including a <code>callback_url</code> that points at your resume endpoint.</li>
+<li>Push the action to Airlock, including a <code>callback_url</code> that points at your resume endpoint.</li>
 <li>Checkpoint the run with the <code>action_id</code> as its resume key, then let the step finish — the worker is free to shut down.</li>
-<li>When Impri POSTs the decision to <code>callback_url</code>, your handler resumes the durable function from that checkpoint.</li>
+<li>When Airlock POSTs the decision to <code>callback_url</code>, your handler resumes the durable function from that checkpoint.</li>
 <li>The resumed run executes the side effect (if approved) and reports the result.</li>
 </ol>
 <p>No process is billed or held open for the gap between step 2 and step 3, whether that gap is ninety seconds or the full 30-day maximum on <code>expires_in</code>.</p>
@@ -181,10 +181,10 @@ pre code.hljs{display:block;overflow-x:auto}
 	<span class="hljs-string">&quot;os&quot;</span>
 )
 
-<span class="hljs-keyword">const</span> base = <span class="hljs-string">&quot;https://api.impri.dev&quot;</span>
+<span class="hljs-keyword">const</span> base = <span class="hljs-string">&quot;https://api.airlock.dev&quot;</span>
 
 <span class="hljs-function"><span class="hljs-keyword">func</span> <span class="hljs-title">authHeader</span><span class="hljs-params">(req *http.Request)</span></span> {
-	req.Header.Set(<span class="hljs-string">&quot;Authorization&quot;</span>, <span class="hljs-string">&quot;Bearer &quot;</span>+os.Getenv(<span class="hljs-string">&quot;IMPRI_API_KEY&quot;</span>))
+	req.Header.Set(<span class="hljs-string">&quot;Authorization&quot;</span>, <span class="hljs-string">&quot;Bearer &quot;</span>+os.Getenv(<span class="hljs-string">&quot;AIRLOCK_API_KEY&quot;</span>))
 	req.Header.Set(<span class="hljs-string">&quot;Content-Type&quot;</span>, <span class="hljs-string">&quot;application/json&quot;</span>)
 }
 
@@ -194,7 +194,7 @@ pre code.hljs{display:block;overflow-x:auto}
 		<span class="hljs-string">&quot;kind&quot;</span>:        <span class="hljs-string">&quot;dns.record_update&quot;</span>,
 		<span class="hljs-string">&quot;title&quot;</span>:       fmt.Sprintf(<span class="hljs-string">&quot;Update %s -&gt; %s&quot;</span>, rec.Name, rec.Value),
 		<span class="hljs-string">&quot;preview&quot;</span>:     <span class="hljs-keyword">map</span>[<span class="hljs-type">string</span>]<span class="hljs-type">string</span>{<span class="hljs-string">&quot;format&quot;</span>: <span class="hljs-string">&quot;plain&quot;</span>, <span class="hljs-string">&quot;body&quot;</span>: fmt.Sprintf(<span class="hljs-string">&quot;%s %s -&gt; %s&quot;</span>, rec.Type, rec.Name, rec.Value)},
-		<span class="hljs-string">&quot;callback_url&quot;</span>: <span class="hljs-string">&quot;https://agent.example.com/impri/resume&quot;</span>,
+		<span class="hljs-string">&quot;callback_url&quot;</span>: <span class="hljs-string">&quot;https://agent.example.com/airlock/resume&quot;</span>,
 		<span class="hljs-string">&quot;expires_in&quot;</span>:  <span class="hljs-number">259200</span>, <span class="hljs-comment">// 72h — plenty for an on-call engineer to notice</span>
 		<span class="hljs-string">&quot;undo&quot;</span>:        fmt.Sprintf(<span class="hljs-string">&quot;Revert %s to its previous value in the zone file&quot;</span>, rec.Name),
 	})
@@ -212,7 +212,7 @@ pre code.hljs{display:block;overflow-x:auto}
 	<span class="hljs-keyword">return</span> out.ID, <span class="hljs-literal">nil</span>
 }
 
-<span class="hljs-comment">// OnDecision is the webhook handler Impri calls when the human decides.</span>
+<span class="hljs-comment">// OnDecision is the webhook handler Airlock calls when the human decides.</span>
 <span class="hljs-comment">// It resumes the suspended run identified by the action ID.</span>
 <span class="hljs-function"><span class="hljs-keyword">func</span> <span class="hljs-title">OnDecision</span><span class="hljs-params">(w http.ResponseWriter, r *http.Request)</span></span> {
 	<span class="hljs-keyword">var</span> payload <span class="hljs-keyword">struct</span> {
@@ -237,20 +237,20 @@ pre code.hljs{display:block;overflow-x:auto}
 
 	run.Finish(<span class="hljs-keyword">map</span>[<span class="hljs-type">string</span>]any{<span class="hljs-string">&quot;applied&quot;</span>: <span class="hljs-literal">true</span>})
 }</code></pre></div>
-<p>The webhook payload&#39;s <code>status</code> and <code>final_preview</code> are exactly what <code>GET /v1/actions/:id</code> would return — see <a href="webhooks">webhooks</a> for the full payload shape. If webhook delivery ever fails, the durable run isn&#39;t stuck: a scheduled reconciliation step can call <code>GET /v1/actions/:id</code> for any checkpoint older than a few minutes and resume it manually, since the action&#39;s status in Impri is the source of truth regardless of whether the callback arrived.</p>
+<p>The webhook payload&#39;s <code>status</code> and <code>final_preview</code> are exactly what <code>GET /v1/actions/:id</code> would return — see <a href="webhooks">webhooks</a> for the full payload shape. If webhook delivery ever fails, the durable run isn&#39;t stuck: a scheduled reconciliation step can call <code>GET /v1/actions/:id</code> for any checkpoint older than a few minutes and resume it manually, since the action&#39;s status in Airlock is the source of truth regardless of whether the callback arrived.</p>
 <hr>
 <h2 id="why-not-just-poll-inside-the-durable-sleep">Why not just poll inside the durable sleep?</h2>
 <p>You can — a durable <code>sleep</code> plus a polling activity is a completely valid version of this pattern, and it&#39;s what <a href="human-in-the-loop-temporal-workflows-for-ai-agents">Temporal-based agents</a> typically do, since Temporal&#39;s durable timers make repeated polling cheap. The tradeoff is <a href="blocking-vs-polling-for-human-approval">blocking vs. polling</a>: a durable sleep-and-poll loop still wakes the runtime on a schedule (say, every 30 seconds) even though nothing changes between wakeups, which shows up as scheduler load and, in some durable runtimes, billed step invocations. The webhook-resume version above only wakes the run exactly once, when there&#39;s actually something to do. If your runtime&#39;s public URL requirements make a webhook impractical (no ingress, private network), durable sleep-and-poll is the right fallback — it costs a bit of scheduler noise for zero infrastructure requirements.</p>
 <hr>
-<h2 id="what-impri-does-and-doesn39t-own-here">What Impri does and doesn&#39;t own here</h2>
-<p>Impri stores the proposed action, notifies the human, and holds the decision — it never touches your durable runtime, your checkpoints, or your workers. The suspend/resume mechanics, the choice of resume key, and retry behavior if a checkpoint fails to resume are entirely your framework&#39;s responsibility. Impri&#39;s only job is to make sure the decision — approved, rejected, or expired — exists and is durable on its own side by the time your webhook fires or your poll checks again.</p>
+<h2 id="what-airlock-does-and-doesn39t-own-here">What Airlock does and doesn&#39;t own here</h2>
+<p>Airlock stores the proposed action, notifies the human, and holds the decision — it never touches your durable runtime, your checkpoints, or your workers. The suspend/resume mechanics, the choice of resume key, and retry behavior if a checkpoint fails to resume are entirely your framework&#39;s responsibility. Airlock&#39;s only job is to make sure the decision — approved, rejected, or expired — exists and is durable on its own side by the time your webhook fires or your poll checks again.</p>
 <p>New to the REST/MCP calls themselves? Start with <a href="how-to-add-human-approval-to-an-ai-agent">how to add human approval to an AI agent</a>, then <a href="quickstart">quickstart</a> for getting an API key.</p>
 
-    <aside class="doc-cta" aria-label="Try Impri">
+    <aside class="doc-cta" aria-label="Try Airlock">
   <p class="doc-cta-title">Add an approval step to your own agent</p>
-  <p>Start on Impri Cloud: the Free tier includes 100 approvals a month. Or self-host the MIT-licensed core with Docker Compose, with no tier limits.</p>
+  <p>Start on Airlock Cloud: the Free tier includes 100 approvals a month. Or self-host the MIT-licensed core with Docker Compose, with no tier limits.</p>
   <div class="doc-cta-actions">
-    <a class="btn btn-primary btn-sm" href="https://app.impri.dev/?signup=1">Start free on Impri Cloud</a>
+    <a class="btn btn-primary btn-sm" href="https://app.airlock.dev/?signup=1">Start free on Airlock Cloud</a>
     <a class="btn btn-ghost btn-sm" href="../docs/quickstart">Quick start</a>
     <a class="btn btn-ghost btn-sm" href="../docs/self-hosting">Self-host guide</a>
   </div>
@@ -337,7 +337,7 @@ pre code.hljs{display:block;overflow-x:auto}
 <li class="ptoc-h2"><a href="#the-shape-checkpoint-before-you-wait-resume-on-the-decision">The shape: checkpoint before you wait, resume on the decision</a></li>
 <li class="ptoc-h2"><a href="#example-go-framework-agnostic-durable-function">Example (Go, framework-agnostic durable function)</a></li>
 <li class="ptoc-h2"><a href="#why-not-just-poll-inside-the-durable-sleep">Why not just poll inside the durable sleep?</a></li>
-<li class="ptoc-h2"><a href="#what-impri-does-and-doesn39t-own-here">What Impri does and doesn't own here</a></li></ul>
+<li class="ptoc-h2"><a href="#what-airlock-does-and-doesn39t-own-here">What Airlock does and doesn't own here</a></li></ul>
 </nav>
   </aside>
 </div>
@@ -345,19 +345,19 @@ pre code.hljs{display:block;overflow-x:auto}
 <footer class="footer">
 <div class="wrap footer-inner">
   <a class="brand" href="/">
-    <span class="mark"><svg viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.5 4.5L19 7.5" stroke="white" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Impri
+    <span class="mark"><svg viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.5 4.5L19 7.5" stroke="white" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Airlock
   </a>
   <div>
-    <a href="https://gitlab.com/sekera.radim/impri">GitLab</a>
+    <a href="https://gitlab.com/sekera.radim/airlock">GitLab</a>
     <a href="/docs">Docs</a>
-    <a href="https://gitlab.com/sekera.radim/impri/-/blob/main/LICENSE">MIT License</a>
-    <a href="https://www.npmjs.com/package/@impri/mcp">@impri/mcp</a>
+    <a href="https://gitlab.com/sekera.radim/airlock/-/blob/main/LICENSE">MIT License</a>
+    <a href="https://www.npmjs.com/package/@airlock/mcp">@airlock/mcp</a>
     <a href="/docs/privacy">Privacy</a>
     <a href="/docs/terms">Terms</a>
     <a href="https://sekera.dev">Contact</a>
   </div>
 </div>
-<div class="wrap" style="margin-top:18px"><span class="muted">© 2026 Impri · The imprimatur for your AI agents · Built by <a href="https://sekera.dev" style="color:inherit">Radim Sekera</a>. Also by the same maker: <a href="https://briefgate.dev/?utm_source=impri.dev&amp;utm_medium=referral" style="color:inherit">BriefGate</a> — client intake for agencies and AI agents.</span></div>
+<div class="wrap" style="margin-top:18px"><span class="muted">© 2026 Airlock · The airlockmatur for your AI agents · Built by <a href="https://sekera.dev" style="color:inherit">Radim Sekera</a>. Also by the same maker: <a href="https://briefgate.dev/?utm_source=airlock.dev&amp;utm_medium=referral" style="color:inherit">BriefGate</a> — client intake for agencies and AI agents.</span></div>
 </footer>
 </body>
 </html>

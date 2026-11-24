@@ -1,13 +1,13 @@
-# @impri/sdk
+# @airlock/sdk
 
-TypeScript SDK for [Impri](https://impri.dev) — human-in-the-loop approval API for AI agents. Zero runtime dependencies; uses native `fetch` (Node 18+).
+TypeScript SDK for [Airlock](https://airlock.dev) — human-in-the-loop approval API for AI agents. Zero runtime dependencies; uses native `fetch` (Node 18+).
 
 ## Quickstart
 
 ```ts
-import { ImpriClient } from '@impri/sdk'
+import { AirlockClient } from '@airlock/sdk'
 
-const client = new ImpriClient({ apiKey: 'im_...', baseUrl: 'https://api.impri.dev' })
+const client = new AirlockClient({ apiKey: 'im_...', baseUrl: 'https://api.airlock.dev' })
 
 const action = await client.createAction({
   kind: 'email.send',
@@ -17,7 +17,7 @@ const action = await client.createAction({
 })
 
 // Block until the human approves or rejects in the web inbox.
-// Throws ImpriRejected if rejected — handle it as a normal outcome.
+// Throws AirlockRejected if rejected — handle it as a normal outcome.
 const approved = await client.awaitDecision(action.id)
 
 const body = approved.decision!.final_preview?.body ?? approved.preview.body
@@ -29,7 +29,7 @@ await client.reportResult(action.id, 'executed')
 ## Install
 
 ```bash
-npm install @impri/sdk
+npm install @airlock/sdk
 ```
 
 ## Auth
@@ -37,10 +37,10 @@ npm install @impri/sdk
 | Priority | Source |
 |---|---|
 | 1 | `apiKey` constructor option |
-| 2 | `IMPRI_API_KEY` environment variable |
-| — | `ImpriConfigError` thrown at construction if neither set |
+| 2 | `AIRLOCK_API_KEY` environment variable |
+| — | `AirlockConfigError` thrown at construction if neither set |
 
-Default base URL: `http://localhost:8484` (self-hosted). Cloud: `https://api.impri.dev` (or `IMPRI_BASE_URL`).
+Default base URL: `http://localhost:8484` (self-hosted). Cloud: `https://api.airlock.dev` (or `AIRLOCK_BASE_URL`).
 
 ## Key methods
 
@@ -52,7 +52,7 @@ Default base URL: `http://localhost:8484` (self-hosted). Cloud: `https://api.imp
 | `decide(id, verdict, opts?)` | Programmatic approve/reject a single action |
 | `bulkDecide(ids, verdict, opts?)` | Approve or reject up to 50 actions in one request; returns per-item results |
 | `reportResult(id, status, opts?)` | Report execution outcome after approval |
-| `awaitDecision(id, opts?)` | Long-poll until decided (throws `ImpriRejected` / `ImpriExpired` / `ImpriTimeout`) |
+| `awaitDecision(id, opts?)` | Long-poll until decided (throws `AirlockRejected` / `AirlockExpired` / `AirlockTimeout`) |
 | `approvalGate(opts)` | Inline gate — returns `{ actionId, decision, finalPreview }` |
 | `requiresApproval(fn, opts)` | Wrap any async function behind an approval gate |
 | `createWatcher(params)` | Create an RSS / Reddit / URL-diff watcher |
@@ -94,7 +94,7 @@ const errors = results.filter(r => !r.ok)
 ```
 
 **Constraints**:
-- Max 50 IDs per call (server enforces; throws `ImpriValidationError` on excess).
+- Max 50 IDs per call (server enforces; throws `AirlockValidationError` on excess).
 - Rate limit: 10 requests/min per key (net ceiling 500 decisions/min).
 - Actions with `editable.length > 0` must be decided via `decide()` — bulk intentionally omits per-item edits.
 - Requires `'actions'` scope (same as single-decision).
@@ -137,7 +137,7 @@ const safeSend = client.requiresApproval(sendEmail, {
 })
 
 await safeSend('alice@example.com', 'Hello!')
-// ^ blocks until approved; throws ImpriRejected if rejected
+// ^ blocks until approved; throws AirlockRejected if rejected
 ```
 
 ## approvalGate (inline)
@@ -161,19 +161,19 @@ try {
 ## Webhook verification
 
 ```ts
-import { verifyWebhook, ImpriWebhookSignatureError } from '@impri/sdk'
+import { verifyWebhook, AirlockWebhookSignatureError } from '@airlock/sdk'
 
 // In your webhook handler:
 try {
   verifyWebhook(
     rawBody,                          // Buffer | string — raw request body, unparsed
     project.webhook_secret,           // from GET /v1/project
-    req.headers['x-impri-timestamp'],
-    req.headers['x-impri-nonce'],
-    req.headers['x-impri-signature'],
+    req.headers['x-airlock-timestamp'],
+    req.headers['x-airlock-nonce'],
+    req.headers['x-airlock-signature'],
   )
 } catch (err) {
-  if (err instanceof ImpriWebhookSignatureError) {
+  if (err instanceof AirlockWebhookSignatureError) {
     return res.status(401).send('Bad signature')
   }
   throw err
@@ -182,22 +182,22 @@ try {
 
 ## Error classes
 
-All errors extend `ImpriError`.
+All errors extend `AirlockError`.
 
 | Class | When |
 |---|---|
-| `ImpriConfigError` | Missing API key or bad base URL at construction |
-| `ImpriUnauthorized` | HTTP 401/403 |
-| `ImpriNotFound` | HTTP 404 |
-| `ImpriConflict` | HTTP 409 — already decided / result on non-approved action |
-| `ImpriExpired` | HTTP 410 or status='expired' in awaitDecision |
-| `ImpriRateLimited` | HTTP 429 — check `.retryAfter` (seconds) |
-| `ImpriQuotaExceeded` | HTTP 402 — check `.limit` and `.tier` |
-| `ImpriValidationError` | HTTP 400/422 — check `.issues` (Zod format) |
-| `ImpriApiError` | All other 4xx/5xx |
-| `ImpriRejected` | `awaitDecision`: human rejected — handle as normal flow, not an error |
-| `ImpriTimeout` | `awaitDecision`: timed out — action still pending, call again to resume |
-| `ImpriWebhookSignatureError` | `verifyWebhook`: invalid/stale signature |
+| `AirlockConfigError` | Missing API key or bad base URL at construction |
+| `AirlockUnauthorized` | HTTP 401/403 |
+| `AirlockNotFound` | HTTP 404 |
+| `AirlockConflict` | HTTP 409 — already decided / result on non-approved action |
+| `AirlockExpired` | HTTP 410 or status='expired' in awaitDecision |
+| `AirlockRateLimited` | HTTP 429 — check `.retryAfter` (seconds) |
+| `AirlockQuotaExceeded` | HTTP 402 — check `.limit` and `.tier` |
+| `AirlockValidationError` | HTTP 400/422 — check `.issues` (Zod format) |
+| `AirlockApiError` | All other 4xx/5xx |
+| `AirlockRejected` | `awaitDecision`: human rejected — handle as normal flow, not an error |
+| `AirlockTimeout` | `awaitDecision`: timed out — action still pending, call again to resume |
+| `AirlockWebhookSignatureError` | `verifyWebhook`: invalid/stale signature |
 
 ## Untrusted content (Watcher actions)
 
@@ -239,7 +239,7 @@ const tg = await client.createNotificationChannel({
 const ntfy = await client.createNotificationChannel({
   name: 'ntfy mobile push',
   type: 'ntfy',
-  config: { url: 'https://ntfy.sh', topic: 'my-impri-alerts' },
+  config: { url: 'https://ntfy.sh', topic: 'my-airlock-alerts' },
 })
 
 // --- Email (uses server-configured SMTP) ---
@@ -255,8 +255,8 @@ const hook = await client.createNotificationChannel({
   name: 'My webhook receiver',
   type: 'webhook',
   config: {
-    url: 'https://myapp.example.com/impri-hook',
-    hmac_secret: 'my-shared-secret',   // optional; enables X-Impri-Signature
+    url: 'https://myapp.example.com/airlock-hook',
+    hmac_secret: 'my-shared-secret',   // optional; enables X-Airlock-Signature
   },
 })
 
@@ -336,10 +336,10 @@ Available preset categories: **Community** (HN, Reddit), **Developer** (GitHub, 
 
 | Thrown | When |
 |---|---|
-| `ImpriNotFound` | `preset_id` does not match any known preset |
-| `ImpriValidationError` | Required param is missing or fails format checks |
-| `ImpriQuotaExceeded` | Watcher limit reached or schedule too frequent for tier |
-| `ImpriRateLimited` | `watchers:create` rate-limit bucket exhausted |
+| `AirlockNotFound` | `preset_id` does not match any known preset |
+| `AirlockValidationError` | Required param is missing or fails format checks |
+| `AirlockQuotaExceeded` | Watcher limit reached or schedule too frequent for tier |
+| `AirlockRateLimited` | `watchers:create` rate-limit bucket exhausted |
 
 ## Build
 

@@ -64,12 +64,12 @@ function seedAction(
 describe('deliverWebhook — success path', () => {
   afterEach(() => {
     vi.restoreAllMocks();
-    delete process.env.IMPRI_ALLOW_PRIVATE_TARGETS;
+    delete process.env.AIRLOCK_ALLOW_PRIVATE_TARGETS;
   });
 
   it('marks delivery as "delivered" with last_status_code on 2xx response', async () => {
     const { db, projectId } = await setup();
-    process.env.IMPRI_ALLOW_PRIVATE_TARGETS = '1';
+    process.env.AIRLOCK_ALLOW_PRIVATE_TARGETS = '1';
 
     const actionId = seedAction(db, projectId, { callbackUrl: 'http://1.2.3.4/cb' });
     scheduleWebhookDelivery(db, actionId, 'http://1.2.3.4/cb');
@@ -99,12 +99,12 @@ describe('deliverWebhook — success path', () => {
 describe('deliverWebhook — non-2xx retry', () => {
   afterEach(() => {
     vi.restoreAllMocks();
-    delete process.env.IMPRI_ALLOW_PRIVATE_TARGETS;
+    delete process.env.AIRLOCK_ALLOW_PRIVATE_TARGETS;
   });
 
   it('sets status="retry" and increments attempt on non-2xx response', async () => {
     const { db, projectId } = await setup();
-    process.env.IMPRI_ALLOW_PRIVATE_TARGETS = '1';
+    process.env.AIRLOCK_ALLOW_PRIVATE_TARGETS = '1';
 
     const actionId = seedAction(db, projectId);
     scheduleWebhookDelivery(db, actionId, 'http://1.2.3.4/cb');
@@ -135,12 +135,12 @@ describe('deliverWebhook — non-2xx retry', () => {
 describe('deliverWebhook — DLQ after exhausted retries', () => {
   afterEach(() => {
     vi.restoreAllMocks();
-    delete process.env.IMPRI_ALLOW_PRIVATE_TARGETS;
+    delete process.env.AIRLOCK_ALLOW_PRIVATE_TARGETS;
   });
 
   it('moves delivery to DLQ when attempt count reaches the retry limit (5 delays + 1)', async () => {
     const { db, projectId } = await setup();
-    process.env.IMPRI_ALLOW_PRIVATE_TARGETS = '1';
+    process.env.AIRLOCK_ALLOW_PRIVATE_TARGETS = '1';
 
     const actionId = seedAction(db, projectId);
     scheduleWebhookDelivery(db, actionId, 'http://1.2.3.4/cb');
@@ -173,12 +173,12 @@ describe('deliverWebhook — DLQ after exhausted retries', () => {
 describe('deliverWebhook — HTTP 410 deregisters callback_url', () => {
   afterEach(() => {
     vi.restoreAllMocks();
-    delete process.env.IMPRI_ALLOW_PRIVATE_TARGETS;
+    delete process.env.AIRLOCK_ALLOW_PRIVATE_TARGETS;
   });
 
   it('sets status="gone" and nulls the action callback_url on 410 response', async () => {
     const { db, projectId } = await setup();
-    process.env.IMPRI_ALLOW_PRIVATE_TARGETS = '1';
+    process.env.AIRLOCK_ALLOW_PRIVATE_TARGETS = '1';
 
     const actionId = seedAction(db, projectId, { callbackUrl: 'http://1.2.3.4/cb' });
     scheduleWebhookDelivery(db, actionId, 'http://1.2.3.4/cb');
@@ -209,12 +209,12 @@ describe('deliverWebhook — HTTP 410 deregisters callback_url', () => {
 describe('deliverWebhook — SSRF guard at delivery time', () => {
   afterEach(() => {
     vi.restoreAllMocks();
-    delete process.env.IMPRI_ALLOW_PRIVATE_TARGETS;
+    delete process.env.AIRLOCK_ALLOW_PRIVATE_TARGETS;
   });
 
   it('immediately DLQs when callback_url resolves to a private address', async () => {
     const { db, projectId } = await setup();
-    // Do NOT set IMPRI_ALLOW_PRIVATE_TARGETS — SSRF guard must be active
+    // Do NOT set AIRLOCK_ALLOW_PRIVATE_TARGETS — SSRF guard must be active
 
     const actionId = seedAction(db, projectId, { callbackUrl: 'http://127.0.0.1/cb' });
     scheduleWebhookDelivery(db, actionId, 'http://127.0.0.1/cb');
@@ -240,12 +240,12 @@ describe('deliverWebhook — SSRF guard at delivery time', () => {
 describe('runExpiryTick — schedules and delivers webhook on expiry', () => {
   afterEach(() => {
     vi.restoreAllMocks();
-    delete process.env.IMPRI_ALLOW_PRIVATE_TARGETS;
+    delete process.env.AIRLOCK_ALLOW_PRIVATE_TARGETS;
   });
 
   it('schedules a webhook delivery row AND delivers it in the same tick', async () => {
     const { db, projectId } = await setup();
-    process.env.IMPRI_ALLOW_PRIVATE_TARGETS = '1';
+    process.env.AIRLOCK_ALLOW_PRIVATE_TARGETS = '1';
 
     vi.spyOn(globalThis, 'fetch').mockResolvedValue(
       new Response('ok', { status: 200 }),
@@ -279,12 +279,12 @@ describe('runExpiryTick — schedules and delivers webhook on expiry', () => {
 describe('runWebhookTick — per-project secret and fallback', () => {
   afterEach(() => {
     vi.restoreAllMocks();
-    delete process.env.IMPRI_ALLOW_PRIVATE_TARGETS;
+    delete process.env.AIRLOCK_ALLOW_PRIVATE_TARGETS;
   });
 
   it('delivers successfully when project has its own webhook_secret', async () => {
     const { db, projectId } = await setup();
-    process.env.IMPRI_ALLOW_PRIVATE_TARGETS = '1';
+    process.env.AIRLOCK_ALLOW_PRIVATE_TARGETS = '1';
 
     db.prepare('UPDATE projects SET webhook_secret = ? WHERE id = ?').run('proj-secret-xyz', projectId);
 
@@ -305,7 +305,7 @@ describe('runWebhookTick — per-project secret and fallback', () => {
 
   it('falls back to instance WEBHOOK_SECRET when project webhook_secret is NULL', async () => {
     const { db, projectId } = await setup();
-    process.env.IMPRI_ALLOW_PRIVATE_TARGETS = '1';
+    process.env.AIRLOCK_ALLOW_PRIVATE_TARGETS = '1';
 
     // Clear the per-project secret (simulates pre-per-project-secret migration)
     db.prepare('UPDATE projects SET webhook_secret = NULL WHERE id = ?').run(projectId);

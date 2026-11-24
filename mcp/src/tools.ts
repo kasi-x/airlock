@@ -1,4 +1,4 @@
-import { apiRequest, type Action, type ActionCreated, type ImpriConfig } from "./client.js";
+import { apiRequest, type Action, type ActionCreated, type AirlockConfig } from "./client.js";
 
 export interface ToolResult {
   text: string;
@@ -18,7 +18,7 @@ function jsonResult(value: Record<string, unknown>): ToolResult {
   return { text: JSON.stringify(value, null, 2), structuredContent: value };
 }
 
-// ─── impri_push_action ────────────────────────────────────────────────────────
+// ─── airlock_push_action ────────────────────────────────────────────────────────
 
 export interface PushActionArgs {
   kind: string;
@@ -32,7 +32,7 @@ export interface PushActionArgs {
 }
 
 export async function pushAction(
-  config: ImpriConfig,
+  config: AirlockConfig,
   args: PushActionArgs,
 ): Promise<ToolResult> {
   const result = await apiRequest<ActionCreated>(config, "POST", "/actions", args);
@@ -43,7 +43,7 @@ export async function pushAction(
   });
 }
 
-// ─── impri_await_decision ─────────────────────────────────────────────────────
+// ─── airlock_await_decision ─────────────────────────────────────────────────────
 
 export interface AwaitDecisionArgs {
   action_id: string;
@@ -51,7 +51,7 @@ export interface AwaitDecisionArgs {
 }
 
 export async function awaitDecision(
-  config: ImpriConfig,
+  config: AirlockConfig,
   args: AwaitDecisionArgs,
   pollIntervalMs = 5_000,
 ): Promise<ToolResult> {
@@ -68,7 +68,7 @@ export async function awaitDecision(
     const remaining = deadline - Date.now();
     if (remaining <= 0) {
       return {
-        text: `Timed out after ${timeoutS}s waiting for action ${args.action_id}. It is still pending — use impri_inbox_status to check queue depth, or open the inbox of your IMPRI_BASE_URL server (${config.baseUrl}).`,
+        text: `Timed out after ${timeoutS}s waiting for action ${args.action_id}. It is still pending — use airlock_inbox_status to check queue depth, or open the inbox of your AIRLOCK_BASE_URL server (${config.baseUrl}).`,
         isError: true,
       };
     }
@@ -99,7 +99,7 @@ function isUntrustedAction(action: { payload?: unknown }): boolean {
 function formatDecision(action: Action): ToolResult {
   if (action.status === "expired") {
     return {
-      text: `Action ${action.id} has expired — the approval window closed. Create a new action with impri_push_action if the task is still relevant.`,
+      text: `Action ${action.id} has expired — the approval window closed. Create a new action with airlock_push_action if the task is still relevant.`,
       isError: true,
     };
   }
@@ -137,7 +137,7 @@ function formatDecision(action: Action): ToolResult {
   return jsonResult(output);
 }
 
-// ─── impri_report_result ──────────────────────────────────────────────────────
+// ─── airlock_report_result ──────────────────────────────────────────────────────
 
 export interface ReportResultArgs {
   action_id: string;
@@ -146,7 +146,7 @@ export interface ReportResultArgs {
 }
 
 export async function reportResult(
-  config: ImpriConfig,
+  config: AirlockConfig,
   args: ReportResultArgs,
 ): Promise<ToolResult> {
   // POST /v1/actions/:id/result (server/src/routes/actions.ts) returns
@@ -175,9 +175,9 @@ export async function reportResult(
   };
 }
 
-// ─── impri_inbox_status ───────────────────────────────────────────────────────
+// ─── airlock_inbox_status ───────────────────────────────────────────────────────
 
-export async function inboxStatus(config: ImpriConfig): Promise<ToolResult> {
+export async function inboxStatus(config: AirlockConfig): Promise<ToolResult> {
   // Server returns { items, has_more, next_cursor } — we fetch one page (default 50)
   const raw = await apiRequest<unknown>(config, "GET", "/actions?status=pending");
 
@@ -192,13 +192,13 @@ export async function inboxStatus(config: ImpriConfig): Promise<ToolResult> {
 
   if (items.length === 0) {
     return {
-      text: "Impri inbox: 0 pending actions. The inbox is clear — safe to start new tasks.",
+      text: "Airlock inbox: 0 pending actions. The inbox is clear — safe to start new tasks.",
       structuredContent: { pending_count: 0 },
     };
   }
 
   const lines: string[] = [
-    `Impri inbox: ${items.length} pending action${items.length === 1 ? "" : "s"} awaiting decision`,
+    `Airlock inbox: ${items.length} pending action${items.length === 1 ? "" : "s"} awaiting decision`,
   ];
 
   for (const item of items.slice(0, 10)) {
@@ -224,7 +224,7 @@ export async function inboxStatus(config: ImpriConfig): Promise<ToolResult> {
   return { text: lines.join("\n"), structuredContent: { pending_count: items.length } };
 }
 
-// ─── impri_create_watcher ─────────────────────────────────────────────────────
+// ─── airlock_create_watcher ─────────────────────────────────────────────────────
 
 export interface Watcher {
   id: string;
@@ -243,7 +243,7 @@ export interface CreateWatcherArgs {
 }
 
 export async function createWatcher(
-  config: ImpriConfig,
+  config: AirlockConfig,
   args: CreateWatcherArgs,
 ): Promise<ToolResult> {
   const watcher = await apiRequest<Watcher>(config, "POST", "/watchers", args.spec);
@@ -256,7 +256,7 @@ export async function createWatcher(
   });
 }
 
-// ─── impri_list_watchers ──────────────────────────────────────────────────────
+// ─── airlock_list_watchers ──────────────────────────────────────────────────────
 
 export interface ListWatchersArgs {
   /** Filter by status: "active" | "paused" | "degraded". */
@@ -264,7 +264,7 @@ export interface ListWatchersArgs {
 }
 
 export async function listWatchers(
-  config: ImpriConfig,
+  config: AirlockConfig,
   args: ListWatchersArgs = {},
 ): Promise<ToolResult> {
   const qs = args.status ? `?status=${encodeURIComponent(args.status)}` : "";
@@ -293,7 +293,7 @@ export async function listWatchers(
   return { text: lines.join("\n"), structuredContent: { count: items.length, watchers } };
 }
 
-// ─── impri_list_watcher_presets ───────────────────────────────────────────────
+// ─── airlock_list_watcher_presets ───────────────────────────────────────────────
 
 export interface PresetParam {
   name: string;
@@ -312,7 +312,7 @@ export interface Preset {
   defaultScheduleEvery: string;
 }
 
-export async function listWatcherPresets(config: ImpriConfig): Promise<ToolResult> {
+export async function listWatcherPresets(config: AirlockConfig): Promise<ToolResult> {
   const raw = await apiRequest<unknown>(config, "GET", "/watcher-presets");
   const resp = raw as { presets?: Preset[] };
   const presets = resp.presets ?? [];
@@ -356,7 +356,7 @@ export async function listWatcherPresets(config: ImpriConfig): Promise<ToolResul
   return { text: lines.join("\n"), structuredContent: { presets } };
 }
 
-// ─── impri_create_watcher_from_preset ────────────────────────────────────────
+// ─── airlock_create_watcher_from_preset ────────────────────────────────────────
 
 export interface CreateWatcherFromPresetArgs {
   preset_id: string;
@@ -370,7 +370,7 @@ export interface CreateWatcherFromPresetArgs {
 }
 
 export async function createWatcherFromPreset(
-  config: ImpriConfig,
+  config: AirlockConfig,
   args: CreateWatcherFromPresetArgs,
 ): Promise<ToolResult> {
   const body: Record<string, unknown> = {

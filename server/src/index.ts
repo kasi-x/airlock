@@ -41,7 +41,7 @@ import { createRequire } from 'node:module';
 const _require = createRequire(import.meta.url);
 const PKG_VERSION: string = (_require('../package.json') as { version: string }).version;
 
-const DB_PATH = process.env.DB_PATH ?? 'impri.db';
+const DB_PATH = process.env.DB_PATH ?? 'airlock.db';
 const PORT = Number(process.env.PORT ?? 8484);
 const HOST = process.env.HOST ?? '0.0.0.0';
 const WEBHOOK_SECRET = process.env.WEBHOOK_SECRET ?? 'change-me-in-production';
@@ -64,10 +64,10 @@ export async function createApp(db: Db, reporter: ErrorReporter = errorReporter)
   const app = Fastify({
     logger: {
       // Never log the Authorization header — it carries the raw API key.
-      // x-impri-internal-auth is short-lived (5s) and process-scoped but
+      // x-airlock-internal-auth is short-lived (5s) and process-scoped but
       // redacted too, for the same reason: no credential-shaped value
       // belongs in logs even when its blast radius is small.
-      redact: ['req.headers.authorization', 'req.headers.cookie', 'req.headers["x-impri-internal-auth"]'],
+      redact: ['req.headers.authorization', 'req.headers.cookie', 'req.headers["x-airlock-internal-auth"]'],
       // Same as Fastify's default req serializer, except the URL: the email
       // confirmation link carries its single-use token in the query string.
       serializers: {
@@ -245,8 +245,8 @@ export async function createApp(db: Db, reporter: ErrorReporter = errorReporter)
   });
 
   // ---------------------------------------------------------------------------
-  // HTTP metrics — onResponse hook populates impri_http_requests_total and
-  // impri_http_request_duration_seconds. Excludes /metrics itself to avoid noise.
+  // HTTP metrics — onResponse hook populates airlock_http_requests_total and
+  // airlock_http_request_duration_seconds. Excludes /metrics itself to avoid noise.
   // ---------------------------------------------------------------------------
   app.addHook('onResponse', (request, reply, done) => {
     // req.routeOptions.url is the pattern (/v1/actions/:id), never the real URL.
@@ -258,8 +258,8 @@ export async function createApp(db: Db, reporter: ErrorReporter = errorReporter)
     const statusClass = statusCode >= 500 ? '5xx' : statusCode >= 400 ? '4xx' : '2xx';
     const durationSec = reply.elapsedTime / 1000;
 
-    incCounter('impri_http_requests_total', { route, method, status_class: statusClass });
-    obsHistogram('impri_http_request_duration_seconds', { route, method }, durationSec);
+    incCounter('airlock_http_requests_total', { route, method, status_class: statusClass });
+    obsHistogram('airlock_http_request_duration_seconds', { route, method }, durationSec);
     done();
   });
 
@@ -270,7 +270,7 @@ export async function createApp(db: Db, reporter: ErrorReporter = errorReporter)
     // otherwise pay a second argon2.verify for a key already verified once
     // for the outer /mcp request. See auth.ts for why this header can only
     // be produced by this same process.
-    const internalToken = request.headers['x-impri-internal-auth'];
+    const internalToken = request.headers['x-airlock-internal-auth'];
     if (typeof internalToken === 'string') {
       const keyId = verifyInternalAuthToken(internalToken);
       const keyRecord = keyId ? lookupApiKeyById(db, keyId) : null;
@@ -370,7 +370,7 @@ export async function createApp(db: Db, reporter: ErrorReporter = errorReporter)
   registerRecoveryRoutes(app, db);
 
   // Hosted streamable-HTTP MCP endpoint (/mcp) + public server card
-  // (/.well-known/mcp/server-card.json). Same 8 tools as the stdio @impri/mcp
+  // (/.well-known/mcp/server-card.json). Same 8 tools as the stdio @airlock/mcp
   // package, executed in-process via app.inject — see routes/mcp.ts.
   registerMcpRoutes(app, db);
 
@@ -380,17 +380,17 @@ export async function createApp(db: Db, reporter: ErrorReporter = errorReporter)
 async function main() {
   if (WEBHOOK_SECRET === 'change-me-in-production') {
     console.warn(
-      '[impri] WARNING: WEBHOOK_SECRET is the default value. Webhook signatures ' +
+      '[airlock] WARNING: WEBHOOK_SECRET is the default value. Webhook signatures ' +
       'are forgeable. Set WEBHOOK_SECRET to a strong random value in production.',
     );
   }
 
   console.log(
     billingActive()
-      ? '[impri] billing: ENABLED (Stripe) — tier limits enforced'
-      : '[impri] billing: disabled (self-host — all features free, no limits)',
+      ? '[airlock] billing: ENABLED (Stripe) — tier limits enforced'
+      : '[airlock] billing: disabled (self-host — all features free, no limits)',
   );
-  console.log(`[impri] web push: ${pushEnabled() ? 'ENABLED (VAPID)' : 'disabled'}`);
+  console.log(`[airlock] web push: ${pushEnabled() ? 'ENABLED (VAPID)' : 'disabled'}`);
 
   const db = createDb(DB_PATH);
 
@@ -398,7 +398,7 @@ async function main() {
   const bootstrap = await bootstrapAdminKey(db);
   if (bootstrap) {
     console.log('\n╔══════════════════════════════════════════════════════╗');
-    console.log('║            IMPRI — FIRST RUN BOOTSTRAP               ║');
+    console.log('║            AIRLOCK — FIRST RUN BOOTSTRAP               ║');
     console.log('╠══════════════════════════════════════════════════════╣');
     console.log(`║  Admin API Key: ${bootstrap.key}`);
     console.log(`║  Project ID:    ${bootstrap.projectId}`);
@@ -438,7 +438,7 @@ async function main() {
   });
 
   await app.listen({ port: PORT, host: HOST });
-  console.log(`Impri server running on http://${HOST}:${PORT}`);
+  console.log(`Airlock server running on http://${HOST}:${PORT}`);
 }
 
 // Don't run in vitest worker threads — each thread imports index.ts and would

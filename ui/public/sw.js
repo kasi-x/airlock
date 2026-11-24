@@ -5,10 +5,10 @@ self.addEventListener('push', (event) => {
   try {
     data = event.data.json()
   } catch {
-    data = { title: 'Impri', body: event.data.text(), url: '/' }
+    data = { title: 'Airlock', body: event.data.text(), url: '/' }
   }
 
-  const title = data.title ?? 'Impri'
+  const title = data.title ?? 'Airlock'
   const options = {
     body: data.body ?? '',
     icon: '/favicon.ico',

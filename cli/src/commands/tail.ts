@@ -1,5 +1,5 @@
 import { Command } from 'commander'
-import { ImpriError } from '@impri/sdk'
+import { AirlockError } from '@airlock/sdk'
 import { makeClient } from '../client-factory.js'
 import { dim, cyan, bold, statusBadge, age, printError, printJsonLine } from '../output.js'
 

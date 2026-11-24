@@ -1,8 +1,8 @@
 # Add Human Approval to a Cron Job Without Blocking
 
-Let the cron job propose instead of act: the first run files an Impri card keyed to its slot, later runs read the decision and send the approved text once.
+Let the cron job propose instead of act: the first run files an Airlock card keyed to its slot, later runs read the decision and send the approved text once.
 
-Each run is a short check; Impri holds the state between runs. The script below was run end to end on 2026-11-22 against a local Impri server built from the repository (Python 3.12, httpx 0.28.1, every run a separate process). What those runs showed is listed after the code.
+Each run is a short check; Airlock holds the state between runs. The script below was run end to end on 2026-11-22 against a local Airlock server built from the repository (Python 3.12, httpx 0.28.1, every run a separate process). What those runs showed is listed after the code.
 
 ---
 
@@ -12,7 +12,7 @@ The obvious version pushes the draft and then polls `GET /v1/actions/:id` until 
 
 - The process lives for hours. If the next tick fires while it waits, a second copy starts and pushes a second card.
 - A reboot or a deploy kills the waiting process, and the decision arrives to nobody.
-- A retry or a manual rerun opens another card. Without an `idempotency_key`, Impri only folds a repeat into an existing card when kind, title and body are identical and still pending, and an LLM-written draft is never identical twice.
+- A retry or a manual rerun opens another card. Without an `idempotency_key`, Airlock only folds a repeat into an existing card when kind, title and body are identical and still pending, and an LLM-written draft is never identical twice.
 
 So each run looks up the card for its slot and does whatever the card's status says.
 
@@ -39,7 +39,7 @@ The lookup is `GET /v1/actions?kind=…&since=…` filtered by `idempotency_key`
 #!/usr/bin/env python3
 """weekly_newsletter.py: cron runs this every 10 minutes on Mondays.
 
-The first run of the week proposes the draft as an Impri card. Later runs
+The first run of the week proposes the draft as an Airlock card. Later runs
 look the card up and send the approved text once. Nothing waits in between.
 """
 import datetime as dt
@@ -49,9 +49,9 @@ import sys
 import httpx
 
 KIND = "newsletter.send"
-impri = httpx.Client(
-    base_url=os.environ.get("IMPRI_BASE_URL", "https://api.impri.dev"),
-    headers={"Authorization": f"Bearer {os.environ['IMPRI_API_KEY']}"},
+airlock = httpx.Client(
+    base_url=os.environ.get("AIRLOCK_BASE_URL", "https://api.airlock.dev"),
+    headers={"Authorization": f"Bearer {os.environ['AIRLOCK_API_KEY']}"},
     timeout=15,
 )
 
@@ -73,13 +73,13 @@ def this_week() -> tuple[str, int]:
 
 
 def find_card(key: str, since: int) -> dict | None:
-    r = impri.get("/v1/actions", params={"kind": KIND, "since": since, "limit": 100})
+    r = airlock.get("/v1/actions", params={"kind": KIND, "since": since, "limit": 100})
     r.raise_for_status()
     return next((a for a in r.json()["items"] if a.get("idempotency_key") == key), None)
 
 
 def report(action_id: str, status: str, detail: str) -> None:
-    r = impri.post(f"/v1/actions/{action_id}/result",
+    r = airlock.post(f"/v1/actions/{action_id}/result",
                    json={"status": status, "detail": detail[:500]})
     r.raise_for_status()
 
@@ -90,7 +90,7 @@ def main() -> int:
     card = find_card(key, since)
 
     if card is None:
-        r = impri.post("/v1/actions", json={
+        r = airlock.post("/v1/actions", json={
             "kind": KIND,
             "title": f"Weekly newsletter {week}",
             "preview": {"format": "markdown", "body": draft_newsletter()},
@@ -108,7 +108,7 @@ def main() -> int:
         print(f"{card['id']} is {card['status']}")
         return 0
 
-    r = impri.get(f"/v1/actions/{card['id']}")
+    r = airlock.get(f"/v1/actions/{card['id']}")
     r.raise_for_status()
     body = r.json()["decision"]["final_preview"]["body"]  # with the reviewer's edits
     try:
@@ -128,7 +128,7 @@ if __name__ == "__main__":
 The crontab runs it every 10 minutes from 07:00 to 18:50 on Mondays. `flock -n` skips a run while the previous one still holds the lock:
 
 ```cron
-IMPRI_API_KEY=im_...
+AIRLOCK_API_KEY=im_...
 */10 7-18 * * 1  flock -n /tmp/weekly-newsletter.lock /opt/jobs/venv/bin/python /opt/jobs/weekly_newsletter.py
 ```
 
@@ -157,7 +157,7 @@ Every call in the script needs only the `actions` scope, so give the job a key w
 
 ## Picking `expires_in` for a schedule
 
-Size the window to how long the side effect is still worth doing. Impri accepts 300 seconds to 30 days; the default is 72 hours, too long for most schedules. The run interval sets the delay between approval and execution: with runs every 10 minutes, an approved newsletter goes out within 10 minutes. More on choosing windows in [handling approval timeouts and expiry](handling-approval-timeouts-and-expiry-in-agents.md).
+Size the window to how long the side effect is still worth doing. Airlock accepts 300 seconds to 30 days; the default is 72 hours, too long for most schedules. The run interval sets the delay between approval and execution: with runs every 10 minutes, an approved newsletter goes out within 10 minutes. More on choosing windows in [handling approval timeouts and expiry](handling-approval-timeouts-and-expiry-in-agents.md).
 
 ---
 
@@ -171,4 +171,4 @@ Size the window to how long the side effect is still worth doing. Impri accepts 
 
 ## Next step
 
-Run the script against your own inbox. [Self-host Impri](quickstart.md) with `docker compose` and set `IMPRI_BASE_URL` to your server, or [start free on the cloud](https://app.impri.dev/?signup=1) and [create an `actions`-scoped key](api-keys.md). Then set up [notifications](notifications.md) so the Monday card reaches your phone.
+Run the script against your own inbox. [Self-host Airlock](quickstart.md) with `docker compose` and set `AIRLOCK_BASE_URL` to your server, or [start free on the cloud](https://app.airlock.dev/?signup=1) and [create an `actions`-scoped key](api-keys.md). Then set up [notifications](notifications.md) so the Monday card reaches your phone.

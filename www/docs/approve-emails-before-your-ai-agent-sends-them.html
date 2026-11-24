@@ -3,21 +3,21 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Approve Emails Before Your AI Agent Sends Them — Impri Docs</title>
+<title>Approve Emails Before Your AI Agent Sends Them — Airlock Docs</title>
 <meta name="description" content="Give your email-sending AI agent a human approval gate: push the draft, let the reviewer edit subject and body, then send only the approved version.">
 <meta name="theme-color" content="#06070d">
-<meta property="og:title" content="Approve Emails Before Your AI Agent Sends Them — Impri Docs">
+<meta property="og:title" content="Approve Emails Before Your AI Agent Sends Them — Airlock Docs">
 <meta property="og:description" content="Give your email-sending AI agent a human approval gate: push the draft, let the reviewer edit subject and body, then send only the approved version.">
 <meta property="og:type" content="article">
-<meta property="og:url" content="https://impri.dev/docs/approve-emails-before-your-ai-agent-sends-them">
-<meta property="og:image" content="https://impri.dev/assets/og/og-docs.png">
+<meta property="og:url" content="https://airlock.dev/docs/approve-emails-before-your-ai-agent-sends-them">
+<meta property="og:image" content="https://airlock.dev/assets/og/og-docs.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
-<meta property="og:image:alt" content="Impri — human-in-the-loop approval inbox for AI agents">
+<meta property="og:image:alt" content="Airlock — human-in-the-loop approval inbox for AI agents">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="https://impri.dev/assets/og/og-docs.png">
-<link rel="canonical" href="https://impri.dev/docs/approve-emails-before-your-ai-agent-sends-them">
-<script type="application/ld+json">{"@context":"https://schema.org","@type":"TechArticle","headline":"Approve Emails Before Your AI Agent Sends Them","description":"Give your email-sending AI agent a human approval gate: push the draft, let the reviewer edit subject and body, then send only the approved version.","url":"https://impri.dev/docs/approve-emails-before-your-ai-agent-sends-them","inLanguage":"en","author":{"@type":"Organization","name":"Impri","url":"https://impri.dev"},"publisher":{"@type":"Organization","name":"Impri","url":"https://impri.dev"}}</script>
+<meta name="twitter:image" content="https://airlock.dev/assets/og/og-docs.png">
+<link rel="canonical" href="https://airlock.dev/docs/approve-emails-before-your-ai-agent-sends-them">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"TechArticle","headline":"Approve Emails Before Your AI Agent Sends Them","description":"Give your email-sending AI agent a human approval gate: push the draft, let the reviewer edit subject and body, then send only the approved version.","url":"https://airlock.dev/docs/approve-emails-before-your-ai-agent-sends-them","inLanguage":"en","author":{"@type":"Organization","name":"Airlock","url":"https://airlock.dev"},"publisher":{"@type":"Organization","name":"Airlock","url":"https://airlock.dev"}}</script>
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <link rel="icon" href="/favicon.ico" sizes="32x32">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='9' fill='%236366f1'/%3E%3Cpath d='M9 16.5l4.5 4.5L23 11' stroke='white' stroke-width='3' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
@@ -132,13 +132,13 @@ pre code.hljs{display:block;overflow-x:auto}
 <div class="wrap nav-inner">
   <a class="brand" href="/">
     <span class="mark"><svg viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.5 4.5L19 7.5" stroke="white" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
-    Impri
+    Airlock
   </a>
   <div class="nav-links">
     <a class="link" href="/#how">How it works</a>
     <a class="link" href="/#pricing">Pricing</a>
     <a class="link active-nav" href="../docs">Docs</a>
-    <a class="btn btn-primary btn-sm" href="https://gitlab.com/sekera.radim/impri">GitLab</a>
+    <a class="btn btn-primary btn-sm" href="https://gitlab.com/sekera.radim/airlock">GitLab</a>
   </div>
 </div>
 </nav>
@@ -164,7 +164,7 @@ pre code.hljs{display:block;overflow-x:auto}
 <p>The flow is three steps from the agent&#39;s perspective:</p>
 <div class="code-block"><pre><code class="hljs">Agent produces draft
   │
-  ├─ POST /v1/actions  →  Impri stores draft, notifies you
+  ├─ POST /v1/actions  →  Airlock stores draft, notifies you
   │
   ├─ GET /v1/actions/:id  (poll until decided)
   │    Human opens inbox card, reads draft,
@@ -175,11 +175,11 @@ pre code.hljs{display:block;overflow-x:auto}
 <p>The gate is not a confirmation prompt — it is a data dependency. The send function is never called without the API returning <code>status: &quot;approved&quot;</code>.</p>
 <hr>
 <h2 id="code-example-nodejs-email-agent-with-approval-gate">Code example: Node.js email agent with approval gate</h2>
-<p>This example uses TypeScript with <code>nodemailer</code> for sending. The Impri calls are plain <code>fetch</code>.</p>
+<p>This example uses TypeScript with <code>nodemailer</code> for sending. The Airlock calls are plain <code>fetch</code>.</p>
 <div class="code-block"><span class="code-lang">typescript</span><pre><code class="hljs"><span class="hljs-keyword">import</span> nodemailer <span class="hljs-keyword">from</span> <span class="hljs-string">&quot;nodemailer&quot;</span>;
 
-<span class="hljs-keyword">const</span> <span class="hljs-variable constant_">IMPRI_KEY</span> = process.<span class="hljs-property">env</span>.<span class="hljs-property">IMPRI_API_KEY</span>!;
-<span class="hljs-keyword">const</span> <span class="hljs-variable constant_">IMPRI_BASE</span> = <span class="hljs-string">&quot;https://api.impri.dev&quot;</span>;
+<span class="hljs-keyword">const</span> <span class="hljs-variable constant_">AIRLOCK_KEY</span> = process.<span class="hljs-property">env</span>.<span class="hljs-property">AIRLOCK_API_KEY</span>!;
+<span class="hljs-keyword">const</span> <span class="hljs-variable constant_">AIRLOCK_BASE</span> = <span class="hljs-string">&quot;https://api.airlock.dev&quot;</span>;
 
 <span class="hljs-keyword">async</span> <span class="hljs-keyword">function</span> <span class="hljs-title function_">sendWithApproval</span>(<span class="hljs-params"><span class="hljs-attr">opts</span>: {
   to: <span class="hljs-built_in">string</span>;
@@ -187,11 +187,11 @@ pre code.hljs{display:block;overflow-x:auto}
   body: <span class="hljs-built_in">string</span>;
   expiresIn?: <span class="hljs-built_in">number</span>; // seconds; <span class="hljs-keyword">default</span> <span class="hljs-number">3600</span>
 }</span>): <span class="hljs-title class_">Promise</span>&lt;<span class="hljs-string">&quot;sent&quot;</span> | <span class="hljs-string">&quot;rejected&quot;</span> | <span class="hljs-string">&quot;expired&quot;</span>&gt; {
-  <span class="hljs-comment">// 1. Push the draft to Impri for human review</span>
-  <span class="hljs-keyword">const</span> push = <span class="hljs-keyword">await</span> <span class="hljs-title function_">fetch</span>(<span class="hljs-string">`<span class="hljs-subst">${IMPRI_BASE}</span>/v1/actions`</span>, {
+  <span class="hljs-comment">// 1. Push the draft to Airlock for human review</span>
+  <span class="hljs-keyword">const</span> push = <span class="hljs-keyword">await</span> <span class="hljs-title function_">fetch</span>(<span class="hljs-string">`<span class="hljs-subst">${AIRLOCK_BASE}</span>/v1/actions`</span>, {
     <span class="hljs-attr">method</span>: <span class="hljs-string">&quot;POST&quot;</span>,
     <span class="hljs-attr">headers</span>: {
-      <span class="hljs-title class_">Authorization</span>: <span class="hljs-string">`Bearer <span class="hljs-subst">${IMPRI_KEY}</span>`</span>,
+      <span class="hljs-title class_">Authorization</span>: <span class="hljs-string">`Bearer <span class="hljs-subst">${AIRLOCK_KEY}</span>`</span>,
       <span class="hljs-string">&quot;Content-Type&quot;</span>: <span class="hljs-string">&quot;application/json&quot;</span>,
     },
     <span class="hljs-attr">body</span>: <span class="hljs-title class_">JSON</span>.<span class="hljs-title function_">stringify</span>({
@@ -206,14 +206,14 @@ pre code.hljs{display:block;overflow-x:auto}
     }),
   });
 
-  <span class="hljs-keyword">if</span> (!push.<span class="hljs-property">ok</span>) <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">Error</span>(<span class="hljs-string">`Impri push failed: <span class="hljs-subst">${push.status}</span>`</span>);
+  <span class="hljs-keyword">if</span> (!push.<span class="hljs-property">ok</span>) <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">Error</span>(<span class="hljs-string">`Airlock push failed: <span class="hljs-subst">${push.status}</span>`</span>);
   <span class="hljs-keyword">const</span> { <span class="hljs-attr">id</span>: actionId } = <span class="hljs-keyword">await</span> push.<span class="hljs-title function_">json</span>();
 
   <span class="hljs-comment">// 2. Poll until the human decides (or the action expires)</span>
   <span class="hljs-keyword">let</span> <span class="hljs-attr">result</span>: { <span class="hljs-attr">status</span>: <span class="hljs-built_in">string</span>; <span class="hljs-attr">decision</span>?: { <span class="hljs-attr">final_preview</span>?: { <span class="hljs-attr">body</span>: <span class="hljs-built_in">string</span> }; <span class="hljs-attr">diff</span>?: <span class="hljs-built_in">string</span> } };
   <span class="hljs-keyword">for</span> (;;) {
-    <span class="hljs-keyword">const</span> poll = <span class="hljs-keyword">await</span> <span class="hljs-title function_">fetch</span>(<span class="hljs-string">`<span class="hljs-subst">${IMPRI_BASE}</span>/v1/actions/<span class="hljs-subst">${actionId}</span>`</span>, {
-      <span class="hljs-attr">headers</span>: { <span class="hljs-title class_">Authorization</span>: <span class="hljs-string">`Bearer <span class="hljs-subst">${IMPRI_KEY}</span>`</span> },
+    <span class="hljs-keyword">const</span> poll = <span class="hljs-keyword">await</span> <span class="hljs-title function_">fetch</span>(<span class="hljs-string">`<span class="hljs-subst">${AIRLOCK_BASE}</span>/v1/actions/<span class="hljs-subst">${actionId}</span>`</span>, {
+      <span class="hljs-attr">headers</span>: { <span class="hljs-title class_">Authorization</span>: <span class="hljs-string">`Bearer <span class="hljs-subst">${AIRLOCK_KEY}</span>`</span> },
     });
     result = <span class="hljs-keyword">await</span> poll.<span class="hljs-title function_">json</span>();
     <span class="hljs-keyword">if</span> (result.<span class="hljs-property">status</span> !== <span class="hljs-string">&quot;pending&quot;</span>) <span class="hljs-keyword">break</span>;
@@ -240,11 +240,11 @@ pre code.hljs{display:block;overflow-x:auto}
     <span class="hljs-attr">text</span>: approvedBody,
   });
 
-  <span class="hljs-comment">// 4. Report the outcome back to Impri (populates the audit log)</span>
-  <span class="hljs-keyword">await</span> <span class="hljs-title function_">fetch</span>(<span class="hljs-string">`<span class="hljs-subst">${IMPRI_BASE}</span>/v1/actions/<span class="hljs-subst">${actionId}</span>/result`</span>, {
+  <span class="hljs-comment">// 4. Report the outcome back to Airlock (populates the audit log)</span>
+  <span class="hljs-keyword">await</span> <span class="hljs-title function_">fetch</span>(<span class="hljs-string">`<span class="hljs-subst">${AIRLOCK_BASE}</span>/v1/actions/<span class="hljs-subst">${actionId}</span>/result`</span>, {
     <span class="hljs-attr">method</span>: <span class="hljs-string">&quot;POST&quot;</span>,
     <span class="hljs-attr">headers</span>: {
-      <span class="hljs-title class_">Authorization</span>: <span class="hljs-string">`Bearer <span class="hljs-subst">${IMPRI_KEY}</span>`</span>,
+      <span class="hljs-title class_">Authorization</span>: <span class="hljs-string">`Bearer <span class="hljs-subst">${AIRLOCK_KEY}</span>`</span>,
       <span class="hljs-string">&quot;Content-Type&quot;</span>: <span class="hljs-string">&quot;application/json&quot;</span>,
     },
     <span class="hljs-attr">body</span>: <span class="hljs-title class_">JSON</span>.<span class="hljs-title function_">stringify</span>({ <span class="hljs-attr">status</span>: <span class="hljs-string">&quot;executed&quot;</span> }),
@@ -272,13 +272,13 @@ expires_in: 259200    // 72 hours — the default; fine for async review flows</
 <p>Treat <code>expired</code> the same as <code>rejected</code>: do not send, and surface the outcome to your agent so it can log, notify, or reschedule as appropriate.</p>
 <hr>
 <h2 id="scope-and-boundaries">Scope and boundaries</h2>
-<p>Impri is the gate only. It stores the draft, notifies the human (via inbox, Slack, Telegram, or Discord), and holds the decision. It does not interpret the email content, check grammar, filter for spam signals, or send anything itself.</p>
+<p>Airlock is the gate only. It stores the draft, notifies the human (via inbox, Slack, Telegram, or Discord), and holds the decision. It does not interpret the email content, check grammar, filter for spam signals, or send anything itself.</p>
 <p>The gate is structural only as long as the agent cannot reach your email-sending credential through any other path. If the agent also has direct access to your SMTP credentials or an email API key outside this wrapper, it can route around the approval step. Keep the sending credential inside the wrapper; do not expose it to the agent.</p>
 <div class="table-wrap"><table>
 <thead>
 <tr>
 <th>Concern</th>
-<th>Impri handles it</th>
+<th>Airlock handles it</th>
 </tr>
 </thead>
 <tbody><tr>
@@ -319,11 +319,11 @@ expires_in: 259200    // 72 hours — the default; fine for async review flows</
 <li><a href="notifications">Notifications and approval channels</a> — approve from Slack or Telegram without opening the inbox</li>
 </ul>
 
-    <aside class="doc-cta" aria-label="Try Impri">
+    <aside class="doc-cta" aria-label="Try Airlock">
   <p class="doc-cta-title">Add an approval step to your own agent</p>
-  <p>Start on Impri Cloud: the Free tier includes 100 approvals a month. Or self-host the MIT-licensed core with Docker Compose, with no tier limits.</p>
+  <p>Start on Airlock Cloud: the Free tier includes 100 approvals a month. Or self-host the MIT-licensed core with Docker Compose, with no tier limits.</p>
   <div class="doc-cta-actions">
-    <a class="btn btn-primary btn-sm" href="https://app.impri.dev/?signup=1">Start free on Impri Cloud</a>
+    <a class="btn btn-primary btn-sm" href="https://app.airlock.dev/?signup=1">Start free on Airlock Cloud</a>
     <a class="btn btn-ghost btn-sm" href="../docs/quickstart">Quick start</a>
     <a class="btn btn-ghost btn-sm" href="../docs/self-hosting">Self-host guide</a>
   </div>
@@ -420,19 +420,19 @@ expires_in: 259200    // 72 hours — the default; fine for async review flows</
 <footer class="footer">
 <div class="wrap footer-inner">
   <a class="brand" href="/">
-    <span class="mark"><svg viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.5 4.5L19 7.5" stroke="white" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Impri
+    <span class="mark"><svg viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.5 4.5L19 7.5" stroke="white" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Airlock
   </a>
   <div>
-    <a href="https://gitlab.com/sekera.radim/impri">GitLab</a>
+    <a href="https://gitlab.com/sekera.radim/airlock">GitLab</a>
     <a href="/docs">Docs</a>
-    <a href="https://gitlab.com/sekera.radim/impri/-/blob/main/LICENSE">MIT License</a>
-    <a href="https://www.npmjs.com/package/@impri/mcp">@impri/mcp</a>
+    <a href="https://gitlab.com/sekera.radim/airlock/-/blob/main/LICENSE">MIT License</a>
+    <a href="https://www.npmjs.com/package/@airlock/mcp">@airlock/mcp</a>
     <a href="/docs/privacy">Privacy</a>
     <a href="/docs/terms">Terms</a>
     <a href="https://sekera.dev">Contact</a>
   </div>
 </div>
-<div class="wrap" style="margin-top:18px"><span class="muted">© 2026 Impri · The imprimatur for your AI agents · Built by <a href="https://sekera.dev" style="color:inherit">Radim Sekera</a>. Also by the same maker: <a href="https://briefgate.dev/?utm_source=impri.dev&amp;utm_medium=referral" style="color:inherit">BriefGate</a> — client intake for agencies and AI agents.</span></div>
+<div class="wrap" style="margin-top:18px"><span class="muted">© 2026 Airlock · The airlockmatur for your AI agents · Built by <a href="https://sekera.dev" style="color:inherit">Radim Sekera</a>. Also by the same maker: <a href="https://briefgate.dev/?utm_source=airlock.dev&amp;utm_medium=referral" style="color:inherit">BriefGate</a> — client intake for agencies and AI agents.</span></div>
 </footer>
 </body>
 </html>

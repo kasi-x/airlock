@@ -14,13 +14,13 @@ The three actions worth gating are the ones a rep can't easily eyeball after the
 
 ## Gating a deal-stage change
 
-Here the agent runs as a Node/TypeScript service, calling the CRM's API directly once Impri returns an approval.
+Here the agent runs as a Node/TypeScript service, calling the CRM's API directly once Airlock returns an approval.
 
 ```typescript
 import { setTimeout as sleep } from "node:timers/promises";
 
-const IMPRI_KEY = process.env.IMPRI_API_KEY!;
-const IMPRI_BASE = "https://api.impri.dev";
+const AIRLOCK_KEY = process.env.AIRLOCK_API_KEY!;
+const AIRLOCK_BASE = "https://api.airlock.dev";
 
 interface DealChange {
   dealId: string;
@@ -31,10 +31,10 @@ interface DealChange {
 }
 
 async function proposeStageChange(change: DealChange): Promise<string> {
-  const res = await fetch(`${IMPRI_BASE}/v1/actions`, {
+  const res = await fetch(`${AIRLOCK_BASE}/v1/actions`, {
     method: "POST",
     headers: {
-      Authorization: `Bearer ${IMPRI_KEY}`,
+      Authorization: `Bearer ${AIRLOCK_KEY}`,
       "Content-Type": "application/json",
     },
     body: JSON.stringify({
@@ -55,8 +55,8 @@ async function proposeStageChange(change: DealChange): Promise<string> {
 
 async function awaitDecision(actionId: string): Promise<any> {
   while (true) {
-    const res = await fetch(`${IMPRI_BASE}/v1/actions/${actionId}`, {
-      headers: { Authorization: `Bearer ${IMPRI_KEY}` },
+    const res = await fetch(`${AIRLOCK_BASE}/v1/actions/${actionId}`, {
+      headers: { Authorization: `Bearer ${AIRLOCK_KEY}` },
     });
     const body = await res.json();
     if (body.status !== "pending") return body;
@@ -84,9 +84,9 @@ const decision = await awaitDecision(actionId);
 
 if (decision.status === "approved") {
   await applyStageChange("d_4471", "Closed Won");
-  await fetch(`${IMPRI_BASE}/v1/actions/${actionId}/result`, {
+  await fetch(`${AIRLOCK_BASE}/v1/actions/${actionId}/result`, {
     method: "POST",
-    headers: { Authorization: `Bearer ${IMPRI_KEY}`, "Content-Type": "application/json" },
+    headers: { Authorization: `Bearer ${AIRLOCK_KEY}`, "Content-Type": "application/json" },
     body: JSON.stringify({ status: "executed" }),
   });
 }
@@ -104,6 +104,6 @@ Merges are the CRM action most likely to destroy data silently — a merge picks
 
 ## Boundaries worth stating plainly
 
-Impri stores the proposed change, notifies you, and holds the decision — it does not know your CRM's schema, does not validate that a stage transition is legal in your pipeline, and does not talk to Salesforce or HubSpot on your behalf. Your agent still owns the CRM API call; Impri only owns the yes/no. And the gate only holds if the agent has no other path to the CRM's write API — if it keeps a long-lived CRM token it can call directly, route every write through the same wrapper that checks for an approved decision.
+Airlock stores the proposed change, notifies you, and holds the decision — it does not know your CRM's schema, does not validate that a stage transition is legal in your pipeline, and does not talk to Salesforce or HubSpot on your behalf. Your agent still owns the CRM API call; Airlock only owns the yes/no. And the gate only holds if the agent has no other path to the CRM's write API — if it keeps a long-lived CRM token it can call directly, route every write through the same wrapper that checks for an approved decision.
 
 Get a key from [the quickstart](quickstart.md), see the full push/poll/execute pattern in [how to add human approval to an AI agent](how-to-add-human-approval-to-an-ai-agent.md), and check [integrations](integrations.md) for wrapping the CRM SDK call itself.

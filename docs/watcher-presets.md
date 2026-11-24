@@ -96,8 +96,8 @@ optionally change the name and schedule, and click **Create**.
 ### REST (curl)
 
 ```bash
-curl -s -X POST https://api.impri.dev/v1/watchers/from-preset \
-  -H "Authorization: Bearer $IMPRI_API_KEY" \
+curl -s -X POST https://api.airlock.dev/v1/watchers/from-preset \
+  -H "Authorization: Bearer $AIRLOCK_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "preset_id": "reddit-keyword",
@@ -112,9 +112,9 @@ curl -s -X POST https://api.impri.dev/v1/watchers/from-preset \
 ### Python
 
 ```python
-from impri import ImpriClient
+from airlock import AirlockClient
 
-client = ImpriClient()  # reads IMPRI_API_KEY from env
+client = AirlockClient()  # reads AIRLOCK_API_KEY from env
 
 # Browse the preset catalog
 catalog = client.list_watcher_presets()
@@ -140,9 +140,9 @@ reddit = client.create_watcher_from_preset(
 ### TypeScript
 
 ```ts
-import { ImpriClient } from '@impri/sdk'
+import { AirlockClient } from '@airlock/sdk'
 
-const client = new ImpriClient()  // reads IMPRI_API_KEY from env
+const client = new AirlockClient()  // reads AIRLOCK_API_KEY from env
 
 // Browse the preset catalog
 const presets = await client.listWatcherPresets()
@@ -169,15 +169,15 @@ const reddit = await client.createWatcherFromPreset(
 
 ### MCP (Claude Code / agents)
 
-The MCP server (`npx @impri/mcp`) exposes two dedicated tools for working
+The MCP server (`npx @airlock/mcp`) exposes two dedicated tools for working
 with presets.
 
-**`impri_list_watcher_presets`** — no inputs required; returns the full preset
+**`airlock_list_watcher_presets`** — no inputs required; returns the full preset
 catalog grouped by category, including each preset's id, required and optional
 params, and default schedule. Call this first to discover which preset fits
 your monitoring goal.
 
-**`impri_create_watcher_from_preset`** — creates a watcher by supplying the
+**`airlock_create_watcher_from_preset`** — creates a watcher by supplying the
 preset id and param values. Example for GitHub releases with a custom schedule:
 
 ```json
@@ -233,7 +233,7 @@ surface topics you care about.
 
 ```bash
 curl -s -X POST .../v1/watchers/from-preset \
-  -H "Authorization: Bearer $IMPRI_API_KEY" \
+  -H "Authorization: Bearer $AIRLOCK_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{"preset_id": "hn-front-page", "params": {}}'
 ```
@@ -257,7 +257,7 @@ minimum upvote points via [hnrss.org](https://hnrss.org).
 
 ```bash
 curl -s -X POST .../v1/watchers/from-preset \
-  -H "Authorization: Bearer $IMPRI_API_KEY" \
+  -H "Authorization: Bearer $AIRLOCK_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "preset_id": "hn-keyword",
@@ -282,7 +282,7 @@ Show HN or Ask HN posts from Hacker News.
 
 ```bash
 curl -s -X POST .../v1/watchers/from-preset \
-  -H "Authorization: Bearer $IMPRI_API_KEY" \
+  -H "Authorization: Bearer $AIRLOCK_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{"preset_id": "hn-show-ask", "params": {"type": "show"}}'
 ```
@@ -304,7 +304,7 @@ New posts from a subreddit sorted by new, via Reddit's public RSS feed.
 
 ```bash
 curl -s -X POST .../v1/watchers/from-preset \
-  -H "Authorization: Bearer $IMPRI_API_KEY" \
+  -H "Authorization: Bearer $AIRLOCK_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{"preset_id": "reddit-subreddit", "params": {"subreddit": "MachineLearning"}}'
 ```
@@ -328,7 +328,7 @@ Supports Reddit search operators such as `title:`, `flair:`, and boolean `AND`/`
 
 ```bash
 curl -s -X POST .../v1/watchers/from-preset \
-  -H "Authorization: Bearer $IMPRI_API_KEY" \
+  -H "Authorization: Bearer $AIRLOCK_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "preset_id": "reddit-keyword",
@@ -359,7 +359,7 @@ feed. No auth required.
 
 ```bash
 curl -s -X POST .../v1/watchers/from-preset \
-  -H "Authorization: Bearer $IMPRI_API_KEY" \
+  -H "Authorization: Bearer $AIRLOCK_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{"preset_id": "github-releases", "params": {"owner": "fastify", "repo": "fastify"}}'
 ```
@@ -385,7 +385,7 @@ after creation to match specific commit message patterns.
 
 ```bash
 curl -s -X POST .../v1/watchers/from-preset \
-  -H "Authorization: Bearer $IMPRI_API_KEY" \
+  -H "Authorization: Bearer $AIRLOCK_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "preset_id": "github-commits",
@@ -413,7 +413,7 @@ when a new version is published, making it a reliable `url_diff` trigger.
 
 ```bash
 curl -s -X POST .../v1/watchers/from-preset \
-  -H "Authorization: Bearer $IMPRI_API_KEY" \
+  -H "Authorization: Bearer $AIRLOCK_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{"preset_id": "npm-package", "params": {"package": "@types/react"}}'
 ```
@@ -436,7 +436,7 @@ feed.
 
 ```bash
 curl -s -X POST .../v1/watchers/from-preset \
-  -H "Authorization: Bearer $IMPRI_API_KEY" \
+  -H "Authorization: Bearer $AIRLOCK_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{"preset_id": "pypi-package", "params": {"package": "requests"}}'
 ```
@@ -460,7 +460,7 @@ after creation.
 
 ```bash
 curl -s -X POST .../v1/watchers/from-preset \
-  -H "Authorization: Bearer $IMPRI_API_KEY" \
+  -H "Authorization: Bearer $AIRLOCK_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{"preset_id": "stackoverflow-tag", "params": {"tag": "typescript"}}'
 ```
@@ -488,7 +488,7 @@ addresses are blocked at both parse time and fetch time.
 
 ```bash
 curl -s -X POST .../v1/watchers/from-preset \
-  -H "Authorization: Bearer $IMPRI_API_KEY" \
+  -H "Authorization: Bearer $AIRLOCK_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{"preset_id": "rss-feed", "params": {"url": "https://martinfowler.com/feed.atom"}}'
 ```
@@ -513,7 +513,7 @@ posts. Scored at `min_score = 10` when keywords are active, `0` otherwise.
 
 ```bash
 curl -s -X POST .../v1/watchers/from-preset \
-  -H "Authorization: Bearer $IMPRI_API_KEY" \
+  -H "Authorization: Bearer $AIRLOCK_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "preset_id": "blog-newsletter",
@@ -542,7 +542,7 @@ feed. No API key or auth required.
 
 ```bash
 curl -s -X POST .../v1/watchers/from-preset \
-  -H "Authorization: Bearer $IMPRI_API_KEY" \
+  -H "Authorization: Bearer $AIRLOCK_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{"preset_id": "youtube-channel", "params": {"channel_id": "UCnUYZLuoy1rq1aVMwx4aTzw"}}'
 ```
@@ -576,13 +576,13 @@ category are delivered without keyword filtering.
 ```bash
 # Category only
 curl -s -X POST .../v1/watchers/from-preset \
-  -H "Authorization: Bearer $IMPRI_API_KEY" \
+  -H "Authorization: Bearer $AIRLOCK_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{"preset_id": "arxiv-papers", "params": {"category": "cs.AI"}}'
 
 # Category + keyword filter
 curl -s -X POST .../v1/watchers/from-preset \
-  -H "Authorization: Bearer $IMPRI_API_KEY" \
+  -H "Authorization: Bearer $AIRLOCK_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "preset_id": "arxiv-papers",
@@ -613,7 +613,7 @@ boolean operators (`AND`, `OR`), `site:`, and exact phrase quoting.
 
 ```bash
 curl -s -X POST .../v1/watchers/from-preset \
-  -H "Authorization: Bearer $IMPRI_API_KEY" \
+  -H "Authorization: Bearer $AIRLOCK_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "preset_id": "google-news",
@@ -635,7 +635,7 @@ high-volume; add ScoringRule keywords after creation (e.g. `"developer"`,
 
 ```bash
 curl -s -X POST .../v1/watchers/from-preset \
-  -H "Authorization: Bearer $IMPRI_API_KEY" \
+  -H "Authorization: Bearer $AIRLOCK_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{"preset_id": "product-hunt", "params": {}}'
 ```
@@ -661,13 +661,13 @@ action regardless of keyword scoring.
 **Default schedule:** `6h`  
 **Kind:** `url_diff`
 
-Note: the scheduler respects `robots.txt`. If the `Impri-Watcher` user-agent
+Note: the scheduler respects `robots.txt`. If the `Airlock-Watcher` user-agent
 is disallowed, the watcher is degraded with `error: robots_disallowed` rather
 than crawling.
 
 ```bash
 curl -s -X POST .../v1/watchers/from-preset \
-  -H "Authorization: Bearer $IMPRI_API_KEY" \
+  -H "Authorization: Bearer $AIRLOCK_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{"preset_id": "url-changed", "params": {"url": "https://example.com/pricing"}}'
 ```
@@ -695,7 +695,7 @@ bundle hash changes. Consider adding keywords such as `"incident"`,
 
 ```bash
 curl -s -X POST .../v1/watchers/from-preset \
-  -H "Authorization: Bearer $IMPRI_API_KEY" \
+  -H "Authorization: Bearer $AIRLOCK_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{"preset_id": "changelog-status", "params": {"url": "https://www.githubstatus.com/"}}'
 ```

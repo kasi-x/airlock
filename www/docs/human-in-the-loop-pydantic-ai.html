@@ -3,21 +3,21 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Pydantic AI Human-in-the-Loop with an Approval Inbox — Impri Docs</title>
-<meta name="description" content="Pydantic AI ends a run with DeferredToolRequests when a tool needs approval. Send each call to Impri, save the history, and resume once a person decides.">
+<title>Pydantic AI Human-in-the-Loop with an Approval Inbox — Airlock Docs</title>
+<meta name="description" content="Pydantic AI ends a run with DeferredToolRequests when a tool needs approval. Send each call to Airlock, save the history, and resume once a person decides.">
 <meta name="theme-color" content="#06070d">
-<meta property="og:title" content="Pydantic AI Human-in-the-Loop with an Approval Inbox — Impri Docs">
-<meta property="og:description" content="Pydantic AI ends a run with DeferredToolRequests when a tool needs approval. Send each call to Impri, save the history, and resume once a person decides.">
+<meta property="og:title" content="Pydantic AI Human-in-the-Loop with an Approval Inbox — Airlock Docs">
+<meta property="og:description" content="Pydantic AI ends a run with DeferredToolRequests when a tool needs approval. Send each call to Airlock, save the history, and resume once a person decides.">
 <meta property="og:type" content="article">
-<meta property="og:url" content="https://impri.dev/docs/human-in-the-loop-pydantic-ai">
-<meta property="og:image" content="https://impri.dev/assets/og/og-docs.png">
+<meta property="og:url" content="https://airlock.dev/docs/human-in-the-loop-pydantic-ai">
+<meta property="og:image" content="https://airlock.dev/assets/og/og-docs.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
-<meta property="og:image:alt" content="Impri — human-in-the-loop approval inbox for AI agents">
+<meta property="og:image:alt" content="Airlock — human-in-the-loop approval inbox for AI agents">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="https://impri.dev/assets/og/og-docs.png">
-<link rel="canonical" href="https://impri.dev/docs/human-in-the-loop-pydantic-ai">
-<script type="application/ld+json">{"@context":"https://schema.org","@type":"TechArticle","headline":"Pydantic AI Human-in-the-Loop with an Approval Inbox","description":"Pydantic AI ends a run with DeferredToolRequests when a tool needs approval. Send each call to Impri, save the history, and resume once a person decides.","url":"https://impri.dev/docs/human-in-the-loop-pydantic-ai","inLanguage":"en","author":{"@type":"Organization","name":"Impri","url":"https://impri.dev"},"publisher":{"@type":"Organization","name":"Impri","url":"https://impri.dev"}}</script>
+<meta name="twitter:image" content="https://airlock.dev/assets/og/og-docs.png">
+<link rel="canonical" href="https://airlock.dev/docs/human-in-the-loop-pydantic-ai">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"TechArticle","headline":"Pydantic AI Human-in-the-Loop with an Approval Inbox","description":"Pydantic AI ends a run with DeferredToolRequests when a tool needs approval. Send each call to Airlock, save the history, and resume once a person decides.","url":"https://airlock.dev/docs/human-in-the-loop-pydantic-ai","inLanguage":"en","author":{"@type":"Organization","name":"Airlock","url":"https://airlock.dev"},"publisher":{"@type":"Organization","name":"Airlock","url":"https://airlock.dev"}}</script>
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <link rel="icon" href="/favicon.ico" sizes="32x32">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='9' fill='%236366f1'/%3E%3Cpath d='M9 16.5l4.5 4.5L23 11' stroke='white' stroke-width='3' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
@@ -132,13 +132,13 @@ pre code.hljs{display:block;overflow-x:auto}
 <div class="wrap nav-inner">
   <a class="brand" href="/">
     <span class="mark"><svg viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.5 4.5L19 7.5" stroke="white" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
-    Impri
+    Airlock
   </a>
   <div class="nav-links">
     <a class="link" href="/#how">How it works</a>
     <a class="link" href="/#pricing">Pricing</a>
     <a class="link active-nav" href="../docs">Docs</a>
-    <a class="btn btn-primary btn-sm" href="https://gitlab.com/sekera.radim/impri">GitLab</a>
+    <a class="btn btn-primary btn-sm" href="https://gitlab.com/sekera.radim/airlock">GitLab</a>
   </div>
 </div>
 </nav>
@@ -153,22 +153,22 @@ pre code.hljs{display:block;overflow-x:auto}
       <span>Pydantic AI Human-in-the-Loop with an Approval Inbox</span>
     </nav>
     <h1>Pydantic AI Human-in-the-Loop with an Approval Inbox</h1>
-<p>Pydantic AI ends a run with DeferredToolRequests when a tool needs approval. Send each call to Impri, save the history, and resume once a person decides.</p>
+<p>Pydantic AI ends a run with DeferredToolRequests when a tool needs approval. Send each call to Airlock, save the history, and resume once a person decides.</p>
 <hr>
 <h2 id="how-pydantic-ai-pauses-a-tool-call">How Pydantic AI pauses a tool call</h2>
 <p>Mark a tool with <code>requires_approval=True</code> and add <code>DeferredToolRequests</code> to the agent&#39;s <code>output_type</code>. When the model calls that tool, Pydantic AI doesn&#39;t run it. The run ends, and <code>result.output</code> is a <code>DeferredToolRequests</code> whose <code>approvals</code> list holds each pending call: tool name, arguments and <code>tool_call_id</code>. You continue with a second run that gets the saved message history plus a <code>DeferredToolResults</code> mapping each <code>tool_call_id</code> to <code>ToolApproved</code> or <code>ToolDenied</code>. Leave <code>DeferredToolRequests</code> out of <code>output_type</code> and the run fails with a <code>UserError</code> instead of pausing.</p>
-<p>Nothing waits in memory between the two runs. That is what makes the pattern fit an approval inbox: the reviewer can answer from a phone an hour later, after your worker has restarted. The <a href="https://pydantic.dev/docs/ai/tools-toolsets/deferred-tools/" target="_blank" rel="noopener">Pydantic AI deferred tools docs</a> show both runs in one process. Below, the pause becomes a card in Impri, and the second run starts when someone decides it.</p>
+<p>Nothing waits in memory between the two runs. That is what makes the pattern fit an approval inbox: the reviewer can answer from a phone an hour later, after your worker has restarted. The <a href="https://pydantic.dev/docs/ai/tools-toolsets/deferred-tools/" target="_blank" rel="noopener">Pydantic AI deferred tools docs</a> show both runs in one process. Below, the pause becomes a card in Airlock, and the second run starts when someone decides it.</p>
 <h2 id="the-agent-and-the-gated-tool">The agent and the gated tool</h2>
-<p>Requirements: <code>pip install pydantic-ai httpx</code>, an Impri API key in <code>IMPRI_API_KEY</code>.</p>
+<p>Requirements: <code>pip install pydantic-ai httpx</code>, an Airlock API key in <code>AIRLOCK_API_KEY</code>.</p>
 <div class="code-block"><span class="code-lang">python</span><pre><code class="hljs"><span class="hljs-keyword">import</span> os
 <span class="hljs-keyword">import</span> httpx
 <span class="hljs-keyword">from</span> pydantic_ai <span class="hljs-keyword">import</span> Agent, DeferredToolRequests, RunContext
 
 <span class="hljs-keyword">from</span> mailer <span class="hljs-keyword">import</span> send_email  <span class="hljs-comment"># your email provider; returns a message id</span>
 
-impri = httpx.Client(
-    base_url=os.environ.get(<span class="hljs-string">&quot;IMPRI_BASE_URL&quot;</span>, <span class="hljs-string">&quot;https://api.impri.dev&quot;</span>),
-    headers={<span class="hljs-string">&quot;Authorization&quot;</span>: <span class="hljs-string">f&quot;Bearer <span class="hljs-subst">{os.environ[<span class="hljs-string">&#x27;IMPRI_API_KEY&#x27;</span>]}</span>&quot;</span>},
+airlock = httpx.Client(
+    base_url=os.environ.get(<span class="hljs-string">&quot;AIRLOCK_BASE_URL&quot;</span>, <span class="hljs-string">&quot;https://api.airlock.dev&quot;</span>),
+    headers={<span class="hljs-string">&quot;Authorization&quot;</span>: <span class="hljs-string">f&quot;Bearer <span class="hljs-subst">{os.environ[<span class="hljs-string">&#x27;AIRLOCK_API_KEY&#x27;</span>]}</span>&quot;</span>},
 )
 
 agent = Agent(
@@ -181,11 +181,11 @@ agent = Agent(
 <span class="hljs-meta">@agent.tool(<span class="hljs-params">requires_approval=<span class="hljs-literal">True</span></span>)</span>
 <span class="hljs-keyword">def</span> <span class="hljs-title function_">send_customer_email</span>(<span class="hljs-params">ctx: RunContext[<span class="hljs-literal">None</span>], to: <span class="hljs-built_in">str</span>, subject: <span class="hljs-built_in">str</span>, body: <span class="hljs-built_in">str</span></span>) -&gt; <span class="hljs-built_in">str</span>:
     <span class="hljs-string">&quot;&quot;&quot;Email a customer. A person approves every call before it runs.&quot;&quot;&quot;</span>
-    action_id = ctx.tool_call_metadata[<span class="hljs-string">&quot;impri_action_id&quot;</span>]
+    action_id = ctx.tool_call_metadata[<span class="hljs-string">&quot;airlock_action_id&quot;</span>]
     message_id = send_email(to=to, subject=subject, body=body)
-    impri.post(<span class="hljs-string">f&quot;/v1/actions/<span class="hljs-subst">{action_id}</span>/result&quot;</span>, json={<span class="hljs-string">&quot;status&quot;</span>: <span class="hljs-string">&quot;executed&quot;</span>, <span class="hljs-string">&quot;detail&quot;</span>: message_id})
+    airlock.post(<span class="hljs-string">f&quot;/v1/actions/<span class="hljs-subst">{action_id}</span>/result&quot;</span>, json={<span class="hljs-string">&quot;status&quot;</span>: <span class="hljs-string">&quot;executed&quot;</span>, <span class="hljs-string">&quot;detail&quot;</span>: message_id})
     <span class="hljs-keyword">return</span> <span class="hljs-string">f&quot;Email sent to <span class="hljs-subst">{to}</span> (message <span class="hljs-subst">{message_id}</span>).&quot;</span></code></pre></div>
-<p>The body of <code>send_customer_email</code> runs only after approval. <code>ctx.tool_call_metadata</code> carries the Impri action id you pass in on resume, so the tool can report the outcome and the card moves from <code>approved</code> to <code>executed</code>.</p>
+<p>The body of <code>send_customer_email</code> runs only after approval. <code>ctx.tool_call_metadata</code> carries the Airlock action id you pass in on resume, so the tool can report the outcome and the card moves from <code>approved</code> to <code>executed</code>.</p>
 <h2 id="step-1-turn-the-pause-into-a-card">Step 1: turn the pause into a card</h2>
 <div class="code-block"><span class="code-lang">python</span><pre><code class="hljs"><span class="hljs-keyword">import</span> json
 <span class="hljs-keyword">from</span> pathlib <span class="hljs-keyword">import</span> Path
@@ -200,20 +200,20 @@ PENDING = Path(<span class="hljs-string">&quot;pending&quot;</span>)  <span clas
     state = {<span class="hljs-string">&quot;messages&quot;</span>: result.all_messages_json().decode(), <span class="hljs-string">&quot;calls&quot;</span>: {}}
     <span class="hljs-keyword">for</span> call <span class="hljs-keyword">in</span> result.output.approvals:
         args = call.args_as_dict()
-        r = impri.post(<span class="hljs-string">&quot;/v1/actions&quot;</span>, json={
+        r = airlock.post(<span class="hljs-string">&quot;/v1/actions&quot;</span>, json={
             <span class="hljs-string">&quot;kind&quot;</span>: <span class="hljs-string">&quot;email.send&quot;</span>,
             <span class="hljs-string">&quot;title&quot;</span>: <span class="hljs-string">f&quot;Email <span class="hljs-subst">{args[<span class="hljs-string">&#x27;to&#x27;</span>]}</span>: <span class="hljs-subst">{args[<span class="hljs-string">&#x27;subject&#x27;</span>]}</span>&quot;</span>,
             <span class="hljs-string">&quot;preview&quot;</span>: {<span class="hljs-string">&quot;format&quot;</span>: <span class="hljs-string">&quot;plain&quot;</span>, <span class="hljs-string">&quot;body&quot;</span>: args[<span class="hljs-string">&quot;body&quot;</span>]},
             <span class="hljs-string">&quot;editable&quot;</span>: [<span class="hljs-string">&quot;preview.body&quot;</span>],
             <span class="hljs-string">&quot;idempotency_key&quot;</span>: <span class="hljs-string">f&quot;<span class="hljs-subst">{conversation_id}</span>:<span class="hljs-subst">{call.tool_call_id}</span>&quot;</span>,
-            <span class="hljs-string">&quot;callback_url&quot;</span>: <span class="hljs-string">f&quot;https://support.example.com/impri/<span class="hljs-subst">{conversation_id}</span>&quot;</span>,
+            <span class="hljs-string">&quot;callback_url&quot;</span>: <span class="hljs-string">f&quot;https://support.example.com/airlock/<span class="hljs-subst">{conversation_id}</span>&quot;</span>,
         })
         r.raise_for_status()
         state[<span class="hljs-string">&quot;calls&quot;</span>][call.tool_call_id] = {<span class="hljs-string">&quot;action_id&quot;</span>: r.json()[<span class="hljs-string">&quot;id&quot;</span>], <span class="hljs-string">&quot;args&quot;</span>: args}
     PENDING.mkdir(exist_ok=<span class="hljs-literal">True</span>)
     (PENDING / <span class="hljs-string">f&quot;<span class="hljs-subst">{conversation_id}</span>.json&quot;</span>).write_text(json.dumps(state))
     <span class="hljs-keyword">return</span> <span class="hljs-literal">None</span>  <span class="hljs-comment"># paused: no process waits for the reviewer</span></code></pre></div>
-<p>Each pending call becomes one action. <code>preview.body</code> is the email the customer will get, and <code>editable: [&quot;preview.body&quot;]</code> lets the reviewer rewrite it before approving. The <code>idempotency_key</code> comes from the tool call id, so a retried POST returns the same card instead of a second one. <code>callback_url</code> is where Impri sends a signed webhook when the card is decided or expires (<a href="webhooks">Webhooks</a>): your handler checks the signature and calls <code>resume()</code>.</p>
+<p>Each pending call becomes one action. <code>preview.body</code> is the email the customer will get, and <code>editable: [&quot;preview.body&quot;]</code> lets the reviewer rewrite it before approving. The <code>idempotency_key</code> comes from the tool call id, so a retried POST returns the same card instead of a second one. <code>callback_url</code> is where Airlock sends a signed webhook when the card is decided or expires (<a href="webhooks">Webhooks</a>): your handler checks the signature and calls <code>resume()</code>.</p>
 <h2 id="step-2-resume-with-the-decision">Step 2: resume with the decision</h2>
 <div class="code-block"><span class="code-lang">python</span><pre><code class="hljs"><span class="hljs-keyword">from</span> pydantic_ai <span class="hljs-keyword">import</span> DeferredToolResults, ToolApproved, ToolDenied
 <span class="hljs-keyword">from</span> pydantic_ai.messages <span class="hljs-keyword">import</span> ModelMessagesTypeAdapter
@@ -227,14 +227,14 @@ PENDING = Path(<span class="hljs-string">&quot;pending&quot;</span>)  <span clas
         <span class="hljs-keyword">return</span> <span class="hljs-literal">None</span>  <span class="hljs-comment"># already resumed</span>
     results = DeferredToolResults()
     <span class="hljs-keyword">for</span> call_id, call <span class="hljs-keyword">in</span> state[<span class="hljs-string">&quot;calls&quot;</span>].items():
-        action = impri.get(<span class="hljs-string">f&quot;/v1/actions/<span class="hljs-subst">{call[<span class="hljs-string">&#x27;action_id&#x27;</span>]}</span>&quot;</span>).json()
+        action = airlock.get(<span class="hljs-string">f&quot;/v1/actions/<span class="hljs-subst">{call[<span class="hljs-string">&#x27;action_id&#x27;</span>]}</span>&quot;</span>).json()
         <span class="hljs-keyword">if</span> action[<span class="hljs-string">&quot;status&quot;</span>] == <span class="hljs-string">&quot;pending&quot;</span>:
             <span class="hljs-keyword">return</span> <span class="hljs-literal">None</span>  <span class="hljs-comment"># wait until every card is decided</span>
         verdict = (action.get(<span class="hljs-string">&quot;decision&quot;</span>) <span class="hljs-keyword">or</span> {}).get(<span class="hljs-string">&quot;verdict&quot;</span>)
         <span class="hljs-keyword">if</span> verdict == <span class="hljs-string">&quot;approve&quot;</span>:
             body = action[<span class="hljs-string">&quot;decision&quot;</span>][<span class="hljs-string">&quot;final_preview&quot;</span>][<span class="hljs-string">&quot;body&quot;</span>]  <span class="hljs-comment"># the reviewer&#x27;s edit, if any</span>
             results.approvals[call_id] = ToolApproved(override_args={**call[<span class="hljs-string">&quot;args&quot;</span>], <span class="hljs-string">&quot;body&quot;</span>: body})
-            results.metadata[call_id] = {<span class="hljs-string">&quot;impri_action_id&quot;</span>: call[<span class="hljs-string">&quot;action_id&quot;</span>]}
+            results.metadata[call_id] = {<span class="hljs-string">&quot;airlock_action_id&quot;</span>: call[<span class="hljs-string">&quot;action_id&quot;</span>]}
         <span class="hljs-keyword">elif</span> verdict == <span class="hljs-string">&quot;reject&quot;</span>:
             results.approvals[call_id] = ToolDenied(<span class="hljs-string">&quot;A reviewer rejected this email. Do not resend it.&quot;</span>)
         <span class="hljs-keyword">else</span>:  <span class="hljs-comment"># expired: nobody decided in time</span>
@@ -264,14 +264,14 @@ PENDING = Path(<span class="hljs-string">&quot;pending&quot;</span>)  <span clas
 <span class="hljs-keyword">def</span> <span class="hljs-title function_">send_customer_email</span>(<span class="hljs-params">ctx: RunContext[<span class="hljs-literal">None</span>], to: <span class="hljs-built_in">str</span>, subject: <span class="hljs-built_in">str</span>, body: <span class="hljs-built_in">str</span></span>) -&gt; <span class="hljs-built_in">str</span>:
     <span class="hljs-keyword">if</span> <span class="hljs-keyword">not</span> to.endswith(<span class="hljs-string">&quot;@yourcompany.com&quot;</span>) <span class="hljs-keyword">and</span> <span class="hljs-keyword">not</span> ctx.tool_call_approved:
         <span class="hljs-keyword">raise</span> ApprovalRequired()
-    ...  <span class="hljs-comment"># send; report to Impri only when ctx.tool_call_approved is True</span></code></pre></div>
+    ...  <span class="hljs-comment"># send; report to Airlock only when ctx.tool_call_approved is True</span></code></pre></div>
 <p>On resume, Pydantic AI runs the function again from the top with <code>ctx.tool_call_approved=True</code>. In our run the body was entered twice for one email, so keep side effects below the check. <code>ctx.tool_call_metadata</code> is <code>None</code> for calls that never needed approval.</p>
 <h2 id="what-we-ran">What we ran</h2>
-<p>On 2026-11-18, with pydantic-ai 2.70.0 against a local Impri server. The model was Pydantic AI&#39;s <code>FunctionModel</code> returning a scripted tool call (no LLM API key), and <code>start()</code> and every <code>resume()</code> ran in separate processes.</p>
+<p>On 2026-11-18, with pydantic-ai 2.70.0 against a local Airlock server. The model was Pydantic AI&#39;s <code>FunctionModel</code> returning a scripted tool call (no LLM API key), and <code>start()</code> and every <code>resume()</code> ran in separate processes.</p>
 <div class="table-wrap"><table>
 <thead>
 <tr>
-<th>What happened in Impri</th>
+<th>What happened in Airlock</th>
 <th>What the model got back</th>
 <th>Email sent</th>
 <th>Card status</th>
@@ -309,15 +309,15 @@ PENDING = Path(<span class="hljs-string">&quot;pending&quot;</span>)  <span clas
 </tr>
 </tbody></table>
 </div>
-<p>Impri makes sure a person approved this email, in the exact text the tool then sends. It doesn&#39;t check that the agent picked the right customer: that stays in your code, and the gate only holds if <code>send_customer_email</code> is the agent&#39;s only way to send mail.</p>
+<p>Airlock makes sure a person approved this email, in the exact text the tool then sends. It doesn&#39;t check that the agent picked the right customer: that stays in your code, and the gate only holds if <code>send_customer_email</code> is the agent&#39;s only way to send mail.</p>
 <h2 id="next-step">Next step</h2>
-<p><a href="https://app.impri.dev/?signup=1" target="_blank" rel="noopener">Start free on Impri Cloud</a>, create an API key and run <code>start()</code> on a test ticket: the card appears in your inbox. To keep everything on your own machine, follow <a href="self-hosting">Self-hosting</a> and set <code>IMPRI_BASE_URL=http://localhost:8484</code>. The same pattern for other frameworks: <a href="human-in-the-loop-openai-agents-sdk">OpenAI Agents SDK</a>, <a href="human-in-the-loop-langchain-deep-agents">LangChain Deep Agents</a>.</p>
+<p><a href="https://app.airlock.dev/?signup=1" target="_blank" rel="noopener">Start free on Airlock Cloud</a>, create an API key and run <code>start()</code> on a test ticket: the card appears in your inbox. To keep everything on your own machine, follow <a href="self-hosting">Self-hosting</a> and set <code>AIRLOCK_BASE_URL=http://localhost:8484</code>. The same pattern for other frameworks: <a href="human-in-the-loop-openai-agents-sdk">OpenAI Agents SDK</a>, <a href="human-in-the-loop-langchain-deep-agents">LangChain Deep Agents</a>.</p>
 
-    <aside class="doc-cta" aria-label="Try Impri">
+    <aside class="doc-cta" aria-label="Try Airlock">
   <p class="doc-cta-title">Add an approval step to your own agent</p>
-  <p>Start on Impri Cloud: the Free tier includes 100 approvals a month. Or self-host the MIT-licensed core with Docker Compose, with no tier limits.</p>
+  <p>Start on Airlock Cloud: the Free tier includes 100 approvals a month. Or self-host the MIT-licensed core with Docker Compose, with no tier limits.</p>
   <div class="doc-cta-actions">
-    <a class="btn btn-primary btn-sm" href="https://app.impri.dev/?signup=1">Start free on Impri Cloud</a>
+    <a class="btn btn-primary btn-sm" href="https://app.airlock.dev/?signup=1">Start free on Airlock Cloud</a>
     <a class="btn btn-ghost btn-sm" href="../docs/quickstart">Quick start</a>
     <a class="btn btn-ghost btn-sm" href="../docs/self-hosting">Self-host guide</a>
   </div>
@@ -414,19 +414,19 @@ PENDING = Path(<span class="hljs-string">&quot;pending&quot;</span>)  <span clas
 <footer class="footer">
 <div class="wrap footer-inner">
   <a class="brand" href="/">
-    <span class="mark"><svg viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.5 4.5L19 7.5" stroke="white" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Impri
+    <span class="mark"><svg viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.5 4.5L19 7.5" stroke="white" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Airlock
   </a>
   <div>
-    <a href="https://gitlab.com/sekera.radim/impri">GitLab</a>
+    <a href="https://gitlab.com/sekera.radim/airlock">GitLab</a>
     <a href="/docs">Docs</a>
-    <a href="https://gitlab.com/sekera.radim/impri/-/blob/main/LICENSE">MIT License</a>
-    <a href="https://www.npmjs.com/package/@impri/mcp">@impri/mcp</a>
+    <a href="https://gitlab.com/sekera.radim/airlock/-/blob/main/LICENSE">MIT License</a>
+    <a href="https://www.npmjs.com/package/@airlock/mcp">@airlock/mcp</a>
     <a href="/docs/privacy">Privacy</a>
     <a href="/docs/terms">Terms</a>
     <a href="https://sekera.dev">Contact</a>
   </div>
 </div>
-<div class="wrap" style="margin-top:18px"><span class="muted">© 2026 Impri · The imprimatur for your AI agents · Built by <a href="https://sekera.dev" style="color:inherit">Radim Sekera</a>. Also by the same maker: <a href="https://briefgate.dev/?utm_source=impri.dev&amp;utm_medium=referral" style="color:inherit">BriefGate</a> — client intake for agencies and AI agents.</span></div>
+<div class="wrap" style="margin-top:18px"><span class="muted">© 2026 Airlock · The airlockmatur for your AI agents · Built by <a href="https://sekera.dev" style="color:inherit">Radim Sekera</a>. Also by the same maker: <a href="https://briefgate.dev/?utm_source=airlock.dev&amp;utm_medium=referral" style="color:inherit">BriefGate</a> — client intake for agencies and AI agents.</span></div>
 </footer>
 </body>
 </html>

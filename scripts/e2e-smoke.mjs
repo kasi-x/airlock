@@ -52,7 +52,7 @@ async function waitForHealth(proc) {
 }
 
 async function main() {
-  const tmp = mkdtempSync(join(tmpdir(), 'impri-e2e-'));
+  const tmp = mkdtempSync(join(tmpdir(), 'airlock-e2e-'));
   const server = spawn('node', ['server/dist/index.js'], {
     cwd: ROOT,
     env: {

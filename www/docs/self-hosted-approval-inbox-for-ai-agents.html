@@ -3,21 +3,21 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>A Self-Hosted Approval Inbox for AI Agents — Impri Docs</title>
-<meta name="description" content="Run your own approval inbox for AI agents — Impri's MIT core is self-hostable in minutes, with the same REST API and MCP server as the cloud.">
+<title>A Self-Hosted Approval Inbox for AI Agents — Airlock Docs</title>
+<meta name="description" content="Run your own approval inbox for AI agents — Airlock's MIT core is self-hostable in minutes, with the same REST API and MCP server as the cloud.">
 <meta name="theme-color" content="#06070d">
-<meta property="og:title" content="A Self-Hosted Approval Inbox for AI Agents — Impri Docs">
-<meta property="og:description" content="Run your own approval inbox for AI agents — Impri's MIT core is self-hostable in minutes, with the same REST API and MCP server as the cloud.">
+<meta property="og:title" content="A Self-Hosted Approval Inbox for AI Agents — Airlock Docs">
+<meta property="og:description" content="Run your own approval inbox for AI agents — Airlock's MIT core is self-hostable in minutes, with the same REST API and MCP server as the cloud.">
 <meta property="og:type" content="article">
-<meta property="og:url" content="https://impri.dev/docs/self-hosted-approval-inbox-for-ai-agents">
-<meta property="og:image" content="https://impri.dev/assets/og/og-docs.png">
+<meta property="og:url" content="https://airlock.dev/docs/self-hosted-approval-inbox-for-ai-agents">
+<meta property="og:image" content="https://airlock.dev/assets/og/og-docs.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
-<meta property="og:image:alt" content="Impri — human-in-the-loop approval inbox for AI agents">
+<meta property="og:image:alt" content="Airlock — human-in-the-loop approval inbox for AI agents">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="https://impri.dev/assets/og/og-docs.png">
-<link rel="canonical" href="https://impri.dev/docs/self-hosted-approval-inbox-for-ai-agents">
-<script type="application/ld+json">{"@context":"https://schema.org","@type":"TechArticle","headline":"A Self-Hosted Approval Inbox for AI Agents","description":"Run your own approval inbox for AI agents — Impri's MIT core is self-hostable in minutes, with the same REST API and MCP server as the cloud.","url":"https://impri.dev/docs/self-hosted-approval-inbox-for-ai-agents","inLanguage":"en","author":{"@type":"Organization","name":"Impri","url":"https://impri.dev"},"publisher":{"@type":"Organization","name":"Impri","url":"https://impri.dev"}}</script>
+<meta name="twitter:image" content="https://airlock.dev/assets/og/og-docs.png">
+<link rel="canonical" href="https://airlock.dev/docs/self-hosted-approval-inbox-for-ai-agents">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"TechArticle","headline":"A Self-Hosted Approval Inbox for AI Agents","description":"Run your own approval inbox for AI agents — Airlock's MIT core is self-hostable in minutes, with the same REST API and MCP server as the cloud.","url":"https://airlock.dev/docs/self-hosted-approval-inbox-for-ai-agents","inLanguage":"en","author":{"@type":"Organization","name":"Airlock","url":"https://airlock.dev"},"publisher":{"@type":"Organization","name":"Airlock","url":"https://airlock.dev"}}</script>
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <link rel="icon" href="/favicon.ico" sizes="32x32">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='9' fill='%236366f1'/%3E%3Cpath d='M9 16.5l4.5 4.5L23 11' stroke='white' stroke-width='3' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
@@ -132,13 +132,13 @@ pre code.hljs{display:block;overflow-x:auto}
 <div class="wrap nav-inner">
   <a class="brand" href="/">
     <span class="mark"><svg viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.5 4.5L19 7.5" stroke="white" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
-    Impri
+    Airlock
   </a>
   <div class="nav-links">
     <a class="link" href="/#how">How it works</a>
     <a class="link" href="/#pricing">Pricing</a>
     <a class="link active-nav" href="../docs">Docs</a>
-    <a class="btn btn-primary btn-sm" href="https://gitlab.com/sekera.radim/impri">GitLab</a>
+    <a class="btn btn-primary btn-sm" href="https://gitlab.com/sekera.radim/airlock">GitLab</a>
   </div>
 </div>
 </nav>
@@ -153,50 +153,50 @@ pre code.hljs{display:block;overflow-x:auto}
       <span>A Self-Hosted Approval Inbox for AI Agents</span>
     </nav>
     <h1>A Self-Hosted Approval Inbox for AI Agents</h1>
-<p>Run your own approval inbox for AI agents — Impri&#39;s MIT core is self-hostable in minutes, with the same REST API and MCP server as the cloud.</p>
+<p>Run your own approval inbox for AI agents — Airlock&#39;s MIT core is self-hostable in minutes, with the same REST API and MCP server as the cloud.</p>
 <hr>
 <h2 id="why-run-it-yourself">Why run it yourself</h2>
-<p>The cloud at impri.dev is the fastest way to get started. But there are reasons to prefer running Impri on your own infrastructure:</p>
-<p><strong>Data stays internal.</strong> Every action pushed to Impri includes the draft content your agent produced — an email body, a database query, a file to be modified. For agents working with internal documents, customer records, or anything under compliance review, you may not want that content leaving your network at all.</p>
+<p>The cloud at airlock.dev is the fastest way to get started. But there are reasons to prefer running Airlock on your own infrastructure:</p>
+<p><strong>Data stays internal.</strong> Every action pushed to Airlock includes the draft content your agent produced — an email body, a database query, a file to be modified. For agents working with internal documents, customer records, or anything under compliance review, you may not want that content leaving your network at all.</p>
 <p><strong>No per-seat or per-action cost at scale.</strong> If you run a high-volume agent loop that produces hundreds of approval requests per day, self-hosting removes that ceiling.</p>
-<p><strong>Integration with internal tooling.</strong> Running on-prem means you can put Impri behind your VPN or an authenticating reverse proxy, and point notifications at your own SMTP server or ntfy instance.</p>
-<p>Impri is open-core: the server that handles the approval inbox, the REST API, the MCP server, and the web UI is MIT-licensed and available at <a href="https://github.com/sekera-radim/impri" target="_blank" rel="noopener">github.com/sekera-radim/impri</a>. The hosted version at impri.dev runs the same code with managed infrastructure on top.</p>
+<p><strong>Integration with internal tooling.</strong> Running on-prem means you can put Airlock behind your VPN or an authenticating reverse proxy, and point notifications at your own SMTP server or ntfy instance.</p>
+<p>Airlock is open-core: the server that handles the approval inbox, the REST API, the MCP server, and the web UI is MIT-licensed and available at <a href="https://github.com/sekera-radim/airlock" target="_blank" rel="noopener">github.com/sekera-radim/airlock</a>. The hosted version at airlock.dev runs the same code with managed infrastructure on top.</p>
 <hr>
 <h2 id="running-the-server">Running the server</h2>
 <p>Self-hosting runs two containers from the repo&#39;s <code>docker-compose.yml</code>: <code>server</code> (the REST API, port 8484) and <code>ui</code> (the web inbox, port 8080). Data lives in SQLite on a Docker volume, so there is no database to provision.</p>
-<div class="code-block"><span class="code-lang">bash</span><pre><code class="hljs">git <span class="hljs-built_in">clone</span> https://gitlab.com/sekera.radim/impri.git
-<span class="hljs-built_in">cd</span> impri
+<div class="code-block"><span class="code-lang">bash</span><pre><code class="hljs">git <span class="hljs-built_in">clone</span> https://gitlab.com/sekera.radim/airlock.git
+<span class="hljs-built_in">cd</span> airlock
 
 <span class="hljs-comment"># Signs outgoing webhook payloads (HMAC-SHA256) — don&#x27;t keep the default</span>
 <span class="hljs-built_in">echo</span> <span class="hljs-string">&quot;WEBHOOK_SECRET=<span class="hljs-subst">$(openssl rand -hex 32)</span>&quot;</span> &gt; .<span class="hljs-built_in">env</span>
 
 docker compose up -d</code></pre></div>
-<p>The API answers on <code>http://localhost:8484/v1</code> (health check at <code>/healthz</code>) and the inbox opens at <code>http://localhost:8080</code>. The <code>impri-data</code> volume keeps actions, decisions and audit records across restarts.</p>
+<p>The API answers on <code>http://localhost:8484/v1</code> (health check at <code>/healthz</code>) and the inbox opens at <code>http://localhost:8080</code>. The <code>airlock-data</code> volume keeps actions, decisions and audit records across restarts.</p>
 <p>On first start the server prints a bootstrap admin key to its log, once — only its hash is stored:</p>
 <div class="code-block"><span class="code-lang">bash</span><pre><code class="hljs">docker compose logs server | grep <span class="hljs-string">&quot;Admin API Key&quot;</span></code></pre></div>
 <p>Don&#39;t hand that admin key to an agent. Create a key limited to the <code>actions</code> scope for it instead:</p>
 <div class="code-block"><span class="code-lang">bash</span><pre><code class="hljs">curl -X POST http://localhost:8484/v1/keys \
-  -H <span class="hljs-string">&quot;Authorization: Bearer <span class="hljs-variable">$IMPRI_ADMIN_KEY</span>&quot;</span> \
+  -H <span class="hljs-string">&quot;Authorization: Bearer <span class="hljs-variable">$AIRLOCK_ADMIN_KEY</span>&quot;</span> \
   -H <span class="hljs-string">&quot;Content-Type: application/json&quot;</span> \
   -d <span class="hljs-string">&#x27;{&quot;name&quot;: &quot;agent&quot;, &quot;scopes&quot;: [&quot;actions&quot;]}&#x27;</span></code></pre></div>
 <p>The agent sends that key in the <code>Authorization: Bearer im_...</code> header, the same way it would with the cloud. For the full environment variable reference, <code>BASE_URL</code> behind a reverse proxy and production hardening, see <a href="self-hosting">self-hosting</a>.</p>
 <hr>
 <h2 id="pointing-your-agents-at-the-local-instance">Pointing your agents at the local instance</h2>
-<p>Wherever you set <code>IMPRI_BASE_URL</code>, switch it to your instance&#39;s address. The rest of the API is identical.</p>
+<p>Wherever you set <code>AIRLOCK_BASE_URL</code>, switch it to your instance&#39;s address. The rest of the API is identical.</p>
 <p><strong>MCP server</strong> (Claude Code, Claude Desktop, or any MCP client):</p>
 <div class="code-block"><span class="code-lang">json</span><pre><code class="hljs"><span class="hljs-punctuation">{</span>
   <span class="hljs-attr">&quot;mcpServers&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
-    <span class="hljs-attr">&quot;impri&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+    <span class="hljs-attr">&quot;airlock&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
       <span class="hljs-attr">&quot;command&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;npx&quot;</span><span class="hljs-punctuation">,</span>
-      <span class="hljs-attr">&quot;args&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">[</span><span class="hljs-string">&quot;@impri/mcp&quot;</span><span class="hljs-punctuation">]</span><span class="hljs-punctuation">,</span>
+      <span class="hljs-attr">&quot;args&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">[</span><span class="hljs-string">&quot;@airlock/mcp&quot;</span><span class="hljs-punctuation">]</span><span class="hljs-punctuation">,</span>
       <span class="hljs-attr">&quot;env&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
-        <span class="hljs-attr">&quot;IMPRI_API_KEY&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;im_your_local_key&quot;</span><span class="hljs-punctuation">,</span>
-        <span class="hljs-attr">&quot;IMPRI_BASE_URL&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;http://localhost:8484&quot;</span>
+        <span class="hljs-attr">&quot;AIRLOCK_API_KEY&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;im_your_local_key&quot;</span><span class="hljs-punctuation">,</span>
+        <span class="hljs-attr">&quot;AIRLOCK_BASE_URL&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;http://localhost:8484&quot;</span>
       <span class="hljs-punctuation">}</span>
     <span class="hljs-punctuation">}</span>
   <span class="hljs-punctuation">}</span>
 <span class="hljs-punctuation">}</span></code></pre></div>
-<p>The MCP server reads <code>IMPRI_BASE_URL</code> and routes all tool calls — <code>impri_push_action</code>, <code>impri_await_decision</code>, <code>impri_report_result</code> — to your instance instead of the cloud. No code changes needed in the agent.</p>
+<p>The MCP server reads <code>AIRLOCK_BASE_URL</code> and routes all tool calls — <code>airlock_push_action</code>, <code>airlock_await_decision</code>, <code>airlock_report_result</code> — to your instance instead of the cloud. No code changes needed in the agent.</p>
 <p><strong>REST directly</strong> — useful for testing that the instance is up and accepting requests:</p>
 <div class="code-block"><span class="code-lang">bash</span><pre><code class="hljs"><span class="hljs-comment"># Verify the server is up</span>
 curl http://localhost:8484/healthz
@@ -223,7 +223,7 @@ curl -X POST http://localhost:8484/v1/actions \
 <tr>
 <th>Capability</th>
 <th>Self-hosted (MIT core)</th>
-<th>Cloud (impri.dev)</th>
+<th>Cloud (airlock.dev)</th>
 </tr>
 </thead>
 <tbody><tr>
@@ -232,7 +232,7 @@ curl -X POST http://localhost:8484/v1/actions \
 <td>Yes</td>
 </tr>
 <tr>
-<td>MCP server (<code>@impri/mcp</code>)</td>
+<td>MCP server (<code>@airlock/mcp</code>)</td>
 <td>Yes</td>
 <td>Yes</td>
 </tr>
@@ -275,19 +275,19 @@ curl -X POST http://localhost:8484/v1/actions \
 </div>
 <p>The split is operational, not functional. A self-hosted instance accepts the same requests, stores decisions in the same schema, and exposes the same inbox UI. You configure your own notification channels — see <a href="notifications">notifications</a> for the available options.</p>
 <hr>
-<h2 id="honesty-about-what-impri-is-and-is-not">Honesty about what Impri is and is not</h2>
-<p>Running Impri yourself doesn&#39;t change what it does. It stores the proposed action, notifies the designated human, and holds the decision. It does not interpret what the agent is doing, does not generate or modify content, and does not execute anything.</p>
-<p>The gate is real only when the agent&#39;s path to the side effect runs through the Impri response. If you run the server behind your firewall but your agent also holds direct credentials to the target system, the gate does not enforce anything — it just records what was proposed.</p>
-<p>Impri is a focused tool: one human, one decision, one proposed action at a time. It is not a workflow engine with branching or scheduling (look at n8n or Temporal for those), and it is not an agent-to-agent coordination layer. You can embed it as one step inside a larger workflow. For compliance-sensitive environments, pair it with <a href="audit-log">audit-log</a> to export decision records.</p>
+<h2 id="honesty-about-what-airlock-is-and-is-not">Honesty about what Airlock is and is not</h2>
+<p>Running Airlock yourself doesn&#39;t change what it does. It stores the proposed action, notifies the designated human, and holds the decision. It does not interpret what the agent is doing, does not generate or modify content, and does not execute anything.</p>
+<p>The gate is real only when the agent&#39;s path to the side effect runs through the Airlock response. If you run the server behind your firewall but your agent also holds direct credentials to the target system, the gate does not enforce anything — it just records what was proposed.</p>
+<p>Airlock is a focused tool: one human, one decision, one proposed action at a time. It is not a workflow engine with branching or scheduling (look at n8n or Temporal for those), and it is not an agent-to-agent coordination layer. You can embed it as one step inside a larger workflow. For compliance-sensitive environments, pair it with <a href="audit-log">audit-log</a> to export decision records.</p>
 <hr>
 <h2 id="next-step">Next step</h2>
-<p>Follow the <a href="self-hosting">self-hosting</a> guide for compose file, reverse proxy, and environment variable reference. To wire up your first agent, start with the <a href="quickstart">quickstart</a> (the examples work against either the cloud or a local instance — just set <code>IMPRI_BASE_URL</code>). To use the MCP server with Claude Code or Claude Desktop, see <a href="mcp">mcp</a>.</p>
+<p>Follow the <a href="self-hosting">self-hosting</a> guide for compose file, reverse proxy, and environment variable reference. To wire up your first agent, start with the <a href="quickstart">quickstart</a> (the examples work against either the cloud or a local instance — just set <code>AIRLOCK_BASE_URL</code>). To use the MCP server with Claude Code or Claude Desktop, see <a href="mcp">mcp</a>.</p>
 
-    <aside class="doc-cta" aria-label="Try Impri">
+    <aside class="doc-cta" aria-label="Try Airlock">
   <p class="doc-cta-title">Add an approval step to your own agent</p>
-  <p>Start on Impri Cloud: the Free tier includes 100 approvals a month. Or self-host the MIT-licensed core with Docker Compose, with no tier limits.</p>
+  <p>Start on Airlock Cloud: the Free tier includes 100 approvals a month. Or self-host the MIT-licensed core with Docker Compose, with no tier limits.</p>
   <div class="doc-cta-actions">
-    <a class="btn btn-primary btn-sm" href="https://app.impri.dev/?signup=1">Start free on Impri Cloud</a>
+    <a class="btn btn-primary btn-sm" href="https://app.airlock.dev/?signup=1">Start free on Airlock Cloud</a>
     <a class="btn btn-ghost btn-sm" href="../docs/quickstart">Quick start</a>
     <a class="btn btn-ghost btn-sm" href="../docs/self-hosting">Self-host guide</a>
   </div>
@@ -374,7 +374,7 @@ curl -X POST http://localhost:8484/v1/actions \
 <li class="ptoc-h2"><a href="#running-the-server">Running the server</a></li>
 <li class="ptoc-h2"><a href="#pointing-your-agents-at-the-local-instance">Pointing your agents at the local instance</a></li>
 <li class="ptoc-h2"><a href="#what-you-get-vs-the-cloud">What you get vs. the cloud</a></li>
-<li class="ptoc-h2"><a href="#honesty-about-what-impri-is-and-is-not">Honesty about what Impri is and is not</a></li>
+<li class="ptoc-h2"><a href="#honesty-about-what-airlock-is-and-is-not">Honesty about what Airlock is and is not</a></li>
 <li class="ptoc-h2"><a href="#next-step">Next step</a></li></ul>
 </nav>
   </aside>
@@ -383,19 +383,19 @@ curl -X POST http://localhost:8484/v1/actions \
 <footer class="footer">
 <div class="wrap footer-inner">
   <a class="brand" href="/">
-    <span class="mark"><svg viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.5 4.5L19 7.5" stroke="white" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Impri
+    <span class="mark"><svg viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.5 4.5L19 7.5" stroke="white" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Airlock
   </a>
   <div>
-    <a href="https://gitlab.com/sekera.radim/impri">GitLab</a>
+    <a href="https://gitlab.com/sekera.radim/airlock">GitLab</a>
     <a href="/docs">Docs</a>
-    <a href="https://gitlab.com/sekera.radim/impri/-/blob/main/LICENSE">MIT License</a>
-    <a href="https://www.npmjs.com/package/@impri/mcp">@impri/mcp</a>
+    <a href="https://gitlab.com/sekera.radim/airlock/-/blob/main/LICENSE">MIT License</a>
+    <a href="https://www.npmjs.com/package/@airlock/mcp">@airlock/mcp</a>
     <a href="/docs/privacy">Privacy</a>
     <a href="/docs/terms">Terms</a>
     <a href="https://sekera.dev">Contact</a>
   </div>
 </div>
-<div class="wrap" style="margin-top:18px"><span class="muted">© 2026 Impri · The imprimatur for your AI agents · Built by <a href="https://sekera.dev" style="color:inherit">Radim Sekera</a>. Also by the same maker: <a href="https://briefgate.dev/?utm_source=impri.dev&amp;utm_medium=referral" style="color:inherit">BriefGate</a> — client intake for agencies and AI agents.</span></div>
+<div class="wrap" style="margin-top:18px"><span class="muted">© 2026 Airlock · The airlockmatur for your AI agents · Built by <a href="https://sekera.dev" style="color:inherit">Radim Sekera</a>. Also by the same maker: <a href="https://briefgate.dev/?utm_source=airlock.dev&amp;utm_medium=referral" style="color:inherit">BriefGate</a> — client intake for agencies and AI agents.</span></div>
 </footer>
 </body>
 </html>

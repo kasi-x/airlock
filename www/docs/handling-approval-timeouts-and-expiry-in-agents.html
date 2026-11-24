@@ -3,21 +3,21 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Handling Approval Timeouts and Expiry in Agents — Impri Docs</title>
+<title>Handling Approval Timeouts and Expiry in Agents — Airlock Docs</title>
 <meta name="description" content="Two clocks run against every pending approval — your poll loop's own timeout and the action's expires_in — and confusing them makes agents execute stale…">
 <meta name="theme-color" content="#06070d">
-<meta property="og:title" content="Handling Approval Timeouts and Expiry in Agents — Impri Docs">
+<meta property="og:title" content="Handling Approval Timeouts and Expiry in Agents — Airlock Docs">
 <meta property="og:description" content="Two clocks run against every pending approval — your poll loop's own timeout and the action's expires_in — and confusing them makes agents execute stale…">
 <meta property="og:type" content="article">
-<meta property="og:url" content="https://impri.dev/docs/handling-approval-timeouts-and-expiry-in-agents">
-<meta property="og:image" content="https://impri.dev/assets/og/og-docs.png">
+<meta property="og:url" content="https://airlock.dev/docs/handling-approval-timeouts-and-expiry-in-agents">
+<meta property="og:image" content="https://airlock.dev/assets/og/og-docs.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
-<meta property="og:image:alt" content="Impri — human-in-the-loop approval inbox for AI agents">
+<meta property="og:image:alt" content="Airlock — human-in-the-loop approval inbox for AI agents">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="https://impri.dev/assets/og/og-docs.png">
-<link rel="canonical" href="https://impri.dev/docs/handling-approval-timeouts-and-expiry-in-agents">
-<script type="application/ld+json">{"@context":"https://schema.org","@type":"TechArticle","headline":"Handling Approval Timeouts and Expiry in Agents","description":"Two clocks run against every pending approval — your poll loop's own timeout and the action's expires_in — and confusing them makes agents execute stale…","url":"https://impri.dev/docs/handling-approval-timeouts-and-expiry-in-agents","inLanguage":"en","author":{"@type":"Organization","name":"Impri","url":"https://impri.dev"},"publisher":{"@type":"Organization","name":"Impri","url":"https://impri.dev"}}</script>
+<meta name="twitter:image" content="https://airlock.dev/assets/og/og-docs.png">
+<link rel="canonical" href="https://airlock.dev/docs/handling-approval-timeouts-and-expiry-in-agents">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"TechArticle","headline":"Handling Approval Timeouts and Expiry in Agents","description":"Two clocks run against every pending approval — your poll loop's own timeout and the action's expires_in — and confusing them makes agents execute stale…","url":"https://airlock.dev/docs/handling-approval-timeouts-and-expiry-in-agents","inLanguage":"en","author":{"@type":"Organization","name":"Airlock","url":"https://airlock.dev"},"publisher":{"@type":"Organization","name":"Airlock","url":"https://airlock.dev"}}</script>
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <link rel="icon" href="/favicon.ico" sizes="32x32">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='9' fill='%236366f1'/%3E%3Cpath d='M9 16.5l4.5 4.5L23 11' stroke='white' stroke-width='3' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
@@ -132,13 +132,13 @@ pre code.hljs{display:block;overflow-x:auto}
 <div class="wrap nav-inner">
   <a class="brand" href="/">
     <span class="mark"><svg viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.5 4.5L19 7.5" stroke="white" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
-    Impri
+    Airlock
   </a>
   <div class="nav-links">
     <a class="link" href="/#how">How it works</a>
     <a class="link" href="/#pricing">Pricing</a>
     <a class="link active-nav" href="../docs">Docs</a>
-    <a class="btn btn-primary btn-sm" href="https://gitlab.com/sekera.radim/impri">GitLab</a>
+    <a class="btn btn-primary btn-sm" href="https://gitlab.com/sekera.radim/airlock">GitLab</a>
   </div>
 </div>
 </nav>
@@ -158,22 +158,22 @@ pre code.hljs{display:block;overflow-x:auto}
 <h2 id="two-different-timeouts-easily-confused">Two different timeouts, easily confused</h2>
 <p>When an agent asks a human to approve something, there are two independent deadlines in play:</p>
 <ol>
-<li><strong>The poll timeout</strong> — how long <em>your code</em> is willing to keep checking <code>GET /v1/actions/:id</code> (or block on <code>impri_await_decision</code>) before giving up and moving on to other work.</li>
-<li><strong>The action&#39;s expiry</strong> — <code>expires_in</code> on the action itself, tracked by Impri. Once this passes, the status flips to <code>expired</code> server-side and the action can no longer be approved, no matter who checks it or when.</li>
+<li><strong>The poll timeout</strong> — how long <em>your code</em> is willing to keep checking <code>GET /v1/actions/:id</code> (or block on <code>airlock_await_decision</code>) before giving up and moving on to other work.</li>
+<li><strong>The action&#39;s expiry</strong> — <code>expires_in</code> on the action itself, tracked by Airlock. Once this passes, the status flips to <code>expired</code> server-side and the action can no longer be approved, no matter who checks it or when.</li>
 </ol>
 <p>These are not the same thing, and treating them as interchangeable causes two distinct bugs: an agent that stops polling too early and misses a decision made five minutes later, or an agent that keeps a long-running process alive for days waiting on an action that expired hours ago.</p>
 <hr>
 <h2 id="timeout-1-your-poll-loop-giving-up">Timeout 1: your poll loop giving up</h2>
-<p>Your poll loop timeout should usually be <em>shorter</em> than <code>expires_in</code>, not equal to it. If the agent is a long-running background worker, it can afford to poll for the full expiry window. If it&#39;s a short-lived script (a CI job, a serverless function), it should poll for as long as it can afford to run, then exit and let a separate process pick the decision back up later via <code>GET /v1/actions/:id</code> — the action is still <code>pending</code> in Impri regardless of whether your script is watching it.</p>
+<p>Your poll loop timeout should usually be <em>shorter</em> than <code>expires_in</code>, not equal to it. If the agent is a long-running background worker, it can afford to poll for the full expiry window. If it&#39;s a short-lived script (a CI job, a serverless function), it should poll for as long as it can afford to run, then exit and let a separate process pick the decision back up later via <code>GET /v1/actions/:id</code> — the action is still <code>pending</code> in Airlock regardless of whether your script is watching it.</p>
 <div class="code-block"><span class="code-lang">python</span><pre><code class="hljs"><span class="hljs-keyword">import</span> time
 <span class="hljs-keyword">import</span> requests
 
-BASE = <span class="hljs-string">&quot;https://api.impri.dev&quot;</span>
-HEADERS = {<span class="hljs-string">&quot;Authorization&quot;</span>: <span class="hljs-string">f&quot;Bearer <span class="hljs-subst">{IMPRI_API_KEY}</span>&quot;</span>}
+BASE = <span class="hljs-string">&quot;https://api.airlock.dev&quot;</span>
+HEADERS = {<span class="hljs-string">&quot;Authorization&quot;</span>: <span class="hljs-string">f&quot;Bearer <span class="hljs-subst">{AIRLOCK_API_KEY}</span>&quot;</span>}
 
 <span class="hljs-keyword">def</span> <span class="hljs-title function_">poll_for_decision</span>(<span class="hljs-params">action_id: <span class="hljs-built_in">str</span>, poll_timeout_s: <span class="hljs-built_in">int</span> = <span class="hljs-number">240</span>, interval_s: <span class="hljs-built_in">int</span> = <span class="hljs-number">10</span></span>):
     <span class="hljs-string">&quot;&quot;&quot;Polls up to poll_timeout_s, but the action itself may still be
-    pending in Impri after this function gives up — that&#x27;s expected.&quot;&quot;&quot;</span>
+    pending in Airlock after this function gives up — that&#x27;s expected.&quot;&quot;&quot;</span>
     deadline = time.monotonic() + poll_timeout_s
     <span class="hljs-keyword">while</span> time.monotonic() &lt; deadline:
         resp = requests.get(<span class="hljs-string">f&quot;<span class="hljs-subst">{BASE}</span>/v1/actions/<span class="hljs-subst">{action_id}</span>&quot;</span>, headers=HEADERS)
@@ -185,7 +185,7 @@ HEADERS = {<span class="hljs-string">&quot;Authorization&quot;</span>: <span cla
 <p>If <code>poll_for_decision</code> returns <code>None</code>, that is not a rejection. It just means this process ran out of patience. A cron job that runs every 15 minutes and re-checks <code>pending</code> action IDs from a small local store is a common pattern for agents that can&#39;t block indefinitely.</p>
 <hr>
 <h2 id="timeout-2-the-action-itself-expiring">Timeout 2: the action itself expiring</h2>
-<p><code>expires_in</code> is set once, at creation, and is enforced by Impri regardless of what your agent does afterward. It accepts a minimum of 300 seconds and a maximum of 2,592,000 (30 days), defaulting to 259,200 (72 hours). Once the deadline passes, <code>GET /v1/actions/:id</code> returns <code>status: &quot;expired&quot;</code> permanently — there is no way to re-open it.</p>
+<p><code>expires_in</code> is set once, at creation, and is enforced by Airlock regardless of what your agent does afterward. It accepts a minimum of 300 seconds and a maximum of 2,592,000 (30 days), defaulting to 259,200 (72 hours). Once the deadline passes, <code>GET /v1/actions/:id</code> returns <code>status: &quot;expired&quot;</code> permanently — there is no way to re-open it.</p>
 <p>Treat <code>expired</code> exactly like <code>rejected</code> in your execution branch: never run the side effect.</p>
 <div class="code-block"><span class="code-lang">python</span><pre><code class="hljs">result = poll_for_decision(action_id)
 <span class="hljs-keyword">if</span> result <span class="hljs-keyword">is</span> <span class="hljs-literal">None</span>:
@@ -234,11 +234,11 @@ HEADERS = {<span class="hljs-string">&quot;Authorization&quot;</span>: <span cla
 <h2 id="next-step">Next step</h2>
 <p>Once timeout handling is in place, wire the actual gate into your agent&#39;s tool call — see <a href="how-to-add-human-approval-to-an-ai-agent">how to add human approval to an AI agent</a> for the full three-call pattern, the <a href="sdk-python">Python SDK</a> if you&#39;d rather not hand-roll the polling loop, and <a href="quickstart">quickstart</a> to get an API key.</p>
 
-    <aside class="doc-cta" aria-label="Try Impri">
+    <aside class="doc-cta" aria-label="Try Airlock">
   <p class="doc-cta-title">Add an approval step to your own agent</p>
-  <p>Start on Impri Cloud: the Free tier includes 100 approvals a month. Or self-host the MIT-licensed core with Docker Compose, with no tier limits.</p>
+  <p>Start on Airlock Cloud: the Free tier includes 100 approvals a month. Or self-host the MIT-licensed core with Docker Compose, with no tier limits.</p>
   <div class="doc-cta-actions">
-    <a class="btn btn-primary btn-sm" href="https://app.impri.dev/?signup=1">Start free on Impri Cloud</a>
+    <a class="btn btn-primary btn-sm" href="https://app.airlock.dev/?signup=1">Start free on Airlock Cloud</a>
     <a class="btn btn-ghost btn-sm" href="../docs/quickstart">Quick start</a>
     <a class="btn btn-ghost btn-sm" href="../docs/self-hosting">Self-host guide</a>
   </div>
@@ -334,19 +334,19 @@ HEADERS = {<span class="hljs-string">&quot;Authorization&quot;</span>: <span cla
 <footer class="footer">
 <div class="wrap footer-inner">
   <a class="brand" href="/">
-    <span class="mark"><svg viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.5 4.5L19 7.5" stroke="white" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Impri
+    <span class="mark"><svg viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.5 4.5L19 7.5" stroke="white" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Airlock
   </a>
   <div>
-    <a href="https://gitlab.com/sekera.radim/impri">GitLab</a>
+    <a href="https://gitlab.com/sekera.radim/airlock">GitLab</a>
     <a href="/docs">Docs</a>
-    <a href="https://gitlab.com/sekera.radim/impri/-/blob/main/LICENSE">MIT License</a>
-    <a href="https://www.npmjs.com/package/@impri/mcp">@impri/mcp</a>
+    <a href="https://gitlab.com/sekera.radim/airlock/-/blob/main/LICENSE">MIT License</a>
+    <a href="https://www.npmjs.com/package/@airlock/mcp">@airlock/mcp</a>
     <a href="/docs/privacy">Privacy</a>
     <a href="/docs/terms">Terms</a>
     <a href="https://sekera.dev">Contact</a>
   </div>
 </div>
-<div class="wrap" style="margin-top:18px"><span class="muted">© 2026 Impri · The imprimatur for your AI agents · Built by <a href="https://sekera.dev" style="color:inherit">Radim Sekera</a>. Also by the same maker: <a href="https://briefgate.dev/?utm_source=impri.dev&amp;utm_medium=referral" style="color:inherit">BriefGate</a> — client intake for agencies and AI agents.</span></div>
+<div class="wrap" style="margin-top:18px"><span class="muted">© 2026 Airlock · The airlockmatur for your AI agents · Built by <a href="https://sekera.dev" style="color:inherit">Radim Sekera</a>. Also by the same maker: <a href="https://briefgate.dev/?utm_source=airlock.dev&amp;utm_medium=referral" style="color:inherit">BriefGate</a> — client intake for agencies and AI agents.</span></div>
 </footer>
 </body>
 </html>

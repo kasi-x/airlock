@@ -1,9 +1,9 @@
 {
-  "name": "@impri/claude-agent-sdk",
+  "name": "@airlock/claude-agent-sdk",
   "version": "0.1.0",
-  "description": "Impri human-in-the-loop approval gate for Claude Agent SDK tool calls",
+  "description": "Airlock human-in-the-loop approval gate for Claude Agent SDK tool calls",
   "keywords": [
-    "impri",
+    "airlock",
     "claude",
     "anthropic",
     "human-in-the-loop",
@@ -13,10 +13,10 @@
   ],
   "license": "MIT",
   "author": "Radim Sekera",
-  "homepage": "https://impri.dev",
+  "homepage": "https://airlock.dev",
   "repository": {
     "type": "git",
-    "url": "https://gitlab.com/sekera.radim/impri.git",
+    "url": "https://gitlab.com/sekera.radim/airlock.git",
     "directory": "integrations/claude-agent-sdk"
   },
   "publishConfig": {

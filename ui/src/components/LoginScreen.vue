@@ -4,14 +4,14 @@
       <v-col cols="12" sm="8" md="5" lg="4">
         <v-card elevation="2" rounded="lg">
           <v-card-title class="pa-6 pb-2">
-            <div class="text-h5 font-weight-bold">Impri</div>
+            <div class="text-h5 font-weight-bold">Airlock</div>
             <div class="text-body-2 text-medium-emphasis">Approval Inbox</div>
           </v-card-title>
 
           <v-card-text v-if="mode === 'signup'" class="pa-6">
             <div class="text-h6 font-weight-bold mb-2">Create your free workspace</div>
             <p class="text-body-2 text-medium-emphasis mb-4">
-              Impri holds your agent's risky actions until a human approves them.
+              Airlock holds your agent's risky actions until a human approves them.
               The free plan has 3 watchers and 100 approvals a month — no card, no email.
             </p>
             <p class="text-body-2 text-medium-emphasis mb-6">
@@ -207,7 +207,7 @@
           </v-alert>
 
           <p class="text-body-2 text-medium-emphasis mb-2">
-            API key — how you and your agents access Impri:
+            API key — how you and your agents access Airlock:
           </p>
           <div class="d-flex align-center gap-2 mb-4">
             <code class="key-box">{{ newKey }}</code>

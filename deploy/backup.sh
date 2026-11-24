@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Impri SQLite daily backup
+# Airlock SQLite daily backup
 #
 # Uses SQLite's built-in online backup (.backup command) which is safe
 # to run against a live database under concurrent writes. Do NOT use
@@ -9,12 +9,12 @@
 # Usage:
 #   ./deploy/backup.sh
 #
-# Intended to be run via systemd timer (see impri-backup.timer/.service)
+# Intended to be run via systemd timer (see airlock-backup.timer/.service)
 # or cron. Must be run from the repo root where docker-compose.prod.yml lives.
 #
 # Environment:
 #   COMPOSE_FILE   Path to the prod compose file. Default: deploy/docker-compose.prod.yml
-#   BACKUP_DIR     Where to store backups. Default: /var/backups/impri
+#   BACKUP_DIR     Where to store backups. Default: /var/backups/airlock
 #   KEEP_DAYS      How many daily backups to retain. Default: 14
 #   HETZNER_BOX    Hetzner Storage Box SSH target, e.g. u123456@u123456.your-storagebox.de
 #                  Leave unset to skip remote upload (off by default).
@@ -22,10 +22,10 @@
 set -euo pipefail
 
 COMPOSE_FILE="${COMPOSE_FILE:-$(dirname "$0")/docker-compose.prod.yml}"
-BACKUP_DIR="${BACKUP_DIR:-/var/backups/impri}"
+BACKUP_DIR="${BACKUP_DIR:-/var/backups/airlock}"
 KEEP_DAYS="${KEEP_DAYS:-14}"
 TIMESTAMP="$(date -u +%Y%m%dT%H%M%SZ)"
-BACKUP_FILENAME="impri-${TIMESTAMP}.db"
+BACKUP_FILENAME="airlock-${TIMESTAMP}.db"
 # Temp path inside the server container (writable by the node user)
 CONTAINER_TMP="/tmp/${BACKUP_FILENAME}"
 
@@ -48,7 +48,7 @@ docker compose \
   -f "${COMPOSE_FILE}" \
   --env-file "${COMPOSE_DIR}/.env" \
   exec -T server \
-  sqlite3 /app/data/impri.db ".backup ${CONTAINER_TMP}" \
+  sqlite3 /app/data/airlock.db ".backup ${CONTAINER_TMP}" \
   || die "sqlite3 .backup failed inside container"
 
 # 2. Copy the backup file out of the container to the host.
@@ -68,7 +68,7 @@ docker compose \
 log "Backup written: ${BACKUP_DIR}/${BACKUP_FILENAME} ($(du -sh "${BACKUP_DIR}/${BACKUP_FILENAME}" | cut -f1))"
 
 # 4. Rotate: delete backups older than KEEP_DAYS days.
-find "${BACKUP_DIR}" -maxdepth 1 -name 'impri-*.db' -mtime "+${KEEP_DAYS}" -print -delete \
+find "${BACKUP_DIR}" -maxdepth 1 -name 'airlock-*.db' -mtime "+${KEEP_DAYS}" -print -delete \
   | while read -r f; do log "Rotated: ${f}"; done
 
 # 5. Optional: upload to Hetzner Storage Box via rsync over SSH.
@@ -81,7 +81,7 @@ find "${BACKUP_DIR}" -maxdepth 1 -name 'impri-*.db' -mtime "+${KEEP_DAYS}" -prin
 #   # Add it once: ssh-copy-id -p 23 "${HETZNER_BOX}"
 #   rsync -az --no-perms -e "ssh -p 23" \
 #     "${BACKUP_DIR}/${BACKUP_FILENAME}" \
-#     "${HETZNER_BOX}:/impri-backups/${BACKUP_FILENAME}" \
+#     "${HETZNER_BOX}:/airlock-backups/${BACKUP_FILENAME}" \
 #     || die "rsync to Storage Box failed"
 #   log "Upload complete."
 # fi

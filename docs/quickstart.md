@@ -2,7 +2,7 @@
 
 From zero to your first approved action in under 5 minutes.
 
-Two ways to run Impri — pick one:
+Two ways to run Airlock — pick one:
 
 - **[Option A — Cloud](#option-a--cloud-no-install)**: no install, a hosted key in one request. Fastest way to try it.
 - **[Option B — Self-host](#option-b--self-host-docker)**: `docker compose up`, your own data, still free.
@@ -16,7 +16,7 @@ Both use the exact same three calls from your agent: push an action, wait for a 
 ### 1. Create a project and get a key
 
 ```bash
-curl -s -X POST https://api.impri.dev/v1/signup \
+curl -s -X POST https://api.airlock.dev/v1/signup \
   -H "Content-Type: application/json" \
   -d '{"name": "my-agent"}'
 ```
@@ -32,7 +32,7 @@ Response (`201 Created`):
 }
 ```
 
-Save both — the key is shown once. (Prefer clicking through instead? Go to [app.impri.dev](https://app.impri.dev) and use the **Create an API key** button — same result.)
+Save both — the key is shown once. (Prefer clicking through instead? Go to [app.airlock.dev](https://app.airlock.dev) and use the **Create an API key** button — same result.)
 
 ```bash
 export AGENT_KEY="im_<your-key-from-the-response>"
@@ -45,7 +45,7 @@ This key has full `admin` scope, which is fine to start. Once you're wiring up a
 Your agent pushes an action to the inbox. This is the single call your agent makes before doing anything consequential:
 
 ```bash
-ACTION=$(curl -s -X POST https://api.impri.dev/v1/actions \
+ACTION=$(curl -s -X POST https://api.airlock.dev/v1/actions \
   -H "Authorization: Bearer $AGENT_KEY" \
   -H "Content-Type: application/json" \
   -d '{
@@ -67,7 +67,7 @@ echo "Review it at: $INBOX_URL"
 
 ### 3. Approve in the web inbox
 
-Open the `inbox_url` printed above (or go to [app.impri.dev](https://app.impri.dev) and click **Inbox**). You'll see the pending action as a card with the markdown preview. Tap **Approve** (or **Reject**).
+Open the `inbox_url` printed above (or go to [app.airlock.dev](https://app.airlock.dev) and click **Inbox**). You'll see the pending action as a card with the markdown preview. Tap **Approve** (or **Reject**).
 
 If you configured `editable: ["preview.body"]`, you can also edit the reply text before approving — the agent receives the final, human-edited version.
 
@@ -76,7 +76,7 @@ If you configured `editable: ["preview.body"]`, you can also edit the reply text
 Poll `GET /v1/actions/:id` until `status` is no longer `pending`:
 
 ```bash
-curl -s https://api.impri.dev/v1/actions/$ACTION_ID \
+curl -s https://api.airlock.dev/v1/actions/$ACTION_ID \
   -H "Authorization: Bearer $AGENT_KEY" | jq '{status, decision}'
 ```
 
@@ -105,13 +105,13 @@ Execute the action with the approved content, then close the loop by reporting t
 
 ```bash
 # After successful execution
-curl -s -X POST https://api.impri.dev/v1/actions/$ACTION_ID/result \
+curl -s -X POST https://api.airlock.dev/v1/actions/$ACTION_ID/result \
   -H "Authorization: Bearer $AGENT_KEY" \
   -H "Content-Type: application/json" \
   -d '{"status": "executed"}'
 
 # Or if execution failed
-curl -s -X POST https://api.impri.dev/v1/actions/$ACTION_ID/result \
+curl -s -X POST https://api.airlock.dev/v1/actions/$ACTION_ID/result \
   -H "Authorization: Bearer $AGENT_KEY" \
   -H "Content-Type: application/json" \
   -d '{"status": "execute_failed", "detail": "Reddit API returned 403"}'
@@ -121,24 +121,24 @@ The action lifecycle is now complete: `pending → approved → executed`. That'
 
 ### Prefer MCP? (Claude Code, Codex CLI, Cursor, Windsurf, any MCP client)
 
-Skip the raw HTTP calls above — the Impri MCP server wraps the same three calls into tool calls your agent can use directly. The web inbox's **Connect an agent** panel shows the same commands below with your real key already filled in.
+Skip the raw HTTP calls above — the Airlock MCP server wraps the same three calls into tool calls your agent can use directly. The web inbox's **Connect an agent** panel shows the same commands below with your real key already filled in.
 
 **Claude Code:**
 
 ```bash
-claude mcp add impri \
-  -e IMPRI_API_KEY=im_<your-agent-key> \
-  -e IMPRI_BASE_URL=https://api.impri.dev \
-  -- npx -y @impri/mcp
+claude mcp add airlock \
+  -e AIRLOCK_API_KEY=im_<your-agent-key> \
+  -e AIRLOCK_BASE_URL=https://api.airlock.dev \
+  -- npx -y @airlock/mcp
 ```
 
 **Codex CLI:**
 
 ```bash
-codex mcp add impri \
-  --env IMPRI_API_KEY=im_<your-agent-key> \
-  --env IMPRI_BASE_URL=https://api.impri.dev \
-  -- npx -y @impri/mcp
+codex mcp add airlock \
+  --env AIRLOCK_API_KEY=im_<your-agent-key> \
+  --env AIRLOCK_BASE_URL=https://api.airlock.dev \
+  -- npx -y @airlock/mcp
 ```
 
 **Cursor** (`~/.cursor/mcp.json` or `.cursor/mcp.json` in your project), **Windsurf** (`~/.codeium/windsurf/mcp_config.json`), **Claude Desktop, or any other MCP client** — same JSON shape:
@@ -146,35 +146,35 @@ codex mcp add impri \
 ```json
 {
   "mcpServers": {
-    "impri": {
+    "airlock": {
       "command": "npx",
-      "args": ["-y", "@impri/mcp"],
+      "args": ["-y", "@airlock/mcp"],
       "env": {
-        "IMPRI_API_KEY": "im_<your-agent-key>",
-        "IMPRI_BASE_URL": "https://api.impri.dev"
+        "AIRLOCK_API_KEY": "im_<your-agent-key>",
+        "AIRLOCK_BASE_URL": "https://api.airlock.dev"
       }
     }
   }
 }
 ```
 
-Self-hosting? Drop the `IMPRI_BASE_URL` line — the MCP server already defaults to `http://localhost:8484`.
+Self-hosting? Drop the `AIRLOCK_BASE_URL` line — the MCP server already defaults to `http://localhost:8484`.
 
 | Tool | What it does |
 |------|-------------|
-| `impri_push_action` | Submit an action for human approval |
-| `impri_await_decision` | Long-poll until a decision arrives (or timeout) |
-| `impri_report_result` | Report execution outcome after approval |
-| `impri_inbox_status` | Check how many actions are pending |
+| `airlock_push_action` | Submit an action for human approval |
+| `airlock_await_decision` | Long-poll until a decision arrives (or timeout) |
+| `airlock_report_result` | Report execution outcome after approval |
+| `airlock_inbox_status` | Check how many actions are pending |
 
 ```
-impri_push_action(kind="reddit.comment", title="Reply: ...", preview={...}, editable=["preview.body"])
+airlock_push_action(kind="reddit.comment", title="Reply: ...", preview={...}, editable=["preview.body"])
 → { action_id: "act_abc123", status: "pending", inbox_url: "..." }
 
-impri_await_decision(action_id="act_abc123", timeout_s=600)
+airlock_await_decision(action_id="act_abc123", timeout_s=600)
 → { status: "approved", preview: { body: "..." }, edited_by_human: true }
 
-impri_report_result(action_id="act_abc123", status="executed")
+airlock_report_result(action_id="act_abc123", status="executed")
 ```
 
 ---
@@ -185,11 +185,11 @@ Same three calls, running entirely on your own machine — no cloud account, no 
 
 **Prerequisites:** Docker and Docker Compose, `curl`.
 
-### 1. Start Impri
+### 1. Start Airlock
 
 ```bash
-git clone https://gitlab.com/sekera.radim/impri.git
-cd impri
+git clone https://gitlab.com/sekera.radim/airlock.git
+cd airlock
 
 # Set a strong webhook secret before starting
 export WEBHOOK_SECRET=$(openssl rand -hex 32)
@@ -226,7 +226,7 @@ export AGENT_KEY="im_<agent-key>"
 
 ### 3–6. Push, approve, poll, execute
 
-Same as the cloud steps above, just swap `https://api.impri.dev` for `http://localhost:8484` and `https://app.impri.dev` for `http://localhost:8080`:
+Same as the cloud steps above, just swap `https://api.airlock.dev` for `http://localhost:8484` and `https://app.airlock.dev` for `http://localhost:8080`:
 
 ```bash
 # 3. Push
@@ -257,9 +257,9 @@ curl -s -X POST http://localhost:8484/v1/actions/act_abc123/result \
 **Via MCP:** same config as Option A, just point it at your local server:
 
 ```bash
-export IMPRI_API_KEY="$AGENT_KEY"
-export IMPRI_BASE_URL="http://localhost:8484"
-npx @impri/mcp
+export AIRLOCK_API_KEY="$AGENT_KEY"
+export AIRLOCK_BASE_URL="http://localhost:8484"
+npx @airlock/mcp
 ```
 
 ---
@@ -267,6 +267,6 @@ npx @impri/mcp
 ## What's next
 
 - **Webhook delivery** instead of polling: see [webhooks.md](webhooks.md)
-- **Watchers** (monitor RSS, Reddit, URL changes): REST API via `POST /v1/watchers`; start from a ready-made configuration in [watcher-presets.md](watcher-presets.md), or see the request schema (`CreateWatcherBody`) in [server/src/schemas.ts](https://gitlab.com/sekera.radim/impri/-/blob/main/server/src/schemas.ts)
+- **Watchers** (monitor RSS, Reddit, URL changes): REST API via `POST /v1/watchers`; start from a ready-made configuration in [watcher-presets.md](watcher-presets.md), or see the request schema (`CreateWatcherBody`) in [server/src/schemas.ts](https://gitlab.com/sekera.radim/airlock/-/blob/main/server/src/schemas.ts)
 - **Self-hosting configuration** (SMTP, ntfy, backups): see [self-hosting.md](self-hosting.md)
 - **The full pattern and its guarantees** (why this actually gates execution, and what it doesn't cover): see [How to add human approval to an AI agent](how-to-add-human-approval-to-an-ai-agent.md)

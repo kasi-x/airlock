@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-payment-approval.py — Impri cookbook recipe #4
+payment-approval.py — Airlock cookbook recipe #4
 Python stdlib only (urllib, json). Python 3.8+.
 
 Pattern: a finance/expense agent gates payments above a configured threshold
@@ -8,9 +8,9 @@ on human approval. Low-value payments pass through automatically; high-value
 ones land in the inbox for review.
 
 Run:
-    IMPRI_API_KEY=im_xxx python3 agent.py
-    IMPRI_API_KEY=im_xxx IMPRI_BASE_URL=https://api.impri.dev python3 agent.py
-    IMPRI_API_KEY=im_xxx APPROVAL_THRESHOLD=50 python3 agent.py
+    AIRLOCK_API_KEY=im_xxx python3 agent.py
+    AIRLOCK_API_KEY=im_xxx AIRLOCK_BASE_URL=https://api.airlock.dev python3 agent.py
+    AIRLOCK_API_KEY=im_xxx APPROVAL_THRESHOLD=50 python3 agent.py
 
 Required scope: actions
 """
@@ -23,13 +23,13 @@ import urllib.request
 import urllib.error
 from typing import Any
 
-API_KEY = os.environ.get("IMPRI_API_KEY")
-BASE = os.environ.get("IMPRI_BASE_URL", "http://localhost:8484").rstrip("/")
+API_KEY = os.environ.get("AIRLOCK_API_KEY")
+BASE = os.environ.get("AIRLOCK_BASE_URL", "http://localhost:8484").rstrip("/")
 # Payments at or above this amount (USD) require human approval.
 APPROVAL_THRESHOLD = float(os.environ.get("APPROVAL_THRESHOLD", "100"))
 
 if not API_KEY:
-    print("Set IMPRI_API_KEY (it starts with im_).", file=sys.stderr)
+    print("Set AIRLOCK_API_KEY (it starts with im_).", file=sys.stderr)
     sys.exit(1)
 
 
@@ -111,7 +111,7 @@ def execute_payment(p: dict) -> str:
 
 def main() -> None:
     p = payment
-    print(f"\nImpri payment-approval → {BASE}")
+    print(f"\nAirlock payment-approval → {BASE}")
     print(f"  Payment: ${p['amount_usd']:.2f} to {p['vendor']}")
     print(f"  Threshold: ${APPROVAL_THRESHOLD:.2f}\n")
 
@@ -168,7 +168,7 @@ def main() -> None:
             "status": "executed",
             "detail": f"Transaction ID: {txn_id}",
         })
-        print(f"  OK — payment executed ({txn_id}) and reported to Impri.")
+        print(f"  OK — payment executed ({txn_id}) and reported to Airlock.")
     except Exception as err:
         api(f"/actions/{action['id']}/result", "POST", {
             "status": "execute_failed",

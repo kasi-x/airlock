@@ -17,8 +17,8 @@ The agent pushes one action per invoice or expense report, waits for a decision,
 ```python
 import os, time, requests
 
-API = "https://api.impri.dev"
-HEADERS = {"Authorization": f"Bearer {os.environ['IMPRI_API_KEY']}"}
+API = "https://api.airlock.dev"
+HEADERS = {"Authorization": f"Bearer {os.environ['AIRLOCK_API_KEY']}"}
 
 def request_payment_approval(invoice):
     body = (
@@ -68,10 +68,10 @@ Put the numbers the human actually needs to make the call in the preview body, n
 
 ## Handling rejection and low-confidence matches
 
-Treat `expired` the same as `rejected` — an invoice approval that timed out is not an invoice that got silently approved. If the PO match confidence is below whatever threshold you set, don't even bother the human with an approval card yet; route it to manual review first and only push an Impri action once the agent (or a person) is confident enough to propose a specific payment.
+Treat `expired` the same as `rejected` — an invoice approval that timed out is not an invoice that got silently approved. If the PO match confidence is below whatever threshold you set, don't even bother the human with an approval card yet; route it to manual review first and only push an Airlock action once the agent (or a person) is confident enough to propose a specific payment.
 
 ## Boundaries
 
-Impri stores the proposed payment, shows it to a human, and holds the decision — it does not verify the invoice against your accounting system or check budget headroom. That reconciliation logic stays in your agent or your ERP integration. And the gate only holds if the agent has no other path to `pay_invoice()` — if it also holds a standing API key to your payment processor for "emergencies," that's the path that bypasses this entirely.
+Airlock stores the proposed payment, shows it to a human, and holds the decision — it does not verify the invoice against your accounting system or check budget headroom. That reconciliation logic stays in your agent or your ERP integration. And the gate only holds if the agent has no other path to `pay_invoice()` — if it also holds a standing API key to your payment processor for "emergencies," that's the path that bypasses this entirely.
 
 Next: [wire this into the base flow](how-to-add-human-approval-to-an-ai-agent.md) if you haven't already, then look at [the Python SDK](sdk-python.md) to skip the raw `requests` calls, and check [audit-log](audit-log.md) for how approved/rejected payments show up for your books.

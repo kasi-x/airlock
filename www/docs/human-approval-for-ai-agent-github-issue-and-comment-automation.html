@@ -3,21 +3,21 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Human Approval for AI Agent GitHub Issue and Comment… — Impri Docs</title>
+<title>Human Approval for AI Agent GitHub Issue and Comment… — Airlock Docs</title>
 <meta name="description" content="Add human approval for AI agent GitHub issue and comment automation: the agent drafts, you review and edit in one inbox, and only approved text gets posted.">
 <meta name="theme-color" content="#06070d">
-<meta property="og:title" content="Human Approval for AI Agent GitHub Issue and Comment… — Impri Docs">
+<meta property="og:title" content="Human Approval for AI Agent GitHub Issue and Comment… — Airlock Docs">
 <meta property="og:description" content="Add human approval for AI agent GitHub issue and comment automation: the agent drafts, you review and edit in one inbox, and only approved text gets posted.">
 <meta property="og:type" content="article">
-<meta property="og:url" content="https://impri.dev/docs/human-approval-for-ai-agent-github-issue-and-comment-automation">
-<meta property="og:image" content="https://impri.dev/assets/og/og-docs.png">
+<meta property="og:url" content="https://airlock.dev/docs/human-approval-for-ai-agent-github-issue-and-comment-automation">
+<meta property="og:image" content="https://airlock.dev/assets/og/og-docs.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
-<meta property="og:image:alt" content="Impri — human-in-the-loop approval inbox for AI agents">
+<meta property="og:image:alt" content="Airlock — human-in-the-loop approval inbox for AI agents">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="https://impri.dev/assets/og/og-docs.png">
-<link rel="canonical" href="https://impri.dev/docs/human-approval-for-ai-agent-github-issue-and-comment-automation">
-<script type="application/ld+json">{"@context":"https://schema.org","@type":"TechArticle","headline":"Human Approval for AI Agent GitHub Issue and Comment Automation","description":"Add human approval for AI agent GitHub issue and comment automation: the agent drafts, you review and edit in one inbox, and only approved text gets posted.","url":"https://impri.dev/docs/human-approval-for-ai-agent-github-issue-and-comment-automation","inLanguage":"en","author":{"@type":"Organization","name":"Impri","url":"https://impri.dev"},"publisher":{"@type":"Organization","name":"Impri","url":"https://impri.dev"}}</script>
+<meta name="twitter:image" content="https://airlock.dev/assets/og/og-docs.png">
+<link rel="canonical" href="https://airlock.dev/docs/human-approval-for-ai-agent-github-issue-and-comment-automation">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"TechArticle","headline":"Human Approval for AI Agent GitHub Issue and Comment Automation","description":"Add human approval for AI agent GitHub issue and comment automation: the agent drafts, you review and edit in one inbox, and only approved text gets posted.","url":"https://airlock.dev/docs/human-approval-for-ai-agent-github-issue-and-comment-automation","inLanguage":"en","author":{"@type":"Organization","name":"Airlock","url":"https://airlock.dev"},"publisher":{"@type":"Organization","name":"Airlock","url":"https://airlock.dev"}}</script>
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <link rel="icon" href="/favicon.ico" sizes="32x32">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='9' fill='%236366f1'/%3E%3Cpath d='M9 16.5l4.5 4.5L23 11' stroke='white' stroke-width='3' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
@@ -132,13 +132,13 @@ pre code.hljs{display:block;overflow-x:auto}
 <div class="wrap nav-inner">
   <a class="brand" href="/">
     <span class="mark"><svg viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.5 4.5L19 7.5" stroke="white" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
-    Impri
+    Airlock
   </a>
   <div class="nav-links">
     <a class="link" href="/#how">How it works</a>
     <a class="link" href="/#pricing">Pricing</a>
     <a class="link active-nav" href="../docs">Docs</a>
-    <a class="btn btn-primary btn-sm" href="https://gitlab.com/sekera.radim/impri">GitLab</a>
+    <a class="btn btn-primary btn-sm" href="https://gitlab.com/sekera.radim/airlock">GitLab</a>
   </div>
 </div>
 </nav>
@@ -160,16 +160,16 @@ pre code.hljs{display:block;overflow-x:auto}
 <p>Editing after the fact is visible in the timeline and notifications have already gone out. The cheaper place to catch a bad comment is before it exists on GitHub.</p>
 <hr>
 <h2 id="the-pattern-the-agent-drafts-the-human-posts">The pattern: the agent drafts, the human posts</h2>
-<p>The agent never holds a token that can write comments. It holds an Impri key and a single function, <code>propose_comment</code>, that pushes the draft as an action and only calls the GitHub API after a human approves. The example below is Python with plain HTTP calls.</p>
+<p>The agent never holds a token that can write comments. It holds an Airlock key and a single function, <code>propose_comment</code>, that pushes the draft as an action and only calls the GitHub API after a human approves. The example below is Python with plain HTTP calls.</p>
 <div class="code-block"><span class="code-lang">python</span><pre><code class="hljs"><span class="hljs-keyword">import</span> os, time, requests
 
-IMPRI = <span class="hljs-string">&quot;https://api.impri.dev&quot;</span>
-HEADERS = {<span class="hljs-string">&quot;Authorization&quot;</span>: <span class="hljs-string">f&quot;Bearer <span class="hljs-subst">{os.environ[<span class="hljs-string">&#x27;IMPRI_API_KEY&#x27;</span>]}</span>&quot;</span>}
+AIRLOCK = <span class="hljs-string">&quot;https://api.airlock.dev&quot;</span>
+HEADERS = {<span class="hljs-string">&quot;Authorization&quot;</span>: <span class="hljs-string">f&quot;Bearer <span class="hljs-subst">{os.environ[<span class="hljs-string">&#x27;AIRLOCK_API_KEY&#x27;</span>]}</span>&quot;</span>}
 GH = {<span class="hljs-string">&quot;Authorization&quot;</span>: <span class="hljs-string">f&quot;Bearer <span class="hljs-subst">{os.environ[<span class="hljs-string">&#x27;GITHUB_TOKEN&#x27;</span>]}</span>&quot;</span>,
       <span class="hljs-string">&quot;Accept&quot;</span>: <span class="hljs-string">&quot;application/vnd.github+json&quot;</span>}
 
 <span class="hljs-keyword">def</span> <span class="hljs-title function_">propose_comment</span>(<span class="hljs-params">repo: <span class="hljs-built_in">str</span>, number: <span class="hljs-built_in">int</span>, draft: <span class="hljs-built_in">str</span></span>) -&gt; <span class="hljs-literal">None</span>:
-    created = requests.post(<span class="hljs-string">f&quot;<span class="hljs-subst">{IMPRI}</span>/v1/actions&quot;</span>, headers=HEADERS, json={
+    created = requests.post(<span class="hljs-string">f&quot;<span class="hljs-subst">{AIRLOCK}</span>/v1/actions&quot;</span>, headers=HEADERS, json={
         <span class="hljs-string">&quot;kind&quot;</span>: <span class="hljs-string">&quot;github.comment&quot;</span>,
         <span class="hljs-string">&quot;title&quot;</span>: <span class="hljs-string">f&quot;Reply on <span class="hljs-subst">{repo}</span>#<span class="hljs-subst">{number}</span>&quot;</span>,
         <span class="hljs-string">&quot;preview&quot;</span>: {<span class="hljs-string">&quot;format&quot;</span>: <span class="hljs-string">&quot;markdown&quot;</span>, <span class="hljs-string">&quot;body&quot;</span>: draft},
@@ -181,7 +181,7 @@ GH = {<span class="hljs-string">&quot;Authorization&quot;</span>: <span class="h
     }).json()
 
     <span class="hljs-keyword">while</span> <span class="hljs-literal">True</span>:
-        action = requests.get(<span class="hljs-string">f&quot;<span class="hljs-subst">{IMPRI}</span>/v1/actions/<span class="hljs-subst">{created[<span class="hljs-string">&#x27;id&#x27;</span>]}</span>&quot;</span>,
+        action = requests.get(<span class="hljs-string">f&quot;<span class="hljs-subst">{AIRLOCK}</span>/v1/actions/<span class="hljs-subst">{created[<span class="hljs-string">&#x27;id&#x27;</span>]}</span>&quot;</span>,
                               headers=HEADERS).json()
         <span class="hljs-keyword">if</span> action[<span class="hljs-string">&quot;status&quot;</span>] != <span class="hljs-string">&quot;pending&quot;</span>:
             <span class="hljs-keyword">break</span>
@@ -193,7 +193,7 @@ GH = {<span class="hljs-string">&quot;Authorization&quot;</span>: <span class="h
     body = action[<span class="hljs-string">&quot;decision&quot;</span>][<span class="hljs-string">&quot;final_preview&quot;</span>][<span class="hljs-string">&quot;body&quot;</span>]  <span class="hljs-comment"># includes human edits</span>
     r = requests.post(<span class="hljs-string">f&quot;https://api.github.com/repos/<span class="hljs-subst">{repo}</span>/issues/<span class="hljs-subst">{number}</span>/comments&quot;</span>,
                       headers=GH, json={<span class="hljs-string">&quot;body&quot;</span>: body})
-    requests.post(<span class="hljs-string">f&quot;<span class="hljs-subst">{IMPRI}</span>/v1/actions/<span class="hljs-subst">{created[<span class="hljs-string">&#x27;id&#x27;</span>]}</span>/result&quot;</span>, headers=HEADERS,
+    requests.post(<span class="hljs-string">f&quot;<span class="hljs-subst">{AIRLOCK}</span>/v1/actions/<span class="hljs-subst">{created[<span class="hljs-string">&#x27;id&#x27;</span>]}</span>/result&quot;</span>, headers=HEADERS,
                   json={<span class="hljs-string">&quot;status&quot;</span>: <span class="hljs-string">&quot;executed&quot;</span> <span class="hljs-keyword">if</span> r.ok <span class="hljs-keyword">else</span> <span class="hljs-string">&quot;execute_failed&quot;</span>})</code></pre></div>
 <p>Three details matter here:</p>
 <ul>
@@ -247,7 +247,7 @@ GH = {<span class="hljs-string">&quot;Authorization&quot;</span>: <span class="h
 <p>Use a distinct <code>kind</code> per row (for example <code>github.comment</code>, <code>github.close</code>) so you can filter the <a href="inbox">inbox</a> and later write <a href="rules">rules</a> around them.</p>
 <hr>
 <h2 id="being-honest-about-the-boundary">Being honest about the boundary</h2>
-<p>Impri is the approval gate only. It stores the proposed comment, notifies the reviewer, and holds the decision. It does not write the reply, judge whether it is correct, or post anything to GitHub.</p>
+<p>Airlock is the approval gate only. It stores the proposed comment, notifies the reviewer, and holds the decision. It does not write the reply, judge whether it is correct, or post anything to GitHub.</p>
 <p>It is also only a real gate if the approved path is the agent&#39;s only path. If the agent process also holds a <code>GITHUB_TOKEN</code> with <code>issues: write</code> in a place its tools can reach, it can comment directly and skip you. Put the token inside the executor that runs after approval, or give the agent a token with read-only scope and keep the write token elsewhere. See <a href="how-to-add-human-approval-to-an-ai-agent">how to add human approval to an AI agent</a> for the reasoning.</p>
 <p>Treat issue bodies as untrusted input. A draft built from a malicious issue may contain injected text; the reviewer sees the exact final comment, which is the point of having a human read it.</p>
 <hr>
@@ -257,11 +257,11 @@ GH = {<span class="hljs-string">&quot;Authorization&quot;</span>: <span class="h
 <h2 id="next-step">Next step</h2>
 <p>Get a key from the <a href="quickstart">quickstart</a>, point your triage agent&#39;s comment function at the pattern above, and start with <code>github.comment</code> only. Once reviewers trust the drafts, widen the gate to closes and cross-repo issues rather than the other way around.</p>
 
-    <aside class="doc-cta" aria-label="Try Impri">
+    <aside class="doc-cta" aria-label="Try Airlock">
   <p class="doc-cta-title">Add an approval step to your own agent</p>
-  <p>Start on Impri Cloud: the Free tier includes 100 approvals a month. Or self-host the MIT-licensed core with Docker Compose, with no tier limits.</p>
+  <p>Start on Airlock Cloud: the Free tier includes 100 approvals a month. Or self-host the MIT-licensed core with Docker Compose, with no tier limits.</p>
   <div class="doc-cta-actions">
-    <a class="btn btn-primary btn-sm" href="https://app.impri.dev/?signup=1">Start free on Impri Cloud</a>
+    <a class="btn btn-primary btn-sm" href="https://app.airlock.dev/?signup=1">Start free on Airlock Cloud</a>
     <a class="btn btn-ghost btn-sm" href="../docs/quickstart">Quick start</a>
     <a class="btn btn-ghost btn-sm" href="../docs/self-hosting">Self-host guide</a>
   </div>
@@ -357,19 +357,19 @@ GH = {<span class="hljs-string">&quot;Authorization&quot;</span>: <span class="h
 <footer class="footer">
 <div class="wrap footer-inner">
   <a class="brand" href="/">
-    <span class="mark"><svg viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.5 4.5L19 7.5" stroke="white" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Impri
+    <span class="mark"><svg viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.5 4.5L19 7.5" stroke="white" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Airlock
   </a>
   <div>
-    <a href="https://gitlab.com/sekera.radim/impri">GitLab</a>
+    <a href="https://gitlab.com/sekera.radim/airlock">GitLab</a>
     <a href="/docs">Docs</a>
-    <a href="https://gitlab.com/sekera.radim/impri/-/blob/main/LICENSE">MIT License</a>
-    <a href="https://www.npmjs.com/package/@impri/mcp">@impri/mcp</a>
+    <a href="https://gitlab.com/sekera.radim/airlock/-/blob/main/LICENSE">MIT License</a>
+    <a href="https://www.npmjs.com/package/@airlock/mcp">@airlock/mcp</a>
     <a href="/docs/privacy">Privacy</a>
     <a href="/docs/terms">Terms</a>
     <a href="https://sekera.dev">Contact</a>
   </div>
 </div>
-<div class="wrap" style="margin-top:18px"><span class="muted">© 2026 Impri · The imprimatur for your AI agents · Built by <a href="https://sekera.dev" style="color:inherit">Radim Sekera</a>. Also by the same maker: <a href="https://briefgate.dev/?utm_source=impri.dev&amp;utm_medium=referral" style="color:inherit">BriefGate</a> — client intake for agencies and AI agents.</span></div>
+<div class="wrap" style="margin-top:18px"><span class="muted">© 2026 Airlock · The airlockmatur for your AI agents · Built by <a href="https://sekera.dev" style="color:inherit">Radim Sekera</a>. Also by the same maker: <a href="https://briefgate.dev/?utm_source=airlock.dev&amp;utm_medium=referral" style="color:inherit">BriefGate</a> — client intake for agencies and AI agents.</span></div>
 </footer>
 </body>
 </html>

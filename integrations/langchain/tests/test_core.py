@@ -1,4 +1,4 @@
-"""Unit tests for ImpriClient and the error hierarchy.
+"""Unit tests for AirlockClient and the error hierarchy.
 
 Langchain is NOT required — these tests exercise _client.py and _errors.py
 only, with urllib.request.urlopen mocked via unittest.mock.patch.
@@ -31,20 +31,20 @@ _HERE = pathlib.Path(__file__).parent.parent
 if str(_HERE) not in sys.path:
     sys.path.insert(0, str(_HERE.parent))
 
-from integrations.langchain._client import ImpriClient
+from integrations.langchain._client import AirlockClient
 from integrations.langchain._errors import (
-    ImpriApiError,
-    ImpriConfigError,
-    ImpriConflict,
-    ImpriError,
-    ImpriExpired,
-    ImpriNotFound,
-    ImpriQuotaExceeded,
-    ImpriRateLimited,
-    ImpriRejected,
-    ImpriTimeout,
-    ImpriUnauthorized,
-    ImpriValidationError,
+    AirlockApiError,
+    AirlockConfigError,
+    AirlockConflict,
+    AirlockError,
+    AirlockExpired,
+    AirlockNotFound,
+    AirlockQuotaExceeded,
+    AirlockRateLimited,
+    AirlockRejected,
+    AirlockTimeout,
+    AirlockUnauthorized,
+    AirlockValidationError,
 )
 
 
@@ -75,11 +75,11 @@ def _http_error(status: int, body: dict[str, Any] | None = None, reason: str = "
     )
 
 
-def _make_client(api_key: str = "im_test") -> ImpriClient:
-    return ImpriClient(api_key=api_key, base_url="http://localhost:8484")
+def _make_client(api_key: str = "im_test") -> AirlockClient:
+    return AirlockClient(api_key=api_key, base_url="http://localhost:8484")
 
 
-# ── ImpriClient construction ──────────────────────────────────────────────────
+# ── AirlockClient construction ──────────────────────────────────────────────────
 
 class TestClientConstruction(unittest.TestCase):
 
@@ -88,37 +88,37 @@ class TestClientConstruction(unittest.TestCase):
         self.assertEqual(client._api_key, "im_abc123")
 
     def test_env_key_fallback(self):
-        with patch.dict(os.environ, {"IMPRI_API_KEY": "im_from_env"}):
-            client = ImpriClient()
+        with patch.dict(os.environ, {"AIRLOCK_API_KEY": "im_from_env"}):
+            client = AirlockClient()
             self.assertEqual(client._api_key, "im_from_env")
 
     def test_missing_key_raises_config_error(self):
         with patch.dict(os.environ, {}, clear=True):
-            with self.assertRaises(ImpriConfigError):
-                ImpriClient()
+            with self.assertRaises(AirlockConfigError):
+                AirlockClient()
 
     def test_base_url_trailing_slash_stripped(self):
-        client = ImpriClient(api_key="im_x", base_url="https://api.impri.dev/")
-        self.assertEqual(client._base, "https://api.impri.dev/v1")
+        client = AirlockClient(api_key="im_x", base_url="https://api.airlock.dev/")
+        self.assertEqual(client._base, "https://api.airlock.dev/v1")
 
     def test_default_base_url_is_localhost(self):
-        with patch.dict(os.environ, {"IMPRI_API_KEY": "im_x"}, clear=True):
+        with patch.dict(os.environ, {"AIRLOCK_API_KEY": "im_x"}, clear=True):
             with patch.dict(os.environ, {}, clear=False):
-                # Remove IMPRI_BASE_URL if present
-                env = {k: v for k, v in os.environ.items() if k != "IMPRI_BASE_URL"}
+                # Remove AIRLOCK_BASE_URL if present
+                env = {k: v for k, v in os.environ.items() if k != "AIRLOCK_BASE_URL"}
                 with patch.dict(os.environ, env, clear=True):
-                    client = ImpriClient(api_key="im_x")
+                    client = AirlockClient(api_key="im_x")
                     self.assertEqual(client._base, "http://localhost:8484/v1")
 
     def test_base_url_env_fallback(self):
-        with patch.dict(os.environ, {"IMPRI_BASE_URL": "https://api.impri.dev"}):
-            client = ImpriClient(api_key="im_x")
-            self.assertEqual(client._base, "https://api.impri.dev/v1")
+        with patch.dict(os.environ, {"AIRLOCK_BASE_URL": "https://api.airlock.dev"}):
+            client = AirlockClient(api_key="im_x")
+            self.assertEqual(client._base, "https://api.airlock.dev/v1")
 
-    def test_config_error_is_impri_error(self):
+    def test_config_error_is_airlock_error(self):
         with patch.dict(os.environ, {}, clear=True):
-            with self.assertRaises(ImpriError):
-                ImpriClient()
+            with self.assertRaises(AirlockError):
+                AirlockClient()
 
 
 # ── create_action ─────────────────────────────────────────────────────────────
@@ -318,7 +318,7 @@ class TestAwaitDecision(unittest.TestCase):
         client = _make_client()
         with patch("urllib.request.urlopen", side_effect=responses):
             with patch("time.monotonic", side_effect=[0, 10]):
-                with self.assertRaises(ImpriRejected) as ctx:
+                with self.assertRaises(AirlockRejected) as ctx:
                     client.await_decision("act_abc", timeout_s=300)
         self.assertEqual(ctx.exception.action_id, "act_abc")
 
@@ -327,7 +327,7 @@ class TestAwaitDecision(unittest.TestCase):
         client = _make_client()
         with patch("urllib.request.urlopen", side_effect=responses):
             with patch("time.monotonic", side_effect=[0, 10]):
-                with self.assertRaises(ImpriExpired):
+                with self.assertRaises(AirlockExpired):
                     client.await_decision("act_abc", timeout_s=300)
 
     def test_raises_timeout_when_still_pending(self):
@@ -336,7 +336,7 @@ class TestAwaitDecision(unittest.TestCase):
         with patch("urllib.request.urlopen", return_value=_json_response(self.PENDING)):
             with patch("time.sleep"):
                 with patch("time.monotonic", side_effect=[0, 301]):
-                    with self.assertRaises(ImpriTimeout) as ctx:
+                    with self.assertRaises(AirlockTimeout) as ctx:
                         client.await_decision("act_abc", timeout_s=300, poll_interval_s=5)
         self.assertEqual(ctx.exception.action_id, "act_abc")
 
@@ -369,11 +369,11 @@ class TestAwaitDecision(unittest.TestCase):
         client = _make_client()
         with patch("urllib.request.urlopen", return_value=_json_response(rejected)):
             with patch("time.monotonic", side_effect=[0, 10]):
-                with self.assertRaises(ImpriRejected) as ctx:
+                with self.assertRaises(AirlockRejected) as ctx:
                     client.await_decision("act_abc", timeout_s=300)
         exc = ctx.exception
         self.assertEqual(exc.decision["verdict"], "reject")
-        self.assertIsInstance(exc, ImpriError)
+        self.assertIsInstance(exc, AirlockError)
 
 
 # ── HTTP error mapping ────────────────────────────────────────────────────────
@@ -387,46 +387,46 @@ class TestErrorMapping(unittest.TestCase):
             client.get_action("act_abc")
 
     def test_401_raises_unauthorized(self):
-        with self.assertRaises(ImpriUnauthorized):
+        with self.assertRaises(AirlockUnauthorized):
             self._call(401)
 
     def test_403_raises_unauthorized(self):
-        with self.assertRaises(ImpriUnauthorized):
+        with self.assertRaises(AirlockUnauthorized):
             self._call(403)
 
     def test_402_raises_quota_exceeded(self):
-        with self.assertRaises(ImpriQuotaExceeded) as ctx:
+        with self.assertRaises(AirlockQuotaExceeded) as ctx:
             self._call(402, {"message": "limit reached", "limit": 100, "tier": "free"})
         self.assertEqual(ctx.exception.limit, 100)
         self.assertEqual(ctx.exception.tier, "free")
 
     def test_404_raises_not_found(self):
-        with self.assertRaises(ImpriNotFound):
+        with self.assertRaises(AirlockNotFound):
             self._call(404)
 
     def test_409_raises_conflict(self):
-        with self.assertRaises(ImpriConflict):
+        with self.assertRaises(AirlockConflict):
             self._call(409)
 
     def test_410_raises_expired(self):
-        with self.assertRaises(ImpriExpired):
+        with self.assertRaises(AirlockExpired):
             self._call(410)
 
     def test_422_raises_validation_error(self):
-        with self.assertRaises(ImpriValidationError) as ctx:
+        with self.assertRaises(AirlockValidationError) as ctx:
             self._call(422, {"message": "bad field", "issues": [{"field": "kind"}]})
         self.assertEqual(ctx.exception.issues, [{"field": "kind"}])
 
     def test_400_raises_validation_error(self):
-        with self.assertRaises(ImpriValidationError):
+        with self.assertRaises(AirlockValidationError):
             self._call(400)
 
     def test_429_raises_rate_limited(self):
-        with self.assertRaises(ImpriRateLimited):
+        with self.assertRaises(AirlockRateLimited):
             self._call(429)
 
     def test_500_raises_api_error(self):
-        with self.assertRaises(ImpriApiError) as ctx:
+        with self.assertRaises(AirlockApiError) as ctx:
             self._call(500, {"message": "internal error"})
         self.assertEqual(ctx.exception.status_code, 500)
 
@@ -435,23 +435,23 @@ class TestErrorMapping(unittest.TestCase):
         exc = _http_error(429, {})
         exc.headers.get = lambda key, *_: "30" if key == "Retry-After" else None
         with patch("urllib.request.urlopen", side_effect=exc):
-            with self.assertRaises(ImpriRateLimited) as ctx:
+            with self.assertRaises(AirlockRateLimited) as ctx:
                 client.get_action("act_abc")
         self.assertEqual(ctx.exception.retry_after, 30)
 
-    def test_all_errors_inherit_impri_error(self):
-        """Callers can catch ImpriError as a single catch-all."""
+    def test_all_errors_inherit_airlock_error(self):
+        """Callers can catch AirlockError as a single catch-all."""
         error_classes = [
-            ImpriConfigError, ImpriUnauthorized, ImpriNotFound, ImpriConflict,
-            ImpriExpired, ImpriRateLimited, ImpriQuotaExceeded, ImpriValidationError,
-            ImpriApiError, ImpriRejected, ImpriTimeout,
+            AirlockConfigError, AirlockUnauthorized, AirlockNotFound, AirlockConflict,
+            AirlockExpired, AirlockRateLimited, AirlockQuotaExceeded, AirlockValidationError,
+            AirlockApiError, AirlockRejected, AirlockTimeout,
         ]
         for cls in error_classes:
             with self.subTest(cls=cls.__name__):
-                self.assertTrue(issubclass(cls, ImpriError))
+                self.assertTrue(issubclass(cls, AirlockError))
 
 
-# ── ImpriApprovalTool (no-langchain path) ────────────────────────────────────
+# ── AirlockApprovalTool (no-langchain path) ────────────────────────────────────
 
 class TestApprovalToolStub(unittest.TestCase):
     """The tool module loads without langchain; instantiation raises ImportError."""
@@ -459,11 +459,11 @@ class TestApprovalToolStub(unittest.TestCase):
     def test_module_imports_without_langchain(self):
         # If we get here, the import succeeded (langchain may or may not be installed).
         from integrations.langchain import tool as tool_module  # noqa: F401
-        from integrations.langchain import ImpriApprovalTool  # noqa: F401
+        from integrations.langchain import AirlockApprovalTool  # noqa: F401
 
     def test_tool_class_is_importable(self):
-        from integrations.langchain import ImpriApprovalTool
-        self.assertIsNotNone(ImpriApprovalTool)
+        from integrations.langchain import AirlockApprovalTool
+        self.assertIsNotNone(AirlockApprovalTool)
 
 
 if __name__ == "__main__":

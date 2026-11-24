@@ -1,4 +1,4 @@
-// All public types for @impri/sdk
+// All public types for @airlock/sdk
 
 export type PreviewFormat = 'markdown' | 'plain' | 'diff'
 

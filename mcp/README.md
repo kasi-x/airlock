@@ -1,42 +1,42 @@
-# @impri/mcp
+# @airlock/mcp
 
-MCP server for [Impri](https://impri.dev) — human-in-the-loop approval inbox for AI agents.
+MCP server for [Airlock](https://airlock.dev) — human-in-the-loop approval inbox for AI agents.
 
-Agents submit actions for human review (approve/reject/edit) and poll for the decision before executing anything with side effects. Full audit trail in the Impri web and mobile inbox.
+Agents submit actions for human review (approve/reject/edit) and poll for the decision before executing anything with side effects. Full audit trail in the Airlock web and mobile inbox.
 
-**Don't want to run a local process?** The same 8 tools are also served over Streamable HTTP at `https://api.impri.dev/mcp` — no install, just a URL and your API key as a Bearer token:
+**Don't want to run a local process?** The same 8 tools are also served over Streamable HTTP at `https://api.airlock.dev/mcp` — no install, just a URL and your API key as a Bearer token:
 
 ```bash
-claude mcp add --transport http impri https://api.impri.dev/mcp --header "Authorization: Bearer $IMPRI_API_KEY"
+claude mcp add --transport http airlock https://api.airlock.dev/mcp --header "Authorization: Bearer $AIRLOCK_API_KEY"
 ```
 
-See [impri.dev/docs/mcp](https://impri.dev/docs/mcp#hosted-remote-server-no-install) for Cursor/Windsurf/Codex config and details (e.g. the hosted endpoint caps `impri_await_decision`'s wait at 20s). The rest of this README covers the local `npx @impri/mcp` package below.
+See [airlock.dev/docs/mcp](https://airlock.dev/docs/mcp#hosted-remote-server-no-install) for Cursor/Windsurf/Codex config and details (e.g. the hosted endpoint caps `airlock_await_decision`'s wait at 20s). The rest of this README covers the local `npx @airlock/mcp` package below.
 
 ## Quickstart (Claude Code)
 
-**1. Get an API key** at [impri.dev](https://impri.dev) or spin up the self-hosted server:
+**1. Get an API key** at [airlock.dev](https://airlock.dev) or spin up the self-hosted server:
 
 ```bash
 # self-host
 docker compose up -d   # starts on http://localhost:8484
-export IMPRI_API_KEY=im_your_key_here
+export AIRLOCK_API_KEY=im_your_key_here
 ```
 
 **2. Register the MCP server in Claude Code:**
 
 ```bash
-claude mcp add impri \
-  -e IMPRI_API_KEY=im_your_key_here \
-  -- npx @impri/mcp
+claude mcp add airlock \
+  -e AIRLOCK_API_KEY=im_your_key_here \
+  -- npx @airlock/mcp
 ```
 
 For self-hosted with a custom URL:
 
 ```bash
-claude mcp add impri \
-  -e IMPRI_API_KEY=im_your_key_here \
-  -e IMPRI_BASE_URL=http://localhost:8484 \
-  -- npx @impri/mcp
+claude mcp add airlock \
+  -e AIRLOCK_API_KEY=im_your_key_here \
+  -e AIRLOCK_BASE_URL=http://localhost:8484 \
+  -- npx @airlock/mcp
 ```
 
 Or add to `~/.claude/settings.json` manually:
@@ -44,12 +44,12 @@ Or add to `~/.claude/settings.json` manually:
 ```json
 {
   "mcpServers": {
-    "impri": {
+    "airlock": {
       "command": "npx",
-      "args": ["@impri/mcp"],
+      "args": ["@airlock/mcp"],
       "env": {
-        "IMPRI_API_KEY": "im_your_key_here",
-        "IMPRI_BASE_URL": "http://localhost:8484"
+        "AIRLOCK_API_KEY": "im_your_key_here",
+        "AIRLOCK_BASE_URL": "http://localhost:8484"
       }
     }
   }
@@ -62,18 +62,18 @@ Or add to `~/.claude/settings.json` manually:
 /mcp
 ```
 
-You should see `impri` listed with 8 tools.
+You should see `airlock` listed with 8 tools.
 
 ## Environment variables
 
 | Variable | Required | Default | Description |
 |---|---|---|---|
-| `IMPRI_API_KEY` | Yes | — | API key (`im_...`). Obtain from the Impri dashboard. |
-| `IMPRI_BASE_URL` | No | `http://localhost:8484` | Base URL without `/v1`. Use `https://api.impri.dev` for the cloud. |
+| `AIRLOCK_API_KEY` | Yes | — | API key (`im_...`). Obtain from the Airlock dashboard. |
+| `AIRLOCK_BASE_URL` | No | `http://localhost:8484` | Base URL without `/v1`. Use `https://api.airlock.dev` for the cloud. |
 
 ## Tools
 
-### `impri_push_action`
+### `airlock_push_action`
 
 Submit an action to the human approval inbox. Returns an `action_id` to use in follow-up calls.
 
@@ -85,7 +85,7 @@ target_url: "https://reddit.com/r/cscareerquestions/comments/..."
 editable: ["preview.body"]
 ```
 
-### `impri_await_decision`
+### `airlock_await_decision`
 
 Poll until the human decides (approve/reject) or the timeout elapses. Polls every 5 seconds.
 
@@ -99,7 +99,7 @@ Decision statuses:
 - `rejected` — abort; the operator said no
 - `expired` — approval window closed; create a new action if still needed
 
-### `impri_report_result`
+### `airlock_report_result`
 
 Report back whether you executed the approved action. Closes the audit loop.
 
@@ -109,11 +109,11 @@ status: "executed"              # or "execute_failed"
 detail: "Posted to Reddit thread r/cscareerquestions"
 ```
 
-### `impri_inbox_status`
+### `airlock_inbox_status`
 
 Check how many actions are waiting for human decisions. Use before starting a batch to avoid overloading the reviewer.
 
-### `impri_create_watcher`
+### `airlock_create_watcher`
 
 Create a watcher with a full hand-crafted specification. Useful when you need fine-grained control over config, keywords, scoring rules, or schedule. See SPEC.md §3.2 for the full schema.
 
@@ -129,19 +129,19 @@ spec: {
 }
 ```
 
-### `impri_list_watchers`
+### `airlock_list_watchers`
 
 List all configured watchers, optionally filtered by status (`active`, `paused`, `degraded`).
 
-### `impri_list_watcher_presets`
+### `airlock_list_watcher_presets`
 
 List all available watcher preset templates grouped by category. Each preset shows its `id`, title, kind, supported params (required vs optional), and default schedule.
 
-Use this first to find the right preset, then create the watcher with `impri_create_watcher_from_preset`.
+Use this first to find the right preset, then create the watcher with `airlock_create_watcher_from_preset`.
 
 Available preset categories: Community, Developer, Content, Monitoring, Research, News.
 
-### `impri_create_watcher_from_preset`
+### `airlock_create_watcher_from_preset`
 
 Create a watcher from a preset template by supplying only the preset id and param values. The preset handles URL construction, keyword setup, and validation automatically.
 
@@ -170,54 +170,54 @@ Returns `{ watcher_id, name, kind, status, next_run_at }`.
 
 ```
 You are a Reddit engagement agent. Before posting any comment or reply:
-1. Call impri_inbox_status — if more than 5 actions are pending, pause.
+1. Call airlock_inbox_status — if more than 5 actions are pending, pause.
 2. Draft your reply.
-3. Call impri_push_action with kind "reddit.comment", your draft in preview.body,
+3. Call airlock_push_action with kind "reddit.comment", your draft in preview.body,
    the thread URL in target_url, and editable: ["preview.body"] so I can tweak it.
-4. Call impri_await_decision(action_id, timeout_s=600).
+4. Call airlock_await_decision(action_id, timeout_s=600).
 5. If approved: post the (possibly edited) preview.body to Reddit, then
-   call impri_report_result(action_id, "executed").
+   call airlock_report_result(action_id, "executed").
    If rejected: discard the draft and move on.
    If expired: log a note and skip this reply.
 ```
 
 ## Verifying webhooks
 
-When Impri delivers a webhook to your `callback_url`, every request is signed with HMAC-SHA256 to prevent replay attacks and forgery. The `@impri/mcp` package exports a ready-made helper:
+When Airlock delivers a webhook to your `callback_url`, every request is signed with HMAC-SHA256 to prevent replay attacks and forgery. The `@airlock/mcp` package exports a ready-made helper:
 
 ```typescript
-import { verifyWebhookSignature } from "@impri/mcp/webhook";
+import { verifyWebhookSignature } from "@airlock/mcp/webhook";
 ```
 
 Three headers carry the signing material:
 
 | Header | Example | Description |
 |---|---|---|
-| `X-Impri-Signature` | `sha256=abc123…` | HMAC-SHA256 over `${timestamp}.${nonce}.${rawBody}` |
-| `X-Impri-Timestamp` | `1752134400` | Unix epoch seconds (used to reject stale replays) |
-| `X-Impri-Nonce` | `a1b2c3d4…` | Random hex string — unique per delivery |
+| `X-Airlock-Signature` | `sha256=abc123…` | HMAC-SHA256 over `${timestamp}.${nonce}.${rawBody}` |
+| `X-Airlock-Timestamp` | `1752134400` | Unix epoch seconds (used to reject stale replays) |
+| `X-Airlock-Nonce` | `a1b2c3d4…` | Random hex string — unique per delivery |
 
 ### Express middleware
 
 ```typescript
 import express from "express";
-import { verifyWebhookSignature } from "@impri/mcp/webhook";
+import { verifyWebhookSignature } from "@airlock/mcp/webhook";
 
 const app = express();
 
 app.post(
-  "/impri/webhook",
+  "/airlock/webhook",
   express.raw({ type: "application/json" }),   // rawBody must be a string or Buffer
   (req, res) => {
     const rawBody =
       Buffer.isBuffer(req.body) ? req.body.toString("utf8") : String(req.body);
 
     const ok = verifyWebhookSignature({
-      secret: process.env.IMPRI_WEBHOOK_SECRET!,
+      secret: process.env.AIRLOCK_WEBHOOK_SECRET!,
       rawBody,
-      signatureHeader: req.headers["x-impri-signature"] as string,
-      timestampHeader: req.headers["x-impri-timestamp"] as string,
-      nonceHeader:     req.headers["x-impri-nonce"] as string,
+      signatureHeader: req.headers["x-airlock-signature"] as string,
+      timestampHeader: req.headers["x-airlock-timestamp"] as string,
+      nonceHeader:     req.headers["x-airlock-nonce"] as string,
       // toleranceSec: 300  ← default; increase for slow networks
     });
 
@@ -226,7 +226,7 @@ app.post(
     }
 
     const event = JSON.parse(rawBody);
-    console.log("Impri event:", event.event, event.action_id, event.status);
+    console.log("Airlock event:", event.event, event.action_id, event.status);
     res.sendStatus(200);
   },
 );
@@ -236,7 +236,7 @@ app.post(
 
 ```typescript
 import Fastify from "fastify";
-import { verifyWebhookSignature } from "@impri/mcp/webhook";
+import { verifyWebhookSignature } from "@airlock/mcp/webhook";
 
 const app = Fastify();
 
@@ -244,15 +244,15 @@ app.addContentTypeParser("application/json", { parseAs: "string" }, (req, body, 
   done(null, body);
 });
 
-app.post("/impri/webhook", (request, reply) => {
+app.post("/airlock/webhook", (request, reply) => {
   const rawBody = request.body as string;
 
   const ok = verifyWebhookSignature({
-    secret: process.env.IMPRI_WEBHOOK_SECRET!,
+    secret: process.env.AIRLOCK_WEBHOOK_SECRET!,
     rawBody,
-    signatureHeader: request.headers["x-impri-signature"] as string,
-    timestampHeader: request.headers["x-impri-timestamp"] as string,
-    nonceHeader:     request.headers["x-impri-nonce"] as string,
+    signatureHeader: request.headers["x-airlock-signature"] as string,
+    timestampHeader: request.headers["x-airlock-timestamp"] as string,
+    nonceHeader:     request.headers["x-airlock-nonce"] as string,
   });
 
   if (!ok) {
@@ -260,7 +260,7 @@ app.post("/impri/webhook", (request, reply) => {
   }
 
   const event = JSON.parse(rawBody);
-  console.log("Impri event:", event.event, event.action_id);
+  console.log("Airlock event:", event.event, event.action_id);
   reply.send({ ok: true });
 });
 ```
@@ -282,5 +282,5 @@ npm run build        # compile to dist/
 Running the server locally for development:
 
 ```bash
-IMPRI_API_KEY=im_dev_key node dist/index.js
+AIRLOCK_API_KEY=im_dev_key node dist/index.js
 ```

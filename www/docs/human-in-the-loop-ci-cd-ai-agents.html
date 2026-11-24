@@ -3,21 +3,21 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Human-in-the-Loop for CI/CD AI Agents — Impri Docs</title>
+<title>Human-in-the-Loop for CI/CD AI Agents — Airlock Docs</title>
 <meta name="description" content="Human-in-the-loop for CI/CD AI agents adds a real approval gate before a deploy bot merges, applies infra changes, or rolls back production on its own.">
 <meta name="theme-color" content="#06070d">
-<meta property="og:title" content="Human-in-the-Loop for CI/CD AI Agents — Impri Docs">
+<meta property="og:title" content="Human-in-the-Loop for CI/CD AI Agents — Airlock Docs">
 <meta property="og:description" content="Human-in-the-loop for CI/CD AI agents adds a real approval gate before a deploy bot merges, applies infra changes, or rolls back production on its own.">
 <meta property="og:type" content="article">
-<meta property="og:url" content="https://impri.dev/docs/human-in-the-loop-ci-cd-ai-agents">
-<meta property="og:image" content="https://impri.dev/assets/og/og-docs.png">
+<meta property="og:url" content="https://airlock.dev/docs/human-in-the-loop-ci-cd-ai-agents">
+<meta property="og:image" content="https://airlock.dev/assets/og/og-docs.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
-<meta property="og:image:alt" content="Impri — human-in-the-loop approval inbox for AI agents">
+<meta property="og:image:alt" content="Airlock — human-in-the-loop approval inbox for AI agents">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="https://impri.dev/assets/og/og-docs.png">
-<link rel="canonical" href="https://impri.dev/docs/human-in-the-loop-ci-cd-ai-agents">
-<script type="application/ld+json">{"@context":"https://schema.org","@type":"TechArticle","headline":"Human-in-the-Loop for CI/CD AI Agents","description":"Human-in-the-loop for CI/CD AI agents adds a real approval gate before a deploy bot merges, applies infra changes, or rolls back production on its own.","url":"https://impri.dev/docs/human-in-the-loop-ci-cd-ai-agents","inLanguage":"en","author":{"@type":"Organization","name":"Impri","url":"https://impri.dev"},"publisher":{"@type":"Organization","name":"Impri","url":"https://impri.dev"}}</script>
+<meta name="twitter:image" content="https://airlock.dev/assets/og/og-docs.png">
+<link rel="canonical" href="https://airlock.dev/docs/human-in-the-loop-ci-cd-ai-agents">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"TechArticle","headline":"Human-in-the-Loop for CI/CD AI Agents","description":"Human-in-the-loop for CI/CD AI agents adds a real approval gate before a deploy bot merges, applies infra changes, or rolls back production on its own.","url":"https://airlock.dev/docs/human-in-the-loop-ci-cd-ai-agents","inLanguage":"en","author":{"@type":"Organization","name":"Airlock","url":"https://airlock.dev"},"publisher":{"@type":"Organization","name":"Airlock","url":"https://airlock.dev"}}</script>
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <link rel="icon" href="/favicon.ico" sizes="32x32">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='9' fill='%236366f1'/%3E%3Cpath d='M9 16.5l4.5 4.5L23 11' stroke='white' stroke-width='3' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
@@ -132,13 +132,13 @@ pre code.hljs{display:block;overflow-x:auto}
 <div class="wrap nav-inner">
   <a class="brand" href="/">
     <span class="mark"><svg viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.5 4.5L19 7.5" stroke="white" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
-    Impri
+    Airlock
   </a>
   <div class="nav-links">
     <a class="link" href="/#how">How it works</a>
     <a class="link" href="/#pricing">Pricing</a>
     <a class="link active-nav" href="../docs">Docs</a>
-    <a class="btn btn-primary btn-sm" href="https://gitlab.com/sekera.radim/impri">GitLab</a>
+    <a class="btn btn-primary btn-sm" href="https://gitlab.com/sekera.radim/airlock">GitLab</a>
   </div>
 </div>
 </nav>
@@ -170,20 +170,20 @@ pre code.hljs{display:block;overflow-x:auto}
         <span class="hljs-attr">run:</span> <span class="hljs-string">python</span> <span class="hljs-string">ci/agent_plan.py</span> <span class="hljs-string">&gt;</span> <span class="hljs-string">plan.json</span>
       <span class="hljs-bullet">-</span> <span class="hljs-attr">name:</span> <span class="hljs-string">Request</span> <span class="hljs-string">human</span> <span class="hljs-string">approval</span> <span class="hljs-string">before</span> <span class="hljs-string">applying</span>
         <span class="hljs-attr">env:</span>
-          <span class="hljs-attr">IMPRI_API_KEY:</span> <span class="hljs-string">${{</span> <span class="hljs-string">secrets.IMPRI_API_KEY</span> <span class="hljs-string">}}</span>
+          <span class="hljs-attr">AIRLOCK_API_KEY:</span> <span class="hljs-string">${{</span> <span class="hljs-string">secrets.AIRLOCK_API_KEY</span> <span class="hljs-string">}}</span>
         <span class="hljs-attr">run:</span> <span class="hljs-string">python</span> <span class="hljs-string">ci/request_approval.py</span> <span class="hljs-string">plan.json</span>
       <span class="hljs-bullet">-</span> <span class="hljs-attr">name:</span> <span class="hljs-string">Apply</span> <span class="hljs-string">only</span> <span class="hljs-string">if</span> <span class="hljs-string">approved</span>
         <span class="hljs-attr">env:</span>
-          <span class="hljs-attr">IMPRI_API_KEY:</span> <span class="hljs-string">${{</span> <span class="hljs-string">secrets.IMPRI_API_KEY</span> <span class="hljs-string">}}</span>
+          <span class="hljs-attr">AIRLOCK_API_KEY:</span> <span class="hljs-string">${{</span> <span class="hljs-string">secrets.AIRLOCK_API_KEY</span> <span class="hljs-string">}}</span>
         <span class="hljs-attr">run:</span> <span class="hljs-string">python</span> <span class="hljs-string">ci/apply_if_approved.py</span></code></pre></div>
-<p><code>request_approval.py</code> and <code>apply_if_approved.py</code> are two ends of the same Impri action:</p>
+<p><code>request_approval.py</code> and <code>apply_if_approved.py</code> are two ends of the same Airlock action:</p>
 <div class="code-block"><span class="code-lang">python</span><pre><code class="hljs"><span class="hljs-comment"># ci/request_approval.py</span>
 <span class="hljs-keyword">import</span> json, os, sys, requests
 
 plan = json.load(<span class="hljs-built_in">open</span>(sys.argv[<span class="hljs-number">1</span>]))
 resp = requests.post(
-    <span class="hljs-string">&quot;https://api.impri.dev/v1/actions&quot;</span>,
-    headers={<span class="hljs-string">&quot;Authorization&quot;</span>: <span class="hljs-string">f&quot;Bearer <span class="hljs-subst">{os.environ[<span class="hljs-string">&#x27;IMPRI_API_KEY&#x27;</span>]}</span>&quot;</span>},
+    <span class="hljs-string">&quot;https://api.airlock.dev/v1/actions&quot;</span>,
+    headers={<span class="hljs-string">&quot;Authorization&quot;</span>: <span class="hljs-string">f&quot;Bearer <span class="hljs-subst">{os.environ[<span class="hljs-string">&#x27;AIRLOCK_API_KEY&#x27;</span>]}</span>&quot;</span>},
     json={
         <span class="hljs-string">&quot;kind&quot;</span>: <span class="hljs-string">&quot;infra.apply&quot;</span>,
         <span class="hljs-string">&quot;title&quot;</span>: <span class="hljs-string">f&quot;Deploy: <span class="hljs-subst">{plan[<span class="hljs-string">&#x27;service&#x27;</span>]}</span> — <span class="hljs-subst">{plan[<span class="hljs-string">&#x27;summary&#x27;</span>]}</span>&quot;</span>,
@@ -201,9 +201,9 @@ action = resp.json()
 <span class="hljs-keyword">import</span> os, time, requests
 
 action_id = <span class="hljs-built_in">open</span>(<span class="hljs-string">&quot;action_id.txt&quot;</span>).read().strip()
-headers = {<span class="hljs-string">&quot;Authorization&quot;</span>: <span class="hljs-string">f&quot;Bearer <span class="hljs-subst">{os.environ[<span class="hljs-string">&#x27;IMPRI_API_KEY&#x27;</span>]}</span>&quot;</span>}
+headers = {<span class="hljs-string">&quot;Authorization&quot;</span>: <span class="hljs-string">f&quot;Bearer <span class="hljs-subst">{os.environ[<span class="hljs-string">&#x27;AIRLOCK_API_KEY&#x27;</span>]}</span>&quot;</span>}
 <span class="hljs-keyword">while</span> <span class="hljs-literal">True</span>:
-    status = requests.get(<span class="hljs-string">f&quot;https://api.impri.dev/v1/actions/<span class="hljs-subst">{action_id}</span>&quot;</span>, headers=headers).json()
+    status = requests.get(<span class="hljs-string">f&quot;https://api.airlock.dev/v1/actions/<span class="hljs-subst">{action_id}</span>&quot;</span>, headers=headers).json()
     <span class="hljs-keyword">if</span> status[<span class="hljs-string">&quot;status&quot;</span>] != <span class="hljs-string">&quot;pending&quot;</span>:
         <span class="hljs-keyword">break</span>
     time.sleep(<span class="hljs-number">10</span>)
@@ -214,7 +214,7 @@ headers = {<span class="hljs-string">&quot;Authorization&quot;</span>: <span cla
 
 <span class="hljs-comment"># only reached if approved — actual terraform apply / kubectl rollout goes here</span>
 os.system(<span class="hljs-string">&quot;terraform apply -auto-approve tfplan&quot;</span>)
-requests.post(<span class="hljs-string">f&quot;https://api.impri.dev/v1/actions/<span class="hljs-subst">{action_id}</span>/result&quot;</span>,
+requests.post(<span class="hljs-string">f&quot;https://api.airlock.dev/v1/actions/<span class="hljs-subst">{action_id}</span>/result&quot;</span>,
               headers=headers, json={<span class="hljs-string">&quot;status&quot;</span>: <span class="hljs-string">&quot;executed&quot;</span>})</code></pre></div>
 <p>If a reviewer rejects or the action expires, <code>exit(1)</code> fails the CI job and nothing downstream runs — no separate credential path exists for the agent to route around that.</p>
 <h2 id="what-to-gate-and-what-not-to">What to gate and what not to</h2>
@@ -249,16 +249,16 @@ requests.post(<span class="hljs-string">f&quot;https://api.impri.dev/v1/actions/
 </div>
 <p>Reserve the gate for steps with a real external effect. Gating every CI step turns a fast pipeline into a ticket queue and trains reviewers to rubber-stamp, which defeats the point.</p>
 <h2 id="boundaries-worth-being-explicit-about">Boundaries worth being explicit about</h2>
-<p>Impri stores the proposed action, notifies a reviewer, and holds the decision — it does not understand Terraform plans or Kubernetes manifests, and it doesn&#39;t run your pipeline. It&#39;s a real gate only if the CI job&#39;s credentials for <code>terraform apply</code> or <code>kubectl</code> are unreachable except through the code path that checks `status == &quot;approved&quot;&quot; first. If the agent step also has direct cloud credentials in the same job, it can bypass the gate entirely — keep the apply credentials scoped to the gated step only.</p>
+<p>Airlock stores the proposed action, notifies a reviewer, and holds the decision — it does not understand Terraform plans or Kubernetes manifests, and it doesn&#39;t run your pipeline. It&#39;s a real gate only if the CI job&#39;s credentials for <code>terraform apply</code> or <code>kubectl</code> are unreachable except through the code path that checks `status == &quot;approved&quot;&quot; first. If the agent step also has direct cloud credentials in the same job, it can bypass the gate entirely — keep the apply credentials scoped to the gated step only.</p>
 <p>This also isn&#39;t a replacement for GitHub&#39;s or GitLab&#39;s built-in environment protection rules — it complements them, giving you a mobile-friendly inbox, an audit log independent of the CI provider, and the ability to let a reviewer edit the plan text before approving.</p>
 <h2 id="next-step">Next step</h2>
 <p>Start with the <a href="quickstart">quickstart</a> to get an API key, then see <a href="webhooks">webhooks</a> if you want the pipeline itself (not just the agent) to trigger actions on external events like a failed health check.</p>
 
-    <aside class="doc-cta" aria-label="Try Impri">
+    <aside class="doc-cta" aria-label="Try Airlock">
   <p class="doc-cta-title">Add an approval step to your own agent</p>
-  <p>Start on Impri Cloud: the Free tier includes 100 approvals a month. Or self-host the MIT-licensed core with Docker Compose, with no tier limits.</p>
+  <p>Start on Airlock Cloud: the Free tier includes 100 approvals a month. Or self-host the MIT-licensed core with Docker Compose, with no tier limits.</p>
   <div class="doc-cta-actions">
-    <a class="btn btn-primary btn-sm" href="https://app.impri.dev/?signup=1">Start free on Impri Cloud</a>
+    <a class="btn btn-primary btn-sm" href="https://app.airlock.dev/?signup=1">Start free on Airlock Cloud</a>
     <a class="btn btn-ghost btn-sm" href="../docs/quickstart">Quick start</a>
     <a class="btn btn-ghost btn-sm" href="../docs/self-hosting">Self-host guide</a>
   </div>
@@ -353,19 +353,19 @@ requests.post(<span class="hljs-string">f&quot;https://api.impri.dev/v1/actions/
 <footer class="footer">
 <div class="wrap footer-inner">
   <a class="brand" href="/">
-    <span class="mark"><svg viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.5 4.5L19 7.5" stroke="white" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Impri
+    <span class="mark"><svg viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.5 4.5L19 7.5" stroke="white" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Airlock
   </a>
   <div>
-    <a href="https://gitlab.com/sekera.radim/impri">GitLab</a>
+    <a href="https://gitlab.com/sekera.radim/airlock">GitLab</a>
     <a href="/docs">Docs</a>
-    <a href="https://gitlab.com/sekera.radim/impri/-/blob/main/LICENSE">MIT License</a>
-    <a href="https://www.npmjs.com/package/@impri/mcp">@impri/mcp</a>
+    <a href="https://gitlab.com/sekera.radim/airlock/-/blob/main/LICENSE">MIT License</a>
+    <a href="https://www.npmjs.com/package/@airlock/mcp">@airlock/mcp</a>
     <a href="/docs/privacy">Privacy</a>
     <a href="/docs/terms">Terms</a>
     <a href="https://sekera.dev">Contact</a>
   </div>
 </div>
-<div class="wrap" style="margin-top:18px"><span class="muted">© 2026 Impri · The imprimatur for your AI agents · Built by <a href="https://sekera.dev" style="color:inherit">Radim Sekera</a>. Also by the same maker: <a href="https://briefgate.dev/?utm_source=impri.dev&amp;utm_medium=referral" style="color:inherit">BriefGate</a> — client intake for agencies and AI agents.</span></div>
+<div class="wrap" style="margin-top:18px"><span class="muted">© 2026 Airlock · The airlockmatur for your AI agents · Built by <a href="https://sekera.dev" style="color:inherit">Radim Sekera</a>. Also by the same maker: <a href="https://briefgate.dev/?utm_source=airlock.dev&amp;utm_medium=referral" style="color:inherit">BriefGate</a> — client intake for agencies and AI agents.</span></div>
 </footer>
 </body>
 </html>

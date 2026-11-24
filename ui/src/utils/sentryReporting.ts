@@ -5,7 +5,7 @@
 // tests/sentryReporting.test.ts.
 //
 // Mirrors the design used in briefgate/portal/utils/sentryReporting.ts, with
-// one addition: Impri's API carries approval action payloads and API keys
+// one addition: Airlock's API carries approval action payloads and API keys
 // (briefgate's context does not), so `extra` context is scrubbed by KEY NAME
 // as well as by content — see SENSITIVE_KEY_PATTERN.
 
@@ -238,7 +238,7 @@ export function reportUnexpectedApiFailure(
  * a laptop or switching Wi-Fi leaves the browser "online" with no network for
  * several seconds, and the inbox polls every 5 s with up to two requests per
  * tick — so a failure count alone fills up within seconds of a Mac waking
- * (IMPRI-WEB-3: Safari "Load failed" x3 while the API was healthy).
+ * (AIRLOCK-WEB-3: Safari "Load failed" x3 while the API was healthy).
  */
 export const NETWORK_FAILURE_MIN_STREAK_MS = 60_000;
 
@@ -276,7 +276,7 @@ interface NetworkFailureTrackerDeps {
 /**
  * Requests that got no response at all. The inbox polls every few seconds, so
  * a Wi-Fi drop, a laptop waking up or a reload mid-request each produced a
- * "Failed to fetch" / "Load failed" event (IMPRI-WEB-2, IMPRI-WEB-3) while the
+ * "Failed to fetch" / "Load failed" event (AIRLOCK-WEB-2, AIRLOCK-WEB-3) while the
  * API itself was fine. Only a streak that keeps failing for a minute while the
  * browser believes it is online is an outage worth knowing about (API down,
  * DNS, CORS), and it is reported once per streak rather than on every poll

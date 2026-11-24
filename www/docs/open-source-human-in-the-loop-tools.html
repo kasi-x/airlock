@@ -3,21 +3,21 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Open-Source Human-in-the-Loop Tools for AI Agents — Impri Docs</title>
+<title>Open-Source Human-in-the-Loop Tools for AI Agents — Airlock Docs</title>
 <meta name="description" content="Comparing open-source human-in-the-loop tools for AI agents — from framework-native pause points to dedicated, self-hostable approval gates you wire in…">
 <meta name="theme-color" content="#06070d">
-<meta property="og:title" content="Open-Source Human-in-the-Loop Tools for AI Agents — Impri Docs">
+<meta property="og:title" content="Open-Source Human-in-the-Loop Tools for AI Agents — Airlock Docs">
 <meta property="og:description" content="Comparing open-source human-in-the-loop tools for AI agents — from framework-native pause points to dedicated, self-hostable approval gates you wire in…">
 <meta property="og:type" content="article">
-<meta property="og:url" content="https://impri.dev/docs/open-source-human-in-the-loop-tools">
-<meta property="og:image" content="https://impri.dev/assets/og/og-docs.png">
+<meta property="og:url" content="https://airlock.dev/docs/open-source-human-in-the-loop-tools">
+<meta property="og:image" content="https://airlock.dev/assets/og/og-docs.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
-<meta property="og:image:alt" content="Impri — human-in-the-loop approval inbox for AI agents">
+<meta property="og:image:alt" content="Airlock — human-in-the-loop approval inbox for AI agents">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="https://impri.dev/assets/og/og-docs.png">
-<link rel="canonical" href="https://impri.dev/docs/open-source-human-in-the-loop-tools">
-<script type="application/ld+json">{"@context":"https://schema.org","@type":"TechArticle","headline":"Open-Source Human-in-the-Loop Tools for AI Agents","description":"Comparing open-source human-in-the-loop tools for AI agents — from framework-native pause points to dedicated, self-hostable approval gates you wire in…","url":"https://impri.dev/docs/open-source-human-in-the-loop-tools","inLanguage":"en","author":{"@type":"Organization","name":"Impri","url":"https://impri.dev"},"publisher":{"@type":"Organization","name":"Impri","url":"https://impri.dev"}}</script>
+<meta name="twitter:image" content="https://airlock.dev/assets/og/og-docs.png">
+<link rel="canonical" href="https://airlock.dev/docs/open-source-human-in-the-loop-tools">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"TechArticle","headline":"Open-Source Human-in-the-Loop Tools for AI Agents","description":"Comparing open-source human-in-the-loop tools for AI agents — from framework-native pause points to dedicated, self-hostable approval gates you wire in…","url":"https://airlock.dev/docs/open-source-human-in-the-loop-tools","inLanguage":"en","author":{"@type":"Organization","name":"Airlock","url":"https://airlock.dev"},"publisher":{"@type":"Organization","name":"Airlock","url":"https://airlock.dev"}}</script>
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <link rel="icon" href="/favicon.ico" sizes="32x32">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='9' fill='%236366f1'/%3E%3Cpath d='M9 16.5l4.5 4.5L23 11' stroke='white' stroke-width='3' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
@@ -132,13 +132,13 @@ pre code.hljs{display:block;overflow-x:auto}
 <div class="wrap nav-inner">
   <a class="brand" href="/">
     <span class="mark"><svg viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.5 4.5L19 7.5" stroke="white" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
-    Impri
+    Airlock
   </a>
   <div class="nav-links">
     <a class="link" href="/#how">How it works</a>
     <a class="link" href="/#pricing">Pricing</a>
     <a class="link active-nav" href="../docs">Docs</a>
-    <a class="btn btn-primary btn-sm" href="https://gitlab.com/sekera.radim/impri">GitLab</a>
+    <a class="btn btn-primary btn-sm" href="https://gitlab.com/sekera.radim/airlock">GitLab</a>
   </div>
 </div>
 </nav>
@@ -171,11 +171,11 @@ pre code.hljs{display:block;overflow-x:auto}
 <p>If your agent action is a step inside a larger orchestrated workflow, the workflow engine may already have an approval primitive: n8n has a human-in-the-loop / wait-for-approval node, and Temporal supports pausing a workflow execution on a signal that a human (or a service acting for one) sends later. These work well when the agent step is genuinely embedded in a bigger workflow — but they pull in the whole orchestration engine even if your only need is &quot;pause this one action for a yes/no.&quot;</p>
 <hr>
 <h2 id="dedicated-approval-gate-services">Dedicated approval-gate services</h2>
-<p>The alternative is a small service whose only job is holding the decision — framework-agnostic, callable from a bash script, a Python agent, a TypeScript MCP tool, or a cron job, all the same way. Impri is one (MIT-licensed self-hostable core, hosted option at impri.dev): it stores the proposed action, notifies a human across email/Slack/Telegram/Discord/push, and returns a decision your agent polls for. No framework dependency, no workflow engine required.</p>
+<p>The alternative is a small service whose only job is holding the decision — framework-agnostic, callable from a bash script, a Python agent, a TypeScript MCP tool, or a cron job, all the same way. Airlock is one (MIT-licensed self-hostable core, hosted option at airlock.dev): it stores the proposed action, notifies a human across email/Slack/Telegram/Discord/push, and returns a decision your agent polls for. No framework dependency, no workflow engine required.</p>
 <div class="code-block"><span class="code-lang">python</span><pre><code class="hljs"><span class="hljs-keyword">import</span> os, time, requests
 
-BASE = os.environ.get(<span class="hljs-string">&quot;IMPRI_BASE_URL&quot;</span>, <span class="hljs-string">&quot;http://localhost:8484&quot;</span>)
-HEADERS = {<span class="hljs-string">&quot;Authorization&quot;</span>: <span class="hljs-string">f&quot;Bearer <span class="hljs-subst">{os.environ[<span class="hljs-string">&#x27;IMPRI_API_KEY&#x27;</span>]}</span>&quot;</span>}
+BASE = os.environ.get(<span class="hljs-string">&quot;AIRLOCK_BASE_URL&quot;</span>, <span class="hljs-string">&quot;http://localhost:8484&quot;</span>)
+HEADERS = {<span class="hljs-string">&quot;Authorization&quot;</span>: <span class="hljs-string">f&quot;Bearer <span class="hljs-subst">{os.environ[<span class="hljs-string">&#x27;AIRLOCK_API_KEY&#x27;</span>]}</span>&quot;</span>}
 
 <span class="hljs-keyword">def</span> <span class="hljs-title function_">propose_action</span>(<span class="hljs-params">kind, title, body</span>):
     resp = requests.post(<span class="hljs-string">f&quot;<span class="hljs-subst">{BASE}</span>/v1/actions&quot;</span>, headers=HEADERS, json={
@@ -235,7 +235,7 @@ decision = wait_for_decision(action_id)
 <td>Only as an n8n node</td>
 </tr>
 <tr>
-<td>Impri</td>
+<td>Airlock</td>
 <td>Dedicated approval gate</td>
 <td>Yes (MIT core)</td>
 <td>Yes — REST/MCP, any language</td>
@@ -248,11 +248,11 @@ decision = wait_for_decision(action_id)
 <h2 id="next-step">Next step</h2>
 <p><a href="quickstart">Quickstart</a> gets a self-hosted instance or a cloud key running in a few minutes either way.</p>
 
-    <aside class="doc-cta" aria-label="Try Impri">
+    <aside class="doc-cta" aria-label="Try Airlock">
   <p class="doc-cta-title">Add an approval step to your own agent</p>
-  <p>Start on Impri Cloud: the Free tier includes 100 approvals a month. Or self-host the MIT-licensed core with Docker Compose, with no tier limits.</p>
+  <p>Start on Airlock Cloud: the Free tier includes 100 approvals a month. Or self-host the MIT-licensed core with Docker Compose, with no tier limits.</p>
   <div class="doc-cta-actions">
-    <a class="btn btn-primary btn-sm" href="https://app.impri.dev/?signup=1">Start free on Impri Cloud</a>
+    <a class="btn btn-primary btn-sm" href="https://app.airlock.dev/?signup=1">Start free on Airlock Cloud</a>
     <a class="btn btn-ghost btn-sm" href="../docs/quickstart">Quick start</a>
     <a class="btn btn-ghost btn-sm" href="../docs/self-hosting">Self-host guide</a>
   </div>
@@ -349,19 +349,19 @@ decision = wait_for_decision(action_id)
 <footer class="footer">
 <div class="wrap footer-inner">
   <a class="brand" href="/">
-    <span class="mark"><svg viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.5 4.5L19 7.5" stroke="white" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Impri
+    <span class="mark"><svg viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.5 4.5L19 7.5" stroke="white" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Airlock
   </a>
   <div>
-    <a href="https://gitlab.com/sekera.radim/impri">GitLab</a>
+    <a href="https://gitlab.com/sekera.radim/airlock">GitLab</a>
     <a href="/docs">Docs</a>
-    <a href="https://gitlab.com/sekera.radim/impri/-/blob/main/LICENSE">MIT License</a>
-    <a href="https://www.npmjs.com/package/@impri/mcp">@impri/mcp</a>
+    <a href="https://gitlab.com/sekera.radim/airlock/-/blob/main/LICENSE">MIT License</a>
+    <a href="https://www.npmjs.com/package/@airlock/mcp">@airlock/mcp</a>
     <a href="/docs/privacy">Privacy</a>
     <a href="/docs/terms">Terms</a>
     <a href="https://sekera.dev">Contact</a>
   </div>
 </div>
-<div class="wrap" style="margin-top:18px"><span class="muted">© 2026 Impri · The imprimatur for your AI agents · Built by <a href="https://sekera.dev" style="color:inherit">Radim Sekera</a>. Also by the same maker: <a href="https://briefgate.dev/?utm_source=impri.dev&amp;utm_medium=referral" style="color:inherit">BriefGate</a> — client intake for agencies and AI agents.</span></div>
+<div class="wrap" style="margin-top:18px"><span class="muted">© 2026 Airlock · The airlockmatur for your AI agents · Built by <a href="https://sekera.dev" style="color:inherit">Radim Sekera</a>. Also by the same maker: <a href="https://briefgate.dev/?utm_source=airlock.dev&amp;utm_medium=referral" style="color:inherit">BriefGate</a> — client intake for agencies and AI agents.</span></div>
 </footer>
 </body>
 </html>

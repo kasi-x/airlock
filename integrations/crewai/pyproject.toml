@@ -3,13 +3,13 @@ requires = ["setuptools>=68"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "impri-crewai"
+name = "airlock-crewai"
 version = "0.1.0"
-description = "Human-in-the-loop approval gate for CrewAI agents via Impri"
+description = "Human-in-the-loop approval gate for CrewAI agents via Airlock"
 readme = "README.md"
 requires-python = ">=3.10"
 license = { text = "MIT" }
-keywords = ["impri", "crewai", "human-in-the-loop", "hitl", "ai-agents", "approval"]
+keywords = ["airlock", "crewai", "human-in-the-loop", "hitl", "ai-agents", "approval"]
 classifiers = [
   "Development Status :: 4 - Beta",
   "Intended Audience :: Developers",
@@ -30,13 +30,13 @@ crewai = ["crewai>=0.28"]
 dev = ["crewai>=0.28", "pytest>=8"]
 
 [project.urls]
-Homepage = "https://impri.dev"
-Documentation = "https://impri.dev/docs"
-Source = "https://gitlab.com/sekera.radim/impri"
+Homepage = "https://airlock.dev"
+Documentation = "https://airlock.dev/docs"
+Source = "https://gitlab.com/sekera.radim/airlock"
 
 [tool.setuptools.packages.find]
 where = ["."]
-include = ["impri_crewai*"]
+include = ["airlock_crewai*"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

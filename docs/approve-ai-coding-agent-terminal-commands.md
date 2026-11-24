@@ -8,7 +8,7 @@ Gate the shell commands an autonomous coding agent wants to run — `rm`, `git p
 
 A coding agent that can run arbitrary shell commands is, by design, one bad plan away from `rm -rf` on the wrong directory, a force-push over a colleague's branch, or a `npm publish` that ships a half-finished package. Prompt-based safeguards ("ask before doing anything destructive") are advisory — the model can talk itself past its own instructions, especially under a long context or a misleading tool result. What actually stops the command is the executor never running it without an external decision.
 
-The pattern below wraps the agent's command-execution tool so every command that isn't on a pre-approved allowlist goes through Impri first — and the wrapper, not the model, decides whether the real `subprocess.run` call ever happens.
+The pattern below wraps the agent's command-execution tool so every command that isn't on a pre-approved allowlist goes through Airlock first — and the wrapper, not the model, decides whether the real `subprocess.run` call ever happens.
 
 ---
 
@@ -19,8 +19,8 @@ import subprocess
 import time
 import requests
 
-IMPRI_BASE = "https://api.impri.dev"
-HEADERS = {"Authorization": f"Bearer {IMPRI_API_KEY}"}
+AIRLOCK_BASE = "https://api.airlock.dev"
+HEADERS = {"Authorization": f"Bearer {AIRLOCK_API_KEY}"}
 
 SAFE_PREFIXES = ("ls", "cat", "git status", "git diff", "git log", "pytest", "npm test")
 
@@ -28,7 +28,7 @@ def run_command(cmd: str) -> str:
     if cmd.strip().startswith(SAFE_PREFIXES):
         return _execute(cmd)
 
-    action = requests.post(f"{IMPRI_BASE}/v1/actions", headers=HEADERS, json={
+    action = requests.post(f"{AIRLOCK_BASE}/v1/actions", headers=HEADERS, json={
         "kind": "shell.execute",
         "title": f"Run command: {cmd[:60]}",
         "preview": {"format": "plain", "body": cmd},
@@ -39,7 +39,7 @@ def run_command(cmd: str) -> str:
     action_id = action["id"]
     while True:
         time.sleep(5)
-        result = requests.get(f"{IMPRI_BASE}/v1/actions/{action_id}", headers=HEADERS).json()
+        result = requests.get(f"{AIRLOCK_BASE}/v1/actions/{action_id}", headers=HEADERS).json()
         if result["status"] != "pending":
             break
 
@@ -50,7 +50,7 @@ def run_command(cmd: str) -> str:
     approved_cmd = result["decision"]["final_preview"]["body"]
     output = _execute(approved_cmd)
 
-    requests.post(f"{IMPRI_BASE}/v1/actions/{action_id}/result", headers=HEADERS,
+    requests.post(f"{AIRLOCK_BASE}/v1/actions/{action_id}/result", headers=HEADERS,
                   json={"status": "executed"})
     return output
 
@@ -85,8 +85,8 @@ Tune the split for your repo. A reasonable rule: if the command can be undone by
 Because the reviewer only sees a bare command string, give them the context that's normally in the agent's head. Set `idempotent: false` for anything with a side effect and describe the rollback in `undo` — both are optional fields on `POST /v1/actions` and show up directly on the approval card:
 
 ```bash
-curl -X POST https://api.impri.dev/v1/actions \
-  -H "Authorization: Bearer $IMPRI_API_KEY" \
+curl -X POST https://api.airlock.dev/v1/actions \
+  -H "Authorization: Bearer $AIRLOCK_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "kind": "shell.execute",
@@ -101,9 +101,9 @@ A reviewer who sees "not idempotent, here's the undo" makes a faster and better-
 
 ---
 
-## The boundary: Impri doesn't understand shell syntax
+## The boundary: Airlock doesn't understand shell syntax
 
-Impri stores the command text, shows it to a human, and reports back a decision — it does not parse, sandbox, or validate the command itself. It can't tell you that `rm -rf $DIR` is dangerous if `$DIR` was empty and expanded to `/`; that's still the reviewer's job when they read the card, and your agent's job to interpolate variables into the preview text *before* submission so the reviewer sees the literal command, not a template. Impri is also only a real gate if `run_command` is the agent's only route to a shell — if the framework exposes a second raw exec tool, the wrapper above can be routed around.
+Airlock stores the command text, shows it to a human, and reports back a decision — it does not parse, sandbox, or validate the command itself. It can't tell you that `rm -rf $DIR` is dangerous if `$DIR` was empty and expanded to `/`; that's still the reviewer's job when they read the card, and your agent's job to interpolate variables into the preview text *before* submission so the reviewer sees the literal command, not a template. Airlock is also only a real gate if `run_command` is the agent's only route to a shell — if the framework exposes a second raw exec tool, the wrapper above can be routed around.
 
 For agents built specifically on the Claude Agent SDK, see [the Claude Agent SDK approval guide](human-approval-claude-agent-sdk.md), which covers the same pattern using that SDK's hook points.
 

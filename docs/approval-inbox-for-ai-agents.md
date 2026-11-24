@@ -17,9 +17,9 @@ An inbox turns that stream into a queue: everything pending sits in one place, f
 Every call to `POST /v1/actions` adds one card to the inbox, regardless of which agent or process made the call. Here's a drafting agent queuing a batch of posts with the TypeScript SDK:
 
 ```typescript
-import { ImpriClient } from "@impri/sdk";
+import { AirlockClient } from "@airlock/sdk";
 
-const impri = new ImpriClient({ apiKey: process.env.IMPRI_API_KEY! });
+const airlock = new AirlockClient({ apiKey: process.env.AIRLOCK_API_KEY! });
 
 interface Draft {
   title: string;
@@ -31,7 +31,7 @@ async function queueDrafts(drafts: Draft[]): Promise<string[]> {
   const actionIds: string[] = [];
 
   for (const draft of drafts) {
-    const action = await impri.createAction({
+    const action = await airlock.createAction({
       kind: "blog.publish",
       title: `Draft: ${draft.title}`,
       preview: { format: "markdown", body: draft.body },
@@ -55,8 +55,8 @@ Twelve drafts from one afternoon become twelve cards sitting in the same inbox, 
 A queue is only an improvement over a stream if working through it is fast. For same-shaped, low-risk actions — a batch of social captions from an approved content calendar, say — reviewing and deciding one by one is unnecessary overhead. `POST /v1/actions/bulk-decision` lets a reviewer approve or reject a set of action IDs in one call, which is what the inbox UI's "select all matching" does under the hood:
 
 ```bash
-curl -X POST https://api.impri.dev/v1/actions/bulk-decision \
-  -H "Authorization: Bearer $IMPRI_API_KEY" \
+curl -X POST https://api.airlock.dev/v1/actions/bulk-decision \
+  -H "Authorization: Bearer $AIRLOCK_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "ids": ["act_101", "act_102", "act_103", "act_104"],
@@ -84,7 +84,7 @@ Every decision, whoever made it and whenever it happened, is recorded in the [au
 
 ## What an inbox is not
 
-The inbox is a review queue, not a workflow engine. It doesn't route an action to a specific reviewer based on content, branch on approval outcomes, or chain steps together — if you need that, put Impri as one node inside [n8n or a similar orchestrator](integrations.md), with the inbox handling the human-decision step and the workflow engine handling everything before and after it. And the inbox only reflects reality if the agent's execution path is actually gated on the decision it returns — an agent that can call the publish API directly, bypassing the pending action, makes the inbox a suggestion box instead of a gate.
+The inbox is a review queue, not a workflow engine. It doesn't route an action to a specific reviewer based on content, branch on approval outcomes, or chain steps together — if you need that, put Airlock as one node inside [n8n or a similar orchestrator](integrations.md), with the inbox handling the human-decision step and the workflow engine handling everything before and after it. And the inbox only reflects reality if the agent's execution path is actually gated on the decision it returns — an agent that can call the publish API directly, bypassing the pending action, makes the inbox a suggestion box instead of a gate.
 
 ---
 

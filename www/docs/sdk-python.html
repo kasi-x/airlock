@@ -3,21 +3,21 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Python SDK — Impri Docs</title>
+<title>Python SDK — Airlock Docs</title>
 <meta name="description" content="Status — v0.1, pre-release. The SDK lives at sdk/python/ in this repository. It is not yet published to PyPI. Install it from the local source while the…">
 <meta name="theme-color" content="#06070d">
-<meta property="og:title" content="Python SDK — Impri Docs">
+<meta property="og:title" content="Python SDK — Airlock Docs">
 <meta property="og:description" content="Status — v0.1, pre-release. The SDK lives at sdk/python/ in this repository. It is not yet published to PyPI. Install it from the local source while the…">
 <meta property="og:type" content="article">
-<meta property="og:url" content="https://impri.dev/docs/sdk-python">
-<meta property="og:image" content="https://impri.dev/assets/og/og-docs.png">
+<meta property="og:url" content="https://airlock.dev/docs/sdk-python">
+<meta property="og:image" content="https://airlock.dev/assets/og/og-docs.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
-<meta property="og:image:alt" content="Impri — human-in-the-loop approval inbox for AI agents">
+<meta property="og:image:alt" content="Airlock — human-in-the-loop approval inbox for AI agents">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="https://impri.dev/assets/og/og-docs.png">
-<link rel="canonical" href="https://impri.dev/docs/sdk-python">
-<script type="application/ld+json">{"@context":"https://schema.org","@type":"TechArticle","headline":"Python SDK","description":"Status — v0.1, pre-release. The SDK lives at sdk/python/ in this repository. It is not yet published to PyPI. Install it from the local source while the…","url":"https://impri.dev/docs/sdk-python","inLanguage":"en","author":{"@type":"Organization","name":"Impri","url":"https://impri.dev"},"publisher":{"@type":"Organization","name":"Impri","url":"https://impri.dev"}}</script>
+<meta name="twitter:image" content="https://airlock.dev/assets/og/og-docs.png">
+<link rel="canonical" href="https://airlock.dev/docs/sdk-python">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"TechArticle","headline":"Python SDK","description":"Status — v0.1, pre-release. The SDK lives at sdk/python/ in this repository. It is not yet published to PyPI. Install it from the local source while the…","url":"https://airlock.dev/docs/sdk-python","inLanguage":"en","author":{"@type":"Organization","name":"Airlock","url":"https://airlock.dev"},"publisher":{"@type":"Organization","name":"Airlock","url":"https://airlock.dev"}}</script>
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <link rel="icon" href="/favicon.ico" sizes="32x32">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='9' fill='%236366f1'/%3E%3Cpath d='M9 16.5l4.5 4.5L23 11' stroke='white' stroke-width='3' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
@@ -132,13 +132,13 @@ pre code.hljs{display:block;overflow-x:auto}
 <div class="wrap nav-inner">
   <a class="brand" href="/">
     <span class="mark"><svg viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.5 4.5L19 7.5" stroke="white" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
-    Impri
+    Airlock
   </a>
   <div class="nav-links">
     <a class="link" href="/#how">How it works</a>
     <a class="link" href="/#pricing">Pricing</a>
     <a class="link active-nav" href="../docs">Docs</a>
-    <a class="btn btn-primary btn-sm" href="https://gitlab.com/sekera.radim/impri">GitLab</a>
+    <a class="btn btn-primary btn-sm" href="https://gitlab.com/sekera.radim/airlock">GitLab</a>
   </div>
 </div>
 </nav>
@@ -154,21 +154,21 @@ pre code.hljs{display:block;overflow-x:auto}
     </nav>
     <h1>Python SDK</h1>
 <blockquote>
-<p><strong>Status — v0.1, pre-release.</strong> The SDK lives at <code>sdk/python/</code> in this repository. It is not yet published to PyPI. Install it from the local source while the package matures. The REST API it wraps is stable and works the same against the hosted cloud (<code>api.impri.dev</code>, early beta) or a self-hosted instance.</p>
+<p><strong>Status — v0.1, pre-release.</strong> The SDK lives at <code>sdk/python/</code> in this repository. It is not yet published to PyPI. Install it from the local source while the package matures. The REST API it wraps is stable and works the same against the hosted cloud (<code>api.airlock.dev</code>, early beta) or a self-hosted instance.</p>
 </blockquote>
 <div class="code-block"><span class="code-lang">bash</span><pre><code class="hljs"><span class="hljs-comment"># From the repo root</span>
 pip install -e sdk/python</code></pre></div>
 <hr>
 <h2 id="setup">Setup</h2>
-<div class="code-block"><span class="code-lang">python</span><pre><code class="hljs"><span class="hljs-keyword">from</span> impri <span class="hljs-keyword">import</span> ImpriClient
+<div class="code-block"><span class="code-lang">python</span><pre><code class="hljs"><span class="hljs-keyword">from</span> airlock <span class="hljs-keyword">import</span> AirlockClient
 
-client = ImpriClient(
-    api_key=<span class="hljs-string">&quot;im_...&quot;</span>,            <span class="hljs-comment"># or set IMPRI_API_KEY env var</span>
-    base_url=<span class="hljs-string">&quot;http://localhost:8484&quot;</span>,  <span class="hljs-comment"># or set IMPRI_BASE_URL; default is localhost:8484</span>
+client = AirlockClient(
+    api_key=<span class="hljs-string">&quot;im_...&quot;</span>,            <span class="hljs-comment"># or set AIRLOCK_API_KEY env var</span>
+    base_url=<span class="hljs-string">&quot;http://localhost:8484&quot;</span>,  <span class="hljs-comment"># or set AIRLOCK_BASE_URL; default is localhost:8484</span>
 )
 <span class="hljs-comment"># Cloud:</span>
-<span class="hljs-comment"># client = ImpriClient(api_key=&quot;im_...&quot;, base_url=&quot;https://api.impri.dev&quot;)</span></code></pre></div>
-<p>The client raises <code>ImpriConfigError</code> at construction time if neither the argument nor the environment variable is set. <code>base_url</code> defaults to <code>http://localhost:8484</code> (self-hosted). Strip any trailing slash from the value you pass — the SDK does this internally, but it is cleaner to be explicit. The client appends <code>/v1</code> internally; callers never include it.</p>
+<span class="hljs-comment"># client = AirlockClient(api_key=&quot;im_...&quot;, base_url=&quot;https://api.airlock.dev&quot;)</span></code></pre></div>
+<p>The client raises <code>AirlockConfigError</code> at construction time if neither the argument nor the environment variable is set. <code>base_url</code> defaults to <code>http://localhost:8484</code> (self-hosted). Strip any trailing slash from the value you pass — the SDK does this internally, but it is cleaner to be explicit. The client appends <code>/v1</code> internally; callers never include it.</p>
 <hr>
 <h2 id="authentication">Authentication</h2>
 <p>Every request carries <code>Authorization: Bearer im_&lt;key&gt;</code>. Key scopes are enforced server-side:</p>
@@ -193,7 +193,7 @@ client = ImpriClient(
 </tr>
 </tbody></table>
 </div>
-<p>A 403 response means the key exists but lacks the required scope. A 401 means the key is wrong or revoked. Both raise <code>ImpriUnauthorized</code>.</p>
+<p>A 403 response means the key exists but lacks the required scope. A 401 means the key is wrong or revoked. Both raise <code>AirlockUnauthorized</code>.</p>
 <hr>
 <h2 id="approval-inbox">Approval Inbox</h2>
 <h3 id="createaction"><code>create_action</code></h3>
@@ -215,7 +215,7 @@ client = ImpriClient(
 <h3 id="getaction"><code>get_action</code></h3>
 <div class="code-block"><span class="code-lang">python</span><pre><code class="hljs">action = <span class="hljs-keyword">await</span> client.get_action(<span class="hljs-string">&quot;act_abc123&quot;</span>)
 <span class="hljs-comment"># action.status, action.decision (present after a human decides), action.webhook_delivery</span></code></pre></div>
-<p>Returns <code>ImpriNotFound</code> (404) if the id is unknown or belongs to a different project.</p>
+<p>Returns <code>AirlockNotFound</code> (404) if the id is unknown or belongs to a different project.</p>
 <p><code>action.decision</code> is <code>None</code> while the action is pending and populated once a human has acted:</p>
 <div class="code-block"><span class="code-lang">python</span><pre><code class="hljs"><span class="hljs-keyword">if</span> action.decision:
     <span class="hljs-built_in">print</span>(action.decision.verdict)       <span class="hljs-comment"># &quot;approve&quot; or &quot;reject&quot;</span>
@@ -242,7 +242,7 @@ client = ImpriClient(
 <p>Rate-limited to <strong>300 GET/min per key</strong>.</p>
 <h3 id="awaitdecision"><code>await_decision</code></h3>
 <p>The most common pattern — push an action then block until a human decides:</p>
-<div class="code-block"><span class="code-lang">python</span><pre><code class="hljs"><span class="hljs-keyword">from</span> impri <span class="hljs-keyword">import</span> ImpriRejected, ImpriExpired, ImpriTimeout
+<div class="code-block"><span class="code-lang">python</span><pre><code class="hljs"><span class="hljs-keyword">from</span> airlock <span class="hljs-keyword">import</span> AirlockRejected, AirlockExpired, AirlockTimeout
 
 action_created = <span class="hljs-keyword">await</span> client.create_action(
     kind=<span class="hljs-string">&quot;db.exec&quot;</span>,
@@ -254,21 +254,21 @@ action_created = <span class="hljs-keyword">await</span> client.create_action(
 <span class="hljs-keyword">try</span>:
     action = <span class="hljs-keyword">await</span> client.await_decision(
         action_created.<span class="hljs-built_in">id</span>,
-        timeout_s=<span class="hljs-number">300</span>,         <span class="hljs-comment"># raise ImpriTimeout after this; action stays pending server-side</span>
+        timeout_s=<span class="hljs-number">300</span>,         <span class="hljs-comment"># raise AirlockTimeout after this; action stays pending server-side</span>
         poll_interval_s=<span class="hljs-number">5</span>,     <span class="hljs-comment"># minimum recommended is 5 s</span>
     )
     <span class="hljs-comment"># action.status == &quot;approved&quot;</span>
     sql_to_run = action.decision.final_preview[<span class="hljs-string">&quot;body&quot;</span>]
 
-<span class="hljs-keyword">except</span> ImpriRejected <span class="hljs-keyword">as</span> e:
+<span class="hljs-keyword">except</span> AirlockRejected <span class="hljs-keyword">as</span> e:
     <span class="hljs-comment"># Human said no — this is normal flow, not an error.</span>
     <span class="hljs-comment"># e.action_id, e.decision, e.final_preview</span>
     <span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;Rejected — doing nothing.&quot;</span>)
 
-<span class="hljs-keyword">except</span> ImpriExpired:
+<span class="hljs-keyword">except</span> AirlockExpired:
     <span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;Approval window closed before a decision was made.&quot;</span>)
 
-<span class="hljs-keyword">except</span> ImpriTimeout:
+<span class="hljs-keyword">except</span> AirlockTimeout:
     <span class="hljs-comment"># timeout_s elapsed; action is still pending server-side.</span>
     <span class="hljs-comment"># You can call await_decision again, or poll manually.</span>
     <span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;Timed out waiting for approval.&quot;</span>)</code></pre></div>
@@ -281,7 +281,7 @@ action_created = <span class="hljs-keyword">await</span> client.create_action(
     edited={<span class="hljs-string">&quot;preview.body&quot;</span>: <span class="hljs-string">&quot;Edited copy.&quot;</span>}, <span class="hljs-comment"># restricted to action.editable whitelist</span>
     channel=<span class="hljs-string">&quot;bot-script&quot;</span>,
 )</code></pre></div>
-<p>Returns <code>ImpriConflict</code> (409) if the action is already decided or two writers race. Only call on pending actions.</p>
+<p>Returns <code>AirlockConflict</code> (409) if the action is already decided or two writers race. Only call on pending actions.</p>
 <h3 id="bulkdecide"><code>bulk_decide</code></h3>
 <p>Approve or reject up to 50 actions in one request.</p>
 <div class="code-block"><span class="code-lang">python</span><pre><code class="hljs">resp = client.bulk_decide(
@@ -304,11 +304,11 @@ action_created = <span class="hljs-keyword">await</span> client.create_action(
 <span class="hljs-keyword">except</span> Exception <span class="hljs-keyword">as</span> exc:
     <span class="hljs-keyword">await</span> client.report_result(action.<span class="hljs-built_in">id</span>, <span class="hljs-string">&quot;execute_failed&quot;</span>, detail=<span class="hljs-built_in">str</span>(exc))
     <span class="hljs-keyword">raise</span></code></pre></div>
-<p>Returns <code>ImpriConflict</code> (409) if the action is not in <code>approved</code> state — only call after a confirmed approval.</p>
+<p>Returns <code>AirlockConflict</code> (409) if the action is not in <code>approved</code> state — only call after a confirmed approval.</p>
 <hr>
 <h2 id="ergonomic-helpers">Ergonomic helpers</h2>
 <h3 id="clientrequiresapproval-decorator"><code>@client.requires_approval</code> decorator</h3>
-<p>Gates a function through an Impri approval. Every call pushes an action, blocks until decided, and invokes the original function only on approval. On rejection it raises <code>ImpriRejected</code> without calling the function.</p>
+<p>Gates a function through an Airlock approval. Every call pushes an action, blocks until decided, and invokes the original function only on approval. On rejection it raises <code>AirlockRejected</code> without calling the function.</p>
 <div class="code-block"><span class="code-lang">python</span><pre><code class="hljs"><span class="hljs-meta">@client.requires_approval(<span class="hljs-params">
     kind=<span class="hljs-string">&quot;email.send&quot;</span>,
     title=<span class="hljs-keyword">lambda</span> to, **_: <span class="hljs-string">f&quot;Send email to <span class="hljs-subst">{to}</span>&quot;</span>,
@@ -334,18 +334,18 @@ action_created = <span class="hljs-keyword">await</span> client.create_action(
     <span class="hljs-keyword">await</span> db.execute(approved.final_preview[<span class="hljs-string">&quot;body&quot;</span>])
     <span class="hljs-comment"># On clean exit __aexit__ calls report_result(&quot;executed&quot;) automatically.</span>
     <span class="hljs-comment"># On exception __aexit__ calls report_result(&quot;execute_failed&quot;, detail=str(exc)).</span></code></pre></div>
-<p><code>__aexit__</code> takes care of <code>report_result</code> so you never forget to close the loop. <code>ImpriRejected</code> is raised on exit from the <code>async with</code> block if the human rejected — you do not need to handle cleanup because the action was never executed.</p>
+<p><code>__aexit__</code> takes care of <code>report_result</code> so you never forget to close the loop. <code>AirlockRejected</code> is raised on exit from the <code>async with</code> block if the human rejected — you do not need to handle cleanup because the action was never executed.</p>
 <hr>
 <h2 id="watchers">Watchers</h2>
 <p>Watchers monitor external sources (RSS feeds, Reddit searches, URL content) and deliver matching items to the inbox as actions with <code>payload.untrusted = True</code>. Requires <code>watch</code> scope.</p>
 <h3 id="createwatcher"><code>create_watcher</code></h3>
 <div class="code-block"><span class="code-lang">python</span><pre><code class="hljs">watcher = <span class="hljs-keyword">await</span> client.create_watcher(
-    name=<span class="hljs-string">&quot;Impri mentions on Reddit&quot;</span>,
+    name=<span class="hljs-string">&quot;Airlock mentions on Reddit&quot;</span>,
     kind=<span class="hljs-string">&quot;reddit_search&quot;</span>,               <span class="hljs-comment"># rss | reddit_search | url_diff</span>
-    config={<span class="hljs-string">&quot;query&quot;</span>: <span class="hljs-string">&quot;impri approval&quot;</span>, <span class="hljs-string">&quot;subreddit&quot;</span>: <span class="hljs-string">&quot;selfhosted&quot;</span>},
+    config={<span class="hljs-string">&quot;query&quot;</span>: <span class="hljs-string">&quot;airlock approval&quot;</span>, <span class="hljs-string">&quot;subreddit&quot;</span>: <span class="hljs-string">&quot;selfhosted&quot;</span>},
     schedule={<span class="hljs-string">&quot;every&quot;</span>: <span class="hljs-string">&quot;1h&quot;</span>, <span class="hljs-string">&quot;window&quot;</span>: <span class="hljs-string">&quot;08:00-22:00&quot;</span>},  <span class="hljs-comment"># window uses project timezone</span>
     keywords=[
-        {<span class="hljs-string">&quot;pattern&quot;</span>: <span class="hljs-string">&quot;impri&quot;</span>, <span class="hljs-string">&quot;points&quot;</span>: <span class="hljs-number">10</span>},
+        {<span class="hljs-string">&quot;pattern&quot;</span>: <span class="hljs-string">&quot;airlock&quot;</span>, <span class="hljs-string">&quot;points&quot;</span>: <span class="hljs-number">10</span>},
         {<span class="hljs-string">&quot;pattern&quot;</span>: <span class="hljs-string">&quot;human-in-the-loop&quot;</span>, <span class="hljs-string">&quot;points&quot;</span>: <span class="hljs-number">5</span>},
     ],
     keywords_none=[<span class="hljs-string">&quot;spam&quot;</span>, <span class="hljs-string">&quot;advertisement&quot;</span>],
@@ -408,7 +408,7 @@ watcher = client.create_watcher_from_preset(
     <span class="hljs-string">&quot;reddit-keyword&quot;</span>,
     params={<span class="hljs-string">&quot;query&quot;</span>: <span class="hljs-string">&quot;self-hosting AI&quot;</span>, <span class="hljs-string">&quot;subreddit&quot;</span>: <span class="hljs-string">&quot;selfhosted&quot;</span>},
 )</code></pre></div>
-<p>Applies all standard guards: rate limit, tier watcher-count quota, SSRF validation, minimum schedule interval. Raises <code>ImpriQuotaExceeded</code> (402) when a tier limit would be breached.</p>
+<p>Applies all standard guards: rate limit, tier watcher-count quota, SSRF validation, minimum schedule interval. Raises <code>AirlockQuotaExceeded</code> (402) when a tier limit would be breached.</p>
 <hr>
 <h2 id="api-keys-admin-scope">API keys (admin scope)</h2>
 <div class="code-block"><span class="code-lang">python</span><pre><code class="hljs"><span class="hljs-comment"># Create a key</span>
@@ -515,50 +515,50 @@ raw_bytes = client.export_audit(
 <hr>
 <h2 id="webhook-verification">Webhook verification</h2>
 <p>Verify incoming webhook signatures without instantiating a client:</p>
-<div class="code-block"><span class="code-lang">python</span><pre><code class="hljs"><span class="hljs-keyword">import</span> impri
+<div class="code-block"><span class="code-lang">python</span><pre><code class="hljs"><span class="hljs-keyword">import</span> airlock
 
 <span class="hljs-keyword">try</span>:
-    impri.verify_webhook(
+    airlock.verify_webhook(
         raw_body=request.body,         <span class="hljs-comment"># bytes</span>
         secret=project.webhook_secret,
-        timestamp=request.headers[<span class="hljs-string">&quot;X-Impri-Timestamp&quot;</span>],
-        nonce=request.headers[<span class="hljs-string">&quot;X-Impri-Nonce&quot;</span>],
-        signature=request.headers[<span class="hljs-string">&quot;X-Impri-Signature&quot;</span>],
+        timestamp=request.headers[<span class="hljs-string">&quot;X-Airlock-Timestamp&quot;</span>],
+        nonce=request.headers[<span class="hljs-string">&quot;X-Airlock-Nonce&quot;</span>],
+        signature=request.headers[<span class="hljs-string">&quot;X-Airlock-Signature&quot;</span>],
     )
-<span class="hljs-keyword">except</span> impri.ImpriWebhookSignatureError:
+<span class="hljs-keyword">except</span> airlock.AirlockWebhookSignatureError:
     <span class="hljs-keyword">return</span> <span class="hljs-number">400</span>  <span class="hljs-comment"># bad signature</span>
 
 <span class="hljs-comment"># Process the webhook</span></code></pre></div>
 <p>Algorithm: <code>sha256=HMAC-SHA256(secret, f&quot;{timestamp}.{nonce}.{raw_body}&quot;)</code>. The function also rejects requests with a timestamp more than 5 minutes old. Use constant-time comparison — the SDK handles this internally.</p>
 <hr>
 <h2 id="error-handling">Error handling</h2>
-<p>All typed exceptions inherit from <code>ImpriError</code>. Every exception carries <code>response: httpx.Response | None</code> for introspection.</p>
-<div class="code-block"><span class="code-lang">python</span><pre><code class="hljs"><span class="hljs-keyword">from</span> impri <span class="hljs-keyword">import</span> (
-    ImpriError,
-    ImpriConfigError,       <span class="hljs-comment"># missing api_key at construction time</span>
-    ImpriUnauthorized,      <span class="hljs-comment"># 401 / 403 — wrong key or missing scope</span>
-    ImpriNotFound,          <span class="hljs-comment"># 404 — action or watcher not found</span>
-    ImpriConflict,          <span class="hljs-comment"># 409 — already decided; idempotency race</span>
-    ImpriExpired,           <span class="hljs-comment"># 410 — approval window closed</span>
-    ImpriRateLimited,       <span class="hljs-comment"># 429 — hit per-key rate limit; check .retry_after</span>
-    ImpriQuotaExceeded,     <span class="hljs-comment"># 402 — monthly quota exhausted; .limit, .tier</span>
-    ImpriRejected,          <span class="hljs-comment"># not HTTP — raised by await_decision on rejection</span>
-    ImpriTimeout,           <span class="hljs-comment"># not HTTP — raised by await_decision when timeout_s elapses</span>
-    ImpriValidationError,   <span class="hljs-comment"># 400 / 422 — schema error; check .issues</span>
-    ImpriApiError,          <span class="hljs-comment"># catch-all for other 4xx / 5xx</span>
-    ImpriWebhookSignatureError,  <span class="hljs-comment"># bad webhook signature</span>
+<p>All typed exceptions inherit from <code>AirlockError</code>. Every exception carries <code>response: httpx.Response | None</code> for introspection.</p>
+<div class="code-block"><span class="code-lang">python</span><pre><code class="hljs"><span class="hljs-keyword">from</span> airlock <span class="hljs-keyword">import</span> (
+    AirlockError,
+    AirlockConfigError,       <span class="hljs-comment"># missing api_key at construction time</span>
+    AirlockUnauthorized,      <span class="hljs-comment"># 401 / 403 — wrong key or missing scope</span>
+    AirlockNotFound,          <span class="hljs-comment"># 404 — action or watcher not found</span>
+    AirlockConflict,          <span class="hljs-comment"># 409 — already decided; idempotency race</span>
+    AirlockExpired,           <span class="hljs-comment"># 410 — approval window closed</span>
+    AirlockRateLimited,       <span class="hljs-comment"># 429 — hit per-key rate limit; check .retry_after</span>
+    AirlockQuotaExceeded,     <span class="hljs-comment"># 402 — monthly quota exhausted; .limit, .tier</span>
+    AirlockRejected,          <span class="hljs-comment"># not HTTP — raised by await_decision on rejection</span>
+    AirlockTimeout,           <span class="hljs-comment"># not HTTP — raised by await_decision when timeout_s elapses</span>
+    AirlockValidationError,   <span class="hljs-comment"># 400 / 422 — schema error; check .issues</span>
+    AirlockApiError,          <span class="hljs-comment"># catch-all for other 4xx / 5xx</span>
+    AirlockWebhookSignatureError,  <span class="hljs-comment"># bad webhook signature</span>
 )
 
 <span class="hljs-keyword">try</span>:
     action = <span class="hljs-keyword">await</span> client.create_action(...)
-<span class="hljs-keyword">except</span> ImpriRateLimited <span class="hljs-keyword">as</span> e:
+<span class="hljs-keyword">except</span> AirlockRateLimited <span class="hljs-keyword">as</span> e:
     time.sleep(e.retry_after <span class="hljs-keyword">or</span> <span class="hljs-number">1</span>)
     action = <span class="hljs-keyword">await</span> client.create_action(...)
-<span class="hljs-keyword">except</span> ImpriQuotaExceeded <span class="hljs-keyword">as</span> e:
+<span class="hljs-keyword">except</span> AirlockQuotaExceeded <span class="hljs-keyword">as</span> e:
     <span class="hljs-built_in">print</span>(<span class="hljs-string">f&quot;Quota (<span class="hljs-subst">{e.limit}</span>) exhausted on tier <span class="hljs-subst">{e.tier}</span>.&quot;</span>)
-<span class="hljs-keyword">except</span> ImpriRejected:
+<span class="hljs-keyword">except</span> AirlockRejected:
     <span class="hljs-keyword">pass</span>  <span class="hljs-comment"># Human said no — handle as normal flow, not an error</span></code></pre></div>
-<p><code>ImpriRejected</code> is not an error to log — the human exercising their veto is the whole point of Impri.</p>
+<p><code>AirlockRejected</code> is not an error to log — the human exercising their veto is the whole point of Airlock.</p>
 <hr>
 <h2 id="pagination-helper">Pagination helper</h2>
 <div class="code-block"><span class="code-lang">python</span><pre><code class="hljs"><span class="hljs-comment"># Manual cursor loop</span>
@@ -586,7 +586,7 @@ cursor = <span class="hljs-literal">None</span>
 <p>When an action has <code>payload.untrusted == True</code> (delivered by a Watcher), the SDK surfaces this as <code>action.is_untrusted: bool</code>. The ergonomic helpers (<code>approval_gate</code>, <code>requires_approval</code>) emit a visible warning when this flag is set and do not inline the preview body into the title or any field that an LLM might interpret as an instruction.</p>
 <hr>
 <h2 id="reference">Reference</h2>
-<p>Full method signatures live in <code>sdk/python/impri/__init__.py</code>. The REST API contract is in <code>docs/llms.txt</code> and <code>server/src/openapi.ts</code>. The MCP client at <code>mcp/src/client.ts</code> is the reference implementation of the HTTP layer and the <code>await_decision</code> polling loop.</p>
+<p>Full method signatures live in <code>sdk/python/airlock/__init__.py</code>. The REST API contract is in <code>docs/llms.txt</code> and <code>server/src/openapi.ts</code>. The MCP client at <code>mcp/src/client.ts</code> is the reference implementation of the HTTP layer and the <code>await_decision</code> polling loop.</p>
 
     
     
@@ -696,19 +696,19 @@ cursor = <span class="hljs-literal">None</span>
 <footer class="footer">
 <div class="wrap footer-inner">
   <a class="brand" href="/">
-    <span class="mark"><svg viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.5 4.5L19 7.5" stroke="white" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Impri
+    <span class="mark"><svg viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.5 4.5L19 7.5" stroke="white" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Airlock
   </a>
   <div>
-    <a href="https://gitlab.com/sekera.radim/impri">GitLab</a>
+    <a href="https://gitlab.com/sekera.radim/airlock">GitLab</a>
     <a href="/docs">Docs</a>
-    <a href="https://gitlab.com/sekera.radim/impri/-/blob/main/LICENSE">MIT License</a>
-    <a href="https://www.npmjs.com/package/@impri/mcp">@impri/mcp</a>
+    <a href="https://gitlab.com/sekera.radim/airlock/-/blob/main/LICENSE">MIT License</a>
+    <a href="https://www.npmjs.com/package/@airlock/mcp">@airlock/mcp</a>
     <a href="/docs/privacy">Privacy</a>
     <a href="/docs/terms">Terms</a>
     <a href="https://sekera.dev">Contact</a>
   </div>
 </div>
-<div class="wrap" style="margin-top:18px"><span class="muted">© 2026 Impri · The imprimatur for your AI agents · Built by <a href="https://sekera.dev" style="color:inherit">Radim Sekera</a>. Also by the same maker: <a href="https://briefgate.dev/?utm_source=impri.dev&amp;utm_medium=referral" style="color:inherit">BriefGate</a> — client intake for agencies and AI agents.</span></div>
+<div class="wrap" style="margin-top:18px"><span class="muted">© 2026 Airlock · The airlockmatur for your AI agents · Built by <a href="https://sekera.dev" style="color:inherit">Radim Sekera</a>. Also by the same maker: <a href="https://briefgate.dev/?utm_source=airlock.dev&amp;utm_medium=referral" style="color:inherit">BriefGate</a> — client intake for agencies and AI agents.</span></div>
 </footer>
 </body>
 </html>

@@ -3,21 +3,21 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Integrations — Impri Docs</title>
-<meta name="description" content="Impri integrates with agent frameworks and runtime environments through two paths: the MCP server (drop-in for any MCP-compatible client) and the REST API…">
+<title>Integrations — Airlock Docs</title>
+<meta name="description" content="Airlock integrates with agent frameworks and runtime environments through two paths: the MCP server (drop-in for any MCP-compatible client) and the REST API…">
 <meta name="theme-color" content="#06070d">
-<meta property="og:title" content="Integrations — Impri Docs">
-<meta property="og:description" content="Impri integrates with agent frameworks and runtime environments through two paths: the MCP server (drop-in for any MCP-compatible client) and the REST API…">
+<meta property="og:title" content="Integrations — Airlock Docs">
+<meta property="og:description" content="Airlock integrates with agent frameworks and runtime environments through two paths: the MCP server (drop-in for any MCP-compatible client) and the REST API…">
 <meta property="og:type" content="article">
-<meta property="og:url" content="https://impri.dev/docs/integrations">
-<meta property="og:image" content="https://impri.dev/assets/og/og-docs.png">
+<meta property="og:url" content="https://airlock.dev/docs/integrations">
+<meta property="og:image" content="https://airlock.dev/assets/og/og-docs.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
-<meta property="og:image:alt" content="Impri — human-in-the-loop approval inbox for AI agents">
+<meta property="og:image:alt" content="Airlock — human-in-the-loop approval inbox for AI agents">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="https://impri.dev/assets/og/og-docs.png">
-<link rel="canonical" href="https://impri.dev/docs/integrations">
-<script type="application/ld+json">{"@context":"https://schema.org","@type":"TechArticle","headline":"Integrations","description":"Impri integrates with agent frameworks and runtime environments through two paths: the MCP server (drop-in for any MCP-compatible client) and the REST API…","url":"https://impri.dev/docs/integrations","inLanguage":"en","author":{"@type":"Organization","name":"Impri","url":"https://impri.dev"},"publisher":{"@type":"Organization","name":"Impri","url":"https://impri.dev"}}</script>
+<meta name="twitter:image" content="https://airlock.dev/assets/og/og-docs.png">
+<link rel="canonical" href="https://airlock.dev/docs/integrations">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"TechArticle","headline":"Integrations","description":"Airlock integrates with agent frameworks and runtime environments through two paths: the MCP server (drop-in for any MCP-compatible client) and the REST API…","url":"https://airlock.dev/docs/integrations","inLanguage":"en","author":{"@type":"Organization","name":"Airlock","url":"https://airlock.dev"},"publisher":{"@type":"Organization","name":"Airlock","url":"https://airlock.dev"}}</script>
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <link rel="icon" href="/favicon.ico" sizes="32x32">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='9' fill='%236366f1'/%3E%3Cpath d='M9 16.5l4.5 4.5L23 11' stroke='white' stroke-width='3' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
@@ -132,13 +132,13 @@ pre code.hljs{display:block;overflow-x:auto}
 <div class="wrap nav-inner">
   <a class="brand" href="/">
     <span class="mark"><svg viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.5 4.5L19 7.5" stroke="white" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
-    Impri
+    Airlock
   </a>
   <div class="nav-links">
     <a class="link" href="/#how">How it works</a>
     <a class="link" href="/#pricing">Pricing</a>
     <a class="link active-nav" href="../docs">Docs</a>
-    <a class="btn btn-primary btn-sm" href="https://gitlab.com/sekera.radim/impri">GitLab</a>
+    <a class="btn btn-primary btn-sm" href="https://gitlab.com/sekera.radim/airlock">GitLab</a>
   </div>
 </div>
 </nav>
@@ -153,31 +153,31 @@ pre code.hljs{display:block;overflow-x:auto}
       <span>Integrations</span>
     </nav>
     <h1>Integrations</h1>
-<p>Impri integrates with agent frameworks and runtime environments through two paths: the <strong>MCP server</strong> (drop-in for any MCP-compatible client) and the <strong>REST API</strong> (used directly or via the SDK wrappers). The patterns below show how each framework fits into the Impri approval loop.</p>
+<p>Airlock integrates with agent frameworks and runtime environments through two paths: the <strong>MCP server</strong> (drop-in for any MCP-compatible client) and the <strong>REST API</strong> (used directly or via the SDK wrappers). The patterns below show how each framework fits into the Airlock approval loop.</p>
 <blockquote>
 <p>The SDKs at <code>sdk/python/</code> and <code>sdk/typescript/</code> are v0.1, pre-release. MCP, raw REST, and all framework integrations documented here are available today.</p>
 </blockquote>
 <hr>
 <h2 id="mcp-server-claude-code-claude-desktop-any-mcp-client">MCP server (Claude Code, Claude Desktop, any MCP client)</h2>
-<p>The <code>@impri/mcp</code> package is the fastest way to add human approval to any MCP-compatible agent. No SDK needed.</p>
-<div class="code-block"><span class="code-lang">bash</span><pre><code class="hljs">npx @impri/mcp
-<span class="hljs-comment"># cloud:      IMPRI_API_KEY=im_...  IMPRI_BASE_URL=https://api.impri.dev</span>
-<span class="hljs-comment"># self-host:  IMPRI_API_KEY=im_...  IMPRI_BASE_URL=http://localhost:8484</span></code></pre></div>
+<p>The <code>@airlock/mcp</code> package is the fastest way to add human approval to any MCP-compatible agent. No SDK needed.</p>
+<div class="code-block"><span class="code-lang">bash</span><pre><code class="hljs">npx @airlock/mcp
+<span class="hljs-comment"># cloud:      AIRLOCK_API_KEY=im_...  AIRLOCK_BASE_URL=https://api.airlock.dev</span>
+<span class="hljs-comment"># self-host:  AIRLOCK_API_KEY=im_...  AIRLOCK_BASE_URL=http://localhost:8484</span></code></pre></div>
 <p>Add to <code>~/.claude/mcp.json</code> (or your client&#39;s MCP config file):</p>
 <div class="code-block"><span class="code-lang">json</span><pre><code class="hljs"><span class="hljs-punctuation">{</span>
   <span class="hljs-attr">&quot;mcpServers&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
-    <span class="hljs-attr">&quot;impri&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+    <span class="hljs-attr">&quot;airlock&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
       <span class="hljs-attr">&quot;command&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;npx&quot;</span><span class="hljs-punctuation">,</span>
-      <span class="hljs-attr">&quot;args&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">[</span><span class="hljs-string">&quot;@impri/mcp&quot;</span><span class="hljs-punctuation">]</span><span class="hljs-punctuation">,</span>
+      <span class="hljs-attr">&quot;args&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">[</span><span class="hljs-string">&quot;@airlock/mcp&quot;</span><span class="hljs-punctuation">]</span><span class="hljs-punctuation">,</span>
       <span class="hljs-attr">&quot;env&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
-        <span class="hljs-attr">&quot;IMPRI_API_KEY&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;im_&lt;your-key&gt;&quot;</span><span class="hljs-punctuation">,</span>
-        <span class="hljs-attr">&quot;IMPRI_BASE_URL&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;https://api.impri.dev&quot;</span>
+        <span class="hljs-attr">&quot;AIRLOCK_API_KEY&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;im_&lt;your-key&gt;&quot;</span><span class="hljs-punctuation">,</span>
+        <span class="hljs-attr">&quot;AIRLOCK_BASE_URL&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;https://api.airlock.dev&quot;</span>
       <span class="hljs-punctuation">}</span>
     <span class="hljs-punctuation">}</span>
   <span class="hljs-punctuation">}</span>
 <span class="hljs-punctuation">}</span></code></pre></div>
 <p>Cloud endpoint:</p>
-<div class="code-block"><span class="code-lang">json</span><pre><code class="hljs"><span class="hljs-attr">&quot;IMPRI_BASE_URL&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;https://api.impri.dev&quot;</span></code></pre></div>
+<div class="code-block"><span class="code-lang">json</span><pre><code class="hljs"><span class="hljs-attr">&quot;AIRLOCK_BASE_URL&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;https://api.airlock.dev&quot;</span></code></pre></div>
 <p>Available tools the agent can call:</p>
 <div class="table-wrap"><table>
 <thead>
@@ -187,40 +187,40 @@ pre code.hljs{display:block;overflow-x:auto}
 </tr>
 </thead>
 <tbody><tr>
-<td><code>impri_push_action</code></td>
+<td><code>airlock_push_action</code></td>
 <td>Submit an action for human approval</td>
 </tr>
 <tr>
-<td><code>impri_await_decision</code></td>
+<td><code>airlock_await_decision</code></td>
 <td>Poll until decided (default timeout 300 s)</td>
 </tr>
 <tr>
-<td><code>impri_report_result</code></td>
+<td><code>airlock_report_result</code></td>
 <td>Report execution outcome after approval</td>
 </tr>
 <tr>
-<td><code>impri_inbox_status</code></td>
+<td><code>airlock_inbox_status</code></td>
 <td>Count pending actions</td>
 </tr>
 <tr>
-<td><code>impri_create_watcher</code></td>
+<td><code>airlock_create_watcher</code></td>
 <td>Create a watcher (rss / reddit_search / url_diff)</td>
 </tr>
 <tr>
-<td><code>impri_list_watchers</code></td>
+<td><code>airlock_list_watchers</code></td>
 <td>List watchers, optional status filter</td>
 </tr>
 </tbody></table>
 </div>
-<p>The agent calls these tools in sequence: <code>impri_push_action</code> → <code>impri_await_decision</code> → execute → <code>impri_report_result</code>. The MCP server handles all HTTP and polling internally.</p>
+<p>The agent calls these tools in sequence: <code>airlock_push_action</code> → <code>airlock_await_decision</code> → execute → <code>airlock_report_result</code>. The MCP server handles all HTTP and polling internally.</p>
 <p>See <a href="quickstart">Quickstart</a> for a step-by-step walkthrough inside a Claude Code session.</p>
 <hr>
 <h2 id="langchain-langgraph">LangChain / LangGraph</h2>
-<p>The <code>integrations/langchain/</code> package provides a ready-made <code>ImpriApprovalTool</code> class (a <code>BaseTool</code> subclass) and a <code>wrap()</code> factory. The pattern for custom tools is:</p>
+<p>The <code>integrations/langchain/</code> package provides a ready-made <code>AirlockApprovalTool</code> class (a <code>BaseTool</code> subclass) and a <code>wrap()</code> factory. The pattern for custom tools is:</p>
 <div class="code-block"><span class="code-lang">python</span><pre><code class="hljs"><span class="hljs-keyword">from</span> langchain.tools <span class="hljs-keyword">import</span> BaseTool
-<span class="hljs-keyword">from</span> impri <span class="hljs-keyword">import</span> ImpriClient, ImpriRejected
+<span class="hljs-keyword">from</span> airlock <span class="hljs-keyword">import</span> AirlockClient, AirlockRejected
 
-client = ImpriClient()  <span class="hljs-comment"># reads IMPRI_API_KEY, IMPRI_BASE_URL from env</span>
+client = AirlockClient()  <span class="hljs-comment"># reads AIRLOCK_API_KEY, AIRLOCK_BASE_URL from env</span>
 
 <span class="hljs-keyword">class</span> <span class="hljs-title class_">ApprovedEmailTool</span>(<span class="hljs-title class_ inherited__">BaseTool</span>):
     name = <span class="hljs-string">&quot;send_email&quot;</span>
@@ -261,9 +261,9 @@ client = ImpriClient()  <span class="hljs-comment"># reads IMPRI_API_KEY, IMPRI_
 <h2 id="openai-agents-sdk">OpenAI Agents SDK</h2>
 <p>The <code>integrations/openai-agents/</code> package provides a <code>make_guardrail()</code> factory that returns an <code>InputGuardrail</code>. Use <code>@client.requires_approval</code> directly on the function you pass to <code>FunctionTool</code>:</p>
 <div class="code-block"><span class="code-lang">python</span><pre><code class="hljs"><span class="hljs-keyword">from</span> agents <span class="hljs-keyword">import</span> FunctionTool
-<span class="hljs-keyword">from</span> impri <span class="hljs-keyword">import</span> ImpriClient, ImpriRejected
+<span class="hljs-keyword">from</span> airlock <span class="hljs-keyword">import</span> AirlockClient, AirlockRejected
 
-client = ImpriClient()
+client = AirlockClient()
 
 <span class="hljs-meta">@client.requires_approval(<span class="hljs-params">
     kind=<span class="hljs-string">&quot;code.exec&quot;</span>,
@@ -275,15 +275,15 @@ client = ImpriClient()
     <span class="hljs-keyword">return</span> subprocess.check_output([<span class="hljs-string">&quot;python&quot;</span>, <span class="hljs-string">&quot;-c&quot;</span>, code], text=<span class="hljs-literal">True</span>)
 
 tools = [FunctionTool(run_python)]</code></pre></div>
-<p>When the agent calls <code>run_python</code>, the decorator intercepts it, pushes an approval action, blocks until decided, then either calls the real function or raises <code>ImpriRejected</code>. The agent framework sees the exception as a tool error and can handle it in its error loop.</p>
+<p>When the agent calls <code>run_python</code>, the decorator intercepts it, pushes an approval action, blocks until decided, then either calls the real function or raises <code>AirlockRejected</code>. The agent framework sees the exception as a tool error and can handle it in its error loop.</p>
 <p><strong>Run-level guardrail with <code>make_guardrail()</code></strong></p>
 <p>For gating every agent run (not just individual tool calls), use the <code>InputGuardrail</code> factory from <code>integrations/openai-agents/</code>:</p>
-<div class="code-block"><span class="code-lang">bash</span><pre><code class="hljs">pip install <span class="hljs-string">&#x27;impri-openai[openai-agents]&#x27;</span></code></pre></div>
+<div class="code-block"><span class="code-lang">bash</span><pre><code class="hljs">pip install <span class="hljs-string">&#x27;airlock-openai[openai-agents]&#x27;</span></code></pre></div>
 <div class="code-block"><span class="code-lang">python</span><pre><code class="hljs"><span class="hljs-keyword">from</span> agents <span class="hljs-keyword">import</span> Agent, Runner
-<span class="hljs-keyword">from</span> impri_openai <span class="hljs-keyword">import</span> ImpriClient
-<span class="hljs-keyword">from</span> impri_openai.guardrail <span class="hljs-keyword">import</span> make_guardrail
+<span class="hljs-keyword">from</span> airlock_openai <span class="hljs-keyword">import</span> AirlockClient
+<span class="hljs-keyword">from</span> airlock_openai.guardrail <span class="hljs-keyword">import</span> make_guardrail
 
-client = ImpriClient()                    <span class="hljs-comment"># reads IMPRI_API_KEY from env</span>
+client = AirlockClient()                    <span class="hljs-comment"># reads AIRLOCK_API_KEY from env</span>
 
 approval = make_guardrail(
     client,
@@ -340,22 +340,22 @@ result = <span class="hljs-keyword">await</span> Runner.run(agent, <span class="
 <li><code>tripwire_triggered=False</code> when the human <strong>approves</strong> — the agent proceeds normally.</li>
 <li><code>tripwire_triggered=True</code> when the human <strong>rejects</strong> — the OpenAI Agents runner raises <code>InputGuardrailTripwireTriggered</code>, halting the run.</li>
 </ul>
-<p><code>output_info</code> always contains <code>{&quot;action_id&quot;: &quot;...&quot;, &quot;verdict&quot;: &quot;approve&quot; | &quot;reject&quot;}</code> so calling code can inspect the Impri action after the guardrail returns.</p>
+<p><code>output_info</code> always contains <code>{&quot;action_id&quot;: &quot;...&quot;, &quot;verdict&quot;: &quot;approve&quot; | &quot;reject&quot;}</code> so calling code can inspect the Airlock action after the guardrail returns.</p>
 <hr>
 <h2 id="crewai">CrewAI</h2>
-<p>The <code>integrations/crewai/</code> directory ships a dedicated <code>impri-crewai</code> package with two integration classes: <strong><code>ImpriApprovalTool</code></strong> (agent-initiated gating) and <strong><code>ImpriApprovalCallback</code></strong> (automatic step/task gating). Install the package first:</p>
-<div class="code-block"><span class="code-lang">bash</span><pre><code class="hljs">pip install impri-crewai
+<p>The <code>integrations/crewai/</code> directory ships a dedicated <code>airlock-crewai</code> package with two integration classes: <strong><code>AirlockApprovalTool</code></strong> (agent-initiated gating) and <strong><code>AirlockApprovalCallback</code></strong> (automatic step/task gating). Install the package first:</p>
+<div class="code-block"><span class="code-lang">bash</span><pre><code class="hljs">pip install airlock-crewai
 <span class="hljs-comment"># or with crewai bundled as an extra:</span>
-pip install <span class="hljs-string">&quot;impri-crewai[crewai]&quot;</span></code></pre></div>
-<h3 id="impriapprovaltool-agent-initiated-approval">ImpriApprovalTool — agent-initiated approval</h3>
-<p><code>ImpriApprovalTool</code> is a CrewAI <code>BaseTool</code> that the agent calls explicitly when it wants to request human approval for a specific action. The agent provides a title and body describing the action; the tool blocks until the human decides.</p>
+pip install <span class="hljs-string">&quot;airlock-crewai[crewai]&quot;</span></code></pre></div>
+<h3 id="airlockapprovaltool-agent-initiated-approval">AirlockApprovalTool — agent-initiated approval</h3>
+<p><code>AirlockApprovalTool</code> is a CrewAI <code>BaseTool</code> that the agent calls explicitly when it wants to request human approval for a specific action. The agent provides a title and body describing the action; the tool blocks until the human decides.</p>
 <div class="code-block"><span class="code-lang">python</span><pre><code class="hljs"><span class="hljs-keyword">import</span> os
 <span class="hljs-keyword">from</span> crewai <span class="hljs-keyword">import</span> Agent, Crew, Task
-<span class="hljs-keyword">from</span> impri_crewai <span class="hljs-keyword">import</span> ImpriClient, ImpriApprovalTool, ImpriRejected
+<span class="hljs-keyword">from</span> airlock_crewai <span class="hljs-keyword">import</span> AirlockClient, AirlockApprovalTool, AirlockRejected
 
-client = ImpriClient(api_key=os.environ[<span class="hljs-string">&quot;IMPRI_API_KEY&quot;</span>])
+client = AirlockClient(api_key=os.environ[<span class="hljs-string">&quot;AIRLOCK_API_KEY&quot;</span>])
 
-approval_tool = ImpriApprovalTool(
+approval_tool = AirlockApprovalTool(
     client=client,
     action_kind=<span class="hljs-string">&quot;email.send&quot;</span>,   <span class="hljs-comment"># dot-namespaced category for inbox filtering</span>
     timeout_s=<span class="hljs-number">600</span>,              <span class="hljs-comment"># seconds to wait for human decision (default 300)</span>
@@ -381,7 +381,7 @@ task = Task(
 crew = Crew(agents=[agent], tasks=[task])
 <span class="hljs-keyword">try</span>:
     result = crew.kickoff()
-<span class="hljs-keyword">except</span> ImpriRejected <span class="hljs-keyword">as</span> exc:
+<span class="hljs-keyword">except</span> AirlockRejected <span class="hljs-keyword">as</span> exc:
     <span class="hljs-built_in">print</span>(<span class="hljs-string">f&quot;Human rejected the action: <span class="hljs-subst">{exc}</span>&quot;</span>)</code></pre></div>
 <p>The agent calls the tool with three arguments (filled automatically from its description):</p>
 <div class="table-wrap"><table>
@@ -405,16 +405,16 @@ crew = Crew(agents=[agent], tasks=[task])
 </tr>
 </tbody></table>
 </div>
-<p>On <strong>approval</strong>, the tool returns the final (possibly human-edited) content as a string the agent can read. On <strong>rejection</strong>, <code>ImpriRejected</code> is raised — CrewAI surfaces it as a tool error so the agent can handle it gracefully.</p>
-<h3 id="impriapprovalcallback-automatic-steptask-gating">ImpriApprovalCallback — automatic step/task gating</h3>
-<p><code>ImpriApprovalCallback</code> is a callable that wires into CrewAI&#39;s <code>step_callback</code> or <code>task_callback</code>. It intercepts agent outputs automatically, without modifying agent prompts or tool lists.</p>
+<p>On <strong>approval</strong>, the tool returns the final (possibly human-edited) content as a string the agent can read. On <strong>rejection</strong>, <code>AirlockRejected</code> is raised — CrewAI surfaces it as a tool error so the agent can handle it gracefully.</p>
+<h3 id="airlockapprovalcallback-automatic-steptask-gating">AirlockApprovalCallback — automatic step/task gating</h3>
+<p><code>AirlockApprovalCallback</code> is a callable that wires into CrewAI&#39;s <code>step_callback</code> or <code>task_callback</code>. It intercepts agent outputs automatically, without modifying agent prompts or tool lists.</p>
 <div class="code-block"><span class="code-lang">python</span><pre><code class="hljs"><span class="hljs-keyword">import</span> os
 <span class="hljs-keyword">from</span> crewai <span class="hljs-keyword">import</span> Agent, Crew, Task
-<span class="hljs-keyword">from</span> impri_crewai <span class="hljs-keyword">import</span> ImpriClient, ImpriApprovalCallback, ImpriRejected
+<span class="hljs-keyword">from</span> airlock_crewai <span class="hljs-keyword">import</span> AirlockClient, AirlockApprovalCallback, AirlockRejected
 
-client = ImpriClient(api_key=os.environ[<span class="hljs-string">&quot;IMPRI_API_KEY&quot;</span>])
+client = AirlockClient(api_key=os.environ[<span class="hljs-string">&quot;AIRLOCK_API_KEY&quot;</span>])
 
-gate = ImpriApprovalCallback(
+gate = AirlockApprovalCallback(
     client,
     action_kind=<span class="hljs-string">&quot;agent.output&quot;</span>,         <span class="hljs-comment"># kind string for inbox categorisation</span>
     timeout_s=<span class="hljs-number">300</span>,                      <span class="hljs-comment"># seconds to wait (default 300)</span>
@@ -428,7 +428,7 @@ agent = Agent(
 )
 
 task = Task(
-    description=<span class="hljs-string">&quot;Write a 500-word blog post about Impri.&quot;</span>,
+    description=<span class="hljs-string">&quot;Write a 500-word blog post about Airlock.&quot;</span>,
     expected_output=<span class="hljs-string">&quot;A complete blog post.&quot;</span>,
     agent=agent,
 )
@@ -442,9 +442,9 @@ crew = Crew(
 
 <span class="hljs-keyword">try</span>:
     result = crew.kickoff()
-<span class="hljs-keyword">except</span> ImpriRejected <span class="hljs-keyword">as</span> exc:
+<span class="hljs-keyword">except</span> AirlockRejected <span class="hljs-keyword">as</span> exc:
     <span class="hljs-built_in">print</span>(<span class="hljs-string">f&quot;Step rejected by human reviewer: <span class="hljs-subst">{exc}</span>&quot;</span>)</code></pre></div>
-<p><code>ImpriApprovalCallback</code> constructor parameters:</p>
+<p><code>AirlockApprovalCallback</code> constructor parameters:</p>
 <div class="table-wrap"><table>
 <thead>
 <tr>
@@ -456,7 +456,7 @@ crew = Crew(
 <tbody><tr>
 <td><code>client</code></td>
 <td>required</td>
-<td>An <code>ImpriClient</code> configured with your API key</td>
+<td>An <code>AirlockClient</code> configured with your API key</td>
 </tr>
 <tr>
 <td><code>action_kind</code></td>
@@ -481,18 +481,18 @@ crew = Crew(
 </tbody></table>
 </div>
 <blockquote>
-<p><strong>Note:</strong> CrewAI callbacks are invoked for their side effects and their return value is ignored, so <code>ImpriApprovalCallback</code> cannot inject the reviewer&#39;s edits back into the agent flow. If you need the human-edited content to feed back into the agent, use <code>ImpriApprovalTool</code> instead.</p>
+<p><strong>Note:</strong> CrewAI callbacks are invoked for their side effects and their return value is ignored, so <code>AirlockApprovalCallback</code> cannot inject the reviewer&#39;s edits back into the agent flow. If you need the human-edited content to feed back into the agent, use <code>AirlockApprovalTool</code> instead.</p>
 </blockquote>
-<p>On rejection, <code>ImpriRejected</code> propagates from the callback into <code>crew.kickoff()</code>, surfacing as a task failure. <code>ImpriTimeout</code> (human did not decide within <code>timeout_s</code>) propagates the same way.</p>
+<p>On rejection, <code>AirlockRejected</code> propagates from the callback into <code>crew.kickoff()</code>, surfacing as a task failure. <code>AirlockTimeout</code> (human did not decide within <code>timeout_s</code>) propagates the same way.</p>
 <hr>
 <h2 id="claude-tool-use-anthropic-sdk">Claude tool use (Anthropic SDK)</h2>
-<p>The <code>integrations/claude-agent-sdk/</code> package provides a TypeScript <code>GatedTool</code> that intercepts <code>tool_use</code> content blocks before execution, in a Messages API loop you run with <code>@anthropic-ai/sdk</code>. The tool definition is passed to Claude unchanged — only the execution path goes through Impri. For Anthropic&#39;s Claude Agent SDK (<code>@anthropic-ai/claude-agent-sdk</code>), use its <code>canUseTool</code> callback or a <code>PreToolUse</code> hook instead: <a href="human-approval-claude-agent-sdk">Claude Agent SDK human approval</a>.</p>
-<div class="code-block"><span class="code-lang">typescript</span><pre><code class="hljs"><span class="hljs-keyword">import</span> { <span class="hljs-title class_">ImpriClient</span> } <span class="hljs-keyword">from</span> <span class="hljs-string">&#x27;@impri/sdk&#x27;</span>
-<span class="hljs-keyword">import</span> { withImpriApproval } <span class="hljs-keyword">from</span> <span class="hljs-string">&#x27;@impri/claude-agent-sdk&#x27;</span>
+<p>The <code>integrations/claude-agent-sdk/</code> package provides a TypeScript <code>GatedTool</code> that intercepts <code>tool_use</code> content blocks before execution, in a Messages API loop you run with <code>@anthropic-ai/sdk</code>. The tool definition is passed to Claude unchanged — only the execution path goes through Airlock. For Anthropic&#39;s Claude Agent SDK (<code>@anthropic-ai/claude-agent-sdk</code>), use its <code>canUseTool</code> callback or a <code>PreToolUse</code> hook instead: <a href="human-approval-claude-agent-sdk">Claude Agent SDK human approval</a>.</p>
+<div class="code-block"><span class="code-lang">typescript</span><pre><code class="hljs"><span class="hljs-keyword">import</span> { <span class="hljs-title class_">AirlockClient</span> } <span class="hljs-keyword">from</span> <span class="hljs-string">&#x27;@airlock/sdk&#x27;</span>
+<span class="hljs-keyword">import</span> { withAirlockApproval } <span class="hljs-keyword">from</span> <span class="hljs-string">&#x27;@airlock/claude-agent-sdk&#x27;</span>
 
-<span class="hljs-keyword">const</span> impri = <span class="hljs-keyword">new</span> <span class="hljs-title class_">ImpriClient</span>({ <span class="hljs-attr">apiKey</span>: process.<span class="hljs-property">env</span>.<span class="hljs-property">IMPRI_API_KEY</span>! })
+<span class="hljs-keyword">const</span> airlock = <span class="hljs-keyword">new</span> <span class="hljs-title class_">AirlockClient</span>({ <span class="hljs-attr">apiKey</span>: process.<span class="hljs-property">env</span>.<span class="hljs-property">AIRLOCK_API_KEY</span>! })
 
-<span class="hljs-keyword">const</span> sendEmailGated = <span class="hljs-title function_">withImpriApproval</span>({
+<span class="hljs-keyword">const</span> sendEmailGated = <span class="hljs-title function_">withAirlockApproval</span>({
   <span class="hljs-attr">toolDef</span>: {
     <span class="hljs-attr">name</span>: <span class="hljs-string">&#x27;send_email&#x27;</span>,
     <span class="hljs-attr">description</span>: <span class="hljs-string">&#x27;Send an email to a recipient.&#x27;</span>,
@@ -509,7 +509,7 @@ crew = Crew(
     <span class="hljs-keyword">await</span> emailService.<span class="hljs-title function_">send</span>({ <span class="hljs-attr">to</span>: <span class="hljs-title class_">String</span>(to), <span class="hljs-attr">body</span>: <span class="hljs-title class_">String</span>(body) })
     <span class="hljs-keyword">return</span> <span class="hljs-string">`Email sent to <span class="hljs-subst">${to}</span>.`</span>
   },
-  <span class="hljs-attr">impriClient</span>: impri,
+  <span class="hljs-attr">airlockClient</span>: airlock,
   <span class="hljs-attr">kind</span>: <span class="hljs-string">&#x27;email.send&#x27;</span>,
   <span class="hljs-attr">title</span>: <span class="hljs-function">(<span class="hljs-params">{ to }</span>) =&gt;</span> <span class="hljs-string">`Send email to <span class="hljs-subst">${to}</span>`</span>,
   <span class="hljs-attr">preview</span>: <span class="hljs-function">(<span class="hljs-params">{ body }</span>) =&gt;</span> ({ <span class="hljs-attr">format</span>: <span class="hljs-string">&#x27;plain&#x27;</span>, <span class="hljs-attr">body</span>: <span class="hljs-title class_">String</span>(body) }),
@@ -530,28 +530,28 @@ crew = Crew(
     <span class="hljs-comment">// feed result back to Claude as tool_result</span>
   }
 }</code></pre></div>
-<p><code>withImpriApproval</code> creates a <code>GatedTool</code> with:</p>
+<p><code>withAirlockApproval</code> creates a <code>GatedTool</code> with:</p>
 <ul>
 <li><code>toolDef</code> — the original Anthropic tool definition, unchanged</li>
-<li><code>handle(block)</code> — call for each matching <code>tool_use</code> block; submits to Impri, waits for approval, executes, reports result; returns a string for <code>tool_result</code></li>
+<li><code>handle(block)</code> — call for each matching <code>tool_use</code> block; submits to Airlock, waits for approval, executes, reports result; returns a string for <code>tool_result</code></li>
 <li><code>execute</code> — the underlying executor, available for direct testing</li>
 </ul>
 <p>When the reviewer edits <code>preview.body</code> and the tool input has a <code>body</code> field, the edited value is injected before calling <code>execute()</code>. Call <code>reportResult</code> is handled automatically inside <code>handle()</code>.</p>
 <p>Full reference: <a href="claude-agent-sdk">Claude tool use (Anthropic SDK)</a></p>
 <hr>
 <h2 id="n8n">n8n</h2>
-<p>Use the <strong>HTTP Request</strong> node to call the Impri REST API directly. A two-node pattern works for most workflows:</p>
+<p>Use the <strong>HTTP Request</strong> node to call the Airlock REST API directly. A two-node pattern works for most workflows:</p>
 <ol>
 <li><strong>HTTP Request</strong> node: <code>POST /v1/actions</code> with your agent&#39;s proposed content.</li>
 <li><strong>Wait</strong> node: wait for a webhook callback (<code>callback_url</code> set in step 1) or poll <code>GET /v1/actions/:id</code> on a schedule.</li>
 <li><strong>IF</strong> node: branch on <code>status === &quot;approved&quot;</code> / <code>&quot;rejected&quot;</code>.</li>
 <li><strong>Execute</strong> and then <strong>HTTP Request</strong> node: <code>POST /v1/actions/:id/result</code>.</li>
 </ol>
-<p>Set <code>Authorization: Bearer im_&lt;key&gt;</code> as a credential in n8n&#39;s <strong>Header Auth</strong> section and reference it in all Impri nodes.</p>
+<p>Set <code>Authorization: Bearer im_&lt;key&gt;</code> as a credential in n8n&#39;s <strong>Header Auth</strong> section and reference it in all Airlock nodes.</p>
 <p>Webhook delivery: set <code>callback_url</code> to your n8n webhook URL. n8n&#39;s Webhook node receives the decision and resumes the workflow. Signature verification can be done in a Function node using the algorithm in <a href="webhooks">webhooks.md</a>.</p>
 <hr>
 <h2 id="make-integromat">Make (Integromat)</h2>
-<p>Use the <strong>HTTP</strong> module with method <code>POST</code> and URL <code>https://api.impri.dev/v1/actions</code> (cloud) or your self-hosted base URL. Headers: <code>Authorization: Bearer im_&lt;key&gt;</code>, <code>Content-Type: application/json</code>.</p>
+<p>Use the <strong>HTTP</strong> module with method <code>POST</code> and URL <code>https://api.airlock.dev/v1/actions</code> (cloud) or your self-hosted base URL. Headers: <code>Authorization: Bearer im_&lt;key&gt;</code>, <code>Content-Type: application/json</code>.</p>
 <p>Body (JSON template):</p>
 <div class="code-block"><span class="code-lang">json</span><pre><code class="hljs"><span class="hljs-punctuation">{</span>
   <span class="hljs-attr">&quot;kind&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;{{1.kind}}&quot;</span><span class="hljs-punctuation">,</span>
@@ -566,21 +566,21 @@ crew = Crew(
 <p>Use the <strong>Webhooks by Zapier</strong> action with <code>POST</code> to push an action. For the decision, add an inbound webhook as the trigger of a second Zap, or use Zapier&#39;s <strong>Delay Until</strong> step while polling <code>GET /v1/actions/:id</code>.</p>
 <hr>
 <h2 id="webhook-receiver-patterns">Webhook receiver patterns</h2>
-<p>For servers that receive Impri webhook deliveries, the pattern is consistent regardless of framework:</p>
+<p>For servers that receive Airlock webhook deliveries, the pattern is consistent regardless of framework:</p>
 <div class="code-block"><span class="code-lang">typescript</span><pre><code class="hljs"><span class="hljs-comment">// Express / Fastify / Hono (TypeScript)</span>
-<span class="hljs-keyword">import</span> { verifyWebhook, <span class="hljs-title class_">ImpriWebhookSignatureError</span> } <span class="hljs-keyword">from</span> <span class="hljs-string">&#x27;@impri/sdk&#x27;</span>
+<span class="hljs-keyword">import</span> { verifyWebhook, <span class="hljs-title class_">AirlockWebhookSignatureError</span> } <span class="hljs-keyword">from</span> <span class="hljs-string">&#x27;@airlock/sdk&#x27;</span>
 
-app.<span class="hljs-title function_">post</span>(<span class="hljs-string">&#x27;/impri/webhook&#x27;</span>, express.<span class="hljs-title function_">raw</span>({ <span class="hljs-attr">type</span>: <span class="hljs-string">&#x27;application/json&#x27;</span> }), <span class="hljs-title function_">async</span> (req, res) =&gt; {
+app.<span class="hljs-title function_">post</span>(<span class="hljs-string">&#x27;/airlock/webhook&#x27;</span>, express.<span class="hljs-title function_">raw</span>({ <span class="hljs-attr">type</span>: <span class="hljs-string">&#x27;application/json&#x27;</span> }), <span class="hljs-title function_">async</span> (req, res) =&gt; {
   <span class="hljs-keyword">try</span> {
     <span class="hljs-title function_">verifyWebhook</span>(
       req.<span class="hljs-property">body</span>,
-      process.<span class="hljs-property">env</span>.<span class="hljs-property">IMPRI_WEBHOOK_SECRET</span>!,
-      req.<span class="hljs-property">headers</span>[<span class="hljs-string">&#x27;x-impri-timestamp&#x27;</span>] <span class="hljs-keyword">as</span> <span class="hljs-built_in">string</span>,
-      req.<span class="hljs-property">headers</span>[<span class="hljs-string">&#x27;x-impri-nonce&#x27;</span>] <span class="hljs-keyword">as</span> <span class="hljs-built_in">string</span>,
-      req.<span class="hljs-property">headers</span>[<span class="hljs-string">&#x27;x-impri-signature&#x27;</span>] <span class="hljs-keyword">as</span> <span class="hljs-built_in">string</span>,
+      process.<span class="hljs-property">env</span>.<span class="hljs-property">AIRLOCK_WEBHOOK_SECRET</span>!,
+      req.<span class="hljs-property">headers</span>[<span class="hljs-string">&#x27;x-airlock-timestamp&#x27;</span>] <span class="hljs-keyword">as</span> <span class="hljs-built_in">string</span>,
+      req.<span class="hljs-property">headers</span>[<span class="hljs-string">&#x27;x-airlock-nonce&#x27;</span>] <span class="hljs-keyword">as</span> <span class="hljs-built_in">string</span>,
+      req.<span class="hljs-property">headers</span>[<span class="hljs-string">&#x27;x-airlock-signature&#x27;</span>] <span class="hljs-keyword">as</span> <span class="hljs-built_in">string</span>,
     )
   } <span class="hljs-keyword">catch</span> (e) {
-    <span class="hljs-keyword">if</span> (e <span class="hljs-keyword">instanceof</span> <span class="hljs-title class_">ImpriWebhookSignatureError</span>) <span class="hljs-keyword">return</span> res.<span class="hljs-title function_">status</span>(<span class="hljs-number">400</span>).<span class="hljs-title function_">end</span>()
+    <span class="hljs-keyword">if</span> (e <span class="hljs-keyword">instanceof</span> <span class="hljs-title class_">AirlockWebhookSignatureError</span>) <span class="hljs-keyword">return</span> res.<span class="hljs-title function_">status</span>(<span class="hljs-number">400</span>).<span class="hljs-title function_">end</span>()
     <span class="hljs-keyword">throw</span> e
   }
 
@@ -591,21 +591,21 @@ app.<span class="hljs-title function_">post</span>(<span class="hljs-string">&#x
   res.<span class="hljs-title function_">status</span>(<span class="hljs-number">200</span>).<span class="hljs-title function_">end</span>()
 })</code></pre></div>
 <div class="code-block"><span class="code-lang">python</span><pre><code class="hljs"><span class="hljs-comment"># FastAPI / Flask / Django (Python)</span>
-<span class="hljs-keyword">import</span> impri
-<span class="hljs-keyword">from</span> impri <span class="hljs-keyword">import</span> ImpriWebhookSignatureError
+<span class="hljs-keyword">import</span> airlock
+<span class="hljs-keyword">from</span> airlock <span class="hljs-keyword">import</span> AirlockWebhookSignatureError
 
-<span class="hljs-meta">@app.post(<span class="hljs-params"><span class="hljs-string">&quot;/impri/webhook&quot;</span></span>)</span>
+<span class="hljs-meta">@app.post(<span class="hljs-params"><span class="hljs-string">&quot;/airlock/webhook&quot;</span></span>)</span>
 <span class="hljs-keyword">async</span> <span class="hljs-keyword">def</span> <span class="hljs-title function_">webhook</span>(<span class="hljs-params">request: Request</span>):
     raw = <span class="hljs-keyword">await</span> request.body()
     <span class="hljs-keyword">try</span>:
-        impri.verify_webhook(
+        airlock.verify_webhook(
             raw_body=raw,
-            secret=os.environ[<span class="hljs-string">&quot;IMPRI_WEBHOOK_SECRET&quot;</span>],
-            timestamp=request.headers[<span class="hljs-string">&quot;X-Impri-Timestamp&quot;</span>],
-            nonce=request.headers[<span class="hljs-string">&quot;X-Impri-Nonce&quot;</span>],
-            signature=request.headers[<span class="hljs-string">&quot;X-Impri-Signature&quot;</span>],
+            secret=os.environ[<span class="hljs-string">&quot;AIRLOCK_WEBHOOK_SECRET&quot;</span>],
+            timestamp=request.headers[<span class="hljs-string">&quot;X-Airlock-Timestamp&quot;</span>],
+            nonce=request.headers[<span class="hljs-string">&quot;X-Airlock-Nonce&quot;</span>],
+            signature=request.headers[<span class="hljs-string">&quot;X-Airlock-Signature&quot;</span>],
         )
-    <span class="hljs-keyword">except</span> ImpriWebhookSignatureError:
+    <span class="hljs-keyword">except</span> AirlockWebhookSignatureError:
         <span class="hljs-keyword">raise</span> HTTPException(status_code=<span class="hljs-number">400</span>)
 
     event = <span class="hljs-keyword">await</span> request.json()
@@ -617,7 +617,7 @@ app.<span class="hljs-title function_">post</span>(<span class="hljs-string">&#x
 <li>Verify the signature before processing. Never trust the payload without it.</li>
 <li>Respond <code>200</code> quickly (within a few seconds); do the heavy work asynchronously.</li>
 <li>Return <code>410 Gone</code> to permanently deregister a callback URL.</li>
-<li>If your endpoint is temporarily unavailable, let it return a non-2xx — Impri will retry up to 6 times over 12 hours. Polling is always available as a fallback.</li>
+<li>If your endpoint is temporarily unavailable, let it return a non-2xx — Airlock will retry up to 6 times over 12 hours. Polling is always available as a fallback.</li>
 </ul>
 <p>Full signature algorithm and retry schedule: <a href="webhooks">webhooks.md</a>.</p>
 <hr>
@@ -627,7 +627,7 @@ app.<span class="hljs-title function_">post</span>(<span class="hljs-string">&#x
 <tr>
 <th></th>
 <th>Self-hosted</th>
-<th>Cloud (api.impri.dev)</th>
+<th>Cloud (api.airlock.dev)</th>
 </tr>
 </thead>
 <tbody><tr>
@@ -638,12 +638,12 @@ app.<span class="hljs-title function_">post</span>(<span class="hljs-string">&#x
 <tr>
 <td>Base URL</td>
 <td><code>http://localhost:8484</code> (default)</td>
-<td><code>https://api.impri.dev</code></td>
+<td><code>https://api.airlock.dev</code></td>
 </tr>
 <tr>
 <td>Setup</td>
 <td><code>docker compose up</code></td>
-<td>Create account at app.impri.dev</td>
+<td>Create account at app.airlock.dev</td>
 </tr>
 <tr>
 <td>API surface</td>
@@ -667,7 +667,7 @@ app.<span class="hljs-title function_">post</span>(<span class="hljs-string">&#x
 </tr>
 </tbody></table>
 </div>
-<p>For both: set <code>IMPRI_BASE_URL</code> (or the <code>baseUrl</code> constructor argument) to the appropriate endpoint. The API surface is identical.</p>
+<p>For both: set <code>AIRLOCK_BASE_URL</code> (or the <code>baseUrl</code> constructor argument) to the appropriate endpoint. The API surface is identical.</p>
 
     
     
@@ -744,8 +744,8 @@ app.<span class="hljs-title function_">post</span>(<span class="hljs-string">&#x
 <li class="ptoc-h2"><a href="#langchain-langgraph">LangChain / LangGraph</a></li>
 <li class="ptoc-h2"><a href="#openai-agents-sdk">OpenAI Agents SDK</a></li>
 <li class="ptoc-h2"><a href="#crewai">CrewAI</a></li>
-<li class="ptoc-h3"><a href="#impriapprovaltool-agent-initiated-approval">ImpriApprovalTool — agent-initiated approval</a></li>
-<li class="ptoc-h3"><a href="#impriapprovalcallback-automatic-steptask-gating">ImpriApprovalCallback — automatic step/task gating</a></li>
+<li class="ptoc-h3"><a href="#airlockapprovaltool-agent-initiated-approval">AirlockApprovalTool — agent-initiated approval</a></li>
+<li class="ptoc-h3"><a href="#airlockapprovalcallback-automatic-steptask-gating">AirlockApprovalCallback — automatic step/task gating</a></li>
 <li class="ptoc-h2"><a href="#claude-tool-use-anthropic-sdk">Claude tool use (Anthropic SDK)</a></li>
 <li class="ptoc-h2"><a href="#n8n">n8n</a></li>
 <li class="ptoc-h2"><a href="#make-integromat">Make (Integromat)</a></li>
@@ -759,19 +759,19 @@ app.<span class="hljs-title function_">post</span>(<span class="hljs-string">&#x
 <footer class="footer">
 <div class="wrap footer-inner">
   <a class="brand" href="/">
-    <span class="mark"><svg viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.5 4.5L19 7.5" stroke="white" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Impri
+    <span class="mark"><svg viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.5 4.5L19 7.5" stroke="white" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Airlock
   </a>
   <div>
-    <a href="https://gitlab.com/sekera.radim/impri">GitLab</a>
+    <a href="https://gitlab.com/sekera.radim/airlock">GitLab</a>
     <a href="/docs">Docs</a>
-    <a href="https://gitlab.com/sekera.radim/impri/-/blob/main/LICENSE">MIT License</a>
-    <a href="https://www.npmjs.com/package/@impri/mcp">@impri/mcp</a>
+    <a href="https://gitlab.com/sekera.radim/airlock/-/blob/main/LICENSE">MIT License</a>
+    <a href="https://www.npmjs.com/package/@airlock/mcp">@airlock/mcp</a>
     <a href="/docs/privacy">Privacy</a>
     <a href="/docs/terms">Terms</a>
     <a href="https://sekera.dev">Contact</a>
   </div>
 </div>
-<div class="wrap" style="margin-top:18px"><span class="muted">© 2026 Impri · The imprimatur for your AI agents · Built by <a href="https://sekera.dev" style="color:inherit">Radim Sekera</a>. Also by the same maker: <a href="https://briefgate.dev/?utm_source=impri.dev&amp;utm_medium=referral" style="color:inherit">BriefGate</a> — client intake for agencies and AI agents.</span></div>
+<div class="wrap" style="margin-top:18px"><span class="muted">© 2026 Airlock · The airlockmatur for your AI agents · Built by <a href="https://sekera.dev" style="color:inherit">Radim Sekera</a>. Also by the same maker: <a href="https://briefgate.dev/?utm_source=airlock.dev&amp;utm_medium=referral" style="color:inherit">BriefGate</a> — client intake for agencies and AI agents.</span></div>
 </footer>
 </body>
 </html>

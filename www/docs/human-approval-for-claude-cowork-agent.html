@@ -3,21 +3,21 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Human Approval for Claude Cowork Browser Agent Actions — Impri Docs</title>
+<title>Human Approval for Claude Cowork Browser Agent Actions — Airlock Docs</title>
 <meta name="description" content="A browser agent that can click, type, and submit forms on your behalf is only as safe as the last click it takes without asking — this pattern makes the…">
 <meta name="theme-color" content="#06070d">
-<meta property="og:title" content="Human Approval for Claude Cowork Browser Agent Actions — Impri Docs">
+<meta property="og:title" content="Human Approval for Claude Cowork Browser Agent Actions — Airlock Docs">
 <meta property="og:description" content="A browser agent that can click, type, and submit forms on your behalf is only as safe as the last click it takes without asking — this pattern makes the…">
 <meta property="og:type" content="article">
-<meta property="og:url" content="https://impri.dev/docs/human-approval-for-claude-cowork-agent">
-<meta property="og:image" content="https://impri.dev/assets/og/og-docs.png">
+<meta property="og:url" content="https://airlock.dev/docs/human-approval-for-claude-cowork-agent">
+<meta property="og:image" content="https://airlock.dev/assets/og/og-docs.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
-<meta property="og:image:alt" content="Impri — human-in-the-loop approval inbox for AI agents">
+<meta property="og:image:alt" content="Airlock — human-in-the-loop approval inbox for AI agents">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="https://impri.dev/assets/og/og-docs.png">
-<link rel="canonical" href="https://impri.dev/docs/human-approval-for-claude-cowork-agent">
-<script type="application/ld+json">{"@context":"https://schema.org","@type":"TechArticle","headline":"Human Approval for Claude Cowork Browser Agent Actions","description":"A browser agent that can click, type, and submit forms on your behalf is only as safe as the last click it takes without asking — this pattern makes the…","url":"https://impri.dev/docs/human-approval-for-claude-cowork-agent","inLanguage":"en","author":{"@type":"Organization","name":"Impri","url":"https://impri.dev"},"publisher":{"@type":"Organization","name":"Impri","url":"https://impri.dev"}}</script>
+<meta name="twitter:image" content="https://airlock.dev/assets/og/og-docs.png">
+<link rel="canonical" href="https://airlock.dev/docs/human-approval-for-claude-cowork-agent">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"TechArticle","headline":"Human Approval for Claude Cowork Browser Agent Actions","description":"A browser agent that can click, type, and submit forms on your behalf is only as safe as the last click it takes without asking — this pattern makes the…","url":"https://airlock.dev/docs/human-approval-for-claude-cowork-agent","inLanguage":"en","author":{"@type":"Organization","name":"Airlock","url":"https://airlock.dev"},"publisher":{"@type":"Organization","name":"Airlock","url":"https://airlock.dev"}}</script>
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <link rel="icon" href="/favicon.ico" sizes="32x32">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='9' fill='%236366f1'/%3E%3Cpath d='M9 16.5l4.5 4.5L23 11' stroke='white' stroke-width='3' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
@@ -132,13 +132,13 @@ pre code.hljs{display:block;overflow-x:auto}
 <div class="wrap nav-inner">
   <a class="brand" href="/">
     <span class="mark"><svg viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.5 4.5L19 7.5" stroke="white" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
-    Impri
+    Airlock
   </a>
   <div class="nav-links">
     <a class="link" href="/#how">How it works</a>
     <a class="link" href="/#pricing">Pricing</a>
     <a class="link active-nav" href="../docs">Docs</a>
-    <a class="btn btn-primary btn-sm" href="https://gitlab.com/sekera.radim/impri">GitLab</a>
+    <a class="btn btn-primary btn-sm" href="https://gitlab.com/sekera.radim/airlock">GitLab</a>
   </div>
 </div>
 </nav>
@@ -159,13 +159,13 @@ pre code.hljs{display:block;overflow-x:auto}
 <p>A computer-use or browser agent isn&#39;t limited to a fixed API surface the way a scripted integration is. It&#39;s operating a real browser session — your session, often with your cookies and your logins — and deciding moment to moment which button to press. That&#39;s exactly what makes it useful for things like filling out a vendor form, submitting an expense report, or posting a listing on a marketplace. It&#39;s also why the <em>last</em> action in that sequence — the actual submit — is the one worth gating. Everything before it (navigating, reading a page, filling fields) is reversible by just not submitting. The submit is not.</p>
 <p>The fix isn&#39;t to slow the agent down everywhere. It&#39;s to make the agent stop specifically before the irreversible click and wait for a person to look at what it&#39;s about to do.</p>
 <h2 id="gating-the-submit-step-not-the-whole-session">Gating the submit step, not the whole session</h2>
-<p>If your agent is built on the Claude Agent SDK with computer-use tools, the cleanest place to insert the check is a thin wrapper around whichever tool actually performs the submit — not a change to the browsing loop itself. The agent still navigates and fills forms freely; only the final action routes through Impri first.</p>
+<p>If your agent is built on the Claude Agent SDK with computer-use tools, the cleanest place to insert the check is a thin wrapper around whichever tool actually performs the submit — not a change to the browsing loop itself. The agent still navigates and fills forms freely; only the final action routes through Airlock first.</p>
 <div class="code-block"><span class="code-lang">python</span><pre><code class="hljs"><span class="hljs-keyword">import</span> os
 <span class="hljs-keyword">import</span> time
 <span class="hljs-keyword">import</span> requests
 
-IMPRI_KEY = os.environ[<span class="hljs-string">&quot;IMPRI_API_KEY&quot;</span>]
-BASE = <span class="hljs-string">&quot;https://api.impri.dev&quot;</span>
+AIRLOCK_KEY = os.environ[<span class="hljs-string">&quot;AIRLOCK_API_KEY&quot;</span>]
+BASE = <span class="hljs-string">&quot;https://api.airlock.dev&quot;</span>
 
 
 <span class="hljs-keyword">def</span> <span class="hljs-title function_">gated_submit</span>(<span class="hljs-params">form_summary: <span class="hljs-built_in">str</span>, screenshot_url: <span class="hljs-built_in">str</span>, page_url: <span class="hljs-built_in">str</span></span>) -&gt; <span class="hljs-built_in">bool</span>:
@@ -173,7 +173,7 @@ BASE = <span class="hljs-string">&quot;https://api.impri.dev&quot;</span>
     only if a human approved; the caller must not click submit otherwise.&quot;&quot;&quot;</span>
     resp = requests.post(
         <span class="hljs-string">f&quot;<span class="hljs-subst">{BASE}</span>/v1/actions&quot;</span>,
-        headers={<span class="hljs-string">&quot;Authorization&quot;</span>: <span class="hljs-string">f&quot;Bearer <span class="hljs-subst">{IMPRI_KEY}</span>&quot;</span>},
+        headers={<span class="hljs-string">&quot;Authorization&quot;</span>: <span class="hljs-string">f&quot;Bearer <span class="hljs-subst">{AIRLOCK_KEY}</span>&quot;</span>},
         json={
             <span class="hljs-string">&quot;kind&quot;</span>: <span class="hljs-string">&quot;browser.form_submit&quot;</span>,
             <span class="hljs-string">&quot;title&quot;</span>: <span class="hljs-string">f&quot;Submit form: <span class="hljs-subst">{page_url}</span>&quot;</span>,
@@ -188,24 +188,24 @@ BASE = <span class="hljs-string">&quot;https://api.impri.dev&quot;</span>
     <span class="hljs-keyword">while</span> <span class="hljs-literal">True</span>:
         poll = requests.get(
             <span class="hljs-string">f&quot;<span class="hljs-subst">{BASE}</span>/v1/actions/<span class="hljs-subst">{action_id}</span>&quot;</span>,
-            headers={<span class="hljs-string">&quot;Authorization&quot;</span>: <span class="hljs-string">f&quot;Bearer <span class="hljs-subst">{IMPRI_KEY}</span>&quot;</span>},
+            headers={<span class="hljs-string">&quot;Authorization&quot;</span>: <span class="hljs-string">f&quot;Bearer <span class="hljs-subst">{AIRLOCK_KEY}</span>&quot;</span>},
         ).json()
         <span class="hljs-keyword">if</span> poll[<span class="hljs-string">&quot;status&quot;</span>] != <span class="hljs-string">&quot;pending&quot;</span>:
             <span class="hljs-keyword">return</span> poll[<span class="hljs-string">&quot;status&quot;</span>] == <span class="hljs-string">&quot;approved&quot;</span>
         time.sleep(<span class="hljs-number">4</span>)</code></pre></div>
 <p>The agent&#39;s tool definition for &quot;submit form&quot; calls <code>gated_submit()</code> first and only proceeds to the actual click if it returns <code>True</code>. Because the browser session&#39;s cookies and the ability to click &quot;Submit&quot; live inside the same tool the agent already uses, wrapping that one tool is enough — there&#39;s no separate direct path for the agent to press the button without going through the wrapper, unlike an API-based agent that might also hold a raw credential.</p>
-<p><code>form_summary</code> matters more here than in most Impri integrations: since the reviewer is approving a <em>click</em>, not reading structured JSON, give them the filled-in field values (a markdown table of field → value works well) rather than a vague &quot;submit the form&quot; title. A screenshot URL in <code>target_url</code> lets the reviewer glance at the actual rendered page before deciding.</p>
+<p><code>form_summary</code> matters more here than in most Airlock integrations: since the reviewer is approving a <em>click</em>, not reading structured JSON, give them the filled-in field values (a markdown table of field → value works well) rather than a vague &quot;submit the form&quot; title. A screenshot URL in <code>target_url</code> lets the reviewer glance at the actual rendered page before deciding.</p>
 <h2 id="why-undo-is-close-to-useless-here-and-expiresin-isn39t">Why <code>undo</code> is close to useless here and <code>expires_in</code> isn&#39;t</h2>
-<p>Most Impri actions benefit from a real <code>undo</code> description. A browser form submission usually doesn&#39;t have one — once submitted, there&#39;s no API call that reverses it, so be honest in the field rather than inventing a rollback that doesn&#39;t exist. Where this scenario <em>does</em> benefit from Impri&#39;s mechanics is <code>expires_in</code>: browser state goes stale fast. A logged-in session, a shopping cart, a multi-step wizard — all of that can time out or reset server-side within minutes. Set <code>expires_in</code> short (the example above uses 900 seconds) so a reviewer who&#39;s slow to respond gets an <code>expired</code> action rather than an approval that then fails against a browser session that&#39;s moved on.</p>
+<p>Most Airlock actions benefit from a real <code>undo</code> description. A browser form submission usually doesn&#39;t have one — once submitted, there&#39;s no API call that reverses it, so be honest in the field rather than inventing a rollback that doesn&#39;t exist. Where this scenario <em>does</em> benefit from Airlock&#39;s mechanics is <code>expires_in</code>: browser state goes stale fast. A logged-in session, a shopping cart, a multi-step wizard — all of that can time out or reset server-side within minutes. Set <code>expires_in</code> short (the example above uses 900 seconds) so a reviewer who&#39;s slow to respond gets an <code>expired</code> action rather than an approval that then fails against a browser session that&#39;s moved on.</p>
 <h2 id="what-this-doesn39t-cover">What this doesn&#39;t cover</h2>
-<p>Impri gates the one tool call you wrapped. It has no visibility into the rest of the browser session — if the agent has another tool that can navigate directly to a different &quot;submit&quot; endpoint, or if it&#39;s running with a service account that bypasses the UI entirely, this pattern doesn&#39;t see it. Treat this as gating a specific chokepoint you&#39;ve identified, not a sandbox around the whole agent.</p>
-<p>See <a href="mcp">the MCP integration guide</a> if your agent already talks to tools over MCP — <code>impri_push_action</code> and <code>impri_await_decision</code> replace the raw <code>requests</code> calls above. For the SDK-specific plumbing around Claude Agent SDK tool wrapping, see <a href="human-approval-claude-agent-sdk">human approval with the Claude Agent SDK</a>, and for getting a key set up first, <a href="quickstart">quickstart</a>.</p>
+<p>Airlock gates the one tool call you wrapped. It has no visibility into the rest of the browser session — if the agent has another tool that can navigate directly to a different &quot;submit&quot; endpoint, or if it&#39;s running with a service account that bypasses the UI entirely, this pattern doesn&#39;t see it. Treat this as gating a specific chokepoint you&#39;ve identified, not a sandbox around the whole agent.</p>
+<p>See <a href="mcp">the MCP integration guide</a> if your agent already talks to tools over MCP — <code>airlock_push_action</code> and <code>airlock_await_decision</code> replace the raw <code>requests</code> calls above. For the SDK-specific plumbing around Claude Agent SDK tool wrapping, see <a href="human-approval-claude-agent-sdk">human approval with the Claude Agent SDK</a>, and for getting a key set up first, <a href="quickstart">quickstart</a>.</p>
 
-    <aside class="doc-cta" aria-label="Try Impri">
+    <aside class="doc-cta" aria-label="Try Airlock">
   <p class="doc-cta-title">Add an approval step to your own agent</p>
-  <p>Start on Impri Cloud: the Free tier includes 100 approvals a month. Or self-host the MIT-licensed core with Docker Compose, with no tier limits.</p>
+  <p>Start on Airlock Cloud: the Free tier includes 100 approvals a month. Or self-host the MIT-licensed core with Docker Compose, with no tier limits.</p>
   <div class="doc-cta-actions">
-    <a class="btn btn-primary btn-sm" href="https://app.impri.dev/?signup=1">Start free on Impri Cloud</a>
+    <a class="btn btn-primary btn-sm" href="https://app.airlock.dev/?signup=1">Start free on Airlock Cloud</a>
     <a class="btn btn-ghost btn-sm" href="../docs/quickstart">Quick start</a>
     <a class="btn btn-ghost btn-sm" href="../docs/self-hosting">Self-host guide</a>
   </div>
@@ -299,19 +299,19 @@ BASE = <span class="hljs-string">&quot;https://api.impri.dev&quot;</span>
 <footer class="footer">
 <div class="wrap footer-inner">
   <a class="brand" href="/">
-    <span class="mark"><svg viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.5 4.5L19 7.5" stroke="white" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Impri
+    <span class="mark"><svg viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.5 4.5L19 7.5" stroke="white" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Airlock
   </a>
   <div>
-    <a href="https://gitlab.com/sekera.radim/impri">GitLab</a>
+    <a href="https://gitlab.com/sekera.radim/airlock">GitLab</a>
     <a href="/docs">Docs</a>
-    <a href="https://gitlab.com/sekera.radim/impri/-/blob/main/LICENSE">MIT License</a>
-    <a href="https://www.npmjs.com/package/@impri/mcp">@impri/mcp</a>
+    <a href="https://gitlab.com/sekera.radim/airlock/-/blob/main/LICENSE">MIT License</a>
+    <a href="https://www.npmjs.com/package/@airlock/mcp">@airlock/mcp</a>
     <a href="/docs/privacy">Privacy</a>
     <a href="/docs/terms">Terms</a>
     <a href="https://sekera.dev">Contact</a>
   </div>
 </div>
-<div class="wrap" style="margin-top:18px"><span class="muted">© 2026 Impri · The imprimatur for your AI agents · Built by <a href="https://sekera.dev" style="color:inherit">Radim Sekera</a>. Also by the same maker: <a href="https://briefgate.dev/?utm_source=impri.dev&amp;utm_medium=referral" style="color:inherit">BriefGate</a> — client intake for agencies and AI agents.</span></div>
+<div class="wrap" style="margin-top:18px"><span class="muted">© 2026 Airlock · The airlockmatur for your AI agents · Built by <a href="https://sekera.dev" style="color:inherit">Radim Sekera</a>. Also by the same maker: <a href="https://briefgate.dev/?utm_source=airlock.dev&amp;utm_medium=referral" style="color:inherit">BriefGate</a> — client intake for agencies and AI agents.</span></div>
 </footer>
 </body>
 </html>

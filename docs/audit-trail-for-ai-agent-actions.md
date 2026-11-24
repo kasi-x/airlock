@@ -12,7 +12,7 @@ An audit trail for agent actions needs three things to actually hold up: it has 
 
 ## What gets logged, automatically, just by using the gate
 
-If your agent already routes side-effecting actions through an approval gate, the audit trail is a side effect of that gate rather than something you build separately. Every action pushed through Impri writes an append-only row for its full lifecycle — created, rule-applied, approved or rejected, expired, executed or failed — with no route to edit or delete an individual entry after the fact. See [audit-log](audit-log.md) for the full schema.
+If your agent already routes side-effecting actions through an approval gate, the audit trail is a side effect of that gate rather than something you build separately. Every action pushed through Airlock writes an append-only row for its full lifecycle — created, rule-applied, approved or rejected, expired, executed or failed — with no route to edit or delete an individual entry after the fact. See [audit-log](audit-log.md) for the full schema.
 
 The part that matters for accountability: decisions made through chat approval channels record a human-readable actor, not just a key ID.
 
@@ -35,8 +35,8 @@ import fetch from "node-fetch";
 
 async function getActionHistory(actionId: string) {
   const res = await fetch(
-    `https://api.impri.dev/v1/audit?entity_id=${actionId}`,
-    { headers: { Authorization: `Bearer ${process.env.IMPRI_API_KEY}` } }
+    `https://api.airlock.dev/v1/audit?entity_id=${actionId}`,
+    { headers: { Authorization: `Bearer ${process.env.AIRLOCK_API_KEY}` } }
   );
   const { items } = await res.json();
   return items; // ordered newest-first: created, rule_applied, approved/rejected, executed
@@ -64,8 +64,8 @@ That's a complete, ordered story of one agent action — proposed by which key, 
 For a periodic review rather than a single incident, `GET /v1/audit/export` streams the full filtered history as NDJSON or CSV instead of paging through the query endpoint:
 
 ```bash
-curl -s "https://api.impri.dev/v1/audit/export?since=1719792000&format=csv" \
-  -H "Authorization: Bearer $IMPRI_API_KEY" \
+curl -s "https://api.airlock.dev/v1/audit/export?since=1719792000&format=csv" \
+  -H "Authorization: Bearer $AIRLOCK_API_KEY" \
   -o agent-actions-q3.csv
 ```
 
@@ -73,7 +73,7 @@ This is rate-limited to 5 requests/minute per key — it's built for periodic pu
 
 ## What this doesn't give you
 
-The audit trail records that an action happened and who decided it — it does not evaluate whether the decision was *correct*. If a human approves a bad draft, that approval is logged faithfully; Impri does not second-guess a human reviewer's judgment, and it's not a content moderation system. It also only covers actions that actually went through the gate: if your agent has a side channel to the same service (a raw API key it can call directly instead of going through the wrapped executor), that path leaves no row here at all. The trail is only as complete as the chokepoint is real — see [the SDK integrations](integrations.md) for wrapping the executor so there is no second path.
+The audit trail records that an action happened and who decided it — it does not evaluate whether the decision was *correct*. If a human approves a bad draft, that approval is logged faithfully; Airlock does not second-guess a human reviewer's judgment, and it's not a content moderation system. It also only covers actions that actually went through the gate: if your agent has a side channel to the same service (a raw API key it can call directly instead of going through the wrapped executor), that path leaves no row here at all. The trail is only as complete as the chokepoint is real — see [the SDK integrations](integrations.md) for wrapping the executor so there is no second path.
 
 ## Getting a key and pushing your first action
 

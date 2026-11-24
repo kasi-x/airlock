@@ -3,21 +3,21 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Human-in-the-Loop for LangChain Deep Agents — Impri Docs</title>
-<meta name="description" content="Deep Agents pause a tool call with interruptOn and resume on approve, edit or reject decisions. Impri turns each pause into an inbox card a person decides on.">
+<title>Human-in-the-Loop for LangChain Deep Agents — Airlock Docs</title>
+<meta name="description" content="Deep Agents pause a tool call with interruptOn and resume on approve, edit or reject decisions. Airlock turns each pause into an inbox card a person decides on.">
 <meta name="theme-color" content="#06070d">
-<meta property="og:title" content="Human-in-the-Loop for LangChain Deep Agents — Impri Docs">
-<meta property="og:description" content="Deep Agents pause a tool call with interruptOn and resume on approve, edit or reject decisions. Impri turns each pause into an inbox card a person decides on.">
+<meta property="og:title" content="Human-in-the-Loop for LangChain Deep Agents — Airlock Docs">
+<meta property="og:description" content="Deep Agents pause a tool call with interruptOn and resume on approve, edit or reject decisions. Airlock turns each pause into an inbox card a person decides on.">
 <meta property="og:type" content="article">
-<meta property="og:url" content="https://impri.dev/docs/human-in-the-loop-langchain-deep-agents">
-<meta property="og:image" content="https://impri.dev/assets/og/og-docs.png">
+<meta property="og:url" content="https://airlock.dev/docs/human-in-the-loop-langchain-deep-agents">
+<meta property="og:image" content="https://airlock.dev/assets/og/og-docs.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
-<meta property="og:image:alt" content="Impri — human-in-the-loop approval inbox for AI agents">
+<meta property="og:image:alt" content="Airlock — human-in-the-loop approval inbox for AI agents">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="https://impri.dev/assets/og/og-docs.png">
-<link rel="canonical" href="https://impri.dev/docs/human-in-the-loop-langchain-deep-agents">
-<script type="application/ld+json">{"@context":"https://schema.org","@type":"TechArticle","headline":"Human-in-the-Loop for LangChain Deep Agents","description":"Deep Agents pause a tool call with interruptOn and resume on approve, edit or reject decisions. Impri turns each pause into an inbox card a person decides on.","url":"https://impri.dev/docs/human-in-the-loop-langchain-deep-agents","inLanguage":"en","author":{"@type":"Organization","name":"Impri","url":"https://impri.dev"},"publisher":{"@type":"Organization","name":"Impri","url":"https://impri.dev"}}</script>
+<meta name="twitter:image" content="https://airlock.dev/assets/og/og-docs.png">
+<link rel="canonical" href="https://airlock.dev/docs/human-in-the-loop-langchain-deep-agents">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"TechArticle","headline":"Human-in-the-Loop for LangChain Deep Agents","description":"Deep Agents pause a tool call with interruptOn and resume on approve, edit or reject decisions. Airlock turns each pause into an inbox card a person decides on.","url":"https://airlock.dev/docs/human-in-the-loop-langchain-deep-agents","inLanguage":"en","author":{"@type":"Organization","name":"Airlock","url":"https://airlock.dev"},"publisher":{"@type":"Organization","name":"Airlock","url":"https://airlock.dev"}}</script>
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <link rel="icon" href="/favicon.ico" sizes="32x32">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='9' fill='%236366f1'/%3E%3Cpath d='M9 16.5l4.5 4.5L23 11' stroke='white' stroke-width='3' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
@@ -132,13 +132,13 @@ pre code.hljs{display:block;overflow-x:auto}
 <div class="wrap nav-inner">
   <a class="brand" href="/">
     <span class="mark"><svg viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.5 4.5L19 7.5" stroke="white" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
-    Impri
+    Airlock
   </a>
   <div class="nav-links">
     <a class="link" href="/#how">How it works</a>
     <a class="link" href="/#pricing">Pricing</a>
     <a class="link active-nav" href="../docs">Docs</a>
-    <a class="btn btn-primary btn-sm" href="https://gitlab.com/sekera.radim/impri">GitLab</a>
+    <a class="btn btn-primary btn-sm" href="https://gitlab.com/sekera.radim/airlock">GitLab</a>
   </div>
 </div>
 </nav>
@@ -153,7 +153,7 @@ pre code.hljs{display:block;overflow-x:auto}
       <span>Human-in-the-Loop for LangChain Deep Agents</span>
     </nav>
     <h1>Human-in-the-Loop for LangChain Deep Agents</h1>
-<p>Deep Agents pause a tool call with <code>interruptOn</code> and resume on approve, edit or reject decisions. Impri turns each pause into an inbox card a person decides on.</p>
+<p>Deep Agents pause a tool call with <code>interruptOn</code> and resume on approve, edit or reject decisions. Airlock turns each pause into an inbox card a person decides on.</p>
 <hr>
 <h2 id="what-interrupton-gives-you">What <code>interruptOn</code> gives you</h2>
 <p><code>createDeepAgent</code> adds LangChain&#39;s human-in-the-loop middleware when you pass <code>interruptOn</code> (<code>interrupt_on</code> in the Python package). When the model proposes a call to a listed tool, the run stops <strong>before the tool executes</strong>, saves its state to the checkpointer and returns <code>__interrupt__</code>. Each interrupt&#39;s <code>value</code> holds <code>actionRequests</code> (tool name and arguments, one per paused call) and <code>reviewConfigs</code> (the decisions allowed for each).</p>
@@ -187,25 +187,25 @@ pre code.hljs{display:block;overflow-x:auto}
   <span class="hljs-attr">interruptOn</span>: { <span class="hljs-attr">update_crm_record</span>: { <span class="hljs-attr">allowedDecisions</span>: [<span class="hljs-string">&quot;approve&quot;</span>, <span class="hljs-string">&quot;edit&quot;</span>, <span class="hljs-string">&quot;reject&quot;</span>] } },
   <span class="hljs-attr">checkpointer</span>: <span class="hljs-keyword">new</span> <span class="hljs-title class_">MemorySaver</span>(), <span class="hljs-comment">// use a persistent checkpointer in production</span>
 });</code></pre></div>
-<h2 id="the-bridge-one-impri-card-per-paused-call">The bridge: one Impri card per paused call</h2>
+<h2 id="the-bridge-one-airlock-card-per-paused-call">The bridge: one Airlock card per paused call</h2>
 <div class="code-block"><span class="code-lang">typescript</span><pre><code class="hljs"><span class="hljs-keyword">import</span> <span class="hljs-keyword">type</span> { <span class="hljs-title class_">ActionRequest</span>, <span class="hljs-title class_">Decision</span> } <span class="hljs-keyword">from</span> <span class="hljs-string">&quot;langchain&quot;</span>;
 
-<span class="hljs-keyword">const</span> <span class="hljs-variable constant_">IMPRI</span> = <span class="hljs-string">`<span class="hljs-subst">${process.env.IMPRI_BASE_URL ?? <span class="hljs-string">&quot;https://api.impri.dev&quot;</span>}</span>/v1`</span>;
+<span class="hljs-keyword">const</span> <span class="hljs-variable constant_">AIRLOCK</span> = <span class="hljs-string">`<span class="hljs-subst">${process.env.AIRLOCK_BASE_URL ?? <span class="hljs-string">&quot;https://api.airlock.dev&quot;</span>}</span>/v1`</span>;
 
-<span class="hljs-keyword">async</span> <span class="hljs-keyword">function</span> <span class="hljs-title function_">impri</span>(<span class="hljs-params"><span class="hljs-attr">path</span>: <span class="hljs-built_in">string</span>, <span class="hljs-attr">body</span>?: <span class="hljs-built_in">unknown</span></span>) {
-  <span class="hljs-keyword">const</span> res = <span class="hljs-keyword">await</span> <span class="hljs-title function_">fetch</span>(<span class="hljs-string">`<span class="hljs-subst">${IMPRI}</span><span class="hljs-subst">${path}</span>`</span>, {
+<span class="hljs-keyword">async</span> <span class="hljs-keyword">function</span> <span class="hljs-title function_">airlock</span>(<span class="hljs-params"><span class="hljs-attr">path</span>: <span class="hljs-built_in">string</span>, <span class="hljs-attr">body</span>?: <span class="hljs-built_in">unknown</span></span>) {
+  <span class="hljs-keyword">const</span> res = <span class="hljs-keyword">await</span> <span class="hljs-title function_">fetch</span>(<span class="hljs-string">`<span class="hljs-subst">${AIRLOCK}</span><span class="hljs-subst">${path}</span>`</span>, {
     <span class="hljs-attr">method</span>: body ? <span class="hljs-string">&quot;POST&quot;</span> : <span class="hljs-string">&quot;GET&quot;</span>,
-    <span class="hljs-attr">headers</span>: { <span class="hljs-string">&quot;Content-Type&quot;</span>: <span class="hljs-string">&quot;application/json&quot;</span>, <span class="hljs-title class_">Authorization</span>: <span class="hljs-string">`Bearer <span class="hljs-subst">${process.env.IMPRI_API_KEY}</span>`</span> },
+    <span class="hljs-attr">headers</span>: { <span class="hljs-string">&quot;Content-Type&quot;</span>: <span class="hljs-string">&quot;application/json&quot;</span>, <span class="hljs-title class_">Authorization</span>: <span class="hljs-string">`Bearer <span class="hljs-subst">${process.env.AIRLOCK_API_KEY}</span>`</span> },
     <span class="hljs-attr">body</span>: body ? <span class="hljs-title class_">JSON</span>.<span class="hljs-title function_">stringify</span>(body) : <span class="hljs-literal">undefined</span>,
   });
-  <span class="hljs-keyword">if</span> (!res.<span class="hljs-property">ok</span>) <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">Error</span>(<span class="hljs-string">`Impri <span class="hljs-subst">${res.status}</span>: <span class="hljs-subst">${<span class="hljs-keyword">await</span> res.text()}</span>`</span>);
+  <span class="hljs-keyword">if</span> (!res.<span class="hljs-property">ok</span>) <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">Error</span>(<span class="hljs-string">`Airlock <span class="hljs-subst">${res.status}</span>: <span class="hljs-subst">${<span class="hljs-keyword">await</span> res.text()}</span>`</span>);
   <span class="hljs-keyword">return</span> res.<span class="hljs-title function_">json</span>();
 }
 
 <span class="hljs-keyword">const</span> <span class="hljs-title function_">fence</span> = (<span class="hljs-params"><span class="hljs-attr">args</span>: <span class="hljs-built_in">unknown</span></span>) =&gt; <span class="hljs-string">&quot;```json\n&quot;</span> + <span class="hljs-title class_">JSON</span>.<span class="hljs-title function_">stringify</span>(args, <span class="hljs-literal">null</span>, <span class="hljs-number">2</span>) + <span class="hljs-string">&quot;\n```&quot;</span>;
 
 <span class="hljs-keyword">async</span> <span class="hljs-keyword">function</span> <span class="hljs-title function_">askHuman</span>(<span class="hljs-params"><span class="hljs-attr">req</span>: <span class="hljs-title class_">ActionRequest</span>, <span class="hljs-attr">key</span>: <span class="hljs-built_in">string</span></span>): <span class="hljs-title class_">Promise</span>&lt;<span class="hljs-title class_">Decision</span>&gt; {
-  <span class="hljs-keyword">const</span> card = <span class="hljs-keyword">await</span> <span class="hljs-title function_">impri</span>(<span class="hljs-string">&quot;/actions&quot;</span>, {
+  <span class="hljs-keyword">const</span> card = <span class="hljs-keyword">await</span> <span class="hljs-title function_">airlock</span>(<span class="hljs-string">&quot;/actions&quot;</span>, {
     <span class="hljs-attr">kind</span>: <span class="hljs-string">`deepagent.<span class="hljs-subst">${req.name}</span>`</span>,
     <span class="hljs-attr">title</span>: <span class="hljs-string">`Agent wants to run <span class="hljs-subst">${req.name}</span>`</span>,
     <span class="hljs-attr">preview</span>: { <span class="hljs-attr">format</span>: <span class="hljs-string">&quot;markdown&quot;</span>, <span class="hljs-attr">body</span>: <span class="hljs-title function_">fence</span>(req.<span class="hljs-property">args</span>) },
@@ -215,10 +215,10 @@ pre code.hljs{display:block;overflow-x:auto}
   });
 
   <span class="hljs-comment">// The verdict lives on GET /v1/actions/:id, under `decision`.</span>
-  <span class="hljs-keyword">let</span> action = <span class="hljs-keyword">await</span> <span class="hljs-title function_">impri</span>(<span class="hljs-string">`/actions/<span class="hljs-subst">${card.id}</span>`</span>);
+  <span class="hljs-keyword">let</span> action = <span class="hljs-keyword">await</span> <span class="hljs-title function_">airlock</span>(<span class="hljs-string">`/actions/<span class="hljs-subst">${card.id}</span>`</span>);
   <span class="hljs-keyword">while</span> (action.<span class="hljs-property">status</span> === <span class="hljs-string">&quot;pending&quot;</span>) {
     <span class="hljs-keyword">await</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">Promise</span>(<span class="hljs-function">(<span class="hljs-params">r</span>) =&gt;</span> <span class="hljs-built_in">setTimeout</span>(r, <span class="hljs-number">10_000</span>));
-    action = <span class="hljs-keyword">await</span> <span class="hljs-title function_">impri</span>(<span class="hljs-string">`/actions/<span class="hljs-subst">${card.id}</span>`</span>);
+    action = <span class="hljs-keyword">await</span> <span class="hljs-title function_">airlock</span>(<span class="hljs-string">`/actions/<span class="hljs-subst">${card.id}</span>`</span>);
   }
   <span class="hljs-keyword">if</span> (action.<span class="hljs-property">status</span> !== <span class="hljs-string">&quot;approved&quot;</span>) {
     <span class="hljs-keyword">return</span> { <span class="hljs-attr">type</span>: <span class="hljs-string">&quot;reject&quot;</span>, <span class="hljs-attr">message</span>: <span class="hljs-string">`A reviewer did not approve this call (<span class="hljs-subst">${action.status}</span>). Do not retry it.`</span> };
@@ -256,21 +256,21 @@ pre code.hljs{display:block;overflow-x:auto}
 <p>Three details carry the weight:</p>
 <ul>
 <li><strong>The resume is keyed by interrupt id.</strong> One invoke can come back with more than one interrupt (subagents that run in parallel, for example), and a map of interrupt id → decisions answers each of them.</li>
-<li><strong>The idempotency key is the thread, the pause and the position.</strong> If the driver restarts while a card is pending, Impri returns the existing action for that key instead of creating a second card.</li>
+<li><strong>The idempotency key is the thread, the pause and the position.</strong> If the driver restarts while a card is pending, Airlock returns the existing action for that key instead of creating a second card.</li>
 <li><strong>The edit is read back from what the reviewer approved.</strong> <code>GET /v1/actions/:id</code> returns the verdict under <code>decision</code>, and <code>decision.final_preview.body</code> is the text the person approved. The tool runs with those arguments.</li>
 </ul>
 <h2 id="what-we-ran">What we ran</h2>
-<p>With deepagents 1.17.0, langchain 1.6.6 and @langchain/langgraph 1.7.5, a scripted model and a local Impri server, we ran this code end to end. An approval with an edited amount ran the tool once, with the edited value. A rejection never ran the tool, and the model received the rejection message. Pushing the same pause twice returned the same card.</p>
-<h2 id="what-impri-doesn39t-do-here">What Impri doesn&#39;t do here</h2>
-<p>Impri doesn&#39;t resume the graph or hold its state. The checkpointer holds the paused thread, and your driver resumes it. With <code>MemorySaver</code>, a restart loses the paused thread while its Impri card stays decidable, so production needs a persistent checkpointer. Polling every 10 seconds is the simple version; an Impri <a href="webhooks">webhook</a> can wake the driver instead. After the tool runs, <code>POST /v1/actions/:id/result</code> with <code>executed</code> or <code>execute_failed</code> puts the outcome next to the decision in the audit log.</p>
+<p>With deepagents 1.17.0, langchain 1.6.6 and @langchain/langgraph 1.7.5, a scripted model and a local Airlock server, we ran this code end to end. An approval with an edited amount ran the tool once, with the edited value. A rejection never ran the tool, and the model received the rejection message. Pushing the same pause twice returned the same card.</p>
+<h2 id="what-airlock-doesn39t-do-here">What Airlock doesn&#39;t do here</h2>
+<p>Airlock doesn&#39;t resume the graph or hold its state. The checkpointer holds the paused thread, and your driver resumes it. With <code>MemorySaver</code>, a restart loses the paused thread while its Airlock card stays decidable, so production needs a persistent checkpointer. Polling every 10 seconds is the simple version; an Airlock <a href="webhooks">webhook</a> can wake the driver instead. After the tool runs, <code>POST /v1/actions/:id/result</code> with <code>executed</code> or <code>execute_failed</code> puts the outcome next to the decision in the audit log.</p>
 <h2 id="next-step">Next step</h2>
-<p><a href="https://app.impri.dev/?signup=1" target="_blank" rel="noopener">Create a free Impri Cloud account</a>, put its API key in <code>IMPRI_API_KEY</code> and run the driver: the first paused call shows up as a card in the inbox and on your phone. Prefer your own infrastructure? <a href="self-hosting">Self-host Impri</a> and point <code>IMPRI_BASE_URL</code> at it. For the same pause in a hand-built graph, see <a href="human-in-the-loop-langgraph">human-in-the-loop for LangGraph</a>.</p>
+<p><a href="https://app.airlock.dev/?signup=1" target="_blank" rel="noopener">Create a free Airlock Cloud account</a>, put its API key in <code>AIRLOCK_API_KEY</code> and run the driver: the first paused call shows up as a card in the inbox and on your phone. Prefer your own infrastructure? <a href="self-hosting">Self-host Airlock</a> and point <code>AIRLOCK_BASE_URL</code> at it. For the same pause in a hand-built graph, see <a href="human-in-the-loop-langgraph">human-in-the-loop for LangGraph</a>.</p>
 
-    <aside class="doc-cta" aria-label="Try Impri">
+    <aside class="doc-cta" aria-label="Try Airlock">
   <p class="doc-cta-title">Add an approval step to your own agent</p>
-  <p>Start on Impri Cloud: the Free tier includes 100 approvals a month. Or self-host the MIT-licensed core with Docker Compose, with no tier limits.</p>
+  <p>Start on Airlock Cloud: the Free tier includes 100 approvals a month. Or self-host the MIT-licensed core with Docker Compose, with no tier limits.</p>
   <div class="doc-cta-actions">
-    <a class="btn btn-primary btn-sm" href="https://app.impri.dev/?signup=1">Start free on Impri Cloud</a>
+    <a class="btn btn-primary btn-sm" href="https://app.airlock.dev/?signup=1">Start free on Airlock Cloud</a>
     <a class="btn btn-ghost btn-sm" href="../docs/quickstart">Quick start</a>
     <a class="btn btn-ghost btn-sm" href="../docs/self-hosting">Self-host guide</a>
   </div>
@@ -356,9 +356,9 @@ pre code.hljs{display:block;overflow-x:auto}
 <ul><li class="ptoc-h2"><a href="#what-interrupton-gives-you">What interruptOn gives you</a></li>
 <li class="ptoc-h2"><a href="#don39t-push-the-approval-request-from-inside-the-tool">Don't push the approval request from inside the tool</a></li>
 <li class="ptoc-h2"><a href="#the-agent">The agent</a></li>
-<li class="ptoc-h2"><a href="#the-bridge-one-impri-card-per-paused-call">The bridge: one Impri card per paused call</a></li>
+<li class="ptoc-h2"><a href="#the-bridge-one-airlock-card-per-paused-call">The bridge: one Airlock card per paused call</a></li>
 <li class="ptoc-h2"><a href="#what-we-ran">What we ran</a></li>
-<li class="ptoc-h2"><a href="#what-impri-doesn39t-do-here">What Impri doesn't do here</a></li>
+<li class="ptoc-h2"><a href="#what-airlock-doesn39t-do-here">What Airlock doesn't do here</a></li>
 <li class="ptoc-h2"><a href="#next-step">Next step</a></li></ul>
 </nav>
   </aside>
@@ -367,19 +367,19 @@ pre code.hljs{display:block;overflow-x:auto}
 <footer class="footer">
 <div class="wrap footer-inner">
   <a class="brand" href="/">
-    <span class="mark"><svg viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.5 4.5L19 7.5" stroke="white" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Impri
+    <span class="mark"><svg viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.5 4.5L19 7.5" stroke="white" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Airlock
   </a>
   <div>
-    <a href="https://gitlab.com/sekera.radim/impri">GitLab</a>
+    <a href="https://gitlab.com/sekera.radim/airlock">GitLab</a>
     <a href="/docs">Docs</a>
-    <a href="https://gitlab.com/sekera.radim/impri/-/blob/main/LICENSE">MIT License</a>
-    <a href="https://www.npmjs.com/package/@impri/mcp">@impri/mcp</a>
+    <a href="https://gitlab.com/sekera.radim/airlock/-/blob/main/LICENSE">MIT License</a>
+    <a href="https://www.npmjs.com/package/@airlock/mcp">@airlock/mcp</a>
     <a href="/docs/privacy">Privacy</a>
     <a href="/docs/terms">Terms</a>
     <a href="https://sekera.dev">Contact</a>
   </div>
 </div>
-<div class="wrap" style="margin-top:18px"><span class="muted">© 2026 Impri · The imprimatur for your AI agents · Built by <a href="https://sekera.dev" style="color:inherit">Radim Sekera</a>. Also by the same maker: <a href="https://briefgate.dev/?utm_source=impri.dev&amp;utm_medium=referral" style="color:inherit">BriefGate</a> — client intake for agencies and AI agents.</span></div>
+<div class="wrap" style="margin-top:18px"><span class="muted">© 2026 Airlock · The airlockmatur for your AI agents · Built by <a href="https://sekera.dev" style="color:inherit">Radim Sekera</a>. Also by the same maker: <a href="https://briefgate.dev/?utm_source=airlock.dev&amp;utm_medium=referral" style="color:inherit">BriefGate</a> — client intake for agencies and AI agents.</span></div>
 </footer>
 </body>
 </html>

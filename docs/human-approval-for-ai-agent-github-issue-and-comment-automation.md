@@ -14,18 +14,18 @@ Editing after the fact is visible in the timeline and notifications have already
 
 ## The pattern: the agent drafts, the human posts
 
-The agent never holds a token that can write comments. It holds an Impri key and a single function, `propose_comment`, that pushes the draft as an action and only calls the GitHub API after a human approves. The example below is Python with plain HTTP calls.
+The agent never holds a token that can write comments. It holds an Airlock key and a single function, `propose_comment`, that pushes the draft as an action and only calls the GitHub API after a human approves. The example below is Python with plain HTTP calls.
 
 ```python
 import os, time, requests
 
-IMPRI = "https://api.impri.dev"
-HEADERS = {"Authorization": f"Bearer {os.environ['IMPRI_API_KEY']}"}
+AIRLOCK = "https://api.airlock.dev"
+HEADERS = {"Authorization": f"Bearer {os.environ['AIRLOCK_API_KEY']}"}
 GH = {"Authorization": f"Bearer {os.environ['GITHUB_TOKEN']}",
       "Accept": "application/vnd.github+json"}
 
 def propose_comment(repo: str, number: int, draft: str) -> None:
-    created = requests.post(f"{IMPRI}/v1/actions", headers=HEADERS, json={
+    created = requests.post(f"{AIRLOCK}/v1/actions", headers=HEADERS, json={
         "kind": "github.comment",
         "title": f"Reply on {repo}#{number}",
         "preview": {"format": "markdown", "body": draft},
@@ -37,7 +37,7 @@ def propose_comment(repo: str, number: int, draft: str) -> None:
     }).json()
 
     while True:
-        action = requests.get(f"{IMPRI}/v1/actions/{created['id']}",
+        action = requests.get(f"{AIRLOCK}/v1/actions/{created['id']}",
                               headers=HEADERS).json()
         if action["status"] != "pending":
             break
@@ -49,7 +49,7 @@ def propose_comment(repo: str, number: int, draft: str) -> None:
     body = action["decision"]["final_preview"]["body"]  # includes human edits
     r = requests.post(f"https://api.github.com/repos/{repo}/issues/{number}/comments",
                       headers=GH, json={"body": body})
-    requests.post(f"{IMPRI}/v1/actions/{created['id']}/result", headers=HEADERS,
+    requests.post(f"{AIRLOCK}/v1/actions/{created['id']}/result", headers=HEADERS,
                   json={"status": "executed" if r.ok else "execute_failed"})
 ```
 
@@ -80,7 +80,7 @@ Use a distinct `kind` per row (for example `github.comment`, `github.close`) so 
 
 ## Being honest about the boundary
 
-Impri is the approval gate only. It stores the proposed comment, notifies the reviewer, and holds the decision. It does not write the reply, judge whether it is correct, or post anything to GitHub.
+Airlock is the approval gate only. It stores the proposed comment, notifies the reviewer, and holds the decision. It does not write the reply, judge whether it is correct, or post anything to GitHub.
 
 It is also only a real gate if the approved path is the agent's only path. If the agent process also holds a `GITHUB_TOKEN` with `issues: write` in a place its tools can reach, it can comment directly and skip you. Put the token inside the executor that runs after approval, or give the agent a token with read-only scope and keep the write token elsewhere. See [how to add human approval to an AI agent](how-to-add-human-approval-to-an-ai-agent.md) for the reasoning.
 

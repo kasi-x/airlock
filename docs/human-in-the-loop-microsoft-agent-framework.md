@@ -8,7 +8,7 @@ Microsoft Agent Framework can pause a tool call for confirmation — here's how 
 
 Microsoft Agent Framework's approval pattern lets a function tool declare that it requires confirmation before running; the framework pauses the agent loop, surfaces the pending call, and resumes once your code returns a decision. That's the right shape — propose, pause, decide, execute — but the framework leaves the "decide" part to you. In a local console app that's a `Console.ReadLine()`. In anything that runs unattended (a scheduled job, a Teams bot, a background worker with no one watching stdin), you need somewhere durable to put that pending decision and something that notifies an actual person.
 
-That's the gap Impri fills. It doesn't replace Agent Framework's approval hook — it becomes the thing the hook calls into.
+That's the gap Airlock fills. It doesn't replace Agent Framework's approval hook — it becomes the thing the hook calls into.
 
 ---
 
@@ -22,14 +22,14 @@ using System.Net.Http.Json;
 public class TicketApprovalTool
 {
     private readonly HttpClient _http;
-    private const string ImpriBase = "https://api.impri.dev";
+    private const string AirlockBase = "https://api.airlock.dev";
 
     public TicketApprovalTool(HttpClient http) => _http = http;
 
     public async Task<string> CloseTicketWithApproval(string ticketId, string resolutionSummary)
     {
         // 1. Push the proposed action instead of closing the ticket directly
-        var createResponse = await _http.PostAsJsonAsync($"{ImpriBase}/v1/actions", new
+        var createResponse = await _http.PostAsJsonAsync($"{AirlockBase}/v1/actions", new
         {
             kind = "ticket.close",
             title = $"Close ticket {ticketId}",
@@ -46,7 +46,7 @@ public class TicketApprovalTool
         {
             await Task.Delay(TimeSpan.FromSeconds(10));
             var poll = await _http.GetFromJsonAsync<ActionStatus>(
-                $"{ImpriBase}/v1/actions/{action!.Id}");
+                $"{AirlockBase}/v1/actions/{action!.Id}");
             status = poll!;
         } while (status.Status == "pending");
 
@@ -57,7 +57,7 @@ public class TicketApprovalTool
         var finalSummary = status.Decision!.FinalPreview.Body;
         await CloseTicketInSystem(ticketId, finalSummary); // your actual ticketing call
 
-        await _http.PostAsJsonAsync($"{ImpriBase}/v1/actions/{action.Id}/result",
+        await _http.PostAsJsonAsync($"{AirlockBase}/v1/actions/{action.Id}/result",
             new { status = "executed" });
 
         return $"Ticket {ticketId} closed with reviewer-approved summary.";
@@ -83,8 +83,8 @@ If your agent runs on a schedule (see [gate a cron job with human approval](gate
 
 ---
 
-## What Impri isn't doing here
+## What Airlock isn't doing here
 
-Impri doesn't know what a support ticket is, doesn't validate the resolution text, and doesn't talk to your ticketing system. It stores the proposed action, shows it to a human, and hands back a decision. Agent Framework still owns the agent loop and the actual tool execution; Impri owns exactly one question — did a person say yes — and nothing else. If you need branching logic across multiple approvals or a multi-step review workflow, that belongs in your own orchestration, not in the gate itself.
+Airlock doesn't know what a support ticket is, doesn't validate the resolution text, and doesn't talk to your ticketing system. It stores the proposed action, shows it to a human, and hands back a decision. Agent Framework still owns the agent loop and the actual tool execution; Airlock owns exactly one question — did a person say yes — and nothing else. If you need branching logic across multiple approvals or a multi-step review workflow, that belongs in your own orchestration, not in the gate itself.
 
-For the general integration pattern this builds on, see [how to add human approval to an AI agent](how-to-add-human-approval-to-an-ai-agent.md). For wrapping other SDKs the same way, see [integrations](integrations.md). New to Impri? Start with the [quickstart](quickstart.md).
+For the general integration pattern this builds on, see [how to add human approval to an AI agent](how-to-add-human-approval-to-an-ai-agent.md). For wrapping other SDKs the same way, see [integrations](integrations.md). New to Airlock? Start with the [quickstart](quickstart.md).

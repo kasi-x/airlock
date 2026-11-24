@@ -3,21 +3,21 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Alternatives to Building Your Own Agent Approval System — Impri Docs</title>
+<title>Alternatives to Building Your Own Agent Approval System — Airlock Docs</title>
 <meta name="description" content="Before you write a pending_actions table and a Slack bot, see the four real alternatives to a custom AI agent approval system and when each one actually beats…">
 <meta name="theme-color" content="#06070d">
-<meta property="og:title" content="Alternatives to Building Your Own Agent Approval System — Impri Docs">
+<meta property="og:title" content="Alternatives to Building Your Own Agent Approval System — Airlock Docs">
 <meta property="og:description" content="Before you write a pending_actions table and a Slack bot, see the four real alternatives to a custom AI agent approval system and when each one actually beats…">
 <meta property="og:type" content="article">
-<meta property="og:url" content="https://impri.dev/docs/alternatives-to-building-your-own-approval-system">
-<meta property="og:image" content="https://impri.dev/assets/og/og-docs.png">
+<meta property="og:url" content="https://airlock.dev/docs/alternatives-to-building-your-own-approval-system">
+<meta property="og:image" content="https://airlock.dev/assets/og/og-docs.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
-<meta property="og:image:alt" content="Impri — human-in-the-loop approval inbox for AI agents">
+<meta property="og:image:alt" content="Airlock — human-in-the-loop approval inbox for AI agents">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="https://impri.dev/assets/og/og-docs.png">
-<link rel="canonical" href="https://impri.dev/docs/alternatives-to-building-your-own-approval-system">
-<script type="application/ld+json">{"@context":"https://schema.org","@type":"TechArticle","headline":"Alternatives to Building Your Own Agent Approval System","description":"Before you write a pending_actions table and a Slack bot, see the four real alternatives to a custom AI agent approval system and when each one actually beats…","url":"https://impri.dev/docs/alternatives-to-building-your-own-approval-system","inLanguage":"en","author":{"@type":"Organization","name":"Impri","url":"https://impri.dev"},"publisher":{"@type":"Organization","name":"Impri","url":"https://impri.dev"}}</script>
+<meta name="twitter:image" content="https://airlock.dev/assets/og/og-docs.png">
+<link rel="canonical" href="https://airlock.dev/docs/alternatives-to-building-your-own-approval-system">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"TechArticle","headline":"Alternatives to Building Your Own Agent Approval System","description":"Before you write a pending_actions table and a Slack bot, see the four real alternatives to a custom AI agent approval system and when each one actually beats…","url":"https://airlock.dev/docs/alternatives-to-building-your-own-approval-system","inLanguage":"en","author":{"@type":"Organization","name":"Airlock","url":"https://airlock.dev"},"publisher":{"@type":"Organization","name":"Airlock","url":"https://airlock.dev"}}</script>
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <link rel="icon" href="/favicon.ico" sizes="32x32">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='9' fill='%236366f1'/%3E%3Cpath d='M9 16.5l4.5 4.5L23 11' stroke='white' stroke-width='3' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
@@ -132,13 +132,13 @@ pre code.hljs{display:block;overflow-x:auto}
 <div class="wrap nav-inner">
   <a class="brand" href="/">
     <span class="mark"><svg viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.5 4.5L19 7.5" stroke="white" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
-    Impri
+    Airlock
   </a>
   <div class="nav-links">
     <a class="link" href="/#how">How it works</a>
     <a class="link" href="/#pricing">Pricing</a>
     <a class="link active-nav" href="../docs">Docs</a>
-    <a class="btn btn-primary btn-sm" href="https://gitlab.com/sekera.radim/impri">GitLab</a>
+    <a class="btn btn-primary btn-sm" href="https://gitlab.com/sekera.radim/airlock">GitLab</a>
   </div>
 </div>
 </nav>
@@ -188,9 +188,9 @@ pre code.hljs{display:block;overflow-x:auto}
 <h2 id="option-3-repurpose-existing-approvalticketing-software">Option 3: repurpose existing approval/ticketing software</h2>
 <p>Some teams point agent actions at a system already in place for other approvals — a ticketing tool, a lightweight BPM product, even a shared spreadsheet with a manual review column. This avoids new infrastructure, but these tools weren&#39;t built for the agent loop: no <code>GET status</code> endpoint an agent can poll cleanly, no concept of &quot;here is the edited version, execute <em>this</em> text,&quot; no expiry that maps to &quot;this draft is stale, don&#39;t send it.&quot; You end up gluing scripts around a tool that wasn&#39;t designed for this shape of problem, which is its own maintenance burden.</p>
 <h2 id="option-4-a-dedicated-approval-gate-service">Option 4: a dedicated approval-gate service</h2>
-<p>The fourth option is a service built specifically for this loop: agent proposes, human decides, agent executes only on approval — nothing else. Impri is this option. It exists so you don&#39;t build the table, the Slack bot, the diff view, and the audit log yourself:</p>
-<div class="code-block"><span class="code-lang">bash</span><pre><code class="hljs">curl -X POST https://api.impri.dev/v1/actions \
-  -H <span class="hljs-string">&quot;Authorization: Bearer <span class="hljs-variable">$IMPRI_API_KEY</span>&quot;</span> \
+<p>The fourth option is a service built specifically for this loop: agent proposes, human decides, agent executes only on approval — nothing else. Airlock is this option. It exists so you don&#39;t build the table, the Slack bot, the diff view, and the audit log yourself:</p>
+<div class="code-block"><span class="code-lang">bash</span><pre><code class="hljs">curl -X POST https://api.airlock.dev/v1/actions \
+  -H <span class="hljs-string">&quot;Authorization: Bearer <span class="hljs-variable">$AIRLOCK_API_KEY</span>&quot;</span> \
   -H <span class="hljs-string">&quot;Content-Type: application/json&quot;</span> \
   -d <span class="hljs-string">&#x27;{
     &quot;kind&quot;: &quot;email.send&quot;,
@@ -199,7 +199,7 @@ pre code.hljs{display:block;overflow-x:auto}
     &quot;editable&quot;: [&quot;preview.body&quot;],
     &quot;expires_in&quot;: 3600
   }&#x27;</span></code></pre></div>
-<p>Three calls — push, poll, report — and you get a mobile-friendly inbox, human edits with a diff, notification channels (Slack, Telegram, Discord, email, push), and an audit trail, without owning that surface yourself. It&#39;s honestly narrow, though: Impri is only the gate. It does not generate the draft or orchestrate multi-step workflows — pair it with n8n or your own agent code for that, the same way you would with a DIY table.</p>
+<p>Three calls — push, poll, report — and you get a mobile-friendly inbox, human edits with a diff, notification channels (Slack, Telegram, Discord, email, push), and an audit trail, without owning that surface yourself. It&#39;s honestly narrow, though: Airlock is only the gate. It does not generate the draft or orchestrate multi-step workflows — pair it with n8n or your own agent code for that, the same way you would with a DIY table.</p>
 <hr>
 <h2 id="which-one-to-pick">Which one to pick</h2>
 <div class="table-wrap"><table>
@@ -229,11 +229,11 @@ pre code.hljs{display:block;overflow-x:auto}
 </div>
 <p>If you&#39;re weighing this decision in more depth — including the actual engineering-hours math — see <a href="build-vs-buy-ai-agent-approval-queue">build vs. buy for an AI agent approval queue</a>. For the mechanics of wiring a gate into your agent once you&#39;ve picked one, the <a href="mcp">MCP integration</a> is the fastest path if your agent already runs inside an MCP client.</p>
 
-    <aside class="doc-cta" aria-label="Try Impri">
+    <aside class="doc-cta" aria-label="Try Airlock">
   <p class="doc-cta-title">Add an approval step to your own agent</p>
-  <p>Start on Impri Cloud: the Free tier includes 100 approvals a month. Or self-host the MIT-licensed core with Docker Compose, with no tier limits.</p>
+  <p>Start on Airlock Cloud: the Free tier includes 100 approvals a month. Or self-host the MIT-licensed core with Docker Compose, with no tier limits.</p>
   <div class="doc-cta-actions">
-    <a class="btn btn-primary btn-sm" href="https://app.impri.dev/?signup=1">Start free on Impri Cloud</a>
+    <a class="btn btn-primary btn-sm" href="https://app.airlock.dev/?signup=1">Start free on Airlock Cloud</a>
     <a class="btn btn-ghost btn-sm" href="../docs/quickstart">Quick start</a>
     <a class="btn btn-ghost btn-sm" href="../docs/self-hosting">Self-host guide</a>
   </div>
@@ -329,19 +329,19 @@ pre code.hljs{display:block;overflow-x:auto}
 <footer class="footer">
 <div class="wrap footer-inner">
   <a class="brand" href="/">
-    <span class="mark"><svg viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.5 4.5L19 7.5" stroke="white" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Impri
+    <span class="mark"><svg viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.5 4.5L19 7.5" stroke="white" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Airlock
   </a>
   <div>
-    <a href="https://gitlab.com/sekera.radim/impri">GitLab</a>
+    <a href="https://gitlab.com/sekera.radim/airlock">GitLab</a>
     <a href="/docs">Docs</a>
-    <a href="https://gitlab.com/sekera.radim/impri/-/blob/main/LICENSE">MIT License</a>
-    <a href="https://www.npmjs.com/package/@impri/mcp">@impri/mcp</a>
+    <a href="https://gitlab.com/sekera.radim/airlock/-/blob/main/LICENSE">MIT License</a>
+    <a href="https://www.npmjs.com/package/@airlock/mcp">@airlock/mcp</a>
     <a href="/docs/privacy">Privacy</a>
     <a href="/docs/terms">Terms</a>
     <a href="https://sekera.dev">Contact</a>
   </div>
 </div>
-<div class="wrap" style="margin-top:18px"><span class="muted">© 2026 Impri · The imprimatur for your AI agents · Built by <a href="https://sekera.dev" style="color:inherit">Radim Sekera</a>. Also by the same maker: <a href="https://briefgate.dev/?utm_source=impri.dev&amp;utm_medium=referral" style="color:inherit">BriefGate</a> — client intake for agencies and AI agents.</span></div>
+<div class="wrap" style="margin-top:18px"><span class="muted">© 2026 Airlock · The airlockmatur for your AI agents · Built by <a href="https://sekera.dev" style="color:inherit">Radim Sekera</a>. Also by the same maker: <a href="https://briefgate.dev/?utm_source=airlock.dev&amp;utm_medium=referral" style="color:inherit">BriefGate</a> — client intake for agencies and AI agents.</span></div>
 </footer>
 </body>
 </html>

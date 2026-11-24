@@ -3,21 +3,21 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Web Push Notifications — Impri Docs</title>
-<meta name="description" content="Impri supports browser-native push notifications via the Web Push API (VAPID). When an action is created with status=pending, all subscribed browser sessions…">
+<title>Web Push Notifications — Airlock Docs</title>
+<meta name="description" content="Airlock supports browser-native push notifications via the Web Push API (VAPID). When an action is created with status=pending, all subscribed browser sessions…">
 <meta name="theme-color" content="#06070d">
-<meta property="og:title" content="Web Push Notifications — Impri Docs">
-<meta property="og:description" content="Impri supports browser-native push notifications via the Web Push API (VAPID). When an action is created with status=pending, all subscribed browser sessions…">
+<meta property="og:title" content="Web Push Notifications — Airlock Docs">
+<meta property="og:description" content="Airlock supports browser-native push notifications via the Web Push API (VAPID). When an action is created with status=pending, all subscribed browser sessions…">
 <meta property="og:type" content="article">
-<meta property="og:url" content="https://impri.dev/docs/web-push">
-<meta property="og:image" content="https://impri.dev/assets/og/og-docs.png">
+<meta property="og:url" content="https://airlock.dev/docs/web-push">
+<meta property="og:image" content="https://airlock.dev/assets/og/og-docs.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
-<meta property="og:image:alt" content="Impri — human-in-the-loop approval inbox for AI agents">
+<meta property="og:image:alt" content="Airlock — human-in-the-loop approval inbox for AI agents">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="https://impri.dev/assets/og/og-docs.png">
-<link rel="canonical" href="https://impri.dev/docs/web-push">
-<script type="application/ld+json">{"@context":"https://schema.org","@type":"TechArticle","headline":"Web Push Notifications","description":"Impri supports browser-native push notifications via the Web Push API (VAPID). When an action is created with status=pending, all subscribed browser sessions…","url":"https://impri.dev/docs/web-push","inLanguage":"en","author":{"@type":"Organization","name":"Impri","url":"https://impri.dev"},"publisher":{"@type":"Organization","name":"Impri","url":"https://impri.dev"}}</script>
+<meta name="twitter:image" content="https://airlock.dev/assets/og/og-docs.png">
+<link rel="canonical" href="https://airlock.dev/docs/web-push">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"TechArticle","headline":"Web Push Notifications","description":"Airlock supports browser-native push notifications via the Web Push API (VAPID). When an action is created with status=pending, all subscribed browser sessions…","url":"https://airlock.dev/docs/web-push","inLanguage":"en","author":{"@type":"Organization","name":"Airlock","url":"https://airlock.dev"},"publisher":{"@type":"Organization","name":"Airlock","url":"https://airlock.dev"}}</script>
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <link rel="icon" href="/favicon.ico" sizes="32x32">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='9' fill='%236366f1'/%3E%3Cpath d='M9 16.5l4.5 4.5L23 11' stroke='white' stroke-width='3' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
@@ -132,13 +132,13 @@ pre code.hljs{display:block;overflow-x:auto}
 <div class="wrap nav-inner">
   <a class="brand" href="/">
     <span class="mark"><svg viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.5 4.5L19 7.5" stroke="white" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
-    Impri
+    Airlock
   </a>
   <div class="nav-links">
     <a class="link" href="/#how">How it works</a>
     <a class="link" href="/#pricing">Pricing</a>
     <a class="link active-nav" href="../docs">Docs</a>
-    <a class="btn btn-primary btn-sm" href="https://gitlab.com/sekera.radim/impri">GitLab</a>
+    <a class="btn btn-primary btn-sm" href="https://gitlab.com/sekera.radim/airlock">GitLab</a>
   </div>
 </div>
 </nav>
@@ -153,14 +153,14 @@ pre code.hljs{display:block;overflow-x:auto}
       <span>Web Push Notifications</span>
     </nav>
     <h1>Web Push Notifications</h1>
-<p>Impri supports browser-native push notifications via the Web Push API (VAPID). When an action is created with <code>status=pending</code>, all subscribed browser sessions for the project receive an immediate push notification — no polling or page refresh needed.</p>
-<p>Web push is a complement to the notification channel system (Slack, Telegram, etc.) and is built into the web inbox at <code>app.impri.dev</code>.</p>
+<p>Airlock supports browser-native push notifications via the Web Push API (VAPID). When an action is created with <code>status=pending</code>, all subscribed browser sessions for the project receive an immediate push notification — no polling or page refresh needed.</p>
+<p>Web push is a complement to the notification channel system (Slack, Telegram, etc.) and is built into the web inbox at <code>app.airlock.dev</code>.</p>
 <hr>
 <h2 id="how-it-works">How it works</h2>
 <ol>
 <li>The browser fetches the server&#39;s VAPID public key (<code>GET /v1/push/vapid-public-key</code>).</li>
 <li>The browser registers a push subscription with its push service (using the VAPID key).</li>
-<li>The subscription endpoint + crypto keys are registered with Impri (<code>POST /v1/push/subscribe</code>).</li>
+<li>The subscription endpoint + crypto keys are registered with Airlock (<code>POST /v1/push/subscribe</code>).</li>
 <li>When <code>POST /v1/actions</code> creates a pending action, the server sends a push to all project-scoped subscriptions.</li>
 <li>The browser receives the push and shows a native OS notification.</li>
 <li>On logout or unsubscribe, the endpoint is removed (<code>DELETE /v1/push/subscribe</code>).</li>
@@ -277,7 +277,7 @@ npx web-push generate-vapid-keys</code></pre></div>
 <p>Use notification channels to send alerts to team Slack or Telegram. Use web push to give operators browser-native notifications when they have the inbox open in a tab.</p>
 <hr>
 <h2 id="browser-compatibility">Browser compatibility</h2>
-<p>Web push is supported in all modern browsers (Chrome, Firefox, Edge, Safari 16.4+). The push service is managed by the browser vendor (FCM for Chrome, APNs for Safari). Impri uses the VAPID protocol — no Google account or Firebase project required.</p>
+<p>Web push is supported in all modern browsers (Chrome, Firefox, Edge, Safari 16.4+). The push service is managed by the browser vendor (FCM for Chrome, APNs for Safari). Airlock uses the VAPID protocol — no Google account or Firebase project required.</p>
 
     
     
@@ -366,19 +366,19 @@ npx web-push generate-vapid-keys</code></pre></div>
 <footer class="footer">
 <div class="wrap footer-inner">
   <a class="brand" href="/">
-    <span class="mark"><svg viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.5 4.5L19 7.5" stroke="white" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Impri
+    <span class="mark"><svg viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.5 4.5L19 7.5" stroke="white" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Airlock
   </a>
   <div>
-    <a href="https://gitlab.com/sekera.radim/impri">GitLab</a>
+    <a href="https://gitlab.com/sekera.radim/airlock">GitLab</a>
     <a href="/docs">Docs</a>
-    <a href="https://gitlab.com/sekera.radim/impri/-/blob/main/LICENSE">MIT License</a>
-    <a href="https://www.npmjs.com/package/@impri/mcp">@impri/mcp</a>
+    <a href="https://gitlab.com/sekera.radim/airlock/-/blob/main/LICENSE">MIT License</a>
+    <a href="https://www.npmjs.com/package/@airlock/mcp">@airlock/mcp</a>
     <a href="/docs/privacy">Privacy</a>
     <a href="/docs/terms">Terms</a>
     <a href="https://sekera.dev">Contact</a>
   </div>
 </div>
-<div class="wrap" style="margin-top:18px"><span class="muted">© 2026 Impri · The imprimatur for your AI agents · Built by <a href="https://sekera.dev" style="color:inherit">Radim Sekera</a>. Also by the same maker: <a href="https://briefgate.dev/?utm_source=impri.dev&amp;utm_medium=referral" style="color:inherit">BriefGate</a> — client intake for agencies and AI agents.</span></div>
+<div class="wrap" style="margin-top:18px"><span class="muted">© 2026 Airlock · The airlockmatur for your AI agents · Built by <a href="https://sekera.dev" style="color:inherit">Radim Sekera</a>. Also by the same maker: <a href="https://briefgate.dev/?utm_source=airlock.dev&amp;utm_medium=referral" style="color:inherit">BriefGate</a> — client intake for agencies and AI agents.</span></div>
 </footer>
 </body>
 </html>

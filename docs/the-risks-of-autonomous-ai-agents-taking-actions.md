@@ -33,8 +33,8 @@ import os
 import time
 import requests
 
-API = "https://api.impri.dev"
-HEADERS = {"Authorization": f"Bearer {os.environ['IMPRI_API_KEY']}"}
+API = "https://api.airlock.dev"
+HEADERS = {"Authorization": f"Bearer {os.environ['AIRLOCK_API_KEY']}"}
 
 def propose_refund(order_id: str, amount_cents: int, reason: str) -> dict:
     resp = requests.post(f"{API}/v1/actions", headers=HEADERS, json={
@@ -68,7 +68,7 @@ The refund function is only reachable inside the `approved` branch. A prompt-inj
 
 ## Where this stops helping
 
-Be precise about the boundary. This pattern only holds if the approval-gated path is the agent's *only* route to the side effect — see [how to add human approval to an AI agent](how-to-add-human-approval-to-an-ai-agent.md) for the wrapper-around-the-tool detail that makes that true. If the agent also holds a raw Stripe key it can call directly, the gate is decorative. Impri itself doesn't evaluate whether a refund is a good idea — it stores the proposal, notifies a human, and holds the decision. The judgment still belongs to the person who taps approve, same as it always did; what changes is that the judgment happens *before* the money moves, not after.
+Be precise about the boundary. This pattern only holds if the approval-gated path is the agent's *only* route to the side effect — see [how to add human approval to an AI agent](how-to-add-human-approval-to-an-ai-agent.md) for the wrapper-around-the-tool detail that makes that true. If the agent also holds a raw Stripe key it can call directly, the gate is decorative. Airlock itself doesn't evaluate whether a refund is a good idea — it stores the proposal, notifies a human, and holds the decision. The judgment still belongs to the person who taps approve, same as it always did; what changes is that the judgment happens *before* the money moves, not after.
 
 ## Next step
 

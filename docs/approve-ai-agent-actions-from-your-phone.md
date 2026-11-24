@@ -27,16 +27,16 @@ import os
 import time
 import requests
 
-IMPRI_API = "https://api.impri.dev"
+AIRLOCK_API = "https://api.airlock.dev"
 HEADERS = {
-    "Authorization": f"Bearer {os.environ['IMPRI_API_KEY']}",
+    "Authorization": f"Bearer {os.environ['AIRLOCK_API_KEY']}",
     "Content-Type": "application/json",
 }
 
 def request_reorder_approval(sku: str, qty: int, unit_cost: float, supplier: str) -> str:
     total = qty * unit_cost
     resp = requests.post(
-        f"{IMPRI_API}/v1/actions",
+        f"{AIRLOCK_API}/v1/actions",
         headers=HEADERS,
         json={
             "kind": "inventory.reorder",
@@ -58,7 +58,7 @@ def request_reorder_approval(sku: str, qty: int, unit_cost: float, supplier: str
 
 def wait_for_decision(action_id: str, poll_every_s: int = 15) -> dict:
     while True:
-        r = requests.get(f"{IMPRI_API}/v1/actions/{action_id}", headers=HEADERS).json()
+        r = requests.get(f"{AIRLOCK_API}/v1/actions/{action_id}", headers=HEADERS).json()
         if r["status"] != "pending":
             return r
         time.sleep(poll_every_s)
@@ -78,7 +78,7 @@ Because `editable: ["preview.body"]` is set, the owner isn't limited to approve-
 
 ## What phone approval doesn't solve
 
-Getting the notification to a phone is a delivery-channel problem, and Impri treats it as exactly that — it doesn't change what's being decided or add any judgment of its own. A few things worth being precise about:
+Getting the notification to a phone is a delivery-channel problem, and Airlock treats it as exactly that — it doesn't change what's being decided or add any judgment of its own. A few things worth being precise about:
 
 - **It's not a substitute for expiry.** A reorder decision that sits unanswered for two days because a phone was on airplane mode should probably expire, not linger — `expires_in` handles that regardless of which channel notified you.
 - **It's not real-time on every channel.** ntfy and web push are near-instant but still require opening the inbox to decide; only Telegram's `approval_mode` buttons let you decide from the notification itself.

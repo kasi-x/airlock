@@ -12,35 +12,35 @@ Read-only queries (`SELECT`) don't need this. Writes do. The dividing line for w
 
 | Query type | Gate before executing? |
 |---|---|
-| `SELECT` | No — read access is not a side effect Impri needs to mediate |
+| `SELECT` | No — read access is not a side effect Airlock needs to mediate |
 | `INSERT` / `UPDATE` | Yes — the row didn't exist / didn't look like that before |
 | `DELETE` / `TRUNCATE` | Yes, and treat as high-severity — see [gating deletes specifically](human-approval-before-an-agent-deletes-data.md) |
 | `DDL` (`ALTER TABLE`, etc.) | Yes — schema changes are rarely something an agent should self-approve |
 
 ---
 
-## Wiring the gate with the Impri MCP server
+## Wiring the gate with the Airlock MCP server
 
 If the agent runs inside Claude Code, Claude Desktop, or another MCP client, the cleanest integration point is the query-execution tool itself — not the SQL-generation step. The model can draft as many candidate queries as it wants; only the executor is gated.
 
-Add the Impri MCP server to the agent's config:
+Add the Airlock MCP server to the agent's config:
 
 ```json
 {
   "mcpServers": {
-    "impri": {
+    "airlock": {
       "command": "npx",
-      "args": ["@impri/mcp"],
+      "args": ["@airlock/mcp"],
       "env": {
-        "IMPRI_API_KEY": "im_your_key_here",
-        "IMPRI_BASE_URL": "https://api.impri.dev"
+        "AIRLOCK_API_KEY": "im_your_key_here",
+        "AIRLOCK_BASE_URL": "https://api.airlock.dev"
       }
     }
   }
 }
 ```
 
-Then the agent's write-executor tool is described (in its own tool definition) as requiring an approved Impri action before it will run. The flow the agent follows, driven by MCP tool calls:
+Then the agent's write-executor tool is described (in its own tool definition) as requiring an approved Airlock action before it will run. The flow the agent follows, driven by MCP tool calls:
 
 ```typescript
 import { execute } from "./db";
@@ -53,12 +53,12 @@ interface WriteRequest {
 }
 
 async function proposeWrite(req: WriteRequest): Promise<string> {
-  // impri_push_action is called by the agent's MCP client, not by app code —
+  // airlock_push_action is called by the agent's MCP client, not by app code —
   // shown here as the equivalent REST call for clarity.
-  const res = await fetch("https://api.impri.dev/v1/actions", {
+  const res = await fetch("https://api.airlock.dev/v1/actions", {
     method: "POST",
     headers: {
-      Authorization: `Bearer ${process.env.IMPRI_API_KEY}`,
+      Authorization: `Bearer ${process.env.AIRLOCK_API_KEY}`,
       "Content-Type": "application/json",
     },
     body: JSON.stringify({
@@ -82,8 +82,8 @@ async function awaitAndExecute(actionId: string, req: WriteRequest) {
   let decision;
   while (status === "pending") {
     await new Promise((r) => setTimeout(r, 5000));
-    const res = await fetch(`https://api.impri.dev/v1/actions/${actionId}`, {
-      headers: { Authorization: `Bearer ${process.env.IMPRI_API_KEY}` },
+    const res = await fetch(`https://api.airlock.dev/v1/actions/${actionId}`, {
+      headers: { Authorization: `Bearer ${process.env.AIRLOCK_API_KEY}` },
     });
     ({ status, decision } = await res.json());
   }
@@ -95,10 +95,10 @@ async function awaitAndExecute(actionId: string, req: WriteRequest) {
 
   await execute(req.sql, req.params);
 
-  await fetch(`https://api.impri.dev/v1/actions/${actionId}/result`, {
+  await fetch(`https://api.airlock.dev/v1/actions/${actionId}/result`, {
     method: "POST",
     headers: {
-      Authorization: `Bearer ${process.env.IMPRI_API_KEY}`,
+      Authorization: `Bearer ${process.env.AIRLOCK_API_KEY}`,
       "Content-Type": "application/json",
     },
     body: JSON.stringify({ status: "executed" }),
@@ -118,7 +118,7 @@ It's tempting to summarize: `title: "Update invoice statuses"`. Don't drop the r
 
 ## Scopes and keys
 
-Use a key scoped to `actions` only for this flow — it doesn't need `watch` or `admin`. If the same service also runs Impri watchers for something unrelated, use a separate key for that; see [API keys](api-keys.md).
+Use a key scoped to `actions` only for this flow — it doesn't need `watch` or `admin`. If the same service also runs Airlock watchers for something unrelated, use a separate key for that; see [API keys](api-keys.md).
 
 ---
 

@@ -182,7 +182,7 @@ export async function notifyNtfy(payload: NotifyPayload): Promise<void> {
       headers: {
         'Title': headerSafe(payload.title),
         'Priority': 'default',
-        'Tags': `impri,${headerSafe(payload.kind)}`,
+        'Tags': `airlock,${headerSafe(payload.kind)}`,
         'Click': payload.inboxUrl,
         'Content-Type': 'text/plain',
       },
@@ -218,7 +218,7 @@ export function createSmtpTransport() {
 }
 
 export function smtpFrom(): string {
-  return process.env.SMTP_FROM ?? 'impri@localhost';
+  return process.env.SMTP_FROM ?? 'airlock@localhost';
 }
 
 // Email adapter: nodemailer SMTP (global path)
@@ -237,7 +237,7 @@ export async function notifyEmail(payload: NotifyPayload): Promise<void> {
     await transporter.sendMail({
       from: smtpFrom(),
       to,
-      subject: `[Impri] ${payload.title}`,
+      subject: `[Airlock] ${payload.title}`,
       text: `A new action requires your decision.\n\nTitle: ${payload.title}\nKind: ${payload.kind}\n\nReview: ${payload.inboxUrl}`,
     });
   } catch (err) {
@@ -299,9 +299,9 @@ interface DigestMessage {
 }
 
 // After how many consecutive failures a channel is auto-disabled.
-// Read from env on each call so tests can override IMPRI_CHANNEL_MAX_FAILS.
+// Read from env on each call so tests can override AIRLOCK_CHANNEL_MAX_FAILS.
 function channelMaxFails(): number {
-  return Number(process.env.IMPRI_CHANNEL_MAX_FAILS ?? 5);
+  return Number(process.env.AIRLOCK_CHANNEL_MAX_FAILS ?? 5);
 }
 
 // Inbox links must point at the web UI (APP_URL, the inbox host), NOT the
@@ -414,7 +414,7 @@ async function sendSlack(
       type: 'section',
       text: {
         type: 'mrkdwn',
-        text: `:bell: *${slackEscape(title)}*\nKind: \`${slackEscape(kind)}\`\n<${inboxUrl}|Review in Impri>`,
+        text: `:bell: *${slackEscape(title)}*\nKind: \`${slackEscape(kind)}\`\n<${inboxUrl}|Review in Airlock>`,
       },
     },
     {
@@ -470,7 +470,7 @@ async function sendDiscord(
     embeds: [
       {
         title: `Action Pending: ${title}`,
-        description: `Kind: \`${kind}\`\n[Review in Impri](${inboxUrl})`,
+        description: `Kind: \`${kind}\`\n[Review in Airlock](${inboxUrl})`,
         color: 15899902,
       },
     ],
@@ -498,7 +498,7 @@ async function sendTelegram(
   const body = JSON.stringify({
     chat_id: chatId,
     // HTML-escape title/kind/inboxUrl to prevent markup injection.
-    text: `🔔 <b>Action Pending</b>: ${htmlEscape(title)}\nKind: <code>${htmlEscape(kind)}</code>\n<a href="${htmlEscape(inboxUrl)}">Review in Impri</a>`,
+    text: `🔔 <b>Action Pending</b>: ${htmlEscape(title)}\nKind: <code>${htmlEscape(kind)}</code>\n<a href="${htmlEscape(inboxUrl)}">Review in Airlock</a>`,
     parse_mode: 'HTML',
     disable_web_page_preview: true,
   });
@@ -682,7 +682,7 @@ async function sendNtfyChannel(
       // headerSafe strips CR/LF — header-injection guard (same as global notifyNtfy).
       'Title': headerSafe(title),
       'Priority': 'default',
-      'Tags': `impri,${headerSafe(kind)}`,
+      'Tags': `airlock,${headerSafe(kind)}`,
       'Click': inboxUrl,
       'Content-Type': 'text/plain',
     },
@@ -710,15 +710,15 @@ async function sendEmailChannel(
     from: smtpFrom(),
     to: String(config.address),
     // headerSafe strips CR/LF from subject line (email header injection guard).
-    subject: `[Impri] ${headerSafe(title)}`,
+    subject: `[Airlock] ${headerSafe(title)}`,
     text:
       `A new action requires your decision.\n\nTitle: ${title}\nKind: ${kind}\n\n` +
       (approvalUrl
         ? `Approve or reject: ${approvalUrl}\nFull details:      ${inboxUrl}\n`
         : `Review: ${inboxUrl}\n`) +
       '\n--\n' +
-      'You get this email because this address is a confirmed email notification channel of an Impri project.\n' +
-      'To stop these emails, disable or delete the channel in Impri under Settings > Notifications.\n',
+      'You get this email because this address is a confirmed email notification channel of an Airlock project.\n' +
+      'To stop these emails, disable or delete the channel in Airlock under Settings > Notifications.\n',
   });
 }
 
@@ -751,9 +751,9 @@ async function sendWebhookChannel(
     // Identical signing pattern to the existing callback webhook — receivers can
     // share the same verification logic (signWebhookBody from webhooks.ts).
     const sig = signWebhookBody(hmacSecret, body, now, nonce);
-    headers['X-Impri-Signature'] = `sha256=${sig}`;
-    headers['X-Impri-Timestamp'] = String(now);
-    headers['X-Impri-Nonce'] = nonce;
+    headers['X-Airlock-Signature'] = `sha256=${sig}`;
+    headers['X-Airlock-Timestamp'] = String(now);
+    headers['X-Airlock-Nonce'] = nonce;
   }
 
   const res = await fetchGuarded(url, {
@@ -854,7 +854,7 @@ function onChannelFailure(db: Db, channel: ChannelRow, msg: string, now: number,
     db.prepare(
       'UPDATE notification_channels SET fail_count = ?, last_error = ?, enabled = 0, updated_at = ? WHERE id = ?',
     ).run(newFailCount, msg, now, channel.id);
-    incCounter('impri_channel_auto_disabled_total', { channel_type: channel.type });
+    incCounter('airlock_channel_auto_disabled_total', { channel_type: channel.type });
     // Structured warning — no secrets (no config/token/URL) in this log line.
     log.warn({ event: 'channel.auto_disabled', channel_id: channel.id, channel_type: channel.type, project_id: channel.project_id, fail_count: newFailCount });
   } else {
@@ -889,11 +889,11 @@ async function fireChannel(db: Db, channel: ChannelRow, payload: ChannelPayload,
     try {
       await dispatchChannelType(channel.type, config, payload.title, payload.kind, payload.inboxUrl, payload.actionId, payload.escalate, false, emailApprovalUrl(db, channel.type, payload.actionId, false));
       onChannelSuccess(db, channel.id, now);
-      incCounter('impri_notifications_total', { channel_type: channel.type, result: 'ok' });
+      incCounter('airlock_notifications_total', { channel_type: channel.type, result: 'ok' });
     } catch (err) {
       const msg = sanitizeError(err instanceof Error ? err.message : String(err), config);
       onChannelFailure(db, channel, msg, now);
-      incCounter('impri_notifications_total', { channel_type: channel.type, result: 'error' });
+      incCounter('airlock_notifications_total', { channel_type: channel.type, result: 'error' });
       throw new Error(msg);
     }
     return;
@@ -937,7 +937,7 @@ async function fireChannel(db: Db, channel: ChannelRow, payload: ChannelPayload,
   try {
     await dispatchChannelType(channel.type, config, title, kind, inboxUrl, primaryActionId, payload.escalate, isDigest, emailApprovalUrl(db, channel.type, primaryActionId, isDigest));
     onChannelSuccess(db, channel.id, now);
-    incCounter('impri_notifications_total', { channel_type: channel.type, result: 'ok' });
+    incCounter('airlock_notifications_total', { channel_type: channel.type, result: 'ok' });
   } catch (err) {
     if (emailSendId !== null) deleteEmailSend(db, emailSendId);
     // Sanitize before storing AND before re-throwing so no secret can reach
@@ -946,14 +946,14 @@ async function fireChannel(db: Db, channel: ChannelRow, payload: ChannelPayload,
     const raw = err instanceof Error ? err.message : String(err);
     const msg = sanitizeError(raw, config);
     onChannelFailure(db, channel, msg, now);
-    incCounter('impri_notifications_total', { channel_type: channel.type, result: 'error' });
+    incCounter('airlock_notifications_total', { channel_type: channel.type, result: 'error' });
     throw new Error(msg);
   }
 }
 
 /**
  * Reserve one notification email against the project's rolling daily cap
- * (IMPRI_EMAIL_DAILY_CAP). Returns the reservation id, or null when the cap
+ * (AIRLOCK_EMAIL_DAILY_CAP). Returns the reservation id, or null when the cap
  * is reached — logged without the address.
  */
 function reserveChannelEmail(
@@ -996,18 +996,18 @@ async function flushChannelQueue(db: Db, channel: ChannelRow, log: Logger = noop
     if (emailSendId === null) return;
   }
 
-  incCounter('impri_notification_digest_flushes_total', { channel_type: channel.type });
+  incCounter('airlock_notification_digest_flushes_total', { channel_type: channel.type });
 
   try {
     await dispatchChannelType(channel.type, config, title, kind, inboxUrl, primaryActionId, undefined, isDigest, emailApprovalUrl(db, channel.type, primaryActionId, isDigest));
     onChannelSuccess(db, channel.id, now);
-    incCounter('impri_notifications_total', { channel_type: channel.type, result: 'ok' });
+    incCounter('airlock_notifications_total', { channel_type: channel.type, result: 'ok' });
   } catch (err) {
     if (emailSendId !== null) deleteEmailSend(db, emailSendId);
     const raw = err instanceof Error ? err.message : String(err);
     const msg = sanitizeError(raw, config);
     onChannelFailure(db, channel, msg, now, log);
-    incCounter('impri_notifications_total', { channel_type: channel.type, result: 'error' });
+    incCounter('airlock_notifications_total', { channel_type: channel.type, result: 'error' });
     // Log but don't re-throw: one channel failure must not stop the tick.
     log.error({ event: 'channel.notification', channel_id: channel.id, channel_type: channel.type, result: 'error', action_id: primaryActionId });
   }

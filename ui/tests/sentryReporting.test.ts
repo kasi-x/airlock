@@ -21,7 +21,7 @@ const hint = {} as EventHint
 
 describe('pathnameOnly', () => {
   it('strips the query string from an absolute URL', () => {
-    expect(pathnameOnly('https://app.impri.dev/recover?project_id=proj_1&t=secretcode')).toBe('/recover')
+    expect(pathnameOnly('https://app.airlock.dev/recover?project_id=proj_1&t=secretcode')).toBe('/recover')
   })
 
   it('strips the query string from a relative path', () => {
@@ -37,7 +37,7 @@ describe('scrubEvent', () => {
   it('reduces request.url to a pathname and drops query_string/data', () => {
     const event = {
       request: {
-        url: 'https://app.impri.dev/recover?project_id=proj_1&t=secretcode',
+        url: 'https://app.airlock.dev/recover?project_id=proj_1&t=secretcode',
         query_string: 'project_id=proj_1&t=secretcode',
         data: { recovery_code: 'secretcode' },
       },
@@ -50,7 +50,7 @@ describe('scrubEvent', () => {
 
   it('reduces the Referer header to a pathname', () => {
     const event = {
-      request: { headers: { Referer: 'https://app.impri.dev/watchers?highlight=wat_1' } },
+      request: { headers: { Referer: 'https://app.airlock.dev/watchers?highlight=wat_1' } },
     } as unknown as SentryEvent
     const scrubbed = scrubEvent(event, hint)
     expect(scrubbed.request?.headers?.['Referer']).toBe('/watchers')
@@ -59,7 +59,7 @@ describe('scrubEvent', () => {
   it('redacts email addresses in message and exception values', () => {
     const event = {
       message: 'Failed for someone@example.com',
-      exception: { values: [{ value: 'contact ops@impri.dev for help' }] },
+      exception: { values: [{ value: 'contact ops@airlock.dev for help' }] },
     } as unknown as SentryEvent
     const scrubbed = scrubEvent(event, hint)
     expect(scrubbed.message).toBe('Failed for [email]')
@@ -242,7 +242,7 @@ describe('NetworkFailureTracker', () => {
     expect(NETWORK_FAILURE_MAX_GAP_HIDDEN_MS).toBe(90 * SEC)
   })
 
-  it('does not report a burst of failures right after waking up (IMPRI-WEB-3)', () => {
+  it('does not report a burst of failures right after waking up (AIRLOCK-WEB-3)', () => {
     const { report, tracker, fail } = setup()
     // First poll tick after wake fires two requests, the next one a third —
     // all before Wi-Fi is back — then the API answers.

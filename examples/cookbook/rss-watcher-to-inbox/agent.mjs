@@ -1,28 +1,28 @@
 #!/usr/bin/env node
-// rss-watcher-to-inbox.mjs — Impri cookbook recipe #5
+// rss-watcher-to-inbox.mjs — Airlock cookbook recipe #5
 // No dependencies. Node 18+.
 //
 // Pattern: create an RSS watcher that monitors a feed for new items matching
 // keyword rules, then shows how those items land as pending actions in the
-// inbox. Demonstrates the Watcher half of the Impri API.
+// inbox. Demonstrates the Watcher half of the Airlock API.
 //
 // Run:
-//   IMPRI_API_KEY=im_xxx node agent.mjs
-//   IMPRI_API_KEY=im_xxx IMPRI_BASE_URL=https://api.impri.dev node agent.mjs
+//   AIRLOCK_API_KEY=im_xxx node agent.mjs
+//   AIRLOCK_API_KEY=im_xxx AIRLOCK_BASE_URL=https://api.airlock.dev node agent.mjs
 //
 // Required scope: watch  (admin scope also works)
 // Optional:       actions  (to poll for items that landed in the inbox)
 //
-// Note on first run: Impri baselines the feed on the first run and does NOT
+// Note on first run: Airlock baselines the feed on the first run and does NOT
 // create inbox items for existing articles — only NEW items since that
 // baseline trigger inbox actions. Wait for a second scheduler cycle (or PATCH
 // the watcher to reset it) to see live items.
 
-const API_KEY = process.env.IMPRI_API_KEY;
-const BASE = (process.env.IMPRI_BASE_URL ?? 'http://localhost:8484').replace(/\/+$/, '');
+const API_KEY = process.env.AIRLOCK_API_KEY;
+const BASE = (process.env.AIRLOCK_BASE_URL ?? 'http://localhost:8484').replace(/\/+$/, '');
 
 if (!API_KEY) {
-  console.error('Set IMPRI_API_KEY (it starts with im_).');
+  console.error('Set AIRLOCK_API_KEY (it starts with im_).');
   process.exit(1);
 }
 
@@ -80,7 +80,7 @@ const watcherSpec = {
 // Main
 // ---------------------------------------------------------------------------
 async function main() {
-  console.log(`\nImpri rss-watcher-to-inbox → ${BASE}`);
+  console.log(`\nAirlock rss-watcher-to-inbox → ${BASE}`);
   console.log(`  Feed: ${watcherSpec.config.url}`);
   console.log(`  Keywords: ${watcherSpec.keywords.map((k) => k.pattern).join(', ')}\n`);
 

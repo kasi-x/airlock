@@ -3,21 +3,21 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Human Approval for Legal AI Agents — Impri Docs</title>
+<title>Human Approval for Legal AI Agents — Airlock Docs</title>
 <meta name="description" content="Give an AI agent that drafts contract clauses or client correspondence a real stop-and-check gate — an attorney decides, the agent only sends what was approved.">
 <meta name="theme-color" content="#06070d">
-<meta property="og:title" content="Human Approval for Legal AI Agents — Impri Docs">
+<meta property="og:title" content="Human Approval for Legal AI Agents — Airlock Docs">
 <meta property="og:description" content="Give an AI agent that drafts contract clauses or client correspondence a real stop-and-check gate — an attorney decides, the agent only sends what was approved.">
 <meta property="og:type" content="article">
-<meta property="og:url" content="https://impri.dev/docs/human-approval-for-legal-ai-agents">
-<meta property="og:image" content="https://impri.dev/assets/og/og-docs.png">
+<meta property="og:url" content="https://airlock.dev/docs/human-approval-for-legal-ai-agents">
+<meta property="og:image" content="https://airlock.dev/assets/og/og-docs.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
-<meta property="og:image:alt" content="Impri — human-in-the-loop approval inbox for AI agents">
+<meta property="og:image:alt" content="Airlock — human-in-the-loop approval inbox for AI agents">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="https://impri.dev/assets/og/og-docs.png">
-<link rel="canonical" href="https://impri.dev/docs/human-approval-for-legal-ai-agents">
-<script type="application/ld+json">{"@context":"https://schema.org","@type":"TechArticle","headline":"Human Approval for Legal AI Agents","description":"Give an AI agent that drafts contract clauses or client correspondence a real stop-and-check gate — an attorney decides, the agent only sends what was approved.","url":"https://impri.dev/docs/human-approval-for-legal-ai-agents","inLanguage":"en","author":{"@type":"Organization","name":"Impri","url":"https://impri.dev"},"publisher":{"@type":"Organization","name":"Impri","url":"https://impri.dev"}}</script>
+<meta name="twitter:image" content="https://airlock.dev/assets/og/og-docs.png">
+<link rel="canonical" href="https://airlock.dev/docs/human-approval-for-legal-ai-agents">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"TechArticle","headline":"Human Approval for Legal AI Agents","description":"Give an AI agent that drafts contract clauses or client correspondence a real stop-and-check gate — an attorney decides, the agent only sends what was approved.","url":"https://airlock.dev/docs/human-approval-for-legal-ai-agents","inLanguage":"en","author":{"@type":"Organization","name":"Airlock","url":"https://airlock.dev"},"publisher":{"@type":"Organization","name":"Airlock","url":"https://airlock.dev"}}</script>
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <link rel="icon" href="/favicon.ico" sizes="32x32">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='9' fill='%236366f1'/%3E%3Cpath d='M9 16.5l4.5 4.5L23 11' stroke='white' stroke-width='3' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
@@ -132,13 +132,13 @@ pre code.hljs{display:block;overflow-x:auto}
 <div class="wrap nav-inner">
   <a class="brand" href="/">
     <span class="mark"><svg viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.5 4.5L19 7.5" stroke="white" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
-    Impri
+    Airlock
   </a>
   <div class="nav-links">
     <a class="link" href="/#how">How it works</a>
     <a class="link" href="/#pricing">Pricing</a>
     <a class="link active-nav" href="../docs">Docs</a>
-    <a class="btn btn-primary btn-sm" href="https://gitlab.com/sekera.radim/impri">GitLab</a>
+    <a class="btn btn-primary btn-sm" href="https://gitlab.com/sekera.radim/airlock">GitLab</a>
   </div>
 </div>
 </nav>
@@ -157,13 +157,13 @@ pre code.hljs{display:block;overflow-x:auto}
 <hr>
 <h2 id="the-problem">The problem</h2>
 <p>A legal-drafting agent that redlines a contract clause, or drafts a reply to opposing counsel, is producing text that carries legal weight the moment it goes out. Unlike most SaaS automation, there&#39;s no cheap undo: a sent email is discoverable, a filed clause is binding once countersigned. Firms that let an agent draft this kind of content almost always want a named attorney to sign off before anything leaves the building — not a confirmation checkbox inside the agent&#39;s own reasoning, which can be talked past by the same model that wrote the draft.</p>
-<p>Impri&#39;s job here is narrow: hold the draft, notify the attorney, and only release <code>approved</code> once a human decided. It has no opinion on whether the clause is enforceable.</p>
+<p>Airlock&#39;s job here is narrow: hold the draft, notify the attorney, and only release <code>approved</code> once a human decided. It has no opinion on whether the clause is enforceable.</p>
 <hr>
 <h2 id="wiring-it-up-typescript">Wiring it up — TypeScript</h2>
 <div class="code-block"><span class="code-lang">typescript</span><pre><code class="hljs"><span class="hljs-keyword">import</span> { <span class="hljs-built_in">setTimeout</span> <span class="hljs-keyword">as</span> sleep } <span class="hljs-keyword">from</span> <span class="hljs-string">&quot;node:timers/promises&quot;</span>;
 
-<span class="hljs-keyword">const</span> <span class="hljs-variable constant_">BASE</span> = <span class="hljs-string">&quot;https://api.impri.dev&quot;</span>;
-<span class="hljs-keyword">const</span> <span class="hljs-variable constant_">KEY</span> = process.<span class="hljs-property">env</span>.<span class="hljs-property">IMPRI_API_KEY</span>!;
+<span class="hljs-keyword">const</span> <span class="hljs-variable constant_">BASE</span> = <span class="hljs-string">&quot;https://api.airlock.dev&quot;</span>;
+<span class="hljs-keyword">const</span> <span class="hljs-variable constant_">KEY</span> = process.<span class="hljs-property">env</span>.<span class="hljs-property">AIRLOCK_API_KEY</span>!;
 
 <span class="hljs-keyword">type</span> <span class="hljs-title class_">Decision</span> = {
   <span class="hljs-attr">status</span>: <span class="hljs-string">&quot;pending&quot;</span> | <span class="hljs-string">&quot;approved&quot;</span> | <span class="hljs-string">&quot;rejected&quot;</span> | <span class="hljs-string">&quot;expired&quot;</span>;
@@ -210,7 +210,7 @@ pre code.hljs{display:block;overflow-x:auto}
     <span class="hljs-attr">body</span>: <span class="hljs-title class_">JSON</span>.<span class="hljs-title function_">stringify</span>({ <span class="hljs-attr">status</span>: <span class="hljs-string">&quot;executed&quot;</span> }),
   });
 }</code></pre></div>
-<p>Note the <code>undo</code> field: it&#39;s descriptive text shown on the approval card, not a real rollback mechanism Impri executes. For contract clauses that&#39;s the honest answer anyway — the safe &quot;undo&quot; is that nothing was ever merged until a human said yes.</p>
+<p>Note the <code>undo</code> field: it&#39;s descriptive text shown on the approval card, not a real rollback mechanism Airlock executes. For contract clauses that&#39;s the honest answer anyway — the safe &quot;undo&quot; is that nothing was ever merged until a human said yes.</p>
 <hr>
 <h2 id="what-the-attorney-sees-and-controls">What the attorney sees and controls</h2>
 <div class="table-wrap"><table>
@@ -241,17 +241,17 @@ pre code.hljs{display:block;overflow-x:auto}
 <p>Because <code>editable: [&quot;preview.body&quot;]</code> is set, the attorney&#39;s markup happens directly in the approval UI rather than in a separate redline tool — useful for small wording fixes, not a replacement for full document review when the change is substantial.</p>
 <hr>
 <h2 id="where-this-fits-and-where-it-doesn39t">Where this fits, and where it doesn&#39;t</h2>
-<p>Impri is the approval gate only — it doesn&#39;t understand contract law, doesn&#39;t flag risky clauses, and doesn&#39;t replace your document management or e-signature system. Use it for the specific moment where an agent-generated draft needs a named human&#39;s yes/no before it moves to the next step (sending, merging, filing). It is not a workflow engine: if a clause needs review by two different attorneys in sequence, chain two Impri actions or run it as a step inside something like n8n or Temporal that owns that sequencing.</p>
+<p>Airlock is the approval gate only — it doesn&#39;t understand contract law, doesn&#39;t flag risky clauses, and doesn&#39;t replace your document management or e-signature system. Use it for the specific moment where an agent-generated draft needs a named human&#39;s yes/no before it moves to the next step (sending, merging, filing). It is not a workflow engine: if a clause needs review by two different attorneys in sequence, chain two Airlock actions or run it as a step inside something like n8n or Temporal that owns that sequencing.</p>
 <p>The gate is only as strong as the wrapper around it, too. If the agent retains direct API access to your document system or email client, wrap that access so the &quot;send&quot; or &quot;merge&quot; function can only be called with an <code>approved</code> decision object — not just at the point shown in the example above.</p>
 <hr>
 <h2 id="next-step">Next step</h2>
-<p>Read <a href="how-to-add-human-approval-to-an-ai-agent">how to add human approval to an AI agent</a> for the underlying pattern, <a href="sdk-typescript">the TypeScript SDK</a> if you&#39;d rather not hand-roll the fetch calls, and <a href="integrations">integrations</a> for wrapping the actual send/merge tool so Impri is the only path to it.</p>
+<p>Read <a href="how-to-add-human-approval-to-an-ai-agent">how to add human approval to an AI agent</a> for the underlying pattern, <a href="sdk-typescript">the TypeScript SDK</a> if you&#39;d rather not hand-roll the fetch calls, and <a href="integrations">integrations</a> for wrapping the actual send/merge tool so Airlock is the only path to it.</p>
 
-    <aside class="doc-cta" aria-label="Try Impri">
+    <aside class="doc-cta" aria-label="Try Airlock">
   <p class="doc-cta-title">Add an approval step to your own agent</p>
-  <p>Start on Impri Cloud: the Free tier includes 100 approvals a month. Or self-host the MIT-licensed core with Docker Compose, with no tier limits.</p>
+  <p>Start on Airlock Cloud: the Free tier includes 100 approvals a month. Or self-host the MIT-licensed core with Docker Compose, with no tier limits.</p>
   <div class="doc-cta-actions">
-    <a class="btn btn-primary btn-sm" href="https://app.impri.dev/?signup=1">Start free on Impri Cloud</a>
+    <a class="btn btn-primary btn-sm" href="https://app.airlock.dev/?signup=1">Start free on Airlock Cloud</a>
     <a class="btn btn-ghost btn-sm" href="../docs/quickstart">Quick start</a>
     <a class="btn btn-ghost btn-sm" href="../docs/self-hosting">Self-host guide</a>
   </div>
@@ -346,19 +346,19 @@ pre code.hljs{display:block;overflow-x:auto}
 <footer class="footer">
 <div class="wrap footer-inner">
   <a class="brand" href="/">
-    <span class="mark"><svg viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.5 4.5L19 7.5" stroke="white" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Impri
+    <span class="mark"><svg viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.5 4.5L19 7.5" stroke="white" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Airlock
   </a>
   <div>
-    <a href="https://gitlab.com/sekera.radim/impri">GitLab</a>
+    <a href="https://gitlab.com/sekera.radim/airlock">GitLab</a>
     <a href="/docs">Docs</a>
-    <a href="https://gitlab.com/sekera.radim/impri/-/blob/main/LICENSE">MIT License</a>
-    <a href="https://www.npmjs.com/package/@impri/mcp">@impri/mcp</a>
+    <a href="https://gitlab.com/sekera.radim/airlock/-/blob/main/LICENSE">MIT License</a>
+    <a href="https://www.npmjs.com/package/@airlock/mcp">@airlock/mcp</a>
     <a href="/docs/privacy">Privacy</a>
     <a href="/docs/terms">Terms</a>
     <a href="https://sekera.dev">Contact</a>
   </div>
 </div>
-<div class="wrap" style="margin-top:18px"><span class="muted">© 2026 Impri · The imprimatur for your AI agents · Built by <a href="https://sekera.dev" style="color:inherit">Radim Sekera</a>. Also by the same maker: <a href="https://briefgate.dev/?utm_source=impri.dev&amp;utm_medium=referral" style="color:inherit">BriefGate</a> — client intake for agencies and AI agents.</span></div>
+<div class="wrap" style="margin-top:18px"><span class="muted">© 2026 Airlock · The airlockmatur for your AI agents · Built by <a href="https://sekera.dev" style="color:inherit">Radim Sekera</a>. Also by the same maker: <a href="https://briefgate.dev/?utm_source=airlock.dev&amp;utm_medium=referral" style="color:inherit">BriefGate</a> — client intake for agencies and AI agents.</span></div>
 </footer>
 </body>
 </html>

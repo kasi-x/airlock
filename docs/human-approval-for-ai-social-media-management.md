@@ -22,8 +22,8 @@ The gate has to match the shape of the workload: fast per-item review where it's
 # Agent drafts replies to 3 overnight DMs across 2 client accounts
 for draft in "${DRAFTS[@]}"; do
   IFS='|' read -r account handle body <<< "$draft"
-  curl -s -X POST https://api.impri.dev/v1/actions \
-    -H "Authorization: Bearer $IMPRI_API_KEY" \
+  curl -s -X POST https://api.airlock.dev/v1/actions \
+    -H "Authorization: Bearer $AIRLOCK_API_KEY" \
     -H "Content-Type: application/json" \
     -d "{
       \"kind\": \"social.dm_reply\",
@@ -42,8 +42,8 @@ Each account gets its own `title` prefix so a reviewer scanning the Slack channe
 Once the reviewer has skimmed the batch and only wants to greenlight the routine replies (not the two that need edits), a single call decides the rest:
 
 ```bash
-curl -s -X POST https://api.impri.dev/v1/actions/bulk-decision \
-  -H "Authorization: Bearer $IMPRI_API_KEY" \
+curl -s -X POST https://api.airlock.dev/v1/actions/bulk-decision \
+  -H "Authorization: Bearer $AIRLOCK_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "action_ids": ["act_a1", "act_a2", "act_a3"],
@@ -56,12 +56,12 @@ The agent's polling loop for each `action_id` sees `status: "approved"` exactly 
 ## What the agent does after a decision lands
 
 ```bash
-STATUS=$(curl -s https://api.impri.dev/v1/actions/$ACTION_ID -H "Authorization: Bearer $IMPRI_API_KEY")
+STATUS=$(curl -s https://api.airlock.dev/v1/actions/$ACTION_ID -H "Authorization: Bearer $AIRLOCK_API_KEY")
 if [ "$(echo $STATUS | jq -r .status)" = "approved" ]; then
   BODY=$(echo $STATUS | jq -r '.decision.final_preview.body')
   post_dm_reply "$ACCOUNT" "$HANDLE" "$BODY"   # your platform call, wrapped so it can't run otherwise
-  curl -s -X POST https://api.impri.dev/v1/actions/$ACTION_ID/result \
-    -H "Authorization: Bearer $IMPRI_API_KEY" -H "Content-Type: application/json" -d '{"status": "executed"}'
+  curl -s -X POST https://api.airlock.dev/v1/actions/$ACTION_ID/result \
+    -H "Authorization: Bearer $AIRLOCK_API_KEY" -H "Content-Type: application/json" -d '{"status": "executed"}'
 fi
 ```
 
@@ -69,6 +69,6 @@ Nothing distinguishes a bulk-approved reply from an individually-approved one at
 
 ## What this doesn't cover
 
-Impri stores the drafts, notifies the right Slack channel, and holds each decision — it doesn't know which of your client accounts is under a strict brand guideline this week, doesn't moderate the incoming comments for abuse itself, and doesn't manage the content calendar or posting schedule. Whoever reviews the batch is still the one judging tone and accuracy; Impri's job is making sure that judgment happens before anything goes out, at whatever volume the account load actually requires.
+Airlock stores the drafts, notifies the right Slack channel, and holds each decision — it doesn't know which of your client accounts is under a strict brand guideline this week, doesn't moderate the incoming comments for abuse itself, and doesn't manage the content calendar or posting schedule. Whoever reviews the batch is still the one judging tone and accuracy; Airlock's job is making sure that judgment happens before anything goes out, at whatever volume the account load actually requires.
 
 Next step: [quickstart](quickstart.md) to get an API key, then wire up [Slack approval](slack-approval.md) so your account managers never have to leave the channel they already work in.

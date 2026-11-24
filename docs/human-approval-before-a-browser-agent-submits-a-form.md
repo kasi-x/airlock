@@ -19,9 +19,9 @@ Below, the agent has already filled in a contact form and has the field values i
 ```typescript
 import { readFile } from "node:fs/promises";
 
-const API = "https://api.impri.dev/v1/actions";
+const API = "https://api.airlock.dev/v1/actions";
 const HEADERS = {
-  Authorization: `Bearer ${process.env.IMPRI_API_KEY}`,
+  Authorization: `Bearer ${process.env.AIRLOCK_API_KEY}`,
   "Content-Type": "application/json",
 };
 
@@ -84,7 +84,7 @@ Nothing between `requestSubmitApproval` returning `"rejected"` and the function 
 | Fill text inputs, select dropdowns | No |
 | Click submit / checkout / confirm | **Yes** |
 
-Impri has no idea what Playwright or Puppeteer are, and it never touches the browser — it only stores the proposed field values and holds a human decision. The gate is only real if the submit click is the agent's one way to trigger the side effect. If the same agent also has a direct API client for the same backend (skipping the form entirely), that path needs its own wrapper, or it becomes the way around the gate.
+Airlock has no idea what Playwright or Puppeteer are, and it never touches the browser — it only stores the proposed field values and holds a human decision. The gate is only real if the submit click is the agent's one way to trigger the side effect. If the same agent also has a direct API client for the same backend (skipping the form entirely), that path needs its own wrapper, or it becomes the way around the gate.
 
 For multi-agent browser fleets where several agents each propose form submissions, [the audit log](audit-log.md) is where you'd later confirm who approved what and when.
 
@@ -92,4 +92,4 @@ For multi-agent browser fleets where several agents each propose form submission
 
 ## Next step
 
-If this is your first Impri integration, read [how to add human approval to an AI agent](how-to-add-human-approval-to-an-ai-agent.md) for the full three-call pattern, or use the [TypeScript SDK](sdk-typescript.md) instead of raw `fetch` calls. See [integrations](integrations.md) for wrapping a tool function so the approved path really is the only path.
+If this is your first Airlock integration, read [how to add human approval to an AI agent](how-to-add-human-approval-to-an-ai-agent.md) for the full three-call pattern, or use the [TypeScript SDK](sdk-typescript.md) instead of raw `fetch` calls. See [integrations](integrations.md) for wrapping a tool function so the approved path really is the only path.

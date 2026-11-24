@@ -3,21 +3,21 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>AI Agent Approval Workflow — Impri Docs</title>
+<title>AI Agent Approval Workflow — Airlock Docs</title>
 <meta name="description" content="An AI agent approval workflow pauses an agent right before a risky action so a person can approve, reject, or edit it before anything actually runs.">
 <meta name="theme-color" content="#06070d">
-<meta property="og:title" content="AI Agent Approval Workflow — Impri Docs">
+<meta property="og:title" content="AI Agent Approval Workflow — Airlock Docs">
 <meta property="og:description" content="An AI agent approval workflow pauses an agent right before a risky action so a person can approve, reject, or edit it before anything actually runs.">
 <meta property="og:type" content="article">
-<meta property="og:url" content="https://impri.dev/docs/ai-agent-approval-workflow">
-<meta property="og:image" content="https://impri.dev/assets/og/og-docs.png">
+<meta property="og:url" content="https://airlock.dev/docs/ai-agent-approval-workflow">
+<meta property="og:image" content="https://airlock.dev/assets/og/og-docs.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
-<meta property="og:image:alt" content="Impri — human-in-the-loop approval inbox for AI agents">
+<meta property="og:image:alt" content="Airlock — human-in-the-loop approval inbox for AI agents">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="https://impri.dev/assets/og/og-docs.png">
-<link rel="canonical" href="https://impri.dev/docs/ai-agent-approval-workflow">
-<script type="application/ld+json">{"@context":"https://schema.org","@type":"TechArticle","headline":"AI Agent Approval Workflow","description":"An AI agent approval workflow pauses an agent right before a risky action so a person can approve, reject, or edit it before anything actually runs.","url":"https://impri.dev/docs/ai-agent-approval-workflow","inLanguage":"en","author":{"@type":"Organization","name":"Impri","url":"https://impri.dev"},"publisher":{"@type":"Organization","name":"Impri","url":"https://impri.dev"}}</script>
+<meta name="twitter:image" content="https://airlock.dev/assets/og/og-docs.png">
+<link rel="canonical" href="https://airlock.dev/docs/ai-agent-approval-workflow">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"TechArticle","headline":"AI Agent Approval Workflow","description":"An AI agent approval workflow pauses an agent right before a risky action so a person can approve, reject, or edit it before anything actually runs.","url":"https://airlock.dev/docs/ai-agent-approval-workflow","inLanguage":"en","author":{"@type":"Organization","name":"Airlock","url":"https://airlock.dev"},"publisher":{"@type":"Organization","name":"Airlock","url":"https://airlock.dev"}}</script>
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <link rel="icon" href="/favicon.ico" sizes="32x32">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='9' fill='%236366f1'/%3E%3Cpath d='M9 16.5l4.5 4.5L23 11' stroke='white' stroke-width='3' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
@@ -132,13 +132,13 @@ pre code.hljs{display:block;overflow-x:auto}
 <div class="wrap nav-inner">
   <a class="brand" href="/">
     <span class="mark"><svg viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.5 4.5L19 7.5" stroke="white" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
-    Impri
+    Airlock
   </a>
   <div class="nav-links">
     <a class="link" href="/#how">How it works</a>
     <a class="link" href="/#pricing">Pricing</a>
     <a class="link active-nav" href="../docs">Docs</a>
-    <a class="btn btn-primary btn-sm" href="https://gitlab.com/sekera.radim/impri">GitLab</a>
+    <a class="btn btn-primary btn-sm" href="https://gitlab.com/sekera.radim/airlock">GitLab</a>
   </div>
 </div>
 </nav>
@@ -213,8 +213,8 @@ pre code.hljs{display:block;overflow-x:auto}
 <li><a href="hitl-tools-for-llm-agents-compared">HITL tools for LLM agents, compared</a> — how a dedicated approval gate differs from a workflow engine or a Slack bot you&#39;d build yourself.</li>
 </ul>
 <hr>
-<h2 id="how-impri-implements-this">How Impri implements this</h2>
-<p>Impri is the gate in the middle of that diagram, not the agent and not the execution step. An agent calls <code>POST /v1/actions</code> with a preview of what it wants to do; a human sees a card in a web, Slack, Discord, or Telegram inbox and approves, rejects, or edits it; the agent polls or receives a webhook and executes only on approval, then reports the outcome back. <a href="rules">Rules</a> can auto-decide routine matches before a human ever sees them, and every step — created, rule-applied, decided, executed — lands in an append-only <a href="audit-log">audit log</a>. Impri never executes the action itself and doesn&#39;t judge whether a decision was the right call; it holds the queue and the record. Start with <a href="quickstart">quickstart</a> for an API key, or <a href="how-to-add-human-approval-to-an-ai-agent">how to add human approval to an AI agent</a> for the full integration.</p>
+<h2 id="how-airlock-implements-this">How Airlock implements this</h2>
+<p>Airlock is the gate in the middle of that diagram, not the agent and not the execution step. An agent calls <code>POST /v1/actions</code> with a preview of what it wants to do; a human sees a card in a web, Slack, Discord, or Telegram inbox and approves, rejects, or edits it; the agent polls or receives a webhook and executes only on approval, then reports the outcome back. <a href="rules">Rules</a> can auto-decide routine matches before a human ever sees them, and every step — created, rule-applied, decided, executed — lands in an append-only <a href="audit-log">audit log</a>. Airlock never executes the action itself and doesn&#39;t judge whether a decision was the right call; it holds the queue and the record. Start with <a href="quickstart">quickstart</a> for an API key, or <a href="how-to-add-human-approval-to-an-ai-agent">how to add human approval to an AI agent</a> for the full integration.</p>
 
     
     
@@ -291,7 +291,7 @@ pre code.hljs{display:block;overflow-x:auto}
 <li class="ptoc-h2"><a href="#how-it-looks-in-practice">How it looks in practice</a></li>
 <li class="ptoc-h2"><a href="#decision-points-that-shape-a-workflow">Decision points that shape a workflow</a></li>
 <li class="ptoc-h2"><a href="#approval-workflows-by-use-case">Approval workflows by use case</a></li>
-<li class="ptoc-h2"><a href="#how-impri-implements-this">How Impri implements this</a></li></ul>
+<li class="ptoc-h2"><a href="#how-airlock-implements-this">How Airlock implements this</a></li></ul>
 </nav>
   </aside>
 </div>
@@ -299,19 +299,19 @@ pre code.hljs{display:block;overflow-x:auto}
 <footer class="footer">
 <div class="wrap footer-inner">
   <a class="brand" href="/">
-    <span class="mark"><svg viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.5 4.5L19 7.5" stroke="white" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Impri
+    <span class="mark"><svg viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.5 4.5L19 7.5" stroke="white" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Airlock
   </a>
   <div>
-    <a href="https://gitlab.com/sekera.radim/impri">GitLab</a>
+    <a href="https://gitlab.com/sekera.radim/airlock">GitLab</a>
     <a href="/docs">Docs</a>
-    <a href="https://gitlab.com/sekera.radim/impri/-/blob/main/LICENSE">MIT License</a>
-    <a href="https://www.npmjs.com/package/@impri/mcp">@impri/mcp</a>
+    <a href="https://gitlab.com/sekera.radim/airlock/-/blob/main/LICENSE">MIT License</a>
+    <a href="https://www.npmjs.com/package/@airlock/mcp">@airlock/mcp</a>
     <a href="/docs/privacy">Privacy</a>
     <a href="/docs/terms">Terms</a>
     <a href="https://sekera.dev">Contact</a>
   </div>
 </div>
-<div class="wrap" style="margin-top:18px"><span class="muted">© 2026 Impri · The imprimatur for your AI agents · Built by <a href="https://sekera.dev" style="color:inherit">Radim Sekera</a>. Also by the same maker: <a href="https://briefgate.dev/?utm_source=impri.dev&amp;utm_medium=referral" style="color:inherit">BriefGate</a> — client intake for agencies and AI agents.</span></div>
+<div class="wrap" style="margin-top:18px"><span class="muted">© 2026 Airlock · The airlockmatur for your AI agents · Built by <a href="https://sekera.dev" style="color:inherit">Radim Sekera</a>. Also by the same maker: <a href="https://briefgate.dev/?utm_source=airlock.dev&amp;utm_medium=referral" style="color:inherit">BriefGate</a> — client intake for agencies and AI agents.</span></div>
 </footer>
 </body>
 </html>

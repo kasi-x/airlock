@@ -3,21 +3,21 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Human Approval Before an Agent Sends SMS — Impri Docs</title>
+<title>Human Approval Before an Agent Sends SMS — Airlock Docs</title>
 <meta name="description" content="An AI agent that can text customers can also text the wrong customer, at 2am, with a broken merge field — add a human approval gate before any SMS goes out…">
 <meta name="theme-color" content="#06070d">
-<meta property="og:title" content="Human Approval Before an Agent Sends SMS — Impri Docs">
+<meta property="og:title" content="Human Approval Before an Agent Sends SMS — Airlock Docs">
 <meta property="og:description" content="An AI agent that can text customers can also text the wrong customer, at 2am, with a broken merge field — add a human approval gate before any SMS goes out…">
 <meta property="og:type" content="article">
-<meta property="og:url" content="https://impri.dev/docs/human-approval-before-an-agent-sends-sms">
-<meta property="og:image" content="https://impri.dev/assets/og/og-docs.png">
+<meta property="og:url" content="https://airlock.dev/docs/human-approval-before-an-agent-sends-sms">
+<meta property="og:image" content="https://airlock.dev/assets/og/og-docs.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
-<meta property="og:image:alt" content="Impri — human-in-the-loop approval inbox for AI agents">
+<meta property="og:image:alt" content="Airlock — human-in-the-loop approval inbox for AI agents">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="https://impri.dev/assets/og/og-docs.png">
-<link rel="canonical" href="https://impri.dev/docs/human-approval-before-an-agent-sends-sms">
-<script type="application/ld+json">{"@context":"https://schema.org","@type":"TechArticle","headline":"Human Approval Before an Agent Sends SMS","description":"An AI agent that can text customers can also text the wrong customer, at 2am, with a broken merge field — add a human approval gate before any SMS goes out…","url":"https://impri.dev/docs/human-approval-before-an-agent-sends-sms","inLanguage":"en","author":{"@type":"Organization","name":"Impri","url":"https://impri.dev"},"publisher":{"@type":"Organization","name":"Impri","url":"https://impri.dev"}}</script>
+<meta name="twitter:image" content="https://airlock.dev/assets/og/og-docs.png">
+<link rel="canonical" href="https://airlock.dev/docs/human-approval-before-an-agent-sends-sms">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"TechArticle","headline":"Human Approval Before an Agent Sends SMS","description":"An AI agent that can text customers can also text the wrong customer, at 2am, with a broken merge field — add a human approval gate before any SMS goes out…","url":"https://airlock.dev/docs/human-approval-before-an-agent-sends-sms","inLanguage":"en","author":{"@type":"Organization","name":"Airlock","url":"https://airlock.dev"},"publisher":{"@type":"Organization","name":"Airlock","url":"https://airlock.dev"}}</script>
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <link rel="icon" href="/favicon.ico" sizes="32x32">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='9' fill='%236366f1'/%3E%3Cpath d='M9 16.5l4.5 4.5L23 11' stroke='white' stroke-width='3' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
@@ -132,13 +132,13 @@ pre code.hljs{display:block;overflow-x:auto}
 <div class="wrap nav-inner">
   <a class="brand" href="/">
     <span class="mark"><svg viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.5 4.5L19 7.5" stroke="white" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
-    Impri
+    Airlock
   </a>
   <div class="nav-links">
     <a class="link" href="/#how">How it works</a>
     <a class="link" href="/#pricing">Pricing</a>
     <a class="link active-nav" href="../docs">Docs</a>
-    <a class="btn btn-primary btn-sm" href="https://gitlab.com/sekera.radim/impri">GitLab</a>
+    <a class="btn btn-primary btn-sm" href="https://gitlab.com/sekera.radim/airlock">GitLab</a>
   </div>
 </div>
 </nav>
@@ -159,14 +159,14 @@ pre code.hljs{display:block;overflow-x:auto}
 <p>Email has a delete-before-read grace period. SMS doesn&#39;t. It lands on a phone, in a notification, usually within seconds — there is no draft folder, no &quot;recall message,&quot; and no spam filter quietly eating the mistake. If your agent drafts appointment reminders, shipping updates, or re-engagement texts, a bad run (wrong phone number pulled from a stale record, a broken template variable rendering as <code>{{first_name}}</code>, a message meant for internal QA going to a real customer) becomes a customer-facing incident immediately.</p>
 <p>Twilio, Vonage, and similar providers will happily send whatever string you hand them — they don&#39;t know if the content makes sense. That check has to happen before the API call, and it has to be a human, not another prompt asking the model to &quot;double-check itself.&quot;</p>
 <h2 id="the-gate-in-practice">The gate in practice</h2>
-<p>Say you run a scheduling agent for a dental clinic. It reads tomorrow&#39;s appointment list, drafts a reminder text per patient, and used to call the Twilio API directly. Now it pushes each draft to Impri first and only sends after a receptionist approves it:</p>
+<p>Say you run a scheduling agent for a dental clinic. It reads tomorrow&#39;s appointment list, drafts a reminder text per patient, and used to call the Twilio API directly. Now it pushes each draft to Airlock first and only sends after a receptionist approves it:</p>
 <div class="code-block"><span class="code-lang">python</span><pre><code class="hljs"><span class="hljs-keyword">import</span> os
 <span class="hljs-keyword">import</span> time
 <span class="hljs-keyword">import</span> requests
 
-IMPRI_KEY = os.environ[<span class="hljs-string">&quot;IMPRI_API_KEY&quot;</span>]
-BASE = <span class="hljs-string">&quot;https://api.impri.dev&quot;</span>
-HEADERS = {<span class="hljs-string">&quot;Authorization&quot;</span>: <span class="hljs-string">f&quot;Bearer <span class="hljs-subst">{IMPRI_KEY}</span>&quot;</span>, <span class="hljs-string">&quot;Content-Type&quot;</span>: <span class="hljs-string">&quot;application/json&quot;</span>}
+AIRLOCK_KEY = os.environ[<span class="hljs-string">&quot;AIRLOCK_API_KEY&quot;</span>]
+BASE = <span class="hljs-string">&quot;https://api.airlock.dev&quot;</span>
+HEADERS = {<span class="hljs-string">&quot;Authorization&quot;</span>: <span class="hljs-string">f&quot;Bearer <span class="hljs-subst">{AIRLOCK_KEY}</span>&quot;</span>, <span class="hljs-string">&quot;Content-Type&quot;</span>: <span class="hljs-string">&quot;application/json&quot;</span>}
 
 <span class="hljs-keyword">def</span> <span class="hljs-title function_">push_sms_for_approval</span>(<span class="hljs-params">to_number, body</span>):
     resp = requests.post(<span class="hljs-string">f&quot;<span class="hljs-subst">{BASE}</span>/v1/actions&quot;</span>, headers=HEADERS, json={
@@ -199,19 +199,19 @@ decision = wait_for_decision(action_id)
                   json={<span class="hljs-string">&quot;status&quot;</span>: <span class="hljs-string">&quot;executed&quot;</span>})</code></pre></div>
 <p>The Twilio call is inside the <code>if approved</code> branch and nowhere else in the codebase — that&#39;s what makes this a real gate rather than a formality. If the agent (or a bug, or a prompt-injected instruction from some upstream data source) tries to skip straight to <code>twilio_client.messages.create(...)</code>, it still needs the API key and the wrapper, and neither one is reachable outside that branch.</p>
 <h2 id="what-the-receptionist-sees-and-why-editable-matters">What the receptionist sees, and why editable matters</h2>
-<p>Setting <code>editable: [&quot;preview.body&quot;]</code> means the approval card in the inbox isn&#39;t just an approve/reject button — the receptionist can fix a typo, adjust the tone, or correct a name before sending, and Impri returns that edited text as <code>decision.final_preview.body</code>. Always send that field, never the original <code>preview.body</code>; if a human touched the message, the original is not what should go out.</p>
+<p>Setting <code>editable: [&quot;preview.body&quot;]</code> means the approval card in the inbox isn&#39;t just an approve/reject button — the receptionist can fix a typo, adjust the tone, or correct a name before sending, and Airlock returns that edited text as <code>decision.final_preview.body</code>. Always send that field, never the original <code>preview.body</code>; if a human touched the message, the original is not what should go out.</p>
 <p>This matters more for SMS than most channels because there&#39;s no second chance to clarify. An email with an awkward phrase gets a follow-up. A text that says &quot;your appointment is cancelled&quot; instead of &quot;your appointment is confirmed&quot; because of one autocorrected word gets a phone call from a confused patient.</p>
 <h2 id="rate-limits-and-batch-runs">Rate limits and batch runs</h2>
 <p>If your agent processes a full day&#39;s appointment list in one run, it might push 40-50 actions in a burst. <code>POST /v1/actions</code> is capped at 60 requests per minute per key, which comfortably covers a clinic&#39;s daily volume — but if you&#39;re running this for a larger operation (a pharmacy chain, a multi-location practice), stagger the pushes or use separate keys per location rather than hammering one key past the limit.</p>
 <h2 id="boundaries">Boundaries</h2>
-<p>Impri stores the drafted message, notifies the reviewer, and holds the decision — it does not read the message content, does not know what &quot;sounds right&quot; for your clinic&#39;s tone, and does not talk to Twilio on your behalf. Your agent still owns sending the SMS; Impri owns making sure a human said yes first. For the two other integration paths (MCP tool calls instead of raw HTTP, and wiring the executor so the credential genuinely can&#39;t be reached without an approval) see the <a href="how-to-add-human-approval-to-an-ai-agent">main integration guide</a>.</p>
-<p>If you want the reviewer to approve straight from Slack instead of the web inbox, see <a href="slack-approval">Slack approval</a>. New to Impri? Start with the <a href="quickstart">quickstart</a>.</p>
+<p>Airlock stores the drafted message, notifies the reviewer, and holds the decision — it does not read the message content, does not know what &quot;sounds right&quot; for your clinic&#39;s tone, and does not talk to Twilio on your behalf. Your agent still owns sending the SMS; Airlock owns making sure a human said yes first. For the two other integration paths (MCP tool calls instead of raw HTTP, and wiring the executor so the credential genuinely can&#39;t be reached without an approval) see the <a href="how-to-add-human-approval-to-an-ai-agent">main integration guide</a>.</p>
+<p>If you want the reviewer to approve straight from Slack instead of the web inbox, see <a href="slack-approval">Slack approval</a>. New to Airlock? Start with the <a href="quickstart">quickstart</a>.</p>
 
-    <aside class="doc-cta" aria-label="Try Impri">
+    <aside class="doc-cta" aria-label="Try Airlock">
   <p class="doc-cta-title">Add an approval step to your own agent</p>
-  <p>Start on Impri Cloud: the Free tier includes 100 approvals a month. Or self-host the MIT-licensed core with Docker Compose, with no tier limits.</p>
+  <p>Start on Airlock Cloud: the Free tier includes 100 approvals a month. Or self-host the MIT-licensed core with Docker Compose, with no tier limits.</p>
   <div class="doc-cta-actions">
-    <a class="btn btn-primary btn-sm" href="https://app.impri.dev/?signup=1">Start free on Impri Cloud</a>
+    <a class="btn btn-primary btn-sm" href="https://app.airlock.dev/?signup=1">Start free on Airlock Cloud</a>
     <a class="btn btn-ghost btn-sm" href="../docs/quickstart">Quick start</a>
     <a class="btn btn-ghost btn-sm" href="../docs/self-hosting">Self-host guide</a>
   </div>
@@ -306,19 +306,19 @@ decision = wait_for_decision(action_id)
 <footer class="footer">
 <div class="wrap footer-inner">
   <a class="brand" href="/">
-    <span class="mark"><svg viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.5 4.5L19 7.5" stroke="white" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Impri
+    <span class="mark"><svg viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.5 4.5L19 7.5" stroke="white" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Airlock
   </a>
   <div>
-    <a href="https://gitlab.com/sekera.radim/impri">GitLab</a>
+    <a href="https://gitlab.com/sekera.radim/airlock">GitLab</a>
     <a href="/docs">Docs</a>
-    <a href="https://gitlab.com/sekera.radim/impri/-/blob/main/LICENSE">MIT License</a>
-    <a href="https://www.npmjs.com/package/@impri/mcp">@impri/mcp</a>
+    <a href="https://gitlab.com/sekera.radim/airlock/-/blob/main/LICENSE">MIT License</a>
+    <a href="https://www.npmjs.com/package/@airlock/mcp">@airlock/mcp</a>
     <a href="/docs/privacy">Privacy</a>
     <a href="/docs/terms">Terms</a>
     <a href="https://sekera.dev">Contact</a>
   </div>
 </div>
-<div class="wrap" style="margin-top:18px"><span class="muted">© 2026 Impri · The imprimatur for your AI agents · Built by <a href="https://sekera.dev" style="color:inherit">Radim Sekera</a>. Also by the same maker: <a href="https://briefgate.dev/?utm_source=impri.dev&amp;utm_medium=referral" style="color:inherit">BriefGate</a> — client intake for agencies and AI agents.</span></div>
+<div class="wrap" style="margin-top:18px"><span class="muted">© 2026 Airlock · The airlockmatur for your AI agents · Built by <a href="https://sekera.dev" style="color:inherit">Radim Sekera</a>. Also by the same maker: <a href="https://briefgate.dev/?utm_source=airlock.dev&amp;utm_medium=referral" style="color:inherit">BriefGate</a> — client intake for agencies and AI agents.</span></div>
 </footer>
 </body>
 </html>

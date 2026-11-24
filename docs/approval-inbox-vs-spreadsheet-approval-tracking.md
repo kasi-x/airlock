@@ -39,8 +39,8 @@ The agent pushes the proposal and waits for the API to return a decision instead
 ```python
 import os, time, requests
 
-BASE = "https://api.impri.dev"
-H = {"Authorization": f"Bearer {os.environ['IMPRI_API_KEY']}"}
+BASE = "https://api.airlock.dev"
+H = {"Authorization": f"Bearer {os.environ['AIRLOCK_API_KEY']}"}
 
 action = requests.post(f"{BASE}/v1/actions", headers=H, json={
     "kind": "email.send",
@@ -82,7 +82,7 @@ if r["status"] == "approved":
 
 ## What an inbox does not fix
 
-Impri is only the gate. It stores the proposed action, notifies a human and holds the decision. It does not write the draft, interpret the action or execute anything.
+Airlock is only the gate. It stores the proposed action, notifies a human and holds the decision. It does not write the draft, interpret the action or execute anything.
 
 It is a real gate only if the wrapped tool is the agent's **only** path to the side effect. An agent that still holds the raw email credential can skip the inbox just as easily as it could skip a spreadsheet. It is also not a workflow engine, not content moderation and not agent-to-agent coordination.
 

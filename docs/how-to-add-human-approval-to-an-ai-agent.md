@@ -13,8 +13,8 @@ Any HTTP client works. The agent needs three calls.
 **1. Push the action:**
 
 ```bash
-ACTION=$(curl -s -X POST https://api.impri.dev/v1/actions \
-  -H "Authorization: Bearer $IMPRI_API_KEY" \
+ACTION=$(curl -s -X POST https://api.airlock.dev/v1/actions \
+  -H "Authorization: Bearer $AIRLOCK_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "kind": "email.send",
@@ -35,8 +35,8 @@ ACTION_ID=$(echo $ACTION | jq -r .id)
 
 ```bash
 while true; do
-  RESULT=$(curl -s https://api.impri.dev/v1/actions/$ACTION_ID \
-    -H "Authorization: Bearer $IMPRI_API_KEY")
+  RESULT=$(curl -s https://api.airlock.dev/v1/actions/$ACTION_ID \
+    -H "Authorization: Bearer $AIRLOCK_API_KEY")
   STATUS=$(echo $RESULT | jq -r .status)
 
   if [ "$STATUS" != "pending" ]; then
@@ -55,8 +55,8 @@ if [ "$STATUS" = "approved" ]; then
   BODY=$(echo $RESULT | jq -r '.decision.final_preview.body')
   send_email "$BODY"  # your sending function
 
-  curl -s -X POST https://api.impri.dev/v1/actions/$ACTION_ID/result \
-    -H "Authorization: Bearer $IMPRI_API_KEY" \
+  curl -s -X POST https://api.airlock.dev/v1/actions/$ACTION_ID/result \
+    -H "Authorization: Bearer $AIRLOCK_API_KEY" \
     -H "Content-Type: application/json" \
     -d '{"status": "executed"}'
 fi
@@ -64,36 +64,36 @@ fi
 
 A rejected or expired action is never executed — the polling loop exits and the execution block is never reached.
 
-New to Impri? [Quickstart](quickstart.md) walks through getting a key first (cloud or self-host). For the bigger picture — decision points, timeouts, escalation, and links by use case — see [AI agent approval workflow](ai-agent-approval-workflow.md).
+New to Airlock? [Quickstart](quickstart.md) walks through getting a key first (cloud or self-host). For the bigger picture — decision points, timeouts, escalation, and links by use case — see [AI agent approval workflow](ai-agent-approval-workflow.md).
 
 ---
 
 ## Minimal integration — MCP
 
-For agents running inside Claude Code, Claude Desktop, or any MCP client, the [Impri MCP approval server](mcp-approval-server-for-ai-agents.md) wraps the REST calls into tool calls. The agent handles the flow without writing any HTTP code.
+For agents running inside Claude Code, Claude Desktop, or any MCP client, the [Airlock MCP approval server](mcp-approval-server-for-ai-agents.md) wraps the REST calls into tool calls. The agent handles the flow without writing any HTTP code.
 
 **Configure the MCP server** (add to your client's MCP config):
 
 ```json
 {
   "mcpServers": {
-    "impri": {
+    "airlock": {
       "command": "npx",
-      "args": ["@impri/mcp"],
+      "args": ["@airlock/mcp"],
       "env": {
-        "IMPRI_API_KEY": "im_your_key_here"
+        "AIRLOCK_API_KEY": "im_your_key_here"
       }
     }
   }
 }
 ```
 
-The `IMPRI_BASE_URL` defaults to `http://localhost:8484`. For the cloud API set it to `https://api.impri.dev`.
+The `AIRLOCK_BASE_URL` defaults to `http://localhost:8484`. For the cloud API set it to `https://api.airlock.dev`.
 
 **The agent flow in natural language (as seen by the agent):**
 
 ```
-1. impri_push_action(
+1. airlock_push_action(
      kind="blog.publish",
      title="Draft: 10 things I wish I knew about distributed tracing",
      preview={ format="markdown", body="..." },
@@ -103,17 +103,17 @@ The `IMPRI_BASE_URL` defaults to `http://localhost:8484`. For the cloud API set 
 
    → { action_id: "act_xyz", status: "pending", inbox_url: "..." }
 
-2. impri_await_decision(action_id="act_xyz", timeout_s=3600)
+2. airlock_await_decision(action_id="act_xyz", timeout_s=3600)
    # Blocks for up to 1 hour. The tool polls every 5 seconds internally.
 
    → { status: "approved", preview: { body: "..." }, edited_by_human: true }
 
 3. publish_post(content=decision.preview.body)  # your actual action
 
-4. impri_report_result(action_id="act_xyz", status="executed")
+4. airlock_report_result(action_id="act_xyz", status="executed")
 ```
 
-If the decision is `rejected` or `expired`, `impri_await_decision` returns that status and the agent stops without publishing.
+If the decision is `rejected` or `expired`, `airlock_await_decision` returns that status and the agent stops without publishing.
 
 ---
 
@@ -124,7 +124,7 @@ An agent that can send emails, post comments, publish content, or make API calls
 The naive solution — "just add a confirmation step in the prompt" — doesn't work reliably. The agent still has to be trusted to actually pause, and there is no audit record. What the three calls above give you instead is the [propose → approve → execute pattern](the-propose-approve-execute-pattern.md): the agent can only *propose* an action and must poll for an external decision before proceeding. The execution code is never reached without that decision:
 
 ```
-Agent                         Impri                          Human
+Agent                         Airlock                          Human
   │                             │                              │
   ├── POST /v1/actions ─────────▶ stores action, notifies ────▶ inbox card
   │   (kind, title, preview,    │                              │
@@ -139,34 +139,34 @@ Agent                         Impri                          Human
   └── POST /v1/actions/:id/result (executed | execute_failed)
 ```
 
-The key property: what gates execution is a data dependency — the API returning `status: "approved"` — not a "please confirm" line in a prompt that a model can talk itself past. Be precise about what that does and does not guarantee, though. It is a real gate only as long as the approved path is the agent's **only** path to the side effect. Wrap the target tool so its executor cannot run without the approved decision (see [the SDK integrations](integrations.md)) — that wrapper is the genuine chokepoint. Leave the agent holding the raw credential to call the service directly and it can route around Impri. Impri is a chokepoint you confine the agent to, not a network-level interceptor of every egress.
+The key property: what gates execution is a data dependency — the API returning `status: "approved"` — not a "please confirm" line in a prompt that a model can talk itself past. Be precise about what that does and does not guarantee, though. It is a real gate only as long as the approved path is the agent's **only** path to the side effect. Wrap the target tool so its executor cannot run without the approved decision (see [the SDK integrations](integrations.md)) — that wrapper is the genuine chokepoint. Leave the agent holding the raw credential to call the service directly and it can route around Airlock. Airlock is a chokepoint you confine the agent to, not a network-level interceptor of every egress.
 
 ---
 
-## What Impri provides, what it doesn't
+## What Airlock provides, what it doesn't
 
-Impri is focused on one thing: the approval gate. It stores the proposed action, notifies the human, and holds the decision. It does not generate content, does not interpret what the action does, and never executes anything itself.
+Airlock is focused on one thing: the approval gate. It stores the proposed action, notifies the human, and holds the decision. It does not generate content, does not interpret what the action does, and never executes anything itself.
 
 That's the whole approval process for an AI tool call: propose, hold, decide, execute. There's no separate "controls" layer to configure beyond the key scopes below and the [rules engine](rules.md) for auto-approving low-risk kinds — the process itself is the three calls above, not a dashboard of settings to tune first.
 
-This keeps the integration surface small and the responsibilities clear: your agent owns the logic of what to do; Impri owns the question of whether a human said yes.
+This keeps the integration surface small and the responsibilities clear: your agent owns the logic of what to do; Airlock owns the question of whether a human said yes.
 
-**What Impri is not:**
+**What Airlock is not:**
 
-- A workflow engine with branching, scheduling, or multi-step orchestration. If you need those, look at n8n, Temporal, or Inngest. You can use Impri as one step inside an n8n workflow.
+- A workflow engine with branching, scheduling, or multi-step orchestration. If you need those, look at n8n, Temporal, or Inngest. You can use Airlock as one step inside an n8n workflow.
 - A content moderation service. It does not review the content itself — it surfaces it to a specific human who you trust to make that call.
 - A multi-agent coordination layer. It is a human-in-the-loop gate, not an agent-to-agent handoff mechanism.
 
-**When Impri is the right tool:**
+**When Airlock is the right tool:**
 
-| Situation | Use Impri |
+| Situation | Use Airlock |
 |-----------|-----------|
 | Agent proposes external action (send, post, publish, modify) | Yes |
 | You want a one-tap approve/reject from your phone | Yes |
 | You need an audit log of what was approved, when, by whom | Yes |
 | You want the human to be able to edit the draft before approving | Yes |
 | You need to branch on many conditions before deciding | Consider n8n HITL node instead |
-| You need to coordinate multiple agents with dependencies | Use a workflow engine; Impri can be one node |
+| You need to coordinate multiple agents with dependencies | Use a workflow engine; Airlock can be one node |
 
 ---
 
@@ -207,8 +207,8 @@ In your agent, treat `expired` the same as `rejected` — do not execute and opt
 
 ```bash
 # Create with context hints
-curl -X POST https://api.impri.dev/v1/actions \
-  -H "Authorization: Bearer $IMPRI_API_KEY" \
+curl -X POST https://api.airlock.dev/v1/actions \
+  -H "Authorization: Bearer $AIRLOCK_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "kind": "record.create",
@@ -219,8 +219,8 @@ curl -X POST https://api.impri.dev/v1/actions \
   }'
 
 # Report result with receipt
-curl -X POST https://api.impri.dev/v1/actions/$ACTION_ID/result \
-  -H "Authorization: Bearer $IMPRI_API_KEY" \
+curl -X POST https://api.airlock.dev/v1/actions/$ACTION_ID/result \
+  -H "Authorization: Bearer $AIRLOCK_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{"status": "executed", "payload": {"customer_id": 99, "url": "https://app.example.com/customers/99"}}'
 ```
@@ -231,6 +231,6 @@ curl -X POST https://api.impri.dev/v1/actions/$ACTION_ID/result \
 
 **Rate limit**: `POST /v1/actions` is rate-limited to 60 requests per minute per API key. An agent caught in a loop will be throttled.
 
-**Prompt injection from external sources**: if your agent reads from RSS, web pages, or social media before constructing the action, those sources may contain adversarial instructions. Impri does not interpret action content — it presents it to you visually as a card. But you should still treat any external text as data, not instructions, in your agent's system prompt.
+**Prompt injection from external sources**: if your agent reads from RSS, web pages, or social media before constructing the action, those sources may contain adversarial instructions. Airlock does not interpret action content — it presents it to you visually as a card. But you should still treat any external text as data, not instructions, in your agent's system prompt.
 
 **Scopes**: use the minimum scope your key needs. A key used only for actions approval needs `actions` scope, not `admin`. Create separate keys for watchers (`watch` scope) if you use those.

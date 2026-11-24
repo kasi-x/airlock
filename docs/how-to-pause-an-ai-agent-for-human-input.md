@@ -20,14 +20,14 @@ If you're building on a graph-based framework (LangGraph, or a hand-rolled state
 import time
 import requests
 
-IMPRI_BASE = "https://api.impri.dev"
-HEADERS = {"Authorization": f"Bearer {IMPRI_API_KEY}"}
+AIRLOCK_BASE = "https://api.airlock.dev"
+HEADERS = {"Authorization": f"Bearer {AIRLOCK_API_KEY}"}
 
 def human_gate_node(state):
     """LangGraph node: pause the run until a human approves the pending action."""
     proposed = state["pending_action"]  # built by the previous agent node
 
-    resp = requests.post(f"{IMPRI_BASE}/v1/actions", headers=HEADERS, json={
+    resp = requests.post(f"{AIRLOCK_BASE}/v1/actions", headers=HEADERS, json={
         "kind": "db.schema_change",
         "title": f"Apply migration: {proposed['name']}",
         "preview": {"format": "markdown", "body": proposed["sql"]},
@@ -38,7 +38,7 @@ def human_gate_node(state):
 
     # Block the graph here. This is the pause.
     while True:
-        result = requests.get(f"{IMPRI_BASE}/v1/actions/{action_id}", headers=HEADERS).json()
+        result = requests.get(f"{AIRLOCK_BASE}/v1/actions/{action_id}", headers=HEADERS).json()
         if result["status"] != "pending":
             break
         time.sleep(5)
@@ -76,9 +76,9 @@ The moment `POST /v1/actions` returns, a card appears in the reviewer's inbox (a
 
 ## Pausing without a graph framework
 
-If your agent is a plain loop rather than a graph, the same pattern applies — the "pause" is just the function call that doesn't return until the action is decided. For agents running inside Claude Code or another MCP client, [`mcp.md`](mcp.md) wraps this exact poll loop into a single blocking tool call (`impri_await_decision`), so you don't hand-write the `while` loop at all.
+If your agent is a plain loop rather than a graph, the same pattern applies — the "pause" is just the function call that doesn't return until the action is decided. For agents running inside Claude Code or another MCP client, [`mcp.md`](mcp.md) wraps this exact poll loop into a single blocking tool call (`airlock_await_decision`), so you don't hand-write the `while` loop at all.
 
-Frameworks with their own pause fit the same shape. The OpenAI Agents SDK stops a run before any tool marked `needs_approval` and can save it as a `RunState`, so the wait can outlast the process: see [human-in-the-loop for the OpenAI Agents SDK](human-in-the-loop-openai-agents-sdk.md) for a version that turns each pause into an Impri card and resumes the run after the decision. Temporal does it with a signal: [Temporal human-in-the-loop with an approval inbox](human-in-the-loop-temporal-workflows-for-ai-agents.md) wakes the workflow from Impri's webhook. Pydantic AI ends the run with `DeferredToolRequests` when the model calls a tool marked `requires_approval`: [human-in-the-loop for Pydantic AI](human-in-the-loop-pydantic-ai.md) saves the message history and resumes it with the reviewer's decision. LlamaIndex pauses inside the tool itself with `ctx.wait_for_event`: [human-in-the-loop for LlamaIndex agents](human-in-the-loop-llamaindex-agents.md) saves the run when the card opens and resumes it in a second process after the decision.
+Frameworks with their own pause fit the same shape. The OpenAI Agents SDK stops a run before any tool marked `needs_approval` and can save it as a `RunState`, so the wait can outlast the process: see [human-in-the-loop for the OpenAI Agents SDK](human-in-the-loop-openai-agents-sdk.md) for a version that turns each pause into an Airlock card and resumes the run after the decision. Temporal does it with a signal: [Temporal human-in-the-loop with an approval inbox](human-in-the-loop-temporal-workflows-for-ai-agents.md) wakes the workflow from Airlock's webhook. Pydantic AI ends the run with `DeferredToolRequests` when the model calls a tool marked `requires_approval`: [human-in-the-loop for Pydantic AI](human-in-the-loop-pydantic-ai.md) saves the message history and resumes it with the reviewer's decision. LlamaIndex pauses inside the tool itself with `ctx.wait_for_event`: [human-in-the-loop for LlamaIndex agents](human-in-the-loop-llamaindex-agents.md) saves the run when the card opens and resumes it in a second process after the decision.
 
 ---
 
@@ -86,7 +86,7 @@ Frameworks with their own pause fit the same shape. The OpenAI Agents SDK stops 
 
 Everything above assumes the human answers a question about something the agent already drafted. Sometimes the agent is blocked on something it cannot draft at all: a client's logo, a login, a signed contract, facts only that person knows. An approval card is the wrong shape for that. The person is often outside your team, has no inbox in your tools, may take days, and needs typed fields and file uploads rather than an Approve button.
 
-The pause itself stays the same (stop, wait for an external event, resume), but the request goes to a collection tool instead of an approval queue. [BriefGate](https://briefgate.dev/docs/async-human-input-for-coding-agents), built by the same developer as Impri, does this: the agent lists the items it needs, the person gets a portal link that works without an account, BriefGate sends the reminders, and the agent resumes once the items are in.
+The pause itself stays the same (stop, wait for an external event, resume), but the request goes to a collection tool instead of an approval queue. [BriefGate](https://briefgate.dev/docs/async-human-input-for-coding-agents), built by the same developer as Airlock, does this: the agent lists the items it needs, the person gets a portal link that works without an account, BriefGate sends the reminders, and the agent resumes once the items are in.
 
 ```http
 POST https://api.briefgate.dev/v1/intakes
@@ -103,7 +103,7 @@ Content-Type: application/json
 }
 ```
 
-The agent then checks `GET /v1/intakes/:id/status` (or the `get_intake_status` MCP tool) and reads the values with `GET /v1/intakes/:id/results` when they arrive. Plenty of agents need both: collect the inputs with BriefGate, then send the finished draft through Impri for approval before anything goes live.
+The agent then checks `GET /v1/intakes/:id/status` (or the `get_intake_status` MCP tool) and reads the values with `GET /v1/intakes/:id/results` when they arrive. Plenty of agents need both: collect the inputs with BriefGate, then send the finished draft through Airlock for approval before anything goes live.
 
 ---
 

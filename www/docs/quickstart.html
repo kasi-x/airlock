@@ -3,21 +3,21 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Quickstart — Impri Docs</title>
+<title>Quickstart — Airlock Docs</title>
 <meta name="description" content="From zero to your first approved action in under 5 minutes.">
 <meta name="theme-color" content="#06070d">
-<meta property="og:title" content="Quickstart — Impri Docs">
+<meta property="og:title" content="Quickstart — Airlock Docs">
 <meta property="og:description" content="From zero to your first approved action in under 5 minutes.">
 <meta property="og:type" content="article">
-<meta property="og:url" content="https://impri.dev/docs/quickstart">
-<meta property="og:image" content="https://impri.dev/assets/og/og-docs.png">
+<meta property="og:url" content="https://airlock.dev/docs/quickstart">
+<meta property="og:image" content="https://airlock.dev/assets/og/og-docs.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
-<meta property="og:image:alt" content="Impri — human-in-the-loop approval inbox for AI agents">
+<meta property="og:image:alt" content="Airlock — human-in-the-loop approval inbox for AI agents">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="https://impri.dev/assets/og/og-docs.png">
-<link rel="canonical" href="https://impri.dev/docs/quickstart">
-<script type="application/ld+json">{"@context":"https://schema.org","@type":"TechArticle","headline":"Quickstart","description":"From zero to your first approved action in under 5 minutes.","url":"https://impri.dev/docs/quickstart","inLanguage":"en","author":{"@type":"Organization","name":"Impri","url":"https://impri.dev"},"publisher":{"@type":"Organization","name":"Impri","url":"https://impri.dev"}}</script>
+<meta name="twitter:image" content="https://airlock.dev/assets/og/og-docs.png">
+<link rel="canonical" href="https://airlock.dev/docs/quickstart">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"TechArticle","headline":"Quickstart","description":"From zero to your first approved action in under 5 minutes.","url":"https://airlock.dev/docs/quickstart","inLanguage":"en","author":{"@type":"Organization","name":"Airlock","url":"https://airlock.dev"},"publisher":{"@type":"Organization","name":"Airlock","url":"https://airlock.dev"}}</script>
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <link rel="icon" href="/favicon.ico" sizes="32x32">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='9' fill='%236366f1'/%3E%3Cpath d='M9 16.5l4.5 4.5L23 11' stroke='white' stroke-width='3' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
@@ -132,13 +132,13 @@ pre code.hljs{display:block;overflow-x:auto}
 <div class="wrap nav-inner">
   <a class="brand" href="/">
     <span class="mark"><svg viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.5 4.5L19 7.5" stroke="white" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
-    Impri
+    Airlock
   </a>
   <div class="nav-links">
     <a class="link" href="/#how">How it works</a>
     <a class="link" href="/#pricing">Pricing</a>
     <a class="link active-nav" href="../docs">Docs</a>
-    <a class="btn btn-primary btn-sm" href="https://gitlab.com/sekera.radim/impri">GitLab</a>
+    <a class="btn btn-primary btn-sm" href="https://gitlab.com/sekera.radim/airlock">GitLab</a>
   </div>
 </div>
 </nav>
@@ -154,7 +154,7 @@ pre code.hljs{display:block;overflow-x:auto}
     </nav>
     <h1>Quickstart</h1>
 <p>From zero to your first approved action in under 5 minutes.</p>
-<p>Two ways to run Impri — pick one:</p>
+<p>Two ways to run Airlock — pick one:</p>
 <ul>
 <li><strong><a href="#option-a--cloud-no-install">Option A — Cloud</a></strong>: no install, a hosted key in one request. Fastest way to try it.</li>
 <li><strong><a href="#option-b--self-host-docker">Option B — Self-host</a></strong>: <code>docker compose up</code>, your own data, still free.</li>
@@ -163,7 +163,7 @@ pre code.hljs{display:block;overflow-x:auto}
 <hr>
 <h2 id="option-a-cloud-no-install">Option A — Cloud (no install)</h2>
 <h3 id="1-create-a-project-and-get-a-key">1. Create a project and get a key</h3>
-<div class="code-block"><span class="code-lang">bash</span><pre><code class="hljs">curl -s -X POST https://api.impri.dev/v1/signup \
+<div class="code-block"><span class="code-lang">bash</span><pre><code class="hljs">curl -s -X POST https://api.airlock.dev/v1/signup \
   -H <span class="hljs-string">&quot;Content-Type: application/json&quot;</span> \
   -d <span class="hljs-string">&#x27;{&quot;name&quot;: &quot;my-agent&quot;}&#x27;</span></code></pre></div>
 <p>Response (<code>201 Created</code>):</p>
@@ -173,12 +173,12 @@ pre code.hljs{display:block;overflow-x:auto}
   <span class="hljs-attr">&quot;recovery_code&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;...&quot;</span><span class="hljs-punctuation">,</span>
   <span class="hljs-attr">&quot;note&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;Store this key and recovery code securely — they will not be shown again.&quot;</span>
 <span class="hljs-punctuation">}</span></code></pre></div>
-<p>Save both — the key is shown once. (Prefer clicking through instead? Go to <a href="https://app.impri.dev" target="_blank" rel="noopener">app.impri.dev</a> and use the <strong>Create an API key</strong> button — same result.)</p>
+<p>Save both — the key is shown once. (Prefer clicking through instead? Go to <a href="https://app.airlock.dev" target="_blank" rel="noopener">app.airlock.dev</a> and use the <strong>Create an API key</strong> button — same result.)</p>
 <div class="code-block"><span class="code-lang">bash</span><pre><code class="hljs"><span class="hljs-built_in">export</span> AGENT_KEY=<span class="hljs-string">&quot;im_&lt;your-key-from-the-response&gt;&quot;</span></code></pre></div>
 <p>This key has full <code>admin</code> scope, which is fine to start. Once you&#39;re wiring up a real agent, create a narrower <code>actions</code>-scoped key instead — see <a href="api-keys">API keys & scopes</a>.</p>
 <h3 id="2-submit-an-action-for-approval">2. Submit an action for approval</h3>
 <p>Your agent pushes an action to the inbox. This is the single call your agent makes before doing anything consequential:</p>
-<div class="code-block"><span class="code-lang">bash</span><pre><code class="hljs">ACTION=$(curl -s -X POST https://api.impri.dev/v1/actions \
+<div class="code-block"><span class="code-lang">bash</span><pre><code class="hljs">ACTION=$(curl -s -X POST https://api.airlock.dev/v1/actions \
   -H <span class="hljs-string">&quot;Authorization: Bearer <span class="hljs-variable">$AGENT_KEY</span>&quot;</span> \
   -H <span class="hljs-string">&quot;Content-Type: application/json&quot;</span> \
   -d <span class="hljs-string">&#x27;{
@@ -197,11 +197,11 @@ ACTION_ID=$(<span class="hljs-built_in">echo</span> <span class="hljs-variable">
 INBOX_URL=$(<span class="hljs-built_in">echo</span> <span class="hljs-variable">$ACTION</span> | jq -r .inbox_url)
 <span class="hljs-built_in">echo</span> <span class="hljs-string">&quot;Review it at: <span class="hljs-variable">$INBOX_URL</span>&quot;</span></code></pre></div>
 <h3 id="3-approve-in-the-web-inbox">3. Approve in the web inbox</h3>
-<p>Open the <code>inbox_url</code> printed above (or go to <a href="https://app.impri.dev" target="_blank" rel="noopener">app.impri.dev</a> and click <strong>Inbox</strong>). You&#39;ll see the pending action as a card with the markdown preview. Tap <strong>Approve</strong> (or <strong>Reject</strong>).</p>
+<p>Open the <code>inbox_url</code> printed above (or go to <a href="https://app.airlock.dev" target="_blank" rel="noopener">app.airlock.dev</a> and click <strong>Inbox</strong>). You&#39;ll see the pending action as a card with the markdown preview. Tap <strong>Approve</strong> (or <strong>Reject</strong>).</p>
 <p>If you configured <code>editable: [&quot;preview.body&quot;]</code>, you can also edit the reply text before approving — the agent receives the final, human-edited version.</p>
 <h3 id="4-agent-picks-up-the-decision-via-polling">4. Agent picks up the decision via polling</h3>
 <p>Poll <code>GET /v1/actions/:id</code> until <code>status</code> is no longer <code>pending</code>:</p>
-<div class="code-block"><span class="code-lang">bash</span><pre><code class="hljs">curl -s https://api.impri.dev/v1/actions/<span class="hljs-variable">$ACTION_ID</span> \
+<div class="code-block"><span class="code-lang">bash</span><pre><code class="hljs">curl -s https://api.airlock.dev/v1/actions/<span class="hljs-variable">$ACTION_ID</span> \
   -H <span class="hljs-string">&quot;Authorization: Bearer <span class="hljs-variable">$AGENT_KEY</span>&quot;</span> | jq <span class="hljs-string">&#x27;{status, decision}&#x27;</span></code></pre></div>
 <p>Response after approval:</p>
 <div class="code-block"><span class="code-lang">json</span><pre><code class="hljs"><span class="hljs-punctuation">{</span>
@@ -220,43 +220,43 @@ INBOX_URL=$(<span class="hljs-built_in">echo</span> <span class="hljs-variable">
 <h3 id="5-execute-and-report-back">5. Execute and report back</h3>
 <p>Execute the action with the approved content, then close the loop by reporting the result:</p>
 <div class="code-block"><span class="code-lang">bash</span><pre><code class="hljs"><span class="hljs-comment"># After successful execution</span>
-curl -s -X POST https://api.impri.dev/v1/actions/<span class="hljs-variable">$ACTION_ID</span>/result \
+curl -s -X POST https://api.airlock.dev/v1/actions/<span class="hljs-variable">$ACTION_ID</span>/result \
   -H <span class="hljs-string">&quot;Authorization: Bearer <span class="hljs-variable">$AGENT_KEY</span>&quot;</span> \
   -H <span class="hljs-string">&quot;Content-Type: application/json&quot;</span> \
   -d <span class="hljs-string">&#x27;{&quot;status&quot;: &quot;executed&quot;}&#x27;</span>
 
 <span class="hljs-comment"># Or if execution failed</span>
-curl -s -X POST https://api.impri.dev/v1/actions/<span class="hljs-variable">$ACTION_ID</span>/result \
+curl -s -X POST https://api.airlock.dev/v1/actions/<span class="hljs-variable">$ACTION_ID</span>/result \
   -H <span class="hljs-string">&quot;Authorization: Bearer <span class="hljs-variable">$AGENT_KEY</span>&quot;</span> \
   -H <span class="hljs-string">&quot;Content-Type: application/json&quot;</span> \
   -d <span class="hljs-string">&#x27;{&quot;status&quot;: &quot;execute_failed&quot;, &quot;detail&quot;: &quot;Reddit API returned 403&quot;}&#x27;</span></code></pre></div>
 <p>The action lifecycle is now complete: <code>pending → approved → executed</code>. That&#39;s the whole loop — everything past this point is optional depth (webhooks instead of polling, watchers, notification channels).</p>
 <h3 id="prefer-mcp-claude-code-codex-cli-cursor-windsurf-any-mcp-client">Prefer MCP? (Claude Code, Codex CLI, Cursor, Windsurf, any MCP client)</h3>
-<p>Skip the raw HTTP calls above — the Impri MCP server wraps the same three calls into tool calls your agent can use directly. The web inbox&#39;s <strong>Connect an agent</strong> panel shows the same commands below with your real key already filled in.</p>
+<p>Skip the raw HTTP calls above — the Airlock MCP server wraps the same three calls into tool calls your agent can use directly. The web inbox&#39;s <strong>Connect an agent</strong> panel shows the same commands below with your real key already filled in.</p>
 <p><strong>Claude Code:</strong></p>
-<div class="code-block"><span class="code-lang">bash</span><pre><code class="hljs">claude mcp add impri \
-  -e IMPRI_API_KEY=im_&lt;your-agent-key&gt; \
-  -e IMPRI_BASE_URL=https://api.impri.dev \
-  -- npx -y @impri/mcp</code></pre></div>
+<div class="code-block"><span class="code-lang">bash</span><pre><code class="hljs">claude mcp add airlock \
+  -e AIRLOCK_API_KEY=im_&lt;your-agent-key&gt; \
+  -e AIRLOCK_BASE_URL=https://api.airlock.dev \
+  -- npx -y @airlock/mcp</code></pre></div>
 <p><strong>Codex CLI:</strong></p>
-<div class="code-block"><span class="code-lang">bash</span><pre><code class="hljs">codex mcp add impri \
-  --<span class="hljs-built_in">env</span> IMPRI_API_KEY=im_&lt;your-agent-key&gt; \
-  --<span class="hljs-built_in">env</span> IMPRI_BASE_URL=https://api.impri.dev \
-  -- npx -y @impri/mcp</code></pre></div>
+<div class="code-block"><span class="code-lang">bash</span><pre><code class="hljs">codex mcp add airlock \
+  --<span class="hljs-built_in">env</span> AIRLOCK_API_KEY=im_&lt;your-agent-key&gt; \
+  --<span class="hljs-built_in">env</span> AIRLOCK_BASE_URL=https://api.airlock.dev \
+  -- npx -y @airlock/mcp</code></pre></div>
 <p><strong>Cursor</strong> (<code>~/.cursor/mcp.json</code> or <code>.cursor/mcp.json</code> in your project), <strong>Windsurf</strong> (<code>~/.codeium/windsurf/mcp_config.json</code>), <strong>Claude Desktop, or any other MCP client</strong> — same JSON shape:</p>
 <div class="code-block"><span class="code-lang">json</span><pre><code class="hljs"><span class="hljs-punctuation">{</span>
   <span class="hljs-attr">&quot;mcpServers&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
-    <span class="hljs-attr">&quot;impri&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+    <span class="hljs-attr">&quot;airlock&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
       <span class="hljs-attr">&quot;command&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;npx&quot;</span><span class="hljs-punctuation">,</span>
-      <span class="hljs-attr">&quot;args&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">[</span><span class="hljs-string">&quot;-y&quot;</span><span class="hljs-punctuation">,</span> <span class="hljs-string">&quot;@impri/mcp&quot;</span><span class="hljs-punctuation">]</span><span class="hljs-punctuation">,</span>
+      <span class="hljs-attr">&quot;args&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">[</span><span class="hljs-string">&quot;-y&quot;</span><span class="hljs-punctuation">,</span> <span class="hljs-string">&quot;@airlock/mcp&quot;</span><span class="hljs-punctuation">]</span><span class="hljs-punctuation">,</span>
       <span class="hljs-attr">&quot;env&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
-        <span class="hljs-attr">&quot;IMPRI_API_KEY&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;im_&lt;your-agent-key&gt;&quot;</span><span class="hljs-punctuation">,</span>
-        <span class="hljs-attr">&quot;IMPRI_BASE_URL&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;https://api.impri.dev&quot;</span>
+        <span class="hljs-attr">&quot;AIRLOCK_API_KEY&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;im_&lt;your-agent-key&gt;&quot;</span><span class="hljs-punctuation">,</span>
+        <span class="hljs-attr">&quot;AIRLOCK_BASE_URL&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;https://api.airlock.dev&quot;</span>
       <span class="hljs-punctuation">}</span>
     <span class="hljs-punctuation">}</span>
   <span class="hljs-punctuation">}</span>
 <span class="hljs-punctuation">}</span></code></pre></div>
-<p>Self-hosting? Drop the <code>IMPRI_BASE_URL</code> line — the MCP server already defaults to <code>http://localhost:8484</code>.</p>
+<p>Self-hosting? Drop the <code>AIRLOCK_BASE_URL</code> line — the MCP server already defaults to <code>http://localhost:8484</code>.</p>
 <div class="table-wrap"><table>
 <thead>
 <tr>
@@ -265,37 +265,37 @@ curl -s -X POST https://api.impri.dev/v1/actions/<span class="hljs-variable">$AC
 </tr>
 </thead>
 <tbody><tr>
-<td><code>impri_push_action</code></td>
+<td><code>airlock_push_action</code></td>
 <td>Submit an action for human approval</td>
 </tr>
 <tr>
-<td><code>impri_await_decision</code></td>
+<td><code>airlock_await_decision</code></td>
 <td>Long-poll until a decision arrives (or timeout)</td>
 </tr>
 <tr>
-<td><code>impri_report_result</code></td>
+<td><code>airlock_report_result</code></td>
 <td>Report execution outcome after approval</td>
 </tr>
 <tr>
-<td><code>impri_inbox_status</code></td>
+<td><code>airlock_inbox_status</code></td>
 <td>Check how many actions are pending</td>
 </tr>
 </tbody></table>
 </div>
-<div class="code-block"><pre><code class="hljs">impri_push_action(kind=&quot;reddit.comment&quot;, title=&quot;Reply: ...&quot;, preview={...}, editable=[&quot;preview.body&quot;])
+<div class="code-block"><pre><code class="hljs">airlock_push_action(kind=&quot;reddit.comment&quot;, title=&quot;Reply: ...&quot;, preview={...}, editable=[&quot;preview.body&quot;])
 → { action_id: &quot;act_abc123&quot;, status: &quot;pending&quot;, inbox_url: &quot;...&quot; }
 
-impri_await_decision(action_id=&quot;act_abc123&quot;, timeout_s=600)
+airlock_await_decision(action_id=&quot;act_abc123&quot;, timeout_s=600)
 → { status: &quot;approved&quot;, preview: { body: &quot;...&quot; }, edited_by_human: true }
 
-impri_report_result(action_id=&quot;act_abc123&quot;, status=&quot;executed&quot;)</code></pre></div>
+airlock_report_result(action_id=&quot;act_abc123&quot;, status=&quot;executed&quot;)</code></pre></div>
 <hr>
 <h2 id="option-b-self-host-docker">Option B — Self-host (Docker)</h2>
 <p>Same three calls, running entirely on your own machine — no cloud account, no telemetry.</p>
 <p><strong>Prerequisites:</strong> Docker and Docker Compose, <code>curl</code>.</p>
-<h3 id="1-start-impri">1. Start Impri</h3>
-<div class="code-block"><span class="code-lang">bash</span><pre><code class="hljs">git <span class="hljs-built_in">clone</span> https://gitlab.com/sekera.radim/impri.git
-<span class="hljs-built_in">cd</span> impri
+<h3 id="1-start-airlock">1. Start Airlock</h3>
+<div class="code-block"><span class="code-lang">bash</span><pre><code class="hljs">git <span class="hljs-built_in">clone</span> https://gitlab.com/sekera.radim/airlock.git
+<span class="hljs-built_in">cd</span> airlock
 
 <span class="hljs-comment"># Set a strong webhook secret before starting</span>
 <span class="hljs-built_in">export</span> WEBHOOK_SECRET=$(openssl rand -hex 32)
@@ -313,7 +313,7 @@ docker compose up -d</code></pre></div>
   -d <span class="hljs-string">&#x27;{&quot;name&quot;: &quot;my-agent&quot;, &quot;scopes&quot;: [&quot;actions&quot;]}&#x27;</span> | <span class="hljs-built_in">tee</span> /dev/stderr | jq .key</code></pre></div>
 <div class="code-block"><span class="code-lang">bash</span><pre><code class="hljs"><span class="hljs-built_in">export</span> AGENT_KEY=<span class="hljs-string">&quot;im_&lt;agent-key&gt;&quot;</span></code></pre></div>
 <h3 id="36-push-approve-poll-execute">3–6. Push, approve, poll, execute</h3>
-<p>Same as the cloud steps above, just swap <code>https://api.impri.dev</code> for <code>http://localhost:8484</code> and <code>https://app.impri.dev</code> for <code>http://localhost:8080</code>:</p>
+<p>Same as the cloud steps above, just swap <code>https://api.airlock.dev</code> for <code>http://localhost:8484</code> and <code>https://app.airlock.dev</code> for <code>http://localhost:8080</code>:</p>
 <div class="code-block"><span class="code-lang">bash</span><pre><code class="hljs"><span class="hljs-comment"># 3. Push</span>
 curl -s -X POST http://localhost:8484/v1/actions \
   -H <span class="hljs-string">&quot;Authorization: Bearer <span class="hljs-variable">$AGENT_KEY</span>&quot;</span> \
@@ -338,14 +338,14 @@ curl -s -X POST http://localhost:8484/v1/actions/act_abc123/result \
   -H <span class="hljs-string">&quot;Content-Type: application/json&quot;</span> \
   -d <span class="hljs-string">&#x27;{&quot;status&quot;: &quot;executed&quot;}&#x27;</span></code></pre></div>
 <p><strong>Via MCP:</strong> same config as Option A, just point it at your local server:</p>
-<div class="code-block"><span class="code-lang">bash</span><pre><code class="hljs"><span class="hljs-built_in">export</span> IMPRI_API_KEY=<span class="hljs-string">&quot;<span class="hljs-variable">$AGENT_KEY</span>&quot;</span>
-<span class="hljs-built_in">export</span> IMPRI_BASE_URL=<span class="hljs-string">&quot;http://localhost:8484&quot;</span>
-npx @impri/mcp</code></pre></div>
+<div class="code-block"><span class="code-lang">bash</span><pre><code class="hljs"><span class="hljs-built_in">export</span> AIRLOCK_API_KEY=<span class="hljs-string">&quot;<span class="hljs-variable">$AGENT_KEY</span>&quot;</span>
+<span class="hljs-built_in">export</span> AIRLOCK_BASE_URL=<span class="hljs-string">&quot;http://localhost:8484&quot;</span>
+npx @airlock/mcp</code></pre></div>
 <hr>
 <h2 id="what39s-next">What&#39;s next</h2>
 <ul>
 <li><strong>Webhook delivery</strong> instead of polling: see <a href="webhooks">webhooks.md</a></li>
-<li><strong>Watchers</strong> (monitor RSS, Reddit, URL changes): REST API via <code>POST /v1/watchers</code>; start from a ready-made configuration in <a href="watcher-presets">watcher-presets.md</a>, or see the request schema (<code>CreateWatcherBody</code>) in <a href="https://gitlab.com/sekera.radim/impri/-/blob/main/server/src/schemas.ts" target="_blank" rel="noopener">server/src/schemas.ts</a></li>
+<li><strong>Watchers</strong> (monitor RSS, Reddit, URL changes): REST API via <code>POST /v1/watchers</code>; start from a ready-made configuration in <a href="watcher-presets">watcher-presets.md</a>, or see the request schema (<code>CreateWatcherBody</code>) in <a href="https://gitlab.com/sekera.radim/airlock/-/blob/main/server/src/schemas.ts" target="_blank" rel="noopener">server/src/schemas.ts</a></li>
 <li><strong>Self-hosting configuration</strong> (SMTP, ntfy, backups): see <a href="self-hosting">self-hosting.md</a></li>
 <li><strong>The full pattern and its guarantees</strong> (why this actually gates execution, and what it doesn&#39;t cover): see <a href="how-to-add-human-approval-to-an-ai-agent">How to add human approval to an AI agent</a></li>
 </ul>
@@ -429,7 +429,7 @@ npx @impri/mcp</code></pre></div>
 <li class="ptoc-h3"><a href="#5-execute-and-report-back">5. Execute and report back</a></li>
 <li class="ptoc-h3"><a href="#prefer-mcp-claude-code-codex-cli-cursor-windsurf-any-mcp-client">Prefer MCP? (Claude Code, Codex CLI, Cursor, Windsurf, any MCP client)</a></li>
 <li class="ptoc-h2"><a href="#option-b-self-host-docker">Option B — Self-host (Docker)</a></li>
-<li class="ptoc-h3"><a href="#1-start-impri">1. Start Impri</a></li>
+<li class="ptoc-h3"><a href="#1-start-airlock">1. Start Airlock</a></li>
 <li class="ptoc-h3"><a href="#2-create-an-api-key-for-your-agent">2. Create an API key for your agent</a></li>
 <li class="ptoc-h3"><a href="#36-push-approve-poll-execute">3–6. Push, approve, poll, execute</a></li>
 <li class="ptoc-h2"><a href="#what39s-next">What's next</a></li></ul>
@@ -440,19 +440,19 @@ npx @impri/mcp</code></pre></div>
 <footer class="footer">
 <div class="wrap footer-inner">
   <a class="brand" href="/">
-    <span class="mark"><svg viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.5 4.5L19 7.5" stroke="white" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Impri
+    <span class="mark"><svg viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.5 4.5L19 7.5" stroke="white" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Airlock
   </a>
   <div>
-    <a href="https://gitlab.com/sekera.radim/impri">GitLab</a>
+    <a href="https://gitlab.com/sekera.radim/airlock">GitLab</a>
     <a href="/docs">Docs</a>
-    <a href="https://gitlab.com/sekera.radim/impri/-/blob/main/LICENSE">MIT License</a>
-    <a href="https://www.npmjs.com/package/@impri/mcp">@impri/mcp</a>
+    <a href="https://gitlab.com/sekera.radim/airlock/-/blob/main/LICENSE">MIT License</a>
+    <a href="https://www.npmjs.com/package/@airlock/mcp">@airlock/mcp</a>
     <a href="/docs/privacy">Privacy</a>
     <a href="/docs/terms">Terms</a>
     <a href="https://sekera.dev">Contact</a>
   </div>
 </div>
-<div class="wrap" style="margin-top:18px"><span class="muted">© 2026 Impri · The imprimatur for your AI agents · Built by <a href="https://sekera.dev" style="color:inherit">Radim Sekera</a>. Also by the same maker: <a href="https://briefgate.dev/?utm_source=impri.dev&amp;utm_medium=referral" style="color:inherit">BriefGate</a> — client intake for agencies and AI agents.</span></div>
+<div class="wrap" style="margin-top:18px"><span class="muted">© 2026 Airlock · The airlockmatur for your AI agents · Built by <a href="https://sekera.dev" style="color:inherit">Radim Sekera</a>. Also by the same maker: <a href="https://briefgate.dev/?utm_source=airlock.dev&amp;utm_medium=referral" style="color:inherit">BriefGate</a> — client intake for agencies and AI agents.</span></div>
 </footer>
 </body>
 </html>

@@ -6,14 +6,14 @@ Route your AI agent's pending actions straight into the Discord server your team
 
 ## Why Discord instead of a separate inbox
 
-If your team runs a dev-ops or coding agent overnight — merging branches, triggering deploys, filing issues — the last place you want a decision to sit is an email you check once a day. Most dev teams already have Discord open all day in a `#ops` or `#deploys` channel. Impri's Discord integration puts the approve/reject decision exactly there: the agent proposes an action, a rich embed with **✅ Approve** / **❌ Reject** buttons shows up in the channel, and anyone with permission can decide without switching tools.
+If your team runs a dev-ops or coding agent overnight — merging branches, triggering deploys, filing issues — the last place you want a decision to sit is an email you check once a day. Most dev teams already have Discord open all day in a `#ops` or `#deploys` channel. Airlock's Discord integration puts the approve/reject decision exactly there: the agent proposes an action, a rich embed with **✅ Approve** / **❌ Reject** buttons shows up in the channel, and anyone with permission can decide without switching tools.
 
-This is not a separate product — it's the same [approval gate](how-to-add-human-approval-to-an-ai-agent.md) Impri always runs, just delivered over a different notification channel.
+This is not a separate product — it's the same [approval gate](how-to-add-human-approval-to-an-ai-agent.md) Airlock always runs, just delivered over a different notification channel.
 
 ## The flow
 
 ```
-Agent               Impri                    Discord channel
+Agent               Airlock                    Discord channel
   │                    │                            │
   ├─ POST /v1/actions ─▶ stores action, notifies ───▶ embed + buttons
   │                    │                            │
@@ -28,7 +28,7 @@ Agent               Impri                    Discord channel
   └─ POST /v1/actions/:id/result
 ```
 
-Discord delivers the button click as an interaction to Impri's endpoint. Impri verifies the request signature, checks the `custom_id` HMAC, and confirms the clicking user is on the channel's allow-list before it ever records a decision — a teammate cannot approve just by seeing the embed, they have to be an authorized reviewer.
+Discord delivers the button click as an interaction to Airlock's endpoint. Airlock verifies the request signature, checks the `custom_id` HMAC, and confirms the clicking user is on the channel's allow-list before it ever records a decision — a teammate cannot approve just by seeing the embed, they have to be an authorized reviewer.
 
 ## Setting up the channel
 
@@ -36,14 +36,14 @@ The Discord bot setup (invite the bot, get the channel ID, turn on `approval_mod
 
 ## Wiring the agent
 
-Here's a Node/TypeScript agent that watches a repo for stale PRs and asks a human to approve auto-merging them, using the Impri MCP server so the agent doesn't touch raw HTTP:
+Here's a Node/TypeScript agent that watches a repo for stale PRs and asks a human to approve auto-merging them, using the Airlock MCP server so the agent doesn't touch raw HTTP:
 
 ```typescript
 import { Client } from "@modelcontextprotocol/sdk/client/index.js";
 
 async function proposeMerge(client: Client, pr: { number: number; title: string; diffSummary: string }) {
   const pushed = await client.callTool({
-    name: "impri_push_action",
+    name: "airlock_push_action",
     arguments: {
       kind: "github.merge",
       title: `Auto-merge PR #${pr.number}: ${pr.title}`,
@@ -55,12 +55,12 @@ async function proposeMerge(client: Client, pr: { number: number; title: string;
     },
   });
 
-  // Impri's MCP tools set `structuredContent` alongside the text content
+  // Airlock's MCP tools set `structuredContent` alongside the text content
   // block — read the typed fields from there, not off the result directly.
   const { action_id: actionId } = pushed.structuredContent as { action_id: string };
 
   const decision = await client.callTool({
-    name: "impri_await_decision",
+    name: "airlock_await_decision",
     arguments: { action_id: actionId, timeout_s: 39600 },
   });
 
@@ -72,21 +72,21 @@ async function proposeMerge(client: Client, pr: { number: number; title: string;
 
   await mergePullRequest(pr.number); // your GitHub API call
   await client.callTool({
-    name: "impri_report_result",
+    name: "airlock_report_result",
     arguments: { action_id: actionId, status: "executed" },
   });
 }
 ```
 
-The agent code never mentions Discord — it just calls the three MCP tools. Which channel the notification lands on is configuration on the Impri side, set once when you wire up the Discord bot.
+The agent code never mentions Discord — it just calls the three MCP tools. Which channel the notification lands on is configuration on the Airlock side, set once when you wire up the Discord bot.
 
 ## What a reviewer sees and does
 
-The embed shows the title, the markdown preview rendered inline, and an expiry countdown. A click on **Approve** or **Reject** updates the message in place (so there's no race between two people clicking at once — the first click wins, the embed updates to show who decided and when) and the agent's `impri_await_decision` call returns within its next poll cycle.
+The embed shows the title, the markdown preview rendered inline, and an expiry countdown. A click on **Approve** or **Reject** updates the message in place (so there's no race between two people clicking at once — the first click wins, the embed updates to show who decided and when) and the agent's `airlock_await_decision` call returns within its next poll cycle.
 
 ## Boundaries
 
-Impri's Discord channel is a notification and decision-capture surface — it does not run your merge, does not inspect the diff for correctness, and does not replace CI. The actual gate is still the pattern from [the integration guide](how-to-add-human-approval-to-an-ai-agent.md): your agent's execution code must only run after `status: "approved"` comes back, and the wrapper around `mergePullRequest` needs to be the agent's only path to actually merging — otherwise a determined agent (or a bug) can route around the approval entirely.
+Airlock's Discord channel is a notification and decision-capture surface — it does not run your merge, does not inspect the diff for correctness, and does not replace CI. The actual gate is still the pattern from [the integration guide](how-to-add-human-approval-to-an-ai-agent.md): your agent's execution code must only run after `status: "approved"` comes back, and the wrapper around `mergePullRequest` needs to be the agent's only path to actually merging — otherwise a determined agent (or a bug) can route around the approval entirely.
 
 ## Next step
 

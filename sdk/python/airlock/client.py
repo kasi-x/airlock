@@ -1,11 +1,11 @@
-"""Impri Python SDK — ImpriClient and ergonomic helpers.
+"""Airlock Python SDK — AirlockClient and ergonomic helpers.
 
 Sync client. Zero third-party dependencies; uses stdlib urllib for HTTP.
 Pass a custom _transport callable for testing (see tests/).
 
 Quick start:
-    from impri import ImpriClient
-    client = ImpriClient()          # reads IMPRI_API_KEY from env
+    from airlock import AirlockClient
+    client = AirlockClient()          # reads AIRLOCK_API_KEY from env
     action = client.create_action(
         kind="email.send",
         title="Send weekly digest to alice@example.com",
@@ -31,19 +31,19 @@ from typing import Any, Callable, Dict, Generator, Iterator, List, Literal, Opti
 
 from ._transport import urllib_transport
 from .errors import (
-    ImpriApiError,
-    ImpriConfigError,
-    ImpriConflict,
-    ImpriError,
-    ImpriExpired,
-    ImpriNotFound,
-    ImpriQuotaExceeded,
-    ImpriRateLimited,
-    ImpriRejected,
-    ImpriTimeout,
-    ImpriUnauthorized,
-    ImpriValidationError,
-    ImpriWebhookSignatureError,
+    AirlockApiError,
+    AirlockConfigError,
+    AirlockConflict,
+    AirlockError,
+    AirlockExpired,
+    AirlockNotFound,
+    AirlockQuotaExceeded,
+    AirlockRateLimited,
+    AirlockRejected,
+    AirlockTimeout,
+    AirlockUnauthorized,
+    AirlockValidationError,
+    AirlockWebhookSignatureError,
 )
 from .models import (
     Action,
@@ -77,7 +77,7 @@ from .models import (
     WatcherSchedule,
 )
 
-# Default self-hosted URL — callers set IMPRI_BASE_URL or pass base_url for cloud.
+# Default self-hosted URL — callers set AIRLOCK_BASE_URL or pass base_url for cloud.
 _DEFAULT_BASE_URL = "http://localhost:8484"
 
 
@@ -95,50 +95,50 @@ def _auto_idempotency_key(kind: str, title: str, preview_body: str) -> str:
 
 
 def _raise_for_status(status: int, body: Any) -> None:
-    """Map HTTP status codes to typed Impri exceptions."""
+    """Map HTTP status codes to typed Airlock exceptions."""
     message: str = ""
     if isinstance(body, dict):
         message = body.get("message") or body.get("error") or ""
 
     if status in (401, 403):
-        raise ImpriUnauthorized(
+        raise AirlockUnauthorized(
             message or "Authentication failed — verify your API key and its scope.",
             status_code=status,
         )
     if status == 402:
-        raise ImpriQuotaExceeded(
+        raise AirlockQuotaExceeded(
             message or "Monthly quota or watcher limit reached.",
             limit=body.get("limit") if isinstance(body, dict) else None,
             tier=body.get("tier") if isinstance(body, dict) else None,
         )
     if status == 404:
-        raise ImpriNotFound(
+        raise AirlockNotFound(
             message or "Resource not found or belongs to a different project."
         )
     if status == 409:
-        raise ImpriConflict(
+        raise AirlockConflict(
             message or "Conflict — action already decided or concurrent writer.",
             current_status=body.get("current_status") if isinstance(body, dict) else None,
         )
     if status == 410:
-        raise ImpriExpired(
+        raise AirlockExpired(
             message or "Approval window has closed."
         )
     if status == 429:
         retry_after: Optional[int] = None
         if isinstance(body, dict) and "retry_after" in body:
             retry_after = int(body["retry_after"])
-        raise ImpriRateLimited(
+        raise AirlockRateLimited(
             message or "Rate limit hit — reduce request frequency.",
             retry_after=retry_after,
         )
     if status in (400, 422):
         issues = body.get("issues") if isinstance(body, dict) else None
-        raise ImpriValidationError(
+        raise AirlockValidationError(
             message or f"Validation error (HTTP {status}).",
             issues=issues,
         )
-    raise ImpriApiError(status, message or "Unexpected API error.")
+    raise AirlockApiError(status, message or "Unexpected API error.")
 
 
 def _deserialize_action(data: Dict[str, Any]) -> Action:
@@ -167,26 +167,26 @@ def verify_webhook(
     signature: str,
     tolerance_sec: int = 300,
 ) -> None:
-    """Verify an Impri webhook delivery signature.
+    """Verify an Airlock webhook delivery signature.
 
     Algorithm: ``sha256=HMAC-SHA256(secret, f'{timestamp}.{nonce}.{raw_body}')``
 
     Pass the raw (undecoded) request body and the values of the HTTP headers
-    X-Impri-Timestamp, X-Impri-Nonce, and X-Impri-Signature.
+    X-Airlock-Timestamp, X-Airlock-Nonce, and X-Airlock-Signature.
 
-    Raises ImpriWebhookSignatureError on mismatch, staleness, or missing data;
+    Raises AirlockWebhookSignatureError on mismatch, staleness, or missing data;
     returns None on success.
 
     Usage::
 
         @app.route("/webhook", methods=["POST"])
         def handle_webhook():
-            impri.verify_webhook(
+            airlock.verify_webhook(
                 request.data,
                 secret=os.environ["WEBHOOK_SECRET"],
-                timestamp=request.headers["X-Impri-Timestamp"],
-                nonce=request.headers["X-Impri-Nonce"],
-                signature=request.headers["X-Impri-Signature"],
+                timestamp=request.headers["X-Airlock-Timestamp"],
+                nonce=request.headers["X-Airlock-Nonce"],
+                signature=request.headers["X-Airlock-Signature"],
             )
             payload = request.json
             ...
@@ -195,11 +195,11 @@ def verify_webhook(
     try:
         ts = int(timestamp)
     except (ValueError, TypeError):
-        raise ImpriWebhookSignatureError(
-            "X-Impri-Timestamp is missing or not a valid integer."
+        raise AirlockWebhookSignatureError(
+            "X-Airlock-Timestamp is missing or not a valid integer."
         )
     if abs(time.time() - ts) > tolerance_sec:
-        raise ImpriWebhookSignatureError(
+        raise AirlockWebhookSignatureError(
             f"Webhook timestamp is outside the {tolerance_sec}s tolerance window "
             "(replay protection). Ensure your server clock is synced."
         )
@@ -209,24 +209,24 @@ def verify_webhook(
         secret.encode(), message, "sha256"
     ).hexdigest()
     if not hmac.compare_digest(computed, signature):
-        raise ImpriWebhookSignatureError(
+        raise AirlockWebhookSignatureError(
             "Webhook signature mismatch — check your WEBHOOK_SECRET and that you "
             "are passing the raw (undecoded) request body."
         )
 
 
 # ---------------------------------------------------------------------------
-# ImpriClient
+# AirlockClient
 # ---------------------------------------------------------------------------
 
-class ImpriClient:
-    """Synchronous Impri API client.
+class AirlockClient:
+    """Synchronous Airlock API client.
 
     Args:
-        api_key:   Bearer token (``im_...``). Falls back to ``IMPRI_API_KEY`` env var.
-                   Raises ImpriConfigError if neither is set.
+        api_key:   Bearer token (``im_...``). Falls back to ``AIRLOCK_API_KEY`` env var.
+                   Raises AirlockConfigError if neither is set.
         base_url:  Server root URL (no trailing slash, no ``/v1``).
-                   Falls back to ``IMPRI_BASE_URL``, then ``http://localhost:8484``.
+                   Falls back to ``AIRLOCK_BASE_URL``, then ``http://localhost:8484``.
         _transport: Callable ``(method, url, headers, body) -> (status, bytes)``
                     injected in tests to avoid real HTTP calls.
     """
@@ -238,17 +238,17 @@ class ImpriClient:
         base_url: Optional[str] = None,
         _transport: Optional[Callable] = None,
     ) -> None:
-        resolved_key = api_key or os.environ.get("IMPRI_API_KEY")
+        resolved_key = api_key or os.environ.get("AIRLOCK_API_KEY")
         if not resolved_key:
-            raise ImpriConfigError(
-                "No API key provided. Pass api_key= or set the IMPRI_API_KEY "
+            raise AirlockConfigError(
+                "No API key provided. Pass api_key= or set the AIRLOCK_API_KEY "
                 "environment variable."
             )
         self._api_key = resolved_key
 
         raw_url = (
             base_url
-            or os.environ.get("IMPRI_BASE_URL")
+            or os.environ.get("AIRLOCK_BASE_URL")
             or _DEFAULT_BASE_URL
         )
         self._base_url = raw_url.rstrip("/")
@@ -269,7 +269,7 @@ class ImpriClient:
     ) -> Any:
         """Make an authenticated API request and return the parsed JSON body.
 
-        Returns None for 204 No Content. Raises a typed ImpriError subclass
+        Returns None for 204 No Content. Raises a typed AirlockError subclass
         for all error responses.
         """
         url = f"{self._base_url}/v1{path}"
@@ -479,8 +479,8 @@ class ImpriClient:
                        Unknown keys return 422.
             channel:   Identifies the decision channel in the audit log.
 
-        Raises ImpriConflict (409) if the action is already decided.
-        Raises ImpriNotFound (404) if action_id is unknown or wrong project.
+        Raises AirlockConflict (409) if the action is already decided.
+        Raises AirlockNotFound (404) if action_id is unknown or wrong project.
         """
         req_body: Dict[str, Any] = {"decision": verdict}
         if edited is not None:
@@ -525,10 +525,10 @@ class ImpriClient:
             ``"internal"``        — unexpected server error (logged server-side).
 
         Raises:
-            ImpriValidationError (400) — ``ids`` empty, exceeds 50, or
+            AirlockValidationError (400) — ``ids`` empty, exceeds 50, or
                                           ``verdict`` not in ``{"approve","reject"}``.
-            ImpriUnauthorized (401/403) — key lacks the ``"actions"`` scope.
-            ImpriRateLimited (429)      — bulk rate limit (10/min) exhausted.
+            AirlockUnauthorized (401/403) — key lacks the ``"actions"`` scope.
+            AirlockRateLimited (429)      — bulk rate limit (10/min) exhausted.
 
         Note:
             Actions with non-empty ``editable`` lists must be decided via
@@ -571,7 +571,7 @@ class ImpriClient:
             status:    ``"executed"`` on success, ``"execute_failed"`` on failure.
             detail:    Optional free-form string (e.g. error message or HTTP status).
 
-        Raises ImpriConflict (409) if the action is not in ``"approved"`` state.
+        Raises AirlockConflict (409) if the action is not in ``"approved"`` state.
         """
         req_body: Dict[str, Any] = {"status": status}
         if detail is not None:
@@ -599,11 +599,11 @@ class ImpriClient:
         Returns the full Action dict when status is ``"approved"``.
 
         Raises:
-            ImpriRejected  — human rejected (carries .action_id, .decision, .final_preview).
+            AirlockRejected  — human rejected (carries .action_id, .decision, .final_preview).
                              NOT an error — handle it as a normal flow outcome.
-            ImpriExpired   — approval window closed before a decision was made.
-            ImpriTimeout   — timeout_s elapsed with action still pending.
-            ImpriNotFound  — action_id unknown or belongs to a different project.
+            AirlockExpired   — approval window closed before a decision was made.
+            AirlockTimeout   — timeout_s elapsed with action still pending.
+            AirlockNotFound  — action_id unknown or belongs to a different project.
         """
         deadline = time.monotonic() + timeout_s
 
@@ -619,21 +619,21 @@ class ImpriClient:
                 final_preview = (
                     decision.get("final_preview") or action.get("preview") or {}
                 )
-                raise ImpriRejected(
+                raise AirlockRejected(
                     action_id=action_id,
                     decision=decision,
                     final_preview=final_preview,
                 )
 
             if current_status == "expired":
-                raise ImpriExpired(
+                raise AirlockExpired(
                     f"Action {action_id!r} expired before a decision was recorded."
                 )
 
             # Still pending — check timeout before sleeping
             remaining = deadline - time.monotonic()
             if remaining <= 0:
-                raise ImpriTimeout(action_id)
+                raise AirlockTimeout(action_id)
 
             sleep_for = min(poll_interval_s, remaining)
             time.sleep(sleep_for)
@@ -828,13 +828,13 @@ class ImpriClient:
         Returns the newly created Watcher dict (same shape as create_watcher).
 
         Raises:
-            ImpriNotFound (404)         — ``preset_id`` is not a known preset.
-            ImpriValidationError (400)  — missing required param, invalid param
+            AirlockNotFound (404)         — ``preset_id`` is not a known preset.
+            AirlockValidationError (400)  — missing required param, invalid param
                                           format, or body fails server-side schema.
-            ImpriQuotaExceeded (402)    — watcher limit or schedule too frequent
+            AirlockQuotaExceeded (402)    — watcher limit or schedule too frequent
                                           for the current tier.
-            ImpriUnauthorized (401/403) — missing ``watch`` scope.
-            ImpriRateLimited (429)      — rate-limit bucket exhausted.
+            AirlockUnauthorized (401/403) — missing ``watch`` scope.
+            AirlockRateLimited (429)      — rate-limit bucket exhausted.
 
         SECURITY: Items delivered by preset-based watchers have
         ``payload.untrusted=True``. Treat watcher payload content (title,
@@ -1086,7 +1086,7 @@ class ImpriClient:
         """Make an authenticated request and return the raw response bytes.
 
         Used for export endpoints that stream ndjson or CSV instead of JSON.
-        Raises a typed ImpriError subclass for all 4xx/5xx responses.
+        Raises a typed AirlockError subclass for all 4xx/5xx responses.
         """
         url = f"{self._base_url}/v1{path}"
         if params:
@@ -1269,9 +1269,9 @@ class ImpriClient:
     ) -> Callable:
         """Decorator that gates a function behind a human approval.
 
-        Every call to the decorated function first submits an Impri action,
+        Every call to the decorated function first submits an Airlock action,
         blocks until the human approves or rejects, then (on approve) calls
-        the original function. On reject, raises ImpriRejected without calling
+        the original function. On reject, raises AirlockRejected without calling
         the function.
 
         If ``"preview.body"`` is in ``editable`` and the reviewer modified the
@@ -1323,7 +1323,7 @@ class ImpriClient:
                     **push_kwargs,
                 )
 
-                # Blocks until decision (may raise ImpriRejected / ImpriExpired / ImpriTimeout)
+                # Blocks until decision (may raise AirlockRejected / AirlockExpired / AirlockTimeout)
                 action = self.await_decision(created["id"], timeout_s=timeout_s)
                 decision = action.get("decision") or {}
                 final_preview: Preview = (
@@ -1363,7 +1363,7 @@ class ImpriClient:
         """Context manager that gates a code block behind a human approval.
 
         Submits an action, waits for the decision, and yields an ApprovedAction
-        on approval. Raises ImpriRejected if the human rejects (no cleanup needed).
+        on approval. Raises AirlockRejected if the human rejects (no cleanup needed).
 
         On clean exit from the ``with`` block, automatically calls
         ``report_result("executed")``. On exception, calls
@@ -1402,7 +1402,7 @@ class ImpriClient:
             editable=editable,
             **push_kwargs,
         )
-        # May raise ImpriRejected, ImpriExpired, ImpriTimeout — propagate directly.
+        # May raise AirlockRejected, AirlockExpired, AirlockTimeout — propagate directly.
         action = self.await_decision(created["id"], timeout_s=timeout_s)
 
         decision: Any = action.get("decision") or {}
@@ -1431,7 +1431,7 @@ class ImpriClient:
                         "execute_failed",
                         detail=str(exc_to_reraise),
                     )
-            except ImpriError as reporting_err:
+            except AirlockError as reporting_err:
                 warnings.warn(
                     f"approval_gate: report_result failed: {reporting_err}",
                     RuntimeWarning,

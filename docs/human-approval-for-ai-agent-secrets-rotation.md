@@ -10,7 +10,7 @@ Rotation agents exist for a good reason: expiring keys, leaked credentials, and 
 
 That combination — high blast radius, hard to reverse, and triggered by an agent's own judgment about what's "expiring soon" — is exactly the case for a human checkpoint before the revoke step, not after.
 
-## Gating the rotation with Impri
+## Gating the rotation with Airlock
 
 The agent still does all the work: it detects the expiring key, generates the replacement, and prepares the revoke call. What it doesn't do is call revoke before a human signs off. In Python, that's a `requests` call before the mutating step:
 
@@ -19,12 +19,12 @@ import os
 import time
 import requests
 
-IMPRI_BASE = "https://api.impri.dev"
-HEADERS = {"Authorization": f"Bearer {os.environ['IMPRI_API_KEY']}"}
+AIRLOCK_BASE = "https://api.airlock.dev"
+HEADERS = {"Authorization": f"Bearer {os.environ['AIRLOCK_API_KEY']}"}
 
 def request_rotation_approval(service: str, key_id: str, expires_at: str) -> dict:
     resp = requests.post(
-        f"{IMPRI_BASE}/v1/actions",
+        f"{AIRLOCK_BASE}/v1/actions",
         headers=HEADERS,
         json={
             "kind": "secret.rotate_api_key",
@@ -47,7 +47,7 @@ def request_rotation_approval(service: str, key_id: str, expires_at: str) -> dic
 
 def poll_and_execute(action_id: str, service: str, key_id: str):
     while True:
-        result = requests.get(f"{IMPRI_BASE}/v1/actions/{action_id}", headers=HEADERS).json()
+        result = requests.get(f"{AIRLOCK_BASE}/v1/actions/{action_id}", headers=HEADERS).json()
         if result["status"] != "pending":
             break
         time.sleep(10)
@@ -55,7 +55,7 @@ def poll_and_execute(action_id: str, service: str, key_id: str):
     if result["status"] == "approved":
         revoke_old_key(service, key_id)  # your vault/IAM call
         requests.post(
-            f"{IMPRI_BASE}/v1/actions/{action_id}/result",
+            f"{AIRLOCK_BASE}/v1/actions/{action_id}/result",
             headers=HEADERS,
             json={"status": "executed", "payload": {"revoked_key_id": key_id}},
         )
@@ -67,7 +67,7 @@ A one-hour `expires_in` is deliberate here — a key rotation request that's sti
 
 ## What the reviewer sees
 
-The inbox card carries the service name, key ID, and expiry in the title so a reviewer can triage from a phone notification without opening a dashboard. Because `idempotent` is `false`, Impri shows a "retrying may duplicate this action" warning — worth keeping even though rotation isn't exactly duplicable, since it flags that re-approving after a failed execution needs a fresh look, not a blind retry. The `undo` field turns into a visible note on the card, so the person approving knows the old key isn't gone the instant they click approve.
+The inbox card carries the service name, key ID, and expiry in the title so a reviewer can triage from a phone notification without opening a dashboard. Because `idempotent` is `false`, Airlock shows a "retrying may duplicate this action" warning — worth keeping even though rotation isn't exactly duplicable, since it flags that re-approving after a failed execution needs a fresh look, not a blind retry. The `undo` field turns into a visible note on the card, so the person approving knows the old key isn't gone the instant they click approve.
 
 ## Handling failure and rollback
 
@@ -75,4 +75,4 @@ If `revoke_old_key` throws after approval, report `execute_failed` rather than s
 
 ## Where this fits next to your secrets manager
 
-Impri doesn't store secrets, generate them, or talk to your vault — it only holds the pending decision and the audit trail of who approved what and when. The actual key generation and revocation stay in Vault, AWS Secrets Manager, or whatever you already run. For the underlying request/poll/execute pattern in more detail, start with the [quickstart](quickstart.md), and if your rotation agent lives inside Claude Code or another MCP client, see the [MCP integration](mcp.md) to skip writing the HTTP calls by hand.
+Airlock doesn't store secrets, generate them, or talk to your vault — it only holds the pending decision and the audit trail of who approved what and when. The actual key generation and revocation stay in Vault, AWS Secrets Manager, or whatever you already run. For the underlying request/poll/execute pattern in more detail, start with the [quickstart](quickstart.md), and if your rotation agent lives inside Claude Code or another MCP client, see the [MCP integration](mcp.md) to skip writing the HTTP calls by hand.

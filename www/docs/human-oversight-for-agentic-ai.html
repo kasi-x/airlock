@@ -3,21 +3,21 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Human Oversight for Agentic AI — Impri Docs</title>
+<title>Human Oversight for Agentic AI — Airlock Docs</title>
 <meta name="description" content="Human oversight for agentic AI means deciding, per tool call in a multi-step pipeline, whether a person must sign off before a side effect fires — not…">
 <meta name="theme-color" content="#06070d">
-<meta property="og:title" content="Human Oversight for Agentic AI — Impri Docs">
+<meta property="og:title" content="Human Oversight for Agentic AI — Airlock Docs">
 <meta property="og:description" content="Human oversight for agentic AI means deciding, per tool call in a multi-step pipeline, whether a person must sign off before a side effect fires — not…">
 <meta property="og:type" content="article">
-<meta property="og:url" content="https://impri.dev/docs/human-oversight-for-agentic-ai">
-<meta property="og:image" content="https://impri.dev/assets/og/og-docs.png">
+<meta property="og:url" content="https://airlock.dev/docs/human-oversight-for-agentic-ai">
+<meta property="og:image" content="https://airlock.dev/assets/og/og-docs.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
-<meta property="og:image:alt" content="Impri — human-in-the-loop approval inbox for AI agents">
+<meta property="og:image:alt" content="Airlock — human-in-the-loop approval inbox for AI agents">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="https://impri.dev/assets/og/og-docs.png">
-<link rel="canonical" href="https://impri.dev/docs/human-oversight-for-agentic-ai">
-<script type="application/ld+json">{"@context":"https://schema.org","@type":"TechArticle","headline":"Human Oversight for Agentic AI","description":"Human oversight for agentic AI means deciding, per tool call in a multi-step pipeline, whether a person must sign off before a side effect fires — not…","url":"https://impri.dev/docs/human-oversight-for-agentic-ai","inLanguage":"en","author":{"@type":"Organization","name":"Impri","url":"https://impri.dev"},"publisher":{"@type":"Organization","name":"Impri","url":"https://impri.dev"}}</script>
+<meta name="twitter:image" content="https://airlock.dev/assets/og/og-docs.png">
+<link rel="canonical" href="https://airlock.dev/docs/human-oversight-for-agentic-ai">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"TechArticle","headline":"Human Oversight for Agentic AI","description":"Human oversight for agentic AI means deciding, per tool call in a multi-step pipeline, whether a person must sign off before a side effect fires — not…","url":"https://airlock.dev/docs/human-oversight-for-agentic-ai","inLanguage":"en","author":{"@type":"Organization","name":"Airlock","url":"https://airlock.dev"},"publisher":{"@type":"Organization","name":"Airlock","url":"https://airlock.dev"}}</script>
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <link rel="icon" href="/favicon.ico" sizes="32x32">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='9' fill='%236366f1'/%3E%3Cpath d='M9 16.5l4.5 4.5L23 11' stroke='white' stroke-width='3' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
@@ -132,13 +132,13 @@ pre code.hljs{display:block;overflow-x:auto}
 <div class="wrap nav-inner">
   <a class="brand" href="/">
     <span class="mark"><svg viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.5 4.5L19 7.5" stroke="white" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
-    Impri
+    Airlock
   </a>
   <div class="nav-links">
     <a class="link" href="/#how">How it works</a>
     <a class="link" href="/#pricing">Pricing</a>
     <a class="link active-nav" href="../docs">Docs</a>
-    <a class="btn btn-primary btn-sm" href="https://gitlab.com/sekera.radim/impri">GitLab</a>
+    <a class="btn btn-primary btn-sm" href="https://gitlab.com/sekera.radim/airlock">GitLab</a>
   </div>
 </div>
 </nav>
@@ -164,14 +164,14 @@ pre code.hljs{display:block;overflow-x:auto}
 <li><strong>Point checks</strong> — a synchronous gate before a specific call executes. This is what stops a bad purchase order from being submitted.</li>
 <li><strong>Audit trail</strong> — a durable record of what was proposed, who decided, and when. This is what lets you answer &quot;why did this happen&quot; three weeks later, when the point check is long past.</li>
 </ul>
-<p>Impri provides both from the same underlying data: every <code>POST /v1/actions</code> call is both the point check (the agent blocks on the decision) and an <code>audit_log</code> row (<code>action.created</code>, later <code>action.approved</code> or <code>action.rejected</code>, with the deciding key or channel user recorded). You don&#39;t instrument these separately.</p>
+<p>Airlock provides both from the same underlying data: every <code>POST /v1/actions</code> call is both the point check (the agent blocks on the decision) and an <code>audit_log</code> row (<code>action.created</code>, later <code>action.approved</code> or <code>action.rejected</code>, with the deciding key or channel user recorded). You don&#39;t instrument these separately.</p>
 <h2 id="wiring-a-point-check-into-an-agentic-pipeline">Wiring a point check into an agentic pipeline</h2>
 <p>Here the procurement agent has already searched vendors and drafted a purchase order. Submitting it commits real spend, so it&#39;s the point that needs a human — the search and comparison steps before it don&#39;t.</p>
 <div class="code-block"><span class="code-lang">bash</span><pre><code class="hljs"><span class="hljs-comment"># Step the agent already ran: vendor search + price comparison (no gate needed, read-only)</span>
 
 <span class="hljs-comment"># Point check before the PO is submitted to the ERP</span>
-ACTION=$(curl -s -X POST https://api.impri.dev/v1/actions \
-  -H <span class="hljs-string">&quot;Authorization: Bearer <span class="hljs-variable">$IMPRI_API_KEY</span>&quot;</span> \
+ACTION=$(curl -s -X POST https://api.airlock.dev/v1/actions \
+  -H <span class="hljs-string">&quot;Authorization: Bearer <span class="hljs-variable">$AIRLOCK_API_KEY</span>&quot;</span> \
   -H <span class="hljs-string">&quot;Content-Type: application/json&quot;</span> \
   -d <span class="hljs-string">&#x27;{
     &quot;kind&quot;: &quot;erp.purchase_order.submit&quot;,
@@ -189,7 +189,7 @@ ACTION=$(curl -s -X POST https://api.impri.dev/v1/actions \
 
 ACTION_ID=$(<span class="hljs-built_in">echo</span> <span class="hljs-variable">$ACTION</span> | jq -r .<span class="hljs-built_in">id</span>)
 
-<span class="hljs-comment"># Agent blocks here until a human decides — poll or use impri_await_decision over MCP</span></code></pre></div>
+<span class="hljs-comment"># Agent blocks here until a human decides — poll or use airlock_await_decision over MCP</span></code></pre></div>
 <p><code>idempotent: false</code> and <code>undo</code> don&#39;t change whether the gate fires — they add context so the reviewer knows a duplicate submission would double the order, and how to unwind it if approved by mistake. That&#39;s oversight information, not just a yes/no gate.</p>
 <h2 id="tiering-oversight-instead-of-applying-it-uniformly">Tiering oversight instead of applying it uniformly</h2>
 <p>Not every call in an agentic pipeline deserves the same scrutiny, and treating them uniformly either creates approval fatigue (everything needs a human) or false safety (nothing does). The <a href="rules">rules engine</a> lets you tier by risk instead:</p>
@@ -225,16 +225,16 @@ ACTION_ID=$(<span class="hljs-built_in">echo</span> <span class="hljs-variable">
 </div>
 <p>The auto-approved tier still writes an <code>action.rule_applied</code> audit event — low-risk doesn&#39;t mean unlogged, it means no one has to act on it in real time.</p>
 <h2 id="where-oversight-stops-being-real">Where oversight stops being real</h2>
-<p>A gate is only oversight if the agent has no other way to reach the ERP. If the procurement agent holds ERP credentials directly and only <em>chooses</em> to call Impri first, a bad plan, a prompt injection from a scraped vendor page, or a future code change can route around the check entirely. The point check above only means something if <code>erp.purchase_order.submit</code> is a wrapped function and the raw ERP client is not reachable from the agent&#39;s tool surface — see <a href="integrations">the SDK integrations guide</a> for how to build that wrapper.</p>
-<p>Impri also does not decide <em>which</em> steps need oversight, does not interpret whether a given PO is a good deal, and is not a workflow engine — if your agentic pipeline needs branching logic across many systems beyond approve/reject, that belongs in something like n8n or Temporal, with Impri as one node in it. What Impri owns is narrower and more mechanical: hold the proposed action, notify the right human or channel, record the decision, and refuse to let the agent past that data dependency.</p>
+<p>A gate is only oversight if the agent has no other way to reach the ERP. If the procurement agent holds ERP credentials directly and only <em>chooses</em> to call Airlock first, a bad plan, a prompt injection from a scraped vendor page, or a future code change can route around the check entirely. The point check above only means something if <code>erp.purchase_order.submit</code> is a wrapped function and the raw ERP client is not reachable from the agent&#39;s tool surface — see <a href="integrations">the SDK integrations guide</a> for how to build that wrapper.</p>
+<p>Airlock also does not decide <em>which</em> steps need oversight, does not interpret whether a given PO is a good deal, and is not a workflow engine — if your agentic pipeline needs branching logic across many systems beyond approve/reject, that belongs in something like n8n or Temporal, with Airlock as one node in it. What Airlock owns is narrower and more mechanical: hold the proposed action, notify the right human or channel, record the decision, and refuse to let the agent past that data dependency.</p>
 <h2 id="next-step">Next step</h2>
 <p>Start with the three-call pattern in <a href="how-to-add-human-approval-to-an-ai-agent">how to add human approval to an AI agent</a>, then layer in tiering once you have more than one action kind — see <a href="rules">the rules engine</a> and <a href="audit-log">the audit log</a> for the retrospective side of oversight.</p>
 
-    <aside class="doc-cta" aria-label="Try Impri">
+    <aside class="doc-cta" aria-label="Try Airlock">
   <p class="doc-cta-title">Add an approval step to your own agent</p>
-  <p>Start on Impri Cloud: the Free tier includes 100 approvals a month. Or self-host the MIT-licensed core with Docker Compose, with no tier limits.</p>
+  <p>Start on Airlock Cloud: the Free tier includes 100 approvals a month. Or self-host the MIT-licensed core with Docker Compose, with no tier limits.</p>
   <div class="doc-cta-actions">
-    <a class="btn btn-primary btn-sm" href="https://app.impri.dev/?signup=1">Start free on Impri Cloud</a>
+    <a class="btn btn-primary btn-sm" href="https://app.airlock.dev/?signup=1">Start free on Airlock Cloud</a>
     <a class="btn btn-ghost btn-sm" href="../docs/quickstart">Quick start</a>
     <a class="btn btn-ghost btn-sm" href="../docs/self-hosting">Self-host guide</a>
   </div>
@@ -330,19 +330,19 @@ ACTION_ID=$(<span class="hljs-built_in">echo</span> <span class="hljs-variable">
 <footer class="footer">
 <div class="wrap footer-inner">
   <a class="brand" href="/">
-    <span class="mark"><svg viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.5 4.5L19 7.5" stroke="white" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Impri
+    <span class="mark"><svg viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.5 4.5L19 7.5" stroke="white" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Airlock
   </a>
   <div>
-    <a href="https://gitlab.com/sekera.radim/impri">GitLab</a>
+    <a href="https://gitlab.com/sekera.radim/airlock">GitLab</a>
     <a href="/docs">Docs</a>
-    <a href="https://gitlab.com/sekera.radim/impri/-/blob/main/LICENSE">MIT License</a>
-    <a href="https://www.npmjs.com/package/@impri/mcp">@impri/mcp</a>
+    <a href="https://gitlab.com/sekera.radim/airlock/-/blob/main/LICENSE">MIT License</a>
+    <a href="https://www.npmjs.com/package/@airlock/mcp">@airlock/mcp</a>
     <a href="/docs/privacy">Privacy</a>
     <a href="/docs/terms">Terms</a>
     <a href="https://sekera.dev">Contact</a>
   </div>
 </div>
-<div class="wrap" style="margin-top:18px"><span class="muted">© 2026 Impri · The imprimatur for your AI agents · Built by <a href="https://sekera.dev" style="color:inherit">Radim Sekera</a>. Also by the same maker: <a href="https://briefgate.dev/?utm_source=impri.dev&amp;utm_medium=referral" style="color:inherit">BriefGate</a> — client intake for agencies and AI agents.</span></div>
+<div class="wrap" style="margin-top:18px"><span class="muted">© 2026 Airlock · The airlockmatur for your AI agents · Built by <a href="https://sekera.dev" style="color:inherit">Radim Sekera</a>. Also by the same maker: <a href="https://briefgate.dev/?utm_source=airlock.dev&amp;utm_medium=referral" style="color:inherit">BriefGate</a> — client intake for agencies and AI agents.</span></div>
 </footer>
 </body>
 </html>

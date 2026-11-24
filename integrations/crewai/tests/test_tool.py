@@ -1,4 +1,4 @@
-"""Light integration tests for impri_crewai.
+"""Light integration tests for airlock_crewai.
 
 All HTTP calls are intercepted via the injectable _transport parameter — no
 network, no patching of stdlib internals.
@@ -15,24 +15,24 @@ from unittest.mock import patch
 
 import pytest
 
-from impri_crewai._client import ImpriClient
-from impri_crewai._exceptions import (
-    ImpriConflict,
-    ImpriConfigError,
-    ImpriExpired,
-    ImpriRejected,
-    ImpriTimeout,
-    ImpriUnauthorized,
+from airlock_crewai._client import AirlockClient
+from airlock_crewai._exceptions import (
+    AirlockConflict,
+    AirlockConfigError,
+    AirlockExpired,
+    AirlockRejected,
+    AirlockTimeout,
+    AirlockUnauthorized,
 )
 
-# Guard the crewai import — the ImpriApprovalTool tests are skipped when
+# Guard the crewai import — the AirlockApprovalTool tests are skipped when
 # crewai is not installed rather than failing with an ImportError.
 # We must check for crewai itself, not just the module import, because
-# tool.py defines a stub ImpriApprovalTool that raises only on instantiation.
+# tool.py defines a stub AirlockApprovalTool that raises only on instantiation.
 try:
     import crewai as _crewai_mod  # noqa: F401
 
-    from impri_crewai.tool import ImpriApprovalTool
+    from airlock_crewai.tool import AirlockApprovalTool
 
     _CREWAI_AVAILABLE = True
 except ImportError:
@@ -69,9 +69,9 @@ def _transport(*responses: Tuple[int, bytes]):
     return _call
 
 
-def _client(*responses: Tuple[int, bytes]) -> ImpriClient:
-    """Create a test ImpriClient with a preloaded transport."""
-    return ImpriClient(
+def _client(*responses: Tuple[int, bytes]) -> AirlockClient:
+    """Create a test AirlockClient with a preloaded transport."""
+    return AirlockClient(
         api_key="im_test_key",
         base_url="http://localhost:8484",
         _transport=_transport(*responses),
@@ -85,19 +85,19 @@ def _client(*responses: Tuple[int, bytes]) -> ImpriClient:
 class TestConfig:
     def test_raises_when_no_api_key(self):
         import os
-        env = {k: v for k, v in os.environ.items() if k != "IMPRI_API_KEY"}
+        env = {k: v for k, v in os.environ.items() if k != "AIRLOCK_API_KEY"}
         with patch.dict(os.environ, env, clear=True):
-            with pytest.raises(ImpriConfigError, match="No API key"):
-                ImpriClient()
+            with pytest.raises(AirlockConfigError, match="No API key"):
+                AirlockClient()
 
     def test_accepts_api_key_from_env(self):
         import os
-        with patch.dict(os.environ, {"IMPRI_API_KEY": "im_from_env"}):
-            c = ImpriClient()
+        with patch.dict(os.environ, {"AIRLOCK_API_KEY": "im_from_env"}):
+            c = AirlockClient()
         assert c._api_key == "im_from_env"
 
     def test_strips_trailing_slash_from_base_url(self):
-        c = ImpriClient(api_key="im_x", base_url="http://localhost:8484/")
+        c = AirlockClient(api_key="im_x", base_url="http://localhost:8484/")
         assert c._base_url == "http://localhost:8484"
 
 
@@ -125,12 +125,12 @@ class TestCreateAction:
 
     def test_raises_unauthorized_on_401(self):
         c = _client(_resp({"message": "Invalid key"}, 401))
-        with pytest.raises(ImpriUnauthorized):
+        with pytest.raises(AirlockUnauthorized):
             c.create_action("k", "t", {"format": "plain", "body": "b"})
 
     def test_raises_conflict_on_409(self):
         c = _client(_resp({"message": "Already decided"}, 409))
-        with pytest.raises(ImpriConflict):
+        with pytest.raises(AirlockConflict):
             c.get_action("act_already_done")
 
 
@@ -171,7 +171,7 @@ class TestAwaitDecision:
             result = c.await_decision("act_2", poll_interval_s=5)
         assert result["status"] == "approved"
 
-    def test_raises_impri_rejected(self):
+    def test_raises_airlock_rejected(self):
         rejected = {
             "id": "act_3",
             "status": "rejected",
@@ -181,35 +181,35 @@ class TestAwaitDecision:
             },
         }
         c = _client(_resp(rejected))
-        with pytest.raises(ImpriRejected) as exc_info:
+        with pytest.raises(AirlockRejected) as exc_info:
             c.await_decision("act_3")
         assert exc_info.value.action_id == "act_3"
         assert exc_info.value.decision["verdict"] == "reject"
 
-    def test_raises_impri_expired_on_status(self):
+    def test_raises_airlock_expired_on_status(self):
         c = _client(_resp({"id": "act_4", "status": "expired"}))
-        with pytest.raises(ImpriExpired):
+        with pytest.raises(AirlockExpired):
             c.await_decision("act_4")
 
-    def test_raises_impri_timeout_when_deadline_passes(self):
+    def test_raises_airlock_timeout_when_deadline_passes(self):
         pending = {"id": "act_5", "status": "pending"}
         c = _client(_resp(pending))  # always returns pending
         monotonic_values = iter([0.0, 0.0, 999.0])
         with patch("time.sleep"):
             with patch("time.monotonic", side_effect=monotonic_values):
-                with pytest.raises(ImpriTimeout) as exc_info:
+                with pytest.raises(AirlockTimeout) as exc_info:
                     c.await_decision("act_5", timeout_s=1.0, poll_interval_s=5)
         assert exc_info.value.action_id == "act_5"
 
 
 # ---------------------------------------------------------------------------
-# ImpriApprovalTool (skipped without crewai)
+# AirlockApprovalTool (skipped without crewai)
 # ---------------------------------------------------------------------------
 
 @pytest.mark.skipif(not _CREWAI_AVAILABLE, reason="crewai not installed")
-class TestImpriApprovalTool:
-    def _make_tool(self, *responses: Tuple[int, bytes]) -> "ImpriApprovalTool":
-        return ImpriApprovalTool(
+class TestAirlockApprovalTool:
+    def _make_tool(self, *responses: Tuple[int, bytes]) -> "AirlockApprovalTool":
+        return AirlockApprovalTool(
             client=_client(*responses),
             action_kind="test.action",
             timeout_s=30.0,
@@ -256,7 +256,7 @@ class TestImpriApprovalTool:
         assert "Human revised this" in result
         assert "human reviewer edited" in result.lower()
 
-    def test_run_raises_impri_rejected(self):
+    def test_run_raises_airlock_rejected(self):
         created = {"id": "act_tool3", "status": "pending", "inbox_url": ""}
         rejected = {
             "id": "act_tool3",
@@ -264,12 +264,12 @@ class TestImpriApprovalTool:
             "decision": {"verdict": "reject", "decided_at": int(time.time())},
         }
         tool = self._make_tool(_resp(created, 201), _resp(rejected))
-        with pytest.raises(ImpriRejected):
+        with pytest.raises(AirlockRejected):
             tool._run("Dangerous action", "DROP TABLE users", "plain")
 
     def test_tool_name_and_description_are_set(self):
-        tool = ImpriApprovalTool(client=_client(_resp({})))
-        assert tool.name == "impri_approval_gate"
+        tool = AirlockApprovalTool(client=_client(_resp({})))
+        assert tool.name == "airlock_approval_gate"
         assert "approval" in tool.description.lower()
 
 
@@ -283,7 +283,7 @@ class TestVerifyWebhook:
         import hmac as _hmac
         import time as _time
 
-        from impri_crewai._client import verify_webhook
+        from airlock_crewai._client import verify_webhook
 
         secret = "whsec_test"
         # Use a fresh timestamp so the replay-protection window check passes.
@@ -298,8 +298,8 @@ class TestVerifyWebhook:
         verify_webhook(body, secret, timestamp, nonce, sig)  # must not raise
 
     def test_wrong_signature_raises(self):
-        from impri_crewai._client import verify_webhook
-        from impri_crewai._exceptions import ImpriWebhookSignatureError
+        from airlock_crewai._client import verify_webhook
+        from airlock_crewai._exceptions import AirlockWebhookSignatureError
 
-        with pytest.raises(ImpriWebhookSignatureError):
+        with pytest.raises(AirlockWebhookSignatureError):
             verify_webhook(b"body", "secret", "ts", "nonce", "sha256=baddigest")

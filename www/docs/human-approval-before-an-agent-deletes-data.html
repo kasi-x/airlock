@@ -3,21 +3,21 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Require Human Approval Before an Agent Deletes Data — Impri Docs</title>
+<title>Require Human Approval Before an Agent Deletes Data — Airlock Docs</title>
 <meta name="description" content="Delete is the one action an agent can't undo by apologizing. Here's how to gate DELETE calls behind a human decision so a bad prompt never turns into a bad…">
 <meta name="theme-color" content="#06070d">
-<meta property="og:title" content="Require Human Approval Before an Agent Deletes Data — Impri Docs">
+<meta property="og:title" content="Require Human Approval Before an Agent Deletes Data — Airlock Docs">
 <meta property="og:description" content="Delete is the one action an agent can't undo by apologizing. Here's how to gate DELETE calls behind a human decision so a bad prompt never turns into a bad…">
 <meta property="og:type" content="article">
-<meta property="og:url" content="https://impri.dev/docs/human-approval-before-an-agent-deletes-data">
-<meta property="og:image" content="https://impri.dev/assets/og/og-docs.png">
+<meta property="og:url" content="https://airlock.dev/docs/human-approval-before-an-agent-deletes-data">
+<meta property="og:image" content="https://airlock.dev/assets/og/og-docs.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
-<meta property="og:image:alt" content="Impri — human-in-the-loop approval inbox for AI agents">
+<meta property="og:image:alt" content="Airlock — human-in-the-loop approval inbox for AI agents">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="https://impri.dev/assets/og/og-docs.png">
-<link rel="canonical" href="https://impri.dev/docs/human-approval-before-an-agent-deletes-data">
-<script type="application/ld+json">{"@context":"https://schema.org","@type":"TechArticle","headline":"Require Human Approval Before an Agent Deletes Data","description":"Delete is the one action an agent can't undo by apologizing. Here's how to gate DELETE calls behind a human decision so a bad prompt never turns into a bad…","url":"https://impri.dev/docs/human-approval-before-an-agent-deletes-data","inLanguage":"en","author":{"@type":"Organization","name":"Impri","url":"https://impri.dev"},"publisher":{"@type":"Organization","name":"Impri","url":"https://impri.dev"}}</script>
+<meta name="twitter:image" content="https://airlock.dev/assets/og/og-docs.png">
+<link rel="canonical" href="https://airlock.dev/docs/human-approval-before-an-agent-deletes-data">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"TechArticle","headline":"Require Human Approval Before an Agent Deletes Data","description":"Delete is the one action an agent can't undo by apologizing. Here's how to gate DELETE calls behind a human decision so a bad prompt never turns into a bad…","url":"https://airlock.dev/docs/human-approval-before-an-agent-deletes-data","inLanguage":"en","author":{"@type":"Organization","name":"Airlock","url":"https://airlock.dev"},"publisher":{"@type":"Organization","name":"Airlock","url":"https://airlock.dev"}}</script>
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <link rel="icon" href="/favicon.ico" sizes="32x32">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='9' fill='%236366f1'/%3E%3Cpath d='M9 16.5l4.5 4.5L23 11' stroke='white' stroke-width='3' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
@@ -132,13 +132,13 @@ pre code.hljs{display:block;overflow-x:auto}
 <div class="wrap nav-inner">
   <a class="brand" href="/">
     <span class="mark"><svg viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.5 4.5L19 7.5" stroke="white" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
-    Impri
+    Airlock
   </a>
   <div class="nav-links">
     <a class="link" href="/#how">How it works</a>
     <a class="link" href="/#pricing">Pricing</a>
     <a class="link active-nav" href="../docs">Docs</a>
-    <a class="btn btn-primary btn-sm" href="https://gitlab.com/sekera.radim/impri">GitLab</a>
+    <a class="btn btn-primary btn-sm" href="https://gitlab.com/sekera.radim/airlock">GitLab</a>
   </div>
 </div>
 </nav>
@@ -163,17 +163,17 @@ pre code.hljs{display:block;overflow-x:auto}
 <p>Say you have a support-ops agent with a tool that deletes inactive customer accounts. The unsafe version calls the database directly:</p>
 <div class="code-block"><span class="code-lang">python</span><pre><code class="hljs"><span class="hljs-keyword">def</span> <span class="hljs-title function_">delete_inactive_accounts</span>(<span class="hljs-params">account_ids: <span class="hljs-built_in">list</span>[<span class="hljs-built_in">str</span>]</span>) -&gt; <span class="hljs-literal">None</span>:
     db.execute(<span class="hljs-string">&quot;DELETE FROM accounts WHERE id = ANY(%s)&quot;</span>, [account_ids])</code></pre></div>
-<p>The agent&#39;s only path to that side effect should be a wrapped version that requires an approved Impri action first. Everything else — the model choosing to call the tool, the reasoning that led there — stays exactly as flexible as before. What changes is that the tool itself refuses to run without a decision:</p>
+<p>The agent&#39;s only path to that side effect should be a wrapped version that requires an approved Airlock action first. Everything else — the model choosing to call the tool, the reasoning that led there — stays exactly as flexible as before. What changes is that the tool itself refuses to run without a decision:</p>
 <div class="code-block"><span class="code-lang">python</span><pre><code class="hljs"><span class="hljs-keyword">import</span> os
 <span class="hljs-keyword">import</span> time
 <span class="hljs-keyword">import</span> requests
 
-IMPRI_BASE = <span class="hljs-string">&quot;https://api.impri.dev&quot;</span>
-HEADERS = {<span class="hljs-string">&quot;Authorization&quot;</span>: <span class="hljs-string">f&quot;Bearer <span class="hljs-subst">{os.environ[<span class="hljs-string">&#x27;IMPRI_API_KEY&#x27;</span>]}</span>&quot;</span>}
+AIRLOCK_BASE = <span class="hljs-string">&quot;https://api.airlock.dev&quot;</span>
+HEADERS = {<span class="hljs-string">&quot;Authorization&quot;</span>: <span class="hljs-string">f&quot;Bearer <span class="hljs-subst">{os.environ[<span class="hljs-string">&#x27;AIRLOCK_API_KEY&#x27;</span>]}</span>&quot;</span>}
 
 <span class="hljs-keyword">def</span> <span class="hljs-title function_">delete_inactive_accounts</span>(<span class="hljs-params">account_ids: <span class="hljs-built_in">list</span>[<span class="hljs-built_in">str</span>], reason: <span class="hljs-built_in">str</span></span>) -&gt; <span class="hljs-literal">None</span>:
     action = requests.post(
-        <span class="hljs-string">f&quot;<span class="hljs-subst">{IMPRI_BASE}</span>/v1/actions&quot;</span>,
+        <span class="hljs-string">f&quot;<span class="hljs-subst">{AIRLOCK_BASE}</span>/v1/actions&quot;</span>,
         headers=HEADERS,
         json={
             <span class="hljs-string">&quot;kind&quot;</span>: <span class="hljs-string">&quot;data.delete&quot;</span>,
@@ -191,7 +191,7 @@ HEADERS = {<span class="hljs-string">&quot;Authorization&quot;</span>: <span cla
     action_id = action[<span class="hljs-string">&quot;id&quot;</span>]
 
     <span class="hljs-keyword">while</span> <span class="hljs-literal">True</span>:
-        result = requests.get(<span class="hljs-string">f&quot;<span class="hljs-subst">{IMPRI_BASE}</span>/v1/actions/<span class="hljs-subst">{action_id}</span>&quot;</span>, headers=HEADERS).json()
+        result = requests.get(<span class="hljs-string">f&quot;<span class="hljs-subst">{AIRLOCK_BASE}</span>/v1/actions/<span class="hljs-subst">{action_id}</span>&quot;</span>, headers=HEADERS).json()
         <span class="hljs-keyword">if</span> result[<span class="hljs-string">&quot;status&quot;</span>] != <span class="hljs-string">&quot;pending&quot;</span>:
             <span class="hljs-keyword">break</span>
         time.sleep(<span class="hljs-number">10</span>)
@@ -202,14 +202,14 @@ HEADERS = {<span class="hljs-string">&quot;Authorization&quot;</span>: <span cla
 
     db.execute(<span class="hljs-string">&quot;DELETE FROM accounts WHERE id = ANY(%s)&quot;</span>, [account_ids])
     requests.post(
-        <span class="hljs-string">f&quot;<span class="hljs-subst">{IMPRI_BASE}</span>/v1/actions/<span class="hljs-subst">{action_id}</span>/result&quot;</span>,
+        <span class="hljs-string">f&quot;<span class="hljs-subst">{AIRLOCK_BASE}</span>/v1/actions/<span class="hljs-subst">{action_id}</span>/result&quot;</span>,
         headers=HEADERS,
         json={<span class="hljs-string">&quot;status&quot;</span>: <span class="hljs-string">&quot;executed&quot;</span>, <span class="hljs-string">&quot;payload&quot;</span>: {<span class="hljs-string">&quot;deleted_count&quot;</span>: <span class="hljs-built_in">len</span>(account_ids)}},
     )</code></pre></div>
 <p>The <code>account_ids</code> list is not editable here — for a delete, letting a human silently trim the list without the agent knowing is more confusing than useful. If you want that, add <code>&quot;editable&quot;: [&quot;preview.body&quot;]</code> and re-derive the ID list from the edited markdown before executing, rather than trusting the original.</p>
 <hr>
 <h2 id="idempotent-false-and-undo-are-doing-real-work-here"><code>idempotent: false</code> and <code>undo</code> are doing real work here</h2>
-<p>Two of Impri&#39;s optional fields matter more for deletes than for almost any other action kind:</p>
+<p>Two of Airlock&#39;s optional fields matter more for deletes than for almost any other action kind:</p>
 <ul>
 <li><strong><code>idempotent: false</code></strong> — a retried delete of the same IDs is harmless (they&#39;re already gone), but a retry that includes <em>newly matched</em> rows because the filter re-ran is not. Setting this to <code>false</code> puts a &quot;retrying may duplicate this action&quot; warning on the card, which for a delete reads more like &quot;retrying may delete more than you think&quot; — worth the reviewer&#39;s attention.</li>
 <li><strong><code>undo</code></strong> — even when there&#39;s no real undo, say so explicitly (<code>&quot;No undo — restore from backup&quot;</code>). A blank field reads as &quot;reversible&quot; by omission. A stated boundary reads as what it is.</li>
@@ -247,11 +247,11 @@ HEADERS = {<span class="hljs-string">&quot;Authorization&quot;</span>: <span cla
 <p>Treat <code>rejected</code> and <code>expired</code> identically: the delete never runs. For a destructive action, don&#39;t auto-retry a rejected delete with a &quot;maybe try smaller batches&quot; fallback unless a human explicitly asked for that — silently re-proposing a delete the reviewer just said no to defeats the point of asking.</p>
 <p>See the full three-call pattern in <a href="how-to-add-human-approval-to-an-ai-agent">how to add human approval to an AI agent</a>, how approvals show up in <a href="audit-log">the audit log</a>, and how to auto-route delete-kind actions to a specific reviewer with <a href="rules">rules</a>.</p>
 
-    <aside class="doc-cta" aria-label="Try Impri">
+    <aside class="doc-cta" aria-label="Try Airlock">
   <p class="doc-cta-title">Add an approval step to your own agent</p>
-  <p>Start on Impri Cloud: the Free tier includes 100 approvals a month. Or self-host the MIT-licensed core with Docker Compose, with no tier limits.</p>
+  <p>Start on Airlock Cloud: the Free tier includes 100 approvals a month. Or self-host the MIT-licensed core with Docker Compose, with no tier limits.</p>
   <div class="doc-cta-actions">
-    <a class="btn btn-primary btn-sm" href="https://app.impri.dev/?signup=1">Start free on Impri Cloud</a>
+    <a class="btn btn-primary btn-sm" href="https://app.airlock.dev/?signup=1">Start free on Airlock Cloud</a>
     <a class="btn btn-ghost btn-sm" href="../docs/quickstart">Quick start</a>
     <a class="btn btn-ghost btn-sm" href="../docs/self-hosting">Self-host guide</a>
   </div>
@@ -346,19 +346,19 @@ HEADERS = {<span class="hljs-string">&quot;Authorization&quot;</span>: <span cla
 <footer class="footer">
 <div class="wrap footer-inner">
   <a class="brand" href="/">
-    <span class="mark"><svg viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.5 4.5L19 7.5" stroke="white" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Impri
+    <span class="mark"><svg viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.5 4.5L19 7.5" stroke="white" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Airlock
   </a>
   <div>
-    <a href="https://gitlab.com/sekera.radim/impri">GitLab</a>
+    <a href="https://gitlab.com/sekera.radim/airlock">GitLab</a>
     <a href="/docs">Docs</a>
-    <a href="https://gitlab.com/sekera.radim/impri/-/blob/main/LICENSE">MIT License</a>
-    <a href="https://www.npmjs.com/package/@impri/mcp">@impri/mcp</a>
+    <a href="https://gitlab.com/sekera.radim/airlock/-/blob/main/LICENSE">MIT License</a>
+    <a href="https://www.npmjs.com/package/@airlock/mcp">@airlock/mcp</a>
     <a href="/docs/privacy">Privacy</a>
     <a href="/docs/terms">Terms</a>
     <a href="https://sekera.dev">Contact</a>
   </div>
 </div>
-<div class="wrap" style="margin-top:18px"><span class="muted">© 2026 Impri · The imprimatur for your AI agents · Built by <a href="https://sekera.dev" style="color:inherit">Radim Sekera</a>. Also by the same maker: <a href="https://briefgate.dev/?utm_source=impri.dev&amp;utm_medium=referral" style="color:inherit">BriefGate</a> — client intake for agencies and AI agents.</span></div>
+<div class="wrap" style="margin-top:18px"><span class="muted">© 2026 Airlock · The airlockmatur for your AI agents · Built by <a href="https://sekera.dev" style="color:inherit">Radim Sekera</a>. Also by the same maker: <a href="https://briefgate.dev/?utm_source=airlock.dev&amp;utm_medium=referral" style="color:inherit">BriefGate</a> — client intake for agencies and AI agents.</span></div>
 </footer>
 </body>
 </html>

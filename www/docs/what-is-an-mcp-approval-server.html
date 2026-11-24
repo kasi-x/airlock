@@ -3,21 +3,21 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>What Is an MCP Approval Server? — Impri Docs</title>
+<title>What Is an MCP Approval Server? — Airlock Docs</title>
 <meta name="description" content="An MCP approval server is a Model Context Protocol server whose tools don't perform actions themselves — they ask a human first, then hand back the decision…">
 <meta name="theme-color" content="#06070d">
-<meta property="og:title" content="What Is an MCP Approval Server? — Impri Docs">
+<meta property="og:title" content="What Is an MCP Approval Server? — Airlock Docs">
 <meta property="og:description" content="An MCP approval server is a Model Context Protocol server whose tools don't perform actions themselves — they ask a human first, then hand back the decision…">
 <meta property="og:type" content="article">
-<meta property="og:url" content="https://impri.dev/docs/what-is-an-mcp-approval-server">
-<meta property="og:image" content="https://impri.dev/assets/og/og-docs.png">
+<meta property="og:url" content="https://airlock.dev/docs/what-is-an-mcp-approval-server">
+<meta property="og:image" content="https://airlock.dev/assets/og/og-docs.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
-<meta property="og:image:alt" content="Impri — human-in-the-loop approval inbox for AI agents">
+<meta property="og:image:alt" content="Airlock — human-in-the-loop approval inbox for AI agents">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="https://impri.dev/assets/og/og-docs.png">
-<link rel="canonical" href="https://impri.dev/docs/what-is-an-mcp-approval-server">
-<script type="application/ld+json">{"@context":"https://schema.org","@type":"TechArticle","headline":"What Is an MCP Approval Server?","description":"An MCP approval server is a Model Context Protocol server whose tools don't perform actions themselves — they ask a human first, then hand back the decision…","url":"https://impri.dev/docs/what-is-an-mcp-approval-server","inLanguage":"en","author":{"@type":"Organization","name":"Impri","url":"https://impri.dev"},"publisher":{"@type":"Organization","name":"Impri","url":"https://impri.dev"}}</script>
+<meta name="twitter:image" content="https://airlock.dev/assets/og/og-docs.png">
+<link rel="canonical" href="https://airlock.dev/docs/what-is-an-mcp-approval-server">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"TechArticle","headline":"What Is an MCP Approval Server?","description":"An MCP approval server is a Model Context Protocol server whose tools don't perform actions themselves — they ask a human first, then hand back the decision…","url":"https://airlock.dev/docs/what-is-an-mcp-approval-server","inLanguage":"en","author":{"@type":"Organization","name":"Airlock","url":"https://airlock.dev"},"publisher":{"@type":"Organization","name":"Airlock","url":"https://airlock.dev"}}</script>
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <link rel="icon" href="/favicon.ico" sizes="32x32">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='9' fill='%236366f1'/%3E%3Cpath d='M9 16.5l4.5 4.5L23 11' stroke='white' stroke-width='3' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
@@ -132,13 +132,13 @@ pre code.hljs{display:block;overflow-x:auto}
 <div class="wrap nav-inner">
   <a class="brand" href="/">
     <span class="mark"><svg viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.5 4.5L19 7.5" stroke="white" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
-    Impri
+    Airlock
   </a>
   <div class="nav-links">
     <a class="link" href="/#how">How it works</a>
     <a class="link" href="/#pricing">Pricing</a>
     <a class="link active-nav" href="../docs">Docs</a>
-    <a class="btn btn-primary btn-sm" href="https://gitlab.com/sekera.radim/impri">GitLab</a>
+    <a class="btn btn-primary btn-sm" href="https://gitlab.com/sekera.radim/airlock">GitLab</a>
   </div>
 </div>
 </nav>
@@ -157,20 +157,20 @@ pre code.hljs{display:block;overflow-x:auto}
 <hr>
 <h2 id="mcp-tools-normally-just-run">MCP tools normally just... run</h2>
 <p>The Model Context Protocol lets an agent runtime (Claude Code, Claude Desktop, Cursor) call tools exposed by a server: read a file, query a database, hit an API. When the model decides to call a tool, the server executes it and returns the result. There&#39;s no pause built into the protocol itself — if the tool is <code>send_email</code>, the email goes out the moment the model calls it.</p>
-<p>That&#39;s fine for read-only tools. It&#39;s a problem for tools with real-world side effects: sending messages, pushing code, spending money, deleting data. An <strong>MCP approval server</strong> is a specific pattern for that case — instead of exposing <code>send_email</code> directly, it exposes tools like <code>impri_push_action</code>, <code>impri_await_decision</code>, and <code>impri_report_result</code> that split &quot;propose&quot; from &quot;execute&quot; and put a human decision in between.</p>
+<p>That&#39;s fine for read-only tools. It&#39;s a problem for tools with real-world side effects: sending messages, pushing code, spending money, deleting data. An <strong>MCP approval server</strong> is a specific pattern for that case — instead of exposing <code>send_email</code> directly, it exposes tools like <code>airlock_push_action</code>, <code>airlock_await_decision</code>, and <code>airlock_report_result</code> that split &quot;propose&quot; from &quot;execute&quot; and put a human decision in between.</p>
 <hr>
 <h2 id="the-three-tools-and-what-each-one-actually-does">The three tools, and what each one actually does</h2>
-<div class="code-block"><pre><code class="hljs">impri_push_action(kind, title, preview, expires_in, editable)
+<div class="code-block"><pre><code class="hljs">airlock_push_action(kind, title, preview, expires_in, editable)
   → creates a pending action, notifies a human, returns { action_id }
 
-impri_await_decision(action_id, timeout_s)
+airlock_await_decision(action_id, timeout_s)
   → blocks (polling every 5s internally) until a human decides
   → returns { status: &quot;approved&quot; | &quot;rejected&quot; | &quot;expired&quot;, preview, edited_by_human }
 
-impri_report_result(action_id, status)
+airlock_report_result(action_id, status)
   → status: &quot;executed&quot; | &quot;execute_failed&quot;
   → closes the loop so the audit trail shows what actually happened</code></pre></div>
-<p>Crucially, none of these three tools performs the underlying action. <code>impri_push_action</code> doesn&#39;t send anything — it stores a proposal. The agent (or the code wrapping the agent) is still the one that calls the real <code>send_email</code> or <code>git push</code>, and it only does so after <code>impri_await_decision</code> returns <code>&quot;approved&quot;</code>. The approval server&#39;s job ends at the decision; execution is always the caller&#39;s responsibility.</p>
+<p>Crucially, none of these three tools performs the underlying action. <code>airlock_push_action</code> doesn&#39;t send anything — it stores a proposal. The agent (or the code wrapping the agent) is still the one that calls the real <code>send_email</code> or <code>git push</code>, and it only does so after <code>airlock_await_decision</code> returns <code>&quot;approved&quot;</code>. The approval server&#39;s job ends at the decision; execution is always the caller&#39;s responsibility.</p>
 <hr>
 <h2 id="example-gating-a-coding-agent39s-git-push">Example: gating a coding agent&#39;s git push</h2>
 <p>Say you&#39;re running an autonomous coding agent via the <a href="human-approval-claude-agent-sdk">Claude Agent SDK</a> that can commit and push to a repo. You don&#39;t want it pushing to <code>main</code> unattended. Wrap the push tool so the approval server&#39;s tools sit in front of it:</p>
@@ -179,7 +179,7 @@ impri_report_result(action_id, status)
 
 <span class="hljs-keyword">async</span> <span class="hljs-keyword">function</span> <span class="hljs-title function_">gatedPush</span>(<span class="hljs-params"><span class="hljs-attr">mcp</span>: <span class="hljs-title class_">Client</span>, <span class="hljs-attr">branch</span>: <span class="hljs-built_in">string</span>, <span class="hljs-attr">commitLog</span>: <span class="hljs-built_in">string</span></span>) {
   <span class="hljs-keyword">const</span> pushAction = <span class="hljs-keyword">await</span> mcp.<span class="hljs-title function_">callTool</span>({
-    <span class="hljs-attr">name</span>: <span class="hljs-string">&quot;impri_push_action&quot;</span>,
+    <span class="hljs-attr">name</span>: <span class="hljs-string">&quot;airlock_push_action&quot;</span>,
     <span class="hljs-attr">arguments</span>: {
       <span class="hljs-attr">kind</span>: <span class="hljs-string">&quot;git.push&quot;</span>,
       <span class="hljs-attr">title</span>: <span class="hljs-string">`Push <span class="hljs-subst">${branch}</span> to origin`</span>,
@@ -191,7 +191,7 @@ impri_report_result(action_id, status)
   <span class="hljs-keyword">const</span> { action_id } = <span class="hljs-title class_">JSON</span>.<span class="hljs-title function_">parse</span>(pushAction.<span class="hljs-property">content</span>[<span class="hljs-number">0</span>].<span class="hljs-property">text</span>);
 
   <span class="hljs-keyword">const</span> decision = <span class="hljs-keyword">await</span> mcp.<span class="hljs-title function_">callTool</span>({
-    <span class="hljs-attr">name</span>: <span class="hljs-string">&quot;impri_await_decision&quot;</span>,
+    <span class="hljs-attr">name</span>: <span class="hljs-string">&quot;airlock_await_decision&quot;</span>,
     <span class="hljs-attr">arguments</span>: { action_id, <span class="hljs-attr">timeout_s</span>: <span class="hljs-number">900</span> },
   });
 
@@ -205,7 +205,7 @@ impri_report_result(action_id, status)
   <span class="hljs-title function_">execSync</span>(<span class="hljs-string">`git push origin <span class="hljs-subst">${branch}</span>`</span>, { <span class="hljs-attr">stdio</span>: <span class="hljs-string">&quot;inherit&quot;</span> });
 
   <span class="hljs-keyword">await</span> mcp.<span class="hljs-title function_">callTool</span>({
-    <span class="hljs-attr">name</span>: <span class="hljs-string">&quot;impri_report_result&quot;</span>,
+    <span class="hljs-attr">name</span>: <span class="hljs-string">&quot;airlock_report_result&quot;</span>,
     <span class="hljs-attr">arguments</span>: { action_id, <span class="hljs-attr">status</span>: <span class="hljs-string">&quot;executed&quot;</span> },
   });
 }</code></pre></div>
@@ -216,7 +216,7 @@ impri_report_result(action_id, status)
 <p>The gate is only real when the wrapped path is the agent&#39;s <em>only</em> route to the side effect: no raw API key in the agent&#39;s environment for the thing being gated, no unrestricted shell next to a &quot;please ask first&quot; instruction in the system prompt. Design the surrounding harness — restricted tool permissions, no direct credentials — so <code>gatedPush</code> above is genuinely the only way code reaches <code>origin</code>.</p>
 <hr>
 <h2 id="setting-one-up">Setting one up</h2>
-<p>Point any MCP-compatible client at the Impri MCP server — see <a href="mcp">the MCP reference</a> for the full tool schema and client configs (Claude Code, Claude Desktop, Cursor). It requires an API key from the <a href="quickstart">quickstart</a> and nothing else; there&#39;s no separate approval-server deployment, since <code>@impri/mcp</code> talks to the same hosted or self-hosted Impri API as the REST integration.</p>
+<p>Point any MCP-compatible client at the Airlock MCP server — see <a href="mcp">the MCP reference</a> for the full tool schema and client configs (Claude Code, Claude Desktop, Cursor). It requires an API key from the <a href="quickstart">quickstart</a> and nothing else; there&#39;s no separate approval-server deployment, since <code>@airlock/mcp</code> talks to the same hosted or self-hosted Airlock API as the REST integration.</p>
 <p>An MCP approval server is not a replacement for scoping what your agent can touch — it&#39;s the mechanism for the actions you&#39;ve decided need a second pair of eyes. For the underlying request/response shapes it wraps, see <a href="how-to-add-human-approval-to-an-ai-agent">the full integration guide</a>.</p>
 
     
@@ -302,19 +302,19 @@ impri_report_result(action_id, status)
 <footer class="footer">
 <div class="wrap footer-inner">
   <a class="brand" href="/">
-    <span class="mark"><svg viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.5 4.5L19 7.5" stroke="white" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Impri
+    <span class="mark"><svg viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.5 4.5L19 7.5" stroke="white" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Airlock
   </a>
   <div>
-    <a href="https://gitlab.com/sekera.radim/impri">GitLab</a>
+    <a href="https://gitlab.com/sekera.radim/airlock">GitLab</a>
     <a href="/docs">Docs</a>
-    <a href="https://gitlab.com/sekera.radim/impri/-/blob/main/LICENSE">MIT License</a>
-    <a href="https://www.npmjs.com/package/@impri/mcp">@impri/mcp</a>
+    <a href="https://gitlab.com/sekera.radim/airlock/-/blob/main/LICENSE">MIT License</a>
+    <a href="https://www.npmjs.com/package/@airlock/mcp">@airlock/mcp</a>
     <a href="/docs/privacy">Privacy</a>
     <a href="/docs/terms">Terms</a>
     <a href="https://sekera.dev">Contact</a>
   </div>
 </div>
-<div class="wrap" style="margin-top:18px"><span class="muted">© 2026 Impri · The imprimatur for your AI agents · Built by <a href="https://sekera.dev" style="color:inherit">Radim Sekera</a>. Also by the same maker: <a href="https://briefgate.dev/?utm_source=impri.dev&amp;utm_medium=referral" style="color:inherit">BriefGate</a> — client intake for agencies and AI agents.</span></div>
+<div class="wrap" style="margin-top:18px"><span class="muted">© 2026 Airlock · The airlockmatur for your AI agents · Built by <a href="https://sekera.dev" style="color:inherit">Radim Sekera</a>. Also by the same maker: <a href="https://briefgate.dev/?utm_source=airlock.dev&amp;utm_medium=referral" style="color:inherit">BriefGate</a> — client intake for agencies and AI agents.</span></div>
 </footer>
 </body>
 </html>

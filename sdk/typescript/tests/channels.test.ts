@@ -1,9 +1,9 @@
 import { describe, it, expect, vi, afterEach } from 'vitest'
 import {
-  ImpriClient,
-  ImpriNotFound,
-  ImpriUnauthorized,
-  ImpriValidationError,
+  AirlockClient,
+  AirlockNotFound,
+  AirlockUnauthorized,
+  AirlockValidationError,
   type NotificationChannel,
   type ChannelTestResult,
 } from '../src/index.js'
@@ -14,7 +14,7 @@ const TEST_KEY = 'im_test_abc123'
 const TEST_BASE = 'http://localhost:19999'
 
 function client() {
-  return new ImpriClient({ apiKey: TEST_KEY, baseUrl: TEST_BASE })
+  return new AirlockClient({ apiKey: TEST_KEY, baseUrl: TEST_BASE })
 }
 
 /** Build a mock Response-like object. */
@@ -178,11 +178,11 @@ describe('listNotificationChannels', () => {
     expect(channels).toEqual([])
   })
 
-  it('throws ImpriUnauthorized on 403', async () => {
+  it('throws AirlockUnauthorized on 403', async () => {
     const mockFetch = vi.fn().mockResolvedValue(resp(403, { error: 'Forbidden' }))
     vi.stubGlobal('fetch', mockFetch)
 
-    await expect(client().listNotificationChannels()).rejects.toBeInstanceOf(ImpriUnauthorized)
+    await expect(client().listNotificationChannels()).rejects.toBeInstanceOf(AirlockUnauthorized)
   })
 })
 
@@ -295,7 +295,7 @@ describe('createNotificationChannel', () => {
       name: 'Generic webhook',
       type: 'webhook',
       config: {
-        url: 'https://myapp.example.com/impri-hook',
+        url: 'https://myapp.example.com/airlock-hook',
         hmac_secret: 'my-secret-1234567890',
       },
     })
@@ -320,7 +320,7 @@ describe('createNotificationChannel', () => {
     expect(body.config.topic).toBe('my-alerts')
   })
 
-  it('throws ImpriValidationError on 400', async () => {
+  it('throws AirlockValidationError on 400', async () => {
     const mockFetch = vi.fn().mockResolvedValue(
       resp(400, { error: 'Validation error', message: 'config.url is required' }),
     )
@@ -328,7 +328,7 @@ describe('createNotificationChannel', () => {
 
     await expect(
       client().createNotificationChannel({ name: 'Bad', type: 'slack', config: {} }),
-    ).rejects.toBeInstanceOf(ImpriValidationError)
+    ).rejects.toBeInstanceOf(AirlockValidationError)
   })
 })
 
@@ -380,12 +380,12 @@ describe('getNotificationChannel', () => {
     expect(cfg.address).toBe('ops@example.com')
   })
 
-  it('throws ImpriNotFound on 404', async () => {
+  it('throws AirlockNotFound on 404', async () => {
     const mockFetch = vi.fn().mockResolvedValue(resp(404, { error: 'Not Found' }))
     vi.stubGlobal('fetch', mockFetch)
 
     await expect(client().getNotificationChannel('ch_missing')).rejects.toBeInstanceOf(
-      ImpriNotFound,
+      AirlockNotFound,
     )
   })
 })
@@ -463,13 +463,13 @@ describe('updateNotificationChannel', () => {
     expect(body).toEqual({})
   })
 
-  it('throws ImpriNotFound on 404', async () => {
+  it('throws AirlockNotFound on 404', async () => {
     const mockFetch = vi.fn().mockResolvedValue(resp(404, { error: 'Not Found' }))
     vi.stubGlobal('fetch', mockFetch)
 
     await expect(
       client().updateNotificationChannel('ch_missing', { name: 'X' }),
-    ).rejects.toBeInstanceOf(ImpriNotFound)
+    ).rejects.toBeInstanceOf(AirlockNotFound)
   })
 })
 
@@ -496,12 +496,12 @@ describe('deleteNotificationChannel', () => {
     expect(result).toBeUndefined()
   })
 
-  it('throws ImpriNotFound on 404', async () => {
+  it('throws AirlockNotFound on 404', async () => {
     const mockFetch = vi.fn().mockResolvedValue(resp(404, { error: 'Not Found' }))
     vi.stubGlobal('fetch', mockFetch)
 
     await expect(client().deleteNotificationChannel('ch_missing')).rejects.toBeInstanceOf(
-      ImpriNotFound,
+      AirlockNotFound,
     )
   })
 })
@@ -554,21 +554,21 @@ describe('testNotificationChannel', () => {
     expect(result.error).not.toContain('bot_token')
   })
 
-  it('throws ImpriNotFound on 404', async () => {
+  it('throws AirlockNotFound on 404', async () => {
     const mockFetch = vi.fn().mockResolvedValue(resp(404, { error: 'Not Found' }))
     vi.stubGlobal('fetch', mockFetch)
 
     await expect(client().testNotificationChannel('ch_missing')).rejects.toBeInstanceOf(
-      ImpriNotFound,
+      AirlockNotFound,
     )
   })
 
-  it('throws ImpriUnauthorized on 403', async () => {
+  it('throws AirlockUnauthorized on 403', async () => {
     const mockFetch = vi.fn().mockResolvedValue(resp(403, { error: 'Forbidden' }))
     vi.stubGlobal('fetch', mockFetch)
 
     await expect(client().testNotificationChannel('ch_slack1')).rejects.toBeInstanceOf(
-      ImpriUnauthorized,
+      AirlockUnauthorized,
     )
   })
 })

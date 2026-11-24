@@ -1,6 +1,6 @@
-"""Impri SDK exception hierarchy.
+"""Airlock SDK exception hierarchy.
 
-All exceptions inherit from ImpriError so callers can catch the base class
+All exceptions inherit from AirlockError so callers can catch the base class
 when they do not need to distinguish specific error types.
 """
 from __future__ import annotations
@@ -8,15 +8,15 @@ from __future__ import annotations
 from typing import Any, List, Optional
 
 
-class ImpriError(Exception):
-    """Base class for all Impri SDK exceptions."""
+class AirlockError(Exception):
+    """Base class for all Airlock SDK exceptions."""
 
 
-class ImpriConfigError(ImpriError):
+class AirlockConfigError(AirlockError):
     """Raised at client construction when api_key is missing or base_url is malformed."""
 
 
-class ImpriUnauthorized(ImpriError):
+class AirlockUnauthorized(AirlockError):
     """HTTP 401/403 — missing or wrong API key, or key lacks the required scope."""
 
     def __init__(self, message: str, status_code: int = 401) -> None:
@@ -24,11 +24,11 @@ class ImpriUnauthorized(ImpriError):
         self.status_code = status_code
 
 
-class ImpriNotFound(ImpriError):
+class AirlockNotFound(AirlockError):
     """HTTP 404 — resource not found or belongs to a different project."""
 
 
-class ImpriConflict(ImpriError):
+class AirlockConflict(AirlockError):
     """HTTP 409 — action already decided, idempotency race, or result on non-approved action."""
 
     def __init__(self, message: str, current_status: Optional[str] = None) -> None:
@@ -36,14 +36,14 @@ class ImpriConflict(ImpriError):
         self.current_status = current_status
 
 
-class ImpriExpired(ImpriError):
+class AirlockExpired(AirlockError):
     """HTTP 410 — approval window closed.
 
     Also raised by await_decision when the polled action transitions to 'expired'.
     """
 
 
-class ImpriRateLimited(ImpriError):
+class AirlockRateLimited(AirlockError):
     """HTTP 429 — per-key rate limit hit.
 
     Check retry_after (seconds) before retrying. The write limit is 60/min;
@@ -55,7 +55,7 @@ class ImpriRateLimited(ImpriError):
         self.retry_after = retry_after
 
 
-class ImpriQuotaExceeded(ImpriError):
+class AirlockQuotaExceeded(AirlockError):
     """HTTP 402 — monthly approval limit or watcher count limit reached (cloud tiers).
 
     Check .limit and .tier for upgrade information.
@@ -72,7 +72,7 @@ class ImpriQuotaExceeded(ImpriError):
         self.tier = tier
 
 
-class ImpriRejected(ImpriError):
+class AirlockRejected(AirlockError):
     """Raised by await_decision when a human reviewer rejected the action.
 
     This is NOT an error — it is a valid outcome. Catch it and handle gracefully:
@@ -94,7 +94,7 @@ class ImpriRejected(ImpriError):
         self.final_preview = final_preview
 
 
-class ImpriTimeout(ImpriError):
+class AirlockTimeout(AirlockError):
     """Raised by await_decision when timeout_s elapses with the action still pending.
 
     The action remains pending on the server — call await_decision again or
@@ -112,7 +112,7 @@ class ImpriTimeout(ImpriError):
         self.action_id = action_id
 
 
-class ImpriValidationError(ImpriError):
+class AirlockValidationError(AirlockError):
     """HTTP 400/422 — server-side schema validation failed.
 
     Attributes:
@@ -125,7 +125,7 @@ class ImpriValidationError(ImpriError):
         self.issues: List[Any] = issues or []
 
 
-class ImpriApiError(ImpriError):
+class AirlockApiError(AirlockError):
     """Catch-all for unexpected HTTP 4xx/5xx responses not covered by a typed exception.
 
     Attributes:
@@ -134,14 +134,14 @@ class ImpriApiError(ImpriError):
     """
 
     def __init__(self, status_code: int, message: str) -> None:
-        super().__init__(f"Impri API error {status_code}: {message}")
+        super().__init__(f"Airlock API error {status_code}: {message}")
         self.status_code = status_code
         self.message = message
 
 
-class ImpriWebhookSignatureError(ImpriError):
+class AirlockWebhookSignatureError(AirlockError):
     """Webhook HMAC-SHA256 signature verification failed.
 
     Raised by verify_webhook() when the computed signature does not match the
-    X-Impri-Signature header value.
+    X-Airlock-Signature header value.
     """

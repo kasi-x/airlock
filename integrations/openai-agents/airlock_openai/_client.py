@@ -1,4 +1,4 @@
-"""Impri async REST client with ergonomic approval helpers."""
+"""Airlock async REST client with ergonomic approval helpers."""
 from __future__ import annotations
 
 import asyncio
@@ -14,17 +14,17 @@ from typing import Any, AsyncGenerator, Callable, Literal, TypeVar
 import httpx
 
 from ._errors import (
-    ImpriApiError,
-    ImpriConfigError,
-    ImpriConflict,
-    ImpriExpired,
-    ImpriNotFound,
-    ImpriQuotaExceeded,
-    ImpriRateLimited,
-    ImpriRejected,
-    ImpriTimeout,
-    ImpriUnauthorized,
-    ImpriValidationError,
+    AirlockApiError,
+    AirlockConfigError,
+    AirlockConflict,
+    AirlockExpired,
+    AirlockNotFound,
+    AirlockQuotaExceeded,
+    AirlockRateLimited,
+    AirlockRejected,
+    AirlockTimeout,
+    AirlockUnauthorized,
+    AirlockValidationError,
 )
 from ._models import ApprovedAction
 
@@ -35,19 +35,19 @@ _DEFAULT_POLL_INTERVAL_S: float = 5.0
 _DEFAULT_TIMEOUT_S: float = 300.0
 
 
-class ImpriClient:
-    """Async Impri REST client.
+class AirlockClient:
+    """Async Airlock REST client.
 
     Key and base URL resolution order:
 
-    - ``api_key``: constructor argument → ``IMPRI_API_KEY`` env var
-    - ``base_url``: constructor argument → ``IMPRI_BASE_URL`` env var →
+    - ``api_key``: constructor argument → ``AIRLOCK_API_KEY`` env var
+    - ``base_url``: constructor argument → ``AIRLOCK_BASE_URL`` env var →
       ``http://localhost:8484`` (self-hosted default)
 
     Use as an async context manager to ensure the HTTP connection pool is
     properly closed::
 
-        async with ImpriClient(api_key='im_...') as client:
+        async with AirlockClient(api_key='im_...') as client:
             action = await client.create_action(...)
 
     Alternatively call ``await client.close()`` explicitly.
@@ -60,16 +60,16 @@ class ImpriClient:
         base_url: str | None = None,
         http_client: httpx.AsyncClient | None = None,
     ) -> None:
-        resolved_key = api_key or os.environ.get("IMPRI_API_KEY", "")
+        resolved_key = api_key or os.environ.get("AIRLOCK_API_KEY", "")
         if not resolved_key:
-            raise ImpriConfigError(
+            raise AirlockConfigError(
                 "api_key is required. Pass it as a constructor argument or "
-                "set the IMPRI_API_KEY environment variable."
+                "set the AIRLOCK_API_KEY environment variable."
             )
 
         resolved_base = (
             base_url
-            or os.environ.get("IMPRI_BASE_URL", "")
+            or os.environ.get("AIRLOCK_BASE_URL", "")
             or _DEFAULT_BASE_URL
         ).rstrip("/")
 
@@ -131,34 +131,34 @@ class ImpriClient:
         status = response.status_code
 
         if status in (401, 403):
-            raise ImpriUnauthorized(
-                f"Authentication failed: {detail or 'verify IMPRI_API_KEY and its scopes.'}",
+            raise AirlockUnauthorized(
+                f"Authentication failed: {detail or 'verify AIRLOCK_API_KEY and its scopes.'}",
                 response=response,
             )
         if status == 402:
-            raise ImpriQuotaExceeded(
+            raise AirlockQuotaExceeded(
                 f"Quota exceeded: {detail}",
                 limit=body.get("limit"),
                 tier=body.get("tier"),
                 response=response,
             )
         if status == 404:
-            raise ImpriNotFound(
+            raise AirlockNotFound(
                 f"Not found: {detail or 'verify the ID belongs to this project.'}",
                 response=response,
             )
         if status == 409:
-            raise ImpriConflict(
+            raise AirlockConflict(
                 f"Conflict: {detail}",
                 response=response,
             )
         if status == 410:
-            raise ImpriExpired(
+            raise AirlockExpired(
                 f"Expired: {detail or 'the approval window has closed.'}",
                 response=response,
             )
         if status in (400, 422):
-            raise ImpriValidationError(
+            raise AirlockValidationError(
                 f"Validation error: {detail}",
                 issues=body.get("issues"),
                 response=response,
@@ -166,12 +166,12 @@ class ImpriClient:
         if status == 429:
             raw_after = response.headers.get("Retry-After", "")
             retry_after = int(raw_after) if raw_after.isdigit() else None
-            raise ImpriRateLimited(
+            raise AirlockRateLimited(
                 f"Rate limited: {detail or 'wait a moment and retry.'}",
                 retry_after=retry_after,
                 response=response,
             )
-        raise ImpriApiError(
+        raise AirlockApiError(
             f"API error {status}: {detail or response.text}",
             status_code=status,
             response=response,
@@ -298,9 +298,9 @@ class ImpriClient:
         # DecisionBody (this endpoint) differs from BulkDecisionBody
         # (/v1/actions/bulk-decision), which does use `verdict`. Sending
         # {"verdict": ...} used to 400 with "decision: Required"
-        # (QA 2026-10-30, same root cause as @impri/sdk and the Claude Agent
+        # (QA 2026-10-30, same root cause as @airlock/sdk and the Claude Agent
         # SDK integration). The `verdict` parameter name is kept here — it
-        # matches the response shape and impri.client.ImpriClient.decide()'s
+        # matches the response shape and airlock.client.AirlockClient.decide()'s
         # own signature; only this wire translation needed fixing.
         body: dict[str, Any] = {"decision": verdict}
         if edited is not None:
@@ -340,9 +340,9 @@ class ImpriClient:
         human-edited content when the reviewer used edit-before-approve.
 
         Raises:
-            ImpriRejected: Human rejected. Catch as normal flow (not an error).
-            ImpriExpired: Approval window closed before a decision.
-            ImpriTimeout: ``timeout_s`` elapsed; action is still pending
+            AirlockRejected: Human rejected. Catch as normal flow (not an error).
+            AirlockExpired: Approval window closed before a decision.
+            AirlockTimeout: ``timeout_s`` elapsed; action is still pending
                 server-side.  You can call this method again to resume waiting.
         """
         if poll_interval_s < 5.0:
@@ -367,21 +367,21 @@ class ImpriClient:
                 final_preview = (
                     decision.get("final_preview") or action.get("preview") or {}
                 )
-                raise ImpriRejected(
+                raise AirlockRejected(
                     action_id=action_id,
                     decision=decision,
                     final_preview=final_preview,
                 )
 
             if state == "expired":
-                raise ImpriExpired(
+                raise AirlockExpired(
                     f"Action {action_id!r} expired before a human decision was made."
                 )
 
             # Still pending — check deadline before sleeping
             remaining = deadline - time.monotonic()
             if remaining <= 0:
-                raise ImpriTimeout(action_id)
+                raise AirlockTimeout(action_id)
 
             await asyncio.sleep(min(poll_interval_s, remaining))
 
@@ -399,22 +399,22 @@ class ImpriClient:
         timeout_s: float = _DEFAULT_TIMEOUT_S,
         **push_kwargs: Any,
     ) -> Callable[[F], F]:
-        """Decorator that gates every call to the wrapped async function through Impri.
+        """Decorator that gates every call to the wrapped async function through Airlock.
 
-        Every invocation of the decorated function submits an Impri action,
+        Every invocation of the decorated function submits an Airlock action,
         blocks until the human decides, then:
 
         - **Approved** — calls the original function (injecting the
           human-edited ``body`` argument when ``'preview.body'`` is editable
           and was changed by the reviewer).
-        - **Rejected** — raises :exc:`ImpriRejected` without calling the function.
+        - **Rejected** — raises :exc:`AirlockRejected` without calling the function.
 
         Compatible with the OpenAI Agents SDK's ``@function_tool`` decorator::
 
             from agents import function_tool
-            from impri_openai import ImpriClient
+            from airlock_openai import AirlockClient
 
-            client = ImpriClient()
+            client = AirlockClient()
 
             @function_tool
             @client.requires_approval(
@@ -530,14 +530,14 @@ class ImpriClient:
         timeout_s: float = _DEFAULT_TIMEOUT_S,
         **push_kwargs: Any,
     ) -> AsyncGenerator[ApprovedAction, None]:
-        """Async context manager that gates the body block on Impri approval.
+        """Async context manager that gates the body block on Airlock approval.
 
         Submits an action and blocks until a human decides.  On approval,
         yields an :class:`ApprovedAction`.  ``__aexit__`` automatically calls
         :meth:`report_result` — ``'executed'`` on clean exit, ``'execute_failed'``
         when an exception propagates out of the ``async with`` block.
 
-        Raises :exc:`ImpriRejected` before yielding if the human rejected
+        Raises :exc:`AirlockRejected` before yielding if the human rejected
         (no ``report_result`` is called in that case)::
 
             async with client.approval_gate(
@@ -562,7 +562,7 @@ class ImpriClient:
         )
         action_id = created["id"]
 
-        # Raises ImpriRejected / ImpriExpired / ImpriTimeout before yielding
+        # Raises AirlockRejected / AirlockExpired / AirlockTimeout before yielding
         action = await self.await_decision(action_id, timeout_s=timeout_s)
 
         decision: dict[str, Any] = action.get("decision") or {}
@@ -710,7 +710,7 @@ class ImpriClient:
         """Close the underlying HTTP connection pool."""
         await self._http.aclose()
 
-    async def __aenter__(self) -> "ImpriClient":
+    async def __aenter__(self) -> "AirlockClient":
         return self
 
     async def __aexit__(self, *_: Any) -> None:

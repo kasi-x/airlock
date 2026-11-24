@@ -1,7 +1,7 @@
 import readline from 'node:readline'
 import { Command } from 'commander'
-import { ImpriError } from '@impri/sdk'
-import type { KeyScope } from '@impri/sdk'
+import { AirlockError } from '@airlock/sdk'
+import type { KeyScope } from '@airlock/sdk'
 import { makeClient } from '../client-factory.js'
 import { bold, dim, green, red, cyan, renderTable, fmtTs, printError, printJson, keyBox, Column } from '../output.js'
 
@@ -20,7 +20,7 @@ export function registerKeys(program: Command): void {
     .command('keys')
     .description('Manage API keys (requires admin scope)')
 
-  // impri keys list
+  // airlock keys list
   keysCmd
     .command('list')
     .description('List all API keys for the project')
@@ -42,7 +42,7 @@ export function registerKeys(program: Command): void {
       process.stdout.write(renderTable(KEY_COLUMNS, keys as unknown as Record<string, unknown>[]) + '\n')
     })
 
-  // impri keys create
+  // airlock keys create
   keysCmd
     .command('create')
     .description('Create a new API key (shown exactly once)')
@@ -68,7 +68,7 @@ export function registerKeys(program: Command): void {
       process.stdout.write(`${created.note ?? 'The key value will not be shown again.'}\n`)
     })
 
-  // impri keys revoke
+  // airlock keys revoke
   keysCmd
     .command('revoke <key-id>')
     .description('Revoke an API key permanently')
@@ -99,7 +99,7 @@ async function confirm(question: string): Promise<boolean> {
 }
 
 function handleError(err: unknown): never {
-  if (err instanceof ImpriError) {
+  if (err instanceof AirlockError) {
     printError(err.message)
   } else {
     printError(String(err))

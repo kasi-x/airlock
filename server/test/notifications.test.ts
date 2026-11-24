@@ -9,7 +9,7 @@
  * - POST /v1/notification-channels/:id/test endpoint
  * - Admin-scope enforcement (actions-scope key must be denied)
  * - digest window logic (items queued within window, sent on next fire)
- * - auto-disable after IMPRI_CHANNEL_MAX_FAILS consecutive failures
+ * - auto-disable after AIRLOCK_CHANNEL_MAX_FAILS consecutive failures
  *
  * Email address confirmation, limits and the daily cap: email-verification.test.ts.
  */
@@ -741,9 +741,9 @@ describe('trigger on pending action creation', () => {
     errorSpy.mockRestore();
   });
 
-  it('auto-disables channel after IMPRI_CHANNEL_MAX_FAILS consecutive failures', async () => {
-    const prevMaxFails = process.env.IMPRI_CHANNEL_MAX_FAILS;
-    process.env.IMPRI_CHANNEL_MAX_FAILS = '2';
+  it('auto-disables channel after AIRLOCK_CHANNEL_MAX_FAILS consecutive failures', async () => {
+    const prevMaxFails = process.env.AIRLOCK_CHANNEL_MAX_FAILS;
+    process.env.AIRLOCK_CHANNEL_MAX_FAILS = '2';
 
     const { app, adminKey, db } = await setup();
 
@@ -775,9 +775,9 @@ describe('trigger on pending action creation', () => {
     expect(row.fail_count).toBe(2);
 
     if (prevMaxFails !== undefined) {
-      process.env.IMPRI_CHANNEL_MAX_FAILS = prevMaxFails;
+      process.env.AIRLOCK_CHANNEL_MAX_FAILS = prevMaxFails;
     } else {
-      delete process.env.IMPRI_CHANNEL_MAX_FAILS;
+      delete process.env.AIRLOCK_CHANNEL_MAX_FAILS;
     }
   });
 });
@@ -1023,7 +1023,7 @@ describe('project isolation', () => {
     const signupB = await app.inject({
       method: 'POST', url: '/v1/signup',
       payload: { project_name: 'Project B' },
-      headers: { 'x-impri-signup-token': process.env.SIGNUP_SECRET ?? '' },
+      headers: { 'x-airlock-signup-token': process.env.SIGNUP_SECRET ?? '' },
     });
     // If signup is disabled, skip this test
     if (signupB.statusCode !== 201) return;

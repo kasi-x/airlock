@@ -3,21 +3,21 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Human Approval for Agno Agents: Adding an External… — Impri Docs</title>
-<meta name="description" content="Add human approval to an Agno agent with an external inbox: wrap risky tools so they push to Impri, wait for a decision, and act only after an approve.">
+<title>Human Approval for Agno Agents: Adding an External… — Airlock Docs</title>
+<meta name="description" content="Add human approval to an Agno agent with an external inbox: wrap risky tools so they push to Airlock, wait for a decision, and act only after an approve.">
 <meta name="theme-color" content="#06070d">
-<meta property="og:title" content="Human Approval for Agno Agents: Adding an External… — Impri Docs">
-<meta property="og:description" content="Add human approval to an Agno agent with an external inbox: wrap risky tools so they push to Impri, wait for a decision, and act only after an approve.">
+<meta property="og:title" content="Human Approval for Agno Agents: Adding an External… — Airlock Docs">
+<meta property="og:description" content="Add human approval to an Agno agent with an external inbox: wrap risky tools so they push to Airlock, wait for a decision, and act only after an approve.">
 <meta property="og:type" content="article">
-<meta property="og:url" content="https://impri.dev/docs/human-approval-agno-agents">
-<meta property="og:image" content="https://impri.dev/assets/og/og-docs.png">
+<meta property="og:url" content="https://airlock.dev/docs/human-approval-agno-agents">
+<meta property="og:image" content="https://airlock.dev/assets/og/og-docs.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
-<meta property="og:image:alt" content="Impri — human-in-the-loop approval inbox for AI agents">
+<meta property="og:image:alt" content="Airlock — human-in-the-loop approval inbox for AI agents">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="https://impri.dev/assets/og/og-docs.png">
-<link rel="canonical" href="https://impri.dev/docs/human-approval-agno-agents">
-<script type="application/ld+json">{"@context":"https://schema.org","@type":"TechArticle","headline":"Human Approval for Agno Agents: Adding an External Approval Inbox","description":"Add human approval to an Agno agent with an external inbox: wrap risky tools so they push to Impri, wait for a decision, and act only after an approve.","url":"https://impri.dev/docs/human-approval-agno-agents","inLanguage":"en","author":{"@type":"Organization","name":"Impri","url":"https://impri.dev"},"publisher":{"@type":"Organization","name":"Impri","url":"https://impri.dev"}}</script>
+<meta name="twitter:image" content="https://airlock.dev/assets/og/og-docs.png">
+<link rel="canonical" href="https://airlock.dev/docs/human-approval-agno-agents">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"TechArticle","headline":"Human Approval for Agno Agents: Adding an External Approval Inbox","description":"Add human approval to an Agno agent with an external inbox: wrap risky tools so they push to Airlock, wait for a decision, and act only after an approve.","url":"https://airlock.dev/docs/human-approval-agno-agents","inLanguage":"en","author":{"@type":"Organization","name":"Airlock","url":"https://airlock.dev"},"publisher":{"@type":"Organization","name":"Airlock","url":"https://airlock.dev"}}</script>
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <link rel="icon" href="/favicon.ico" sizes="32x32">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='9' fill='%236366f1'/%3E%3Cpath d='M9 16.5l4.5 4.5L23 11' stroke='white' stroke-width='3' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
@@ -132,13 +132,13 @@ pre code.hljs{display:block;overflow-x:auto}
 <div class="wrap nav-inner">
   <a class="brand" href="/">
     <span class="mark"><svg viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.5 4.5L19 7.5" stroke="white" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
-    Impri
+    Airlock
   </a>
   <div class="nav-links">
     <a class="link" href="/#how">How it works</a>
     <a class="link" href="/#pricing">Pricing</a>
     <a class="link active-nav" href="../docs">Docs</a>
-    <a class="btn btn-primary btn-sm" href="https://gitlab.com/sekera.radim/impri">GitLab</a>
+    <a class="btn btn-primary btn-sm" href="https://gitlab.com/sekera.radim/airlock">GitLab</a>
   </div>
 </div>
 </nav>
@@ -153,12 +153,12 @@ pre code.hljs{display:block;overflow-x:auto}
       <span>Human Approval for Agno Agents: Adding an External Approval Inbox</span>
     </nav>
     <h1>Human Approval for Agno Agents: Adding an External Approval Inbox</h1>
-<p>Add human approval to an Agno agent with an external inbox: wrap risky tools so they push to Impri, wait for a decision, and act only after an approve.</p>
+<p>Add human approval to an Agno agent with an external inbox: wrap risky tools so they push to Airlock, wait for a decision, and act only after an approve.</p>
 <hr>
 <h2 id="the-problem-approval-that-lives-inside-the-terminal">The problem: approval that lives inside the terminal</h2>
 <p>Agent frameworks typically pause a run and ask the operator to confirm. That works while you are sitting at the process. It stops working when the agent runs as a service, on a schedule, or while you are away from your desk — nobody is at the prompt, and the run just sits there.</p>
 <p>An external inbox moves the question to where you are: a push notification, an email, a Slack or Telegram message. The agent&#39;s tool blocks until a person decides.</p>
-<p>Impri is only the approval gate. It stores the proposal, notifies a human and holds the decision. It doesn&#39;t run your agent, interpret the action or execute anything.</p>
+<p>Airlock is only the approval gate. It stores the proposal, notifies a human and holds the decision. It doesn&#39;t run your agent, interpret the action or execute anything.</p>
 <hr>
 <h2 id="wrap-the-tool-not-the-agent">Wrap the tool, not the agent</h2>
 <p>The cleanest pattern is a plain Python function you hand to the agent as a tool. Inside it, the function proposes, waits, and only then performs the side effect. The model never gets a second, ungated route.</p>
@@ -167,8 +167,8 @@ pre code.hljs{display:block;overflow-x:auto}
 <span class="hljs-keyword">import</span> time
 <span class="hljs-keyword">import</span> requests
 
-BASE = os.environ.get(<span class="hljs-string">&quot;IMPRI_BASE_URL&quot;</span>, <span class="hljs-string">&quot;https://api.impri.dev&quot;</span>)
-HEADERS = {<span class="hljs-string">&quot;Authorization&quot;</span>: <span class="hljs-string">f&quot;Bearer <span class="hljs-subst">{os.environ[<span class="hljs-string">&#x27;IMPRI_API_KEY&#x27;</span>]}</span>&quot;</span>}
+BASE = os.environ.get(<span class="hljs-string">&quot;AIRLOCK_BASE_URL&quot;</span>, <span class="hljs-string">&quot;https://api.airlock.dev&quot;</span>)
+HEADERS = {<span class="hljs-string">&quot;Authorization&quot;</span>: <span class="hljs-string">f&quot;Bearer <span class="hljs-subst">{os.environ[<span class="hljs-string">&#x27;AIRLOCK_API_KEY&#x27;</span>]}</span>&quot;</span>}
 
 
 <span class="hljs-keyword">def</span> <span class="hljs-title function_">_ask_human</span>(<span class="hljs-params">kind: <span class="hljs-built_in">str</span>, title: <span class="hljs-built_in">str</span>, body: <span class="hljs-built_in">str</span></span>) -&gt; <span class="hljs-built_in">dict</span>:
@@ -231,11 +231,11 @@ HEADERS = {<span class="hljs-string">&quot;Authorization&quot;</span>: <span cla
 <p><strong>Return the outcome as text.</strong> A rejected action is a normal result, not an exception. Returning <code>&quot;Not published: request was rejected.&quot;</code> lets the agent explain and offer a revision.</p>
 <p><strong>Keep <code>expires_in</code> short for interactive agents.</strong> One hour here means an unanswered request expires as <code>expired</code> rather than lingering for the 72-hour default.</p>
 <p><strong>Always use <code>final_preview</code>.</strong> The reviewer may have edited the notes. Publishing the agent&#39;s original text would silently ignore their correction.</p>
-<p><strong>Blocking vs. not blocking.</strong> The loop above blocks the tool call, which is simplest for a chat-style agent. For long waits, don&#39;t hold a worker thread open; see <a href="mcp">the MCP route</a>, where <code>impri_await_decision</code> does the waiting for you.</p>
+<p><strong>Blocking vs. not blocking.</strong> The loop above blocks the tool call, which is simplest for a chat-style agent. For long waits, don&#39;t hold a worker thread open; see <a href="mcp">the MCP route</a>, where <code>airlock_await_decision</code> does the waiting for you.</p>
 <hr>
 <h2 id="a-gate-is-only-a-gate-if-it39s-the-only-path">A gate is only a gate if it&#39;s the only path</h2>
 <p>This is the honest limit. If your agent also has a general shell tool, or a second function that can call the changelog API directly, the model can route around the wrapped tool. Put the credential for the side effect behind the gated function only, and keep it out of the agent&#39;s other tools.</p>
-<p>Impri also doesn&#39;t judge the content. A reviewer sees the proposed text and decides; there is no automatic moderation.</p>
+<p>Airlock also doesn&#39;t judge the content. A reviewer sees the proposed text and decides; there is no automatic moderation.</p>
 <hr>
 <h2 id="where-the-reviewer-decides">Where the reviewer decides</h2>
 <p>Decisions can be made in the <a href="inbox">inbox</a>, or from chat with <a href="slack-approval">Slack</a> or <a href="telegram-approval">Telegram</a>, and <a href="notifications">notifications</a> cover email, ntfy and web push. Each request and its result show up in the <a href="audit-log">audit log</a>. A Python SDK is also available: see <a href="sdk-python">sdk-python</a>.</p>
@@ -243,11 +243,11 @@ HEADERS = {<span class="hljs-string">&quot;Authorization&quot;</span>: <span cla
 <h2 id="next-step">Next step</h2>
 <p>Create a key in the <a href="quickstart">quickstart</a>, paste the wrapper above around your riskiest tool, and try one request end to end. The <a href="how-to-add-human-approval-to-an-ai-agent">general how-to</a> covers the same three calls over curl and MCP.</p>
 
-    <aside class="doc-cta" aria-label="Try Impri">
+    <aside class="doc-cta" aria-label="Try Airlock">
   <p class="doc-cta-title">Add an approval step to your own agent</p>
-  <p>Start on Impri Cloud: the Free tier includes 100 approvals a month. Or self-host the MIT-licensed core with Docker Compose, with no tier limits.</p>
+  <p>Start on Airlock Cloud: the Free tier includes 100 approvals a month. Or self-host the MIT-licensed core with Docker Compose, with no tier limits.</p>
   <div class="doc-cta-actions">
-    <a class="btn btn-primary btn-sm" href="https://app.impri.dev/?signup=1">Start free on Impri Cloud</a>
+    <a class="btn btn-primary btn-sm" href="https://app.airlock.dev/?signup=1">Start free on Airlock Cloud</a>
     <a class="btn btn-ghost btn-sm" href="../docs/quickstart">Quick start</a>
     <a class="btn btn-ghost btn-sm" href="../docs/self-hosting">Self-host guide</a>
   </div>
@@ -343,19 +343,19 @@ HEADERS = {<span class="hljs-string">&quot;Authorization&quot;</span>: <span cla
 <footer class="footer">
 <div class="wrap footer-inner">
   <a class="brand" href="/">
-    <span class="mark"><svg viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.5 4.5L19 7.5" stroke="white" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Impri
+    <span class="mark"><svg viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.5 4.5L19 7.5" stroke="white" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Airlock
   </a>
   <div>
-    <a href="https://gitlab.com/sekera.radim/impri">GitLab</a>
+    <a href="https://gitlab.com/sekera.radim/airlock">GitLab</a>
     <a href="/docs">Docs</a>
-    <a href="https://gitlab.com/sekera.radim/impri/-/blob/main/LICENSE">MIT License</a>
-    <a href="https://www.npmjs.com/package/@impri/mcp">@impri/mcp</a>
+    <a href="https://gitlab.com/sekera.radim/airlock/-/blob/main/LICENSE">MIT License</a>
+    <a href="https://www.npmjs.com/package/@airlock/mcp">@airlock/mcp</a>
     <a href="/docs/privacy">Privacy</a>
     <a href="/docs/terms">Terms</a>
     <a href="https://sekera.dev">Contact</a>
   </div>
 </div>
-<div class="wrap" style="margin-top:18px"><span class="muted">© 2026 Impri · The imprimatur for your AI agents · Built by <a href="https://sekera.dev" style="color:inherit">Radim Sekera</a>. Also by the same maker: <a href="https://briefgate.dev/?utm_source=impri.dev&amp;utm_medium=referral" style="color:inherit">BriefGate</a> — client intake for agencies and AI agents.</span></div>
+<div class="wrap" style="margin-top:18px"><span class="muted">© 2026 Airlock · The airlockmatur for your AI agents · Built by <a href="https://sekera.dev" style="color:inherit">Radim Sekera</a>. Also by the same maker: <a href="https://briefgate.dev/?utm_source=airlock.dev&amp;utm_medium=referral" style="color:inherit">BriefGate</a> — client intake for agencies and AI agents.</span></div>
 </footer>
 </body>
 </html>

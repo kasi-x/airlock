@@ -1,6 +1,6 @@
 # How to Approve Multiple Pending AI Agent Actions at Once
 
-Clicking through dozens of near-identical pending actions wastes attention — Impri bulk-decision approves or rejects up to 50 actions in one call.
+Clicking through dozens of near-identical pending actions wastes attention — Airlock bulk-decision approves or rejects up to 50 actions in one call.
 
 ---
 
@@ -13,7 +13,7 @@ This is for reviewing a pile of separate, already-pending actions together — n
 ## Calling the endpoint
 
 ```bash
-curl -X POST https://api.impri.dev/v1/actions/bulk-decision \
+curl -X POST https://api.airlock.dev/v1/actions/bulk-decision \
   -H "Authorization: Bearer $REVIEWER_KEY" \
   -H "Content-Type: application/json" \
   -d '{

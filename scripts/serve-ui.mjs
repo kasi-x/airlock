@@ -1,10 +1,10 @@
 #!/usr/bin/env node
-// Serve the built Impri web inbox and proxy the API on one origin — a
+// Serve the built Airlock web inbox and proxy the API on one origin — a
 // docker/nginx-free way to self-host the UI. The SPA calls `/v1` relatively,
 // so serving it same-origin with API proxying avoids CORS entirely.
 //
 //   UI_DIST     path to built UI (default ../ui/dist)
-//   IMPRI_API   API base to proxy /v1 and /healthz to (default http://127.0.0.1:8484)
+//   AIRLOCK_API   API base to proxy /v1 and /healthz to (default http://127.0.0.1:8484)
 //   UI_PORT     listen port (default 8080)
 //   UI_HOST     listen host (default 127.0.0.1)
 
@@ -14,7 +14,7 @@ import { join, extname, normalize } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const DIST = process.env.UI_DIST ?? fileURLToPath(new URL('../ui/dist', import.meta.url));
-const API = (process.env.IMPRI_API ?? 'http://127.0.0.1:8484').replace(/\/$/, '');
+const API = (process.env.AIRLOCK_API ?? 'http://127.0.0.1:8484').replace(/\/$/, '');
 const PORT = Number(process.env.UI_PORT ?? 8080);
 const HOST = process.env.UI_HOST ?? '127.0.0.1';
 
@@ -53,4 +53,4 @@ const server = http.createServer((req, res) => {
   createReadStream(file).pipe(res);
 });
 
-server.listen(PORT, HOST, () => console.log(`Impri UI on http://${HOST}:${PORT} → API ${API}`));
+server.listen(PORT, HOST, () => console.log(`Airlock UI on http://${HOST}:${PORT} → API ${API}`));

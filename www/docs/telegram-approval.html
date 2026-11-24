@@ -3,21 +3,21 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Telegram Approval Bot: Setup and Security Model — Impri Docs</title>
+<title>Telegram Approval Bot: Setup and Security Model — Airlock Docs</title>
 <meta name="description" content="Configure Telegram approval buttons for AI agent actions: bot token, webhook, allow-listed approvers, and the security model behind every tap.">
 <meta name="theme-color" content="#06070d">
-<meta property="og:title" content="Telegram Approval Bot: Setup and Security Model — Impri Docs">
+<meta property="og:title" content="Telegram Approval Bot: Setup and Security Model — Airlock Docs">
 <meta property="og:description" content="Configure Telegram approval buttons for AI agent actions: bot token, webhook, allow-listed approvers, and the security model behind every tap.">
 <meta property="og:type" content="article">
-<meta property="og:url" content="https://impri.dev/docs/telegram-approval">
-<meta property="og:image" content="https://impri.dev/assets/og/og-docs.png">
+<meta property="og:url" content="https://airlock.dev/docs/telegram-approval">
+<meta property="og:image" content="https://airlock.dev/assets/og/og-docs.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
-<meta property="og:image:alt" content="Impri — human-in-the-loop approval inbox for AI agents">
+<meta property="og:image:alt" content="Airlock — human-in-the-loop approval inbox for AI agents">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="https://impri.dev/assets/og/og-docs.png">
-<link rel="canonical" href="https://impri.dev/docs/telegram-approval">
-<script type="application/ld+json">{"@context":"https://schema.org","@type":"TechArticle","headline":"Telegram Approval Bot: Setup and Security Model","description":"Configure Telegram approval buttons for AI agent actions: bot token, webhook, allow-listed approvers, and the security model behind every tap.","url":"https://impri.dev/docs/telegram-approval","inLanguage":"en","author":{"@type":"Organization","name":"Impri","url":"https://impri.dev"},"publisher":{"@type":"Organization","name":"Impri","url":"https://impri.dev"}}</script>
+<meta name="twitter:image" content="https://airlock.dev/assets/og/og-docs.png">
+<link rel="canonical" href="https://airlock.dev/docs/telegram-approval">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"TechArticle","headline":"Telegram Approval Bot: Setup and Security Model","description":"Configure Telegram approval buttons for AI agent actions: bot token, webhook, allow-listed approvers, and the security model behind every tap.","url":"https://airlock.dev/docs/telegram-approval","inLanguage":"en","author":{"@type":"Organization","name":"Airlock","url":"https://airlock.dev"},"publisher":{"@type":"Organization","name":"Airlock","url":"https://airlock.dev"}}</script>
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <link rel="icon" href="/favicon.ico" sizes="32x32">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='9' fill='%236366f1'/%3E%3Cpath d='M9 16.5l4.5 4.5L23 11' stroke='white' stroke-width='3' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
@@ -132,13 +132,13 @@ pre code.hljs{display:block;overflow-x:auto}
 <div class="wrap nav-inner">
   <a class="brand" href="/">
     <span class="mark"><svg viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.5 4.5L19 7.5" stroke="white" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
-    Impri
+    Airlock
   </a>
   <div class="nav-links">
     <a class="link" href="/#how">How it works</a>
     <a class="link" href="/#pricing">Pricing</a>
     <a class="link active-nav" href="../docs">Docs</a>
-    <a class="btn btn-primary btn-sm" href="https://gitlab.com/sekera.radim/impri">GitLab</a>
+    <a class="btn btn-primary btn-sm" href="https://gitlab.com/sekera.radim/airlock">GitLab</a>
   </div>
 </div>
 </nav>
@@ -154,25 +154,25 @@ pre code.hljs{display:block;overflow-x:auto}
     </nav>
     <h1>Telegram Approval Bot: Setup and Security Model</h1>
 <p>Configure Telegram approval buttons for AI agent actions: bot token, webhook, allow-listed approvers, and the security model behind every tap.</p>
-<p>The decision is recorded in Impri with the same integrity guarantees as a web-inbox decision.</p>
+<p>The decision is recorded in Airlock with the same integrity guarantees as a web-inbox decision.</p>
 <p>This is an extension of the existing <code>telegram</code> notification channel
 (see <a href="notifications">Notification channels</a>). When <code>approval_mode</code>
 is <code>false</code> (the default), the channel behaves exactly as before —
-a plain HTML notification with a &quot;Review in Impri&quot; link. Setting
+a plain HTML notification with a &quot;Review in Airlock&quot; link. Setting
 <code>approval_mode: true</code> enables the inline-keyboard approval flow
 described here.</p>
 <hr>
 <h2 id="how-it-works">How it works</h2>
 <ol>
-<li>An action lands in Impri as <code>pending</code>.</li>
-<li>Impri sends a Telegram message to the configured chat or group with
+<li>An action lands in Airlock as <code>pending</code>.</li>
+<li>Airlock sends a Telegram message to the configured chat or group with
 two inline buttons: <strong>✅ Approve</strong> and <strong>❌ Reject</strong> (plus an optional
 <strong>🔗 View in inbox</strong> link if <code>BASE_URL</code> is set).</li>
 <li>An authorized team member taps a button. Telegram delivers a
-<code>callback_query</code> to Impri&#39;s webhook endpoint.</li>
-<li>Impri verifies the webhook secret, the HMAC signature on the button
+<code>callback_query</code> to Airlock&#39;s webhook endpoint.</li>
+<li>Airlock verifies the webhook secret, the HMAC signature on the button
 payload, and the tapper&#39;s Telegram user ID against the allow-list.</li>
-<li>If all checks pass, Impri records the decision (same transaction as
+<li>If all checks pass, Airlock records the decision (same transaction as
 <code>POST /v1/actions/:id/decision</code>), fires any <code>callback_url</code> webhook,
 and edits the Telegram message to show the outcome and remove the
 buttons.</li>
@@ -205,8 +205,8 @@ with their <code>Id:</code> (a positive integer like <code>123456789</code>).</p
 <p>Alternatively, after any message is sent in the group, <code>getUpdates</code>
 returns <code>message.from.id</code> for each sender — that is the same ID.</p>
 <p>Collect all IDs you want to authorize.</p>
-<h3 id="step-4-create-the-approval-channel-via-the-impri-api">Step 4 — Create the approval channel via the Impri API</h3>
-<div class="code-block"><span class="code-lang">bash</span><pre><code class="hljs">curl -X POST https://api.impri.dev/v1/notification-channels \
+<h3 id="step-4-create-the-approval-channel-via-the-airlock-api">Step 4 — Create the approval channel via the Airlock API</h3>
+<div class="code-block"><span class="code-lang">bash</span><pre><code class="hljs">curl -X POST https://api.airlock.dev/v1/notification-channels \
   -H <span class="hljs-string">&quot;Authorization: Bearer im_...&quot;</span> \
   -H <span class="hljs-string">&quot;Content-Type: application/json&quot;</span> \
   -d <span class="hljs-string">&#x27;{
@@ -220,13 +220,13 @@ returns <code>message.from.id</code> for each sender — that is the same ID.</p
     },
     &quot;enabled&quot;: true
   }&#x27;</span></code></pre></div>
-<p><strong>Omit <code>hmac_secret</code></strong> — Impri generates a 64-character hex secret
+<p><strong>Omit <code>hmac_secret</code></strong> — Airlock generates a 64-character hex secret
 automatically and stores it. The response shows it masked (<code>****xxxx</code>).
 You never need to know its value unless you want to supply your own
 (16–256 characters).</p>
 <h3 id="step-5-webhook-registration">Step 5 — Webhook registration</h3>
 <p><strong>Automatic (public HTTPS server):</strong> If <code>BASE_URL</code> is set to a public
-<code>https://</code> URL, Impri calls Telegram&#39;s <code>setWebhook</code> automatically on
+<code>https://</code> URL, Airlock calls Telegram&#39;s <code>setWebhook</code> automatically on
 channel creation. Look for a log line:</p>
 <div class="code-block"><pre><code class="hljs">[telegram-approval] setWebhook ok {&quot;channelId&quot;:&quot;chan_...&quot;,&quot;url&quot;:&quot;https://...&quot;}</code></pre></div>
 <p>No further action is needed.</p>
@@ -344,10 +344,10 @@ are unaffected.</p>
 <p><strong>Disable the approval flow</strong> (revert to plain notifications):</p>
 <div class="code-block"><span class="code-lang">bash</span><pre><code class="hljs">curl -X PATCH .../v1/notification-channels/{channelId} \
   -d <span class="hljs-string">&#x27;{&quot;config&quot;: {&quot;approval_mode&quot;: false}}&#x27;</span></code></pre></div>
-<p>Impri calls <code>deleteWebhook</code> for the bot automatically when
+<p>Airlock calls <code>deleteWebhook</code> for the bot automatically when
 <code>approval_mode</code> transitions to <code>false</code> or when <code>enabled</code> is set to
 <code>false</code>.</p>
-<p><strong>Rotate <code>hmac_secret</code>:</strong> Send a new value in a PATCH. Impri
+<p><strong>Rotate <code>hmac_secret</code>:</strong> Send a new value in a PATCH. Airlock
 re-derives the webhook secret, calls <code>setWebhook</code> with the updated
 <code>secret_token</code>, and saves the new value. Old inline buttons in chat
 history return &quot;Invalid approval link&quot; — safe and harmless.</p>
@@ -370,10 +370,10 @@ handful of requests per second; this limit stops scanner abuse.</p>
 <p>An attacker must bypass <strong>all four</strong> simultaneously to forge an approval.</p>
 <p><strong>1. Webhook secret header</strong></p>
 <p>Every <code>callback_query</code> from Telegram carries
-<code>X-Telegram-Bot-Api-Secret-Token</code>. The value Impri registered at
+<code>X-Telegram-Bot-Api-Secret-Token</code>. The value Airlock registered at
 <code>setWebhook</code> time is derived as:</p>
 <div class="code-block"><pre><code class="hljs">HMAC-SHA256(hmac_secret, &quot;tg-webhook-secret&quot;).slice(0, 32).hex()</code></pre></div>
-<p>Impri re-derives and compares it with <code>crypto.timingSafeEqual()</code> before
+<p>Airlock re-derives and compares it with <code>crypto.timingSafeEqual()</code> before
 parsing the request body. A missing or wrong header gets 403 immediately.
 Without <code>hmac_secret</code>, no scanner or forger can produce a valid header.</p>
 <p><strong>2. Button payload HMAC</strong></p>
@@ -390,7 +390,7 @@ real button, observable in chat, rate-limited by Telegram itself.
 Comparison uses <code>timingSafeEqual</code> to prevent timing attacks.</p>
 <p><strong>3. Authorized-user check</strong></p>
 <p>Telegram sets <code>callback_query.from.id</code> in its own infrastructure — other
-Telegram users cannot spoof this integer. Impri checks it against
+Telegram users cannot spoof this integer. Airlock checks it against
 <code>allowed_approver_user_ids</code> before recording any decision. If the user
 ID is not in the list, the handler answers &quot;Not authorized&quot; with
 <code>show_alert: true</code> and returns without reading the action from the DB —
@@ -495,7 +495,7 @@ button belongs to a test message. Check
 one to it. The decision is idempotent — nothing went wrong.</p>
 <p><strong>Buttons still appear after a decision.</strong></p>
 <p>The <code>editMessageReplyMarkup</code> call to Telegram failed (network error or
-the message was too old). The decision was still recorded in Impri.
+the message was too old). The decision was still recorded in Airlock.
 The buttons are cosmetically stale; any additional tap is answered with
 &quot;Already decided&quot; and is a no-op.</p>
 <p><strong><code>setup-webhook</code> returns an error from Telegram.</strong></p>
@@ -586,7 +586,7 @@ automated — use a CA-signed cert or a tunnel service).</p>
 <li class="ptoc-h3"><a href="#step-1-create-a-telegram-bot">Step 1 — Create a Telegram bot</a></li>
 <li class="ptoc-h3"><a href="#step-2-get-the-chat-id">Step 2 — Get the chat ID</a></li>
 <li class="ptoc-h3"><a href="#step-3-collect-authorized-telegram-user-ids">Step 3 — Collect authorized Telegram user IDs</a></li>
-<li class="ptoc-h3"><a href="#step-4-create-the-approval-channel-via-the-impri-api">Step 4 — Create the approval channel via the Impri API</a></li>
+<li class="ptoc-h3"><a href="#step-4-create-the-approval-channel-via-the-airlock-api">Step 4 — Create the approval channel via the Airlock API</a></li>
 <li class="ptoc-h3"><a href="#step-5-webhook-registration">Step 5 — Webhook registration</a></li>
 <li class="ptoc-h3"><a href="#step-6-verify">Step 6 — Verify</a></li>
 <li class="ptoc-h2"><a href="#configuration-reference">Configuration reference</a></li>
@@ -606,19 +606,19 @@ automated — use a CA-signed cert or a tunnel service).</p>
 <footer class="footer">
 <div class="wrap footer-inner">
   <a class="brand" href="/">
-    <span class="mark"><svg viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.5 4.5L19 7.5" stroke="white" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Impri
+    <span class="mark"><svg viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.5 4.5L19 7.5" stroke="white" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Airlock
   </a>
   <div>
-    <a href="https://gitlab.com/sekera.radim/impri">GitLab</a>
+    <a href="https://gitlab.com/sekera.radim/airlock">GitLab</a>
     <a href="/docs">Docs</a>
-    <a href="https://gitlab.com/sekera.radim/impri/-/blob/main/LICENSE">MIT License</a>
-    <a href="https://www.npmjs.com/package/@impri/mcp">@impri/mcp</a>
+    <a href="https://gitlab.com/sekera.radim/airlock/-/blob/main/LICENSE">MIT License</a>
+    <a href="https://www.npmjs.com/package/@airlock/mcp">@airlock/mcp</a>
     <a href="/docs/privacy">Privacy</a>
     <a href="/docs/terms">Terms</a>
     <a href="https://sekera.dev">Contact</a>
   </div>
 </div>
-<div class="wrap" style="margin-top:18px"><span class="muted">© 2026 Impri · The imprimatur for your AI agents · Built by <a href="https://sekera.dev" style="color:inherit">Radim Sekera</a>. Also by the same maker: <a href="https://briefgate.dev/?utm_source=impri.dev&amp;utm_medium=referral" style="color:inherit">BriefGate</a> — client intake for agencies and AI agents.</span></div>
+<div class="wrap" style="margin-top:18px"><span class="muted">© 2026 Airlock · The airlockmatur for your AI agents · Built by <a href="https://sekera.dev" style="color:inherit">Radim Sekera</a>. Also by the same maker: <a href="https://briefgate.dev/?utm_source=airlock.dev&amp;utm_medium=referral" style="color:inherit">BriefGate</a> — client intake for agencies and AI agents.</span></div>
 </footer>
 </body>
 </html>

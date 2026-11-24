@@ -40,8 +40,8 @@ Mark the action `idempotent: false` and describe the revoke path in `undo`, so t
 ```python
 import os, time, requests
 
-API = "https://api.impri.dev"
-H = {"Authorization": f"Bearer {os.environ['IMPRI_API_KEY']}"}
+API = "https://api.airlock.dev"
+H = {"Authorization": f"Bearer {os.environ['AIRLOCK_API_KEY']}"}
 
 def grant_role_with_approval(principal, role, resource, ticket):
     preview = (
@@ -75,20 +75,20 @@ def grant_role_with_approval(principal, role, resource, ticket):
     return "executed"
 ```
 
-Nothing in Impri touches your identity provider. `apply_iam_binding` is your code, and it runs only on the `approved` branch.
+Nothing in Airlock touches your identity provider. `apply_iam_binding` is your code, and it runs only on the `approved` branch.
 
 ---
 
 ## Keep the gate real
 
-Impri is the approval gate, and only that. It stores the proposed grant, notifies a human and holds the decision. It does not understand IAM, does not check whether the role is excessive, and never applies anything.
+Airlock is the approval gate, and only that. It stores the proposed grant, notifies a human and holds the decision. It does not understand IAM, does not check whether the role is excessive, and never applies anything.
 
 Two things decide whether this is a real control:
 
 1. **The wrapper must be the only path.** If the agent also holds an admin credential and can call the cloud API directly, it can route around the gate. Give the agent a tool that proposes grants, and keep the credential that applies them inside the approved branch, ideally in a separate process or service account.
 2. **Humans can be rushed.** Put the exact role and resource on the card and keep expiry short, so approval is a deliberate read and not a reflex tap.
 
-Impri is not a policy engine or an access-review product. If you need automatic denial of certain roles, enforce that in your own code or IAM policy and use Impri for the cases that need a person.
+Airlock is not a policy engine or an access-review product. If you need automatic denial of certain roles, enforce that in your own code or IAM policy and use Airlock for the cases that need a person.
 
 ---
 
@@ -100,4 +100,4 @@ Every decision is recorded: what was proposed, who approved or rejected it, and 
 
 ## Next step
 
-Create a key in the [quickstart](quickstart.md), then wrap your grant function as above. If your agent runs in an MCP client, the same flow is available through [the MCP server](mcp.md) with `impri_push_action`, `impri_await_decision` and `impri_report_result`.
+Create a key in the [quickstart](quickstart.md), then wrap your grant function as above. If your agent runs in an MCP client, the same flow is available through [the MCP server](mcp.md) with `airlock_push_action`, `airlock_await_decision` and `airlock_report_result`.

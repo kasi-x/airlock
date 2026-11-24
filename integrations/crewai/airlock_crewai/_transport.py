@@ -5,13 +5,13 @@ The transport is intentionally thin: (method, url, headers, body_bytes) →
 a test transport can return arbitrary (status, body) tuples without needing to
 raise urllib exceptions.
 
-A custom transport can be injected into ImpriClient via the _transport parameter:
+A custom transport can be injected into AirlockClient via the _transport parameter:
 
     def my_transport(method, url, headers, body=None):
         # ... make the request ...
         return status_code, response_bytes
 
-    client = ImpriClient(api_key="im_...", _transport=my_transport)
+    client = AirlockClient(api_key="im_...", _transport=my_transport)
 """
 from __future__ import annotations
 
@@ -19,9 +19,9 @@ import urllib.error
 import urllib.request
 from typing import Callable, Optional, Tuple
 
-from ._exceptions import ImpriApiError
+from ._exceptions import AirlockApiError
 
-# Type alias used in ImpriClient signature.
+# Type alias used in AirlockClient signature.
 Transport = Callable[
     [str, str, dict, Optional[bytes]],
     Tuple[int, bytes],
@@ -39,7 +39,7 @@ def urllib_transport(
     On HTTP error responses (4xx/5xx), urllib raises HTTPError. We catch it and
     return (status, body) so the client can map it to typed exceptions uniformly.
 
-    On connection errors (URLError, not HTTPError), raises ImpriApiError directly
+    On connection errors (URLError, not HTTPError), raises AirlockApiError directly
     since there is no status code to map.
     """
     req = urllib.request.Request(url, data=body, headers=headers, method=method)
@@ -50,4 +50,4 @@ def urllib_transport(
         raw = exc.read()
         return exc.code, raw
     except urllib.error.URLError as exc:
-        raise ImpriApiError(0, f"Connection error: {exc.reason}") from exc
+        raise AirlockApiError(0, f"Connection error: {exc.reason}") from exc

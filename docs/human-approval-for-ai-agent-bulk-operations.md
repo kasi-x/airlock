@@ -30,8 +30,8 @@ An agent decides that accounts with no login in 18 months should be deactivated.
 ```python
 import os, time, requests
 
-BASE = "https://api.impri.dev"
-H = {"Authorization": f"Bearer {os.environ['IMPRI_API_KEY']}"}
+BASE = "https://api.airlock.dev"
+H = {"Authorization": f"Bearer {os.environ['AIRLOCK_API_KEY']}"}
 
 # 1. Dry run — nothing is modified here
 ids, sample = dry_run_stale_accounts(months=18)   # your code, read-only
@@ -97,7 +97,7 @@ Sometimes the reviewer agrees with the idea but not the scope. Mark the filter a
 }
 ```
 
-If the reviewer tightens the filter, `decision.final_preview` carries their version and `decision.diff` shows what changed. Your agent must then **re-run the dry run with the edited filter** and, if the count changed, propose again. Impri does not parse your filter or recompute anything; it hands back the text the human approved.
+If the reviewer tightens the filter, `decision.final_preview` carries their version and `decision.diff` shows what changed. Your agent must then **re-run the dry run with the edited filter** and, if the count changed, propose again. Airlock does not parse your filter or recompute anything; it hands back the text the human approved.
 
 ---
 
@@ -109,16 +109,16 @@ For single destructive operations, see [approving database writes](approve-datab
 
 ---
 
-## What Impri does and doesn't do here
+## What Airlock does and doesn't do here
 
-Impri is the approval gate only. It stores the proposed batch, notifies the reviewer, and holds the decision. It does **not** run your query, count rows, validate that the sample is representative, or execute the update.
+Airlock is the approval gate only. It stores the proposed batch, notifies the reviewer, and holds the decision. It does **not** run your query, count rows, validate that the sample is representative, or execute the update.
 
 Two limits to be honest about:
 
 - **The preview is only as good as the agent's dry run.** If the agent writes a misleading summary, the human approves a misleading summary. Generate the count and sample from the real query result, in code, not from the model's prose.
 - **It is a real gate only if the approved path is the only path.** If the agent also holds a database credential with write access, it can bypass the gate. Give the agent a tool that executes only a frozen, approved ID list.
 
-Impri is not a workflow engine, a batch scheduler or a rollback system. For retries, throttling and chunked execution, use your own job runner and call Impri once per batch.
+Airlock is not a workflow engine, a batch scheduler or a rollback system. For retries, throttling and chunked execution, use your own job runner and call Airlock once per batch.
 
 ---
 

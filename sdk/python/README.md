@@ -1,11 +1,11 @@
-# impri · Python SDK
+# airlock · Python SDK
 
 Human-in-the-loop approval for AI agents.
 An agent proposes an action; a human approves or rejects it in the web/mobile
 inbox; the agent executes only after approval.
 
 Self-hosted default: `http://localhost:8484`.
-Cloud: set `IMPRI_BASE_URL=https://api.impri.dev`.
+Cloud: set `AIRLOCK_BASE_URL=https://api.airlock.dev`.
 
 **Zero mandatory runtime dependencies** — uses stdlib `urllib` for HTTP.
 Python 3.9+.
@@ -15,9 +15,9 @@ Python 3.9+.
 ## Quickstart (3 lines)
 
 ```python
-import impri
+import airlock
 
-client = impri.ImpriClient()  # reads IMPRI_API_KEY env var
+client = airlock.AirlockClient()  # reads AIRLOCK_API_KEY env var
 action = client.create_action("email.send", "Send digest to alice@example.com",
                                {"format": "plain", "body": "Hi Alice, ..."}, editable=["preview.body"])
 approved = client.await_decision(action["id"])   # blocks until human decides
@@ -29,7 +29,7 @@ client.report_result(action["id"], "executed")
 ## Installation
 
 ```bash
-pip install impri            # from PyPI (once published)
+pip install airlock            # from PyPI (once published)
 # or, from this repository:
 pip install ./sdk/python
 ```
@@ -42,8 +42,8 @@ Every request uses `Authorization: Bearer im_<key>`.
 
 Resolution order:
 1. `api_key=` constructor argument
-2. `IMPRI_API_KEY` environment variable
-3. `ImpriConfigError` raised at construction time
+2. `AIRLOCK_API_KEY` environment variable
+3. `AirlockConfigError` raised at construction time
 
 Key scopes (enforced server-side):
 - `actions` — create, list, get actions; decide, report result, await decision
@@ -51,7 +51,7 @@ Key scopes (enforced server-side):
 - `admin` — key management, project read/write, export/erase; implies `actions` + `watch`
 
 ```python
-client = impri.ImpriClient(api_key="im_...", base_url="https://api.impri.dev")
+client = airlock.AirlockClient(api_key="im_...", base_url="https://api.airlock.dev")
 ```
 
 ---
@@ -79,10 +79,10 @@ try:
     # Use final_preview for execution — may differ from original if reviewer edited
     content = approved["decision"]["final_preview"]["body"]
     client.report_result(action["id"], "executed")
-except impri.ImpriRejected as e:
+except airlock.AirlockRejected as e:
     # Normal outcome — human said no. Do not log as error.
     print("Rejected:", e.decision)
-except impri.ImpriTimeout:
+except airlock.AirlockTimeout:
     print("Still pending — check back later")
 
 # List actions with optional filters
@@ -238,7 +238,7 @@ ch = client.create_notification_channel(
 ch = client.create_notification_channel(
     "ntfy mobile push",
     "ntfy",
-    {"url": "https://ntfy.sh", "topic": "my-impri-alerts"},
+    {"url": "https://ntfy.sh", "topic": "my-airlock-alerts"},
 )
 
 # --- Email (uses SMTP configured via env vars on the server) ---
@@ -254,8 +254,8 @@ ch = client.create_notification_channel(
     "My webhook receiver",
     "webhook",
     {
-        "url": "https://myapp.example.com/impri-hook",
-        "hmac_secret": "my-shared-secret",  # optional; enables X-Impri-Signature
+        "url": "https://myapp.example.com/airlock-hook",
+        "hmac_secret": "my-shared-secret",  # optional; enables X-Airlock-Signature
     },
 )
 
@@ -302,7 +302,7 @@ client.list_keys()
 client.revoke_key(key_id)
 
 project = client.get_project()
-print(project["webhook_secret"])   # needed to verify X-Impri-Signature
+print(project["webhook_secret"])   # needed to verify X-Airlock-Signature
 
 client.update_project(timezone="Europe/Prague")
 client.rotate_webhook_secret()
@@ -333,7 +333,7 @@ def send_email(to: str, body: str) -> None:
 ```
 
 The decorator blocks until the decision arrives. On reject it raises
-`ImpriRejected` without calling the function.
+`AirlockRejected` without calling the function.
 
 ### `approval_gate` context manager
 
@@ -356,17 +356,17 @@ with client.approval_gate(
 ## Webhook signature verification
 
 ```python
-import impri
+import airlock
 
 # In your Flask/FastAPI/Django view:
-impri.verify_webhook(
+airlock.verify_webhook(
     raw_body=request.get_data(),           # undecoded bytes
     secret=os.environ["WEBHOOK_SECRET"],
-    timestamp=request.headers["X-Impri-Timestamp"],
-    nonce=request.headers["X-Impri-Nonce"],
-    signature=request.headers["X-Impri-Signature"],
+    timestamp=request.headers["X-Airlock-Timestamp"],
+    nonce=request.headers["X-Airlock-Nonce"],
+    signature=request.headers["X-Airlock-Signature"],
 )
-# Raises ImpriWebhookSignatureError on mismatch; returns None on success.
+# Raises AirlockWebhookSignatureError on mismatch; returns None on success.
 ```
 
 Algorithm: `sha256=HMAC-SHA256(secret, f'{timestamp}.{nonce}.{raw_body}')`.
@@ -375,22 +375,22 @@ Algorithm: `sha256=HMAC-SHA256(secret, f'{timestamp}.{nonce}.{raw_body}')`.
 
 ## Error handling
 
-All exceptions inherit from `impri.ImpriError`.
+All exceptions inherit from `airlock.AirlockError`.
 
 | Exception | When |
 |-----------|------|
-| `ImpriConfigError` | API key missing at startup |
-| `ImpriUnauthorized` | 401/403 — wrong key or missing scope |
-| `ImpriNotFound` | 404 — resource unknown or wrong project |
-| `ImpriConflict` | 409 — action already decided, concurrent write |
-| `ImpriExpired` | 410 — approval window closed |
-| `ImpriRateLimited` | 429 — rate limit hit (check `.retry_after`) |
-| `ImpriQuotaExceeded` | 402 — monthly limit reached (check `.tier`, `.limit`) |
-| `ImpriRejected` | `await_decision` — human said no (normal outcome) |
-| `ImpriTimeout` | `await_decision` — timed out, action still pending |
-| `ImpriValidationError` | 400/422 — bad request (check `.issues`) |
-| `ImpriApiError` | Other 4xx/5xx |
-| `ImpriWebhookSignatureError` | Webhook HMAC mismatch |
+| `AirlockConfigError` | API key missing at startup |
+| `AirlockUnauthorized` | 401/403 — wrong key or missing scope |
+| `AirlockNotFound` | 404 — resource unknown or wrong project |
+| `AirlockConflict` | 409 — action already decided, concurrent write |
+| `AirlockExpired` | 410 — approval window closed |
+| `AirlockRateLimited` | 429 — rate limit hit (check `.retry_after`) |
+| `AirlockQuotaExceeded` | 402 — monthly limit reached (check `.tier`, `.limit`) |
+| `AirlockRejected` | `await_decision` — human said no (normal outcome) |
+| `AirlockTimeout` | `await_decision` — timed out, action still pending |
+| `AirlockValidationError` | 400/422 — bad request (check `.issues`) |
+| `AirlockApiError` | Other 4xx/5xx |
+| `AirlockWebhookSignatureError` | Webhook HMAC mismatch |
 
 ---
 

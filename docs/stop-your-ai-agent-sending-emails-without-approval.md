@@ -12,16 +12,16 @@ Telling the agent "always ask before sending" in the system prompt doesn't hold 
 
 ## Wrapping the send call
 
-The agent keeps drafting exactly as before. The only change is what happens after the draft is ready: instead of calling your mail API, it calls Impri, then blocks until a human decides, then calls your mail API — but only in the approved branch.
+The agent keeps drafting exactly as before. The only change is what happens after the draft is ready: instead of calling your mail API, it calls Airlock, then blocks until a human decides, then calls your mail API — but only in the approved branch.
 
 ```typescript
-import { ImpriClient, ImpriRejected, ImpriExpired, ImpriTimeout } from "@impri/sdk";
+import { AirlockClient, AirlockRejected, AirlockExpired, AirlockTimeout } from "@airlock/sdk";
 import { sendEmail } from "./mailer";
 
-const impri = new ImpriClient({ apiKey: process.env.IMPRI_API_KEY! });
+const airlock = new AirlockClient({ apiKey: process.env.AIRLOCK_API_KEY! });
 
 async function proposeAndSendEmail(to: string, subject: string, body: string) {
-  const action = await impri.createAction({
+  const action = await airlock.createAction({
     kind: "email.send",
     title: `Send to ${to}: ${subject}`,
     preview: { format: "markdown", body },
@@ -33,9 +33,9 @@ async function proposeAndSendEmail(to: string, subject: string, body: string) {
 
   let decided;
   try {
-    decided = await impri.awaitDecision(action.id, { timeoutS: 21600 });
+    decided = await airlock.awaitDecision(action.id, { timeoutS: 21600 });
   } catch (err) {
-    if (err instanceof ImpriRejected || err instanceof ImpriExpired || err instanceof ImpriTimeout) {
+    if (err instanceof AirlockRejected || err instanceof AirlockExpired || err instanceof AirlockTimeout) {
       console.log(`Not sending — ${err.message}`);
       return;
     }
@@ -46,7 +46,7 @@ async function proposeAndSendEmail(to: string, subject: string, body: string) {
   const finalBody = decided.decision?.final_preview?.body ?? decided.preview.body;
   await sendEmail(to, subject, finalBody);
 
-  await impri.reportResult(decided.id, "executed");
+  await airlock.reportResult(decided.id, "executed");
 }
 ```
 
@@ -71,7 +71,7 @@ A useful rule of thumb: gate anything where the recipient is external and the co
 
 ## What this does and doesn't guarantee
 
-Impri stores the drafted email, notifies you (email, Slack, Telegram, whatever channel you've set up — see [Slack approval](slack-approval.md) and [Telegram approval](telegram-approval.md)), and holds the decision. It does not read the email for tone or accuracy, and it does not send anything itself — your code still owns the actual `sendEmail` call.
+Airlock stores the drafted email, notifies you (email, Slack, Telegram, whatever channel you've set up — see [Slack approval](slack-approval.md) and [Telegram approval](telegram-approval.md)), and holds the decision. It does not read the email for tone or accuracy, and it does not send anything itself — your code still owns the actual `sendEmail` call.
 
 The gate is only as strong as the wiring: if the agent process also holds direct SMTP or API credentials it could call instead of going through this flow, nothing stops it from bypassing the gate under the wrong conditions. Keep the send credentials reachable only from the code path shown above, ideally in a separate wrapper the agent's own reasoning can't touch directly.
 

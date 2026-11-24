@@ -3,21 +3,21 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Observability — Impri Docs</title>
-<meta name="description" content="Impri exposes three observability surfaces for self-hosters and operators:">
+<title>Observability — Airlock Docs</title>
+<meta name="description" content="Airlock exposes three observability surfaces for self-hosters and operators:">
 <meta name="theme-color" content="#06070d">
-<meta property="og:title" content="Observability — Impri Docs">
-<meta property="og:description" content="Impri exposes three observability surfaces for self-hosters and operators:">
+<meta property="og:title" content="Observability — Airlock Docs">
+<meta property="og:description" content="Airlock exposes three observability surfaces for self-hosters and operators:">
 <meta property="og:type" content="article">
-<meta property="og:url" content="https://impri.dev/docs/observability">
-<meta property="og:image" content="https://impri.dev/assets/og/og-docs.png">
+<meta property="og:url" content="https://airlock.dev/docs/observability">
+<meta property="og:image" content="https://airlock.dev/assets/og/og-docs.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
-<meta property="og:image:alt" content="Impri — human-in-the-loop approval inbox for AI agents">
+<meta property="og:image:alt" content="Airlock — human-in-the-loop approval inbox for AI agents">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="https://impri.dev/assets/og/og-docs.png">
-<link rel="canonical" href="https://impri.dev/docs/observability">
-<script type="application/ld+json">{"@context":"https://schema.org","@type":"TechArticle","headline":"Observability","description":"Impri exposes three observability surfaces for self-hosters and operators:","url":"https://impri.dev/docs/observability","inLanguage":"en","author":{"@type":"Organization","name":"Impri","url":"https://impri.dev"},"publisher":{"@type":"Organization","name":"Impri","url":"https://impri.dev"}}</script>
+<meta name="twitter:image" content="https://airlock.dev/assets/og/og-docs.png">
+<link rel="canonical" href="https://airlock.dev/docs/observability">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"TechArticle","headline":"Observability","description":"Airlock exposes three observability surfaces for self-hosters and operators:","url":"https://airlock.dev/docs/observability","inLanguage":"en","author":{"@type":"Organization","name":"Airlock","url":"https://airlock.dev"},"publisher":{"@type":"Organization","name":"Airlock","url":"https://airlock.dev"}}</script>
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <link rel="icon" href="/favicon.ico" sizes="32x32">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='9' fill='%236366f1'/%3E%3Cpath d='M9 16.5l4.5 4.5L23 11' stroke='white' stroke-width='3' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
@@ -132,13 +132,13 @@ pre code.hljs{display:block;overflow-x:auto}
 <div class="wrap nav-inner">
   <a class="brand" href="/">
     <span class="mark"><svg viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.5 4.5L19 7.5" stroke="white" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
-    Impri
+    Airlock
   </a>
   <div class="nav-links">
     <a class="link" href="/#how">How it works</a>
     <a class="link" href="/#pricing">Pricing</a>
     <a class="link active-nav" href="../docs">Docs</a>
-    <a class="btn btn-primary btn-sm" href="https://gitlab.com/sekera.radim/impri">GitLab</a>
+    <a class="btn btn-primary btn-sm" href="https://gitlab.com/sekera.radim/airlock">GitLab</a>
   </div>
 </div>
 </nav>
@@ -153,7 +153,7 @@ pre code.hljs{display:block;overflow-x:auto}
       <span>Observability</span>
     </nav>
     <h1>Observability</h1>
-<p>Impri exposes three observability surfaces for self-hosters and operators:</p>
+<p>Airlock exposes three observability surfaces for self-hosters and operators:</p>
 <ul>
 <li><strong><code>/metrics</code></strong> — Prometheus text-format endpoint (opt-in)</li>
 <li><strong><code>/readyz</code></strong> — readiness probe (always available, no auth)</li>
@@ -187,20 +187,20 @@ METRICS_PORT=9090</code></pre></div>
 <h3 id="prometheus-scrapeconfig-examples">Prometheus <code>scrape_config</code> examples</h3>
 <p><strong>With bearer token:</strong></p>
 <div class="code-block"><span class="code-lang">yaml</span><pre><code class="hljs"><span class="hljs-attr">scrape_configs:</span>
-  <span class="hljs-bullet">-</span> <span class="hljs-attr">job_name:</span> <span class="hljs-string">impri</span>
+  <span class="hljs-bullet">-</span> <span class="hljs-attr">job_name:</span> <span class="hljs-string">airlock</span>
     <span class="hljs-attr">static_configs:</span>
-      <span class="hljs-bullet">-</span> <span class="hljs-attr">targets:</span> [<span class="hljs-string">&#x27;your-impri-host:8484&#x27;</span>]
+      <span class="hljs-bullet">-</span> <span class="hljs-attr">targets:</span> [<span class="hljs-string">&#x27;your-airlock-host:8484&#x27;</span>]
     <span class="hljs-attr">authorization:</span>
       <span class="hljs-attr">type:</span> <span class="hljs-string">Bearer</span>
       <span class="hljs-attr">credentials:</span> <span class="hljs-string">&lt;METRICS_TOKEN&gt;</span></code></pre></div>
 <p><strong>Private port, no token:</strong></p>
 <div class="code-block"><span class="code-lang">yaml</span><pre><code class="hljs"><span class="hljs-attr">scrape_configs:</span>
-  <span class="hljs-bullet">-</span> <span class="hljs-attr">job_name:</span> <span class="hljs-string">impri</span>
+  <span class="hljs-bullet">-</span> <span class="hljs-attr">job_name:</span> <span class="hljs-string">airlock</span>
     <span class="hljs-attr">static_configs:</span>
       <span class="hljs-bullet">-</span> <span class="hljs-attr">targets:</span> [<span class="hljs-string">&#x27;127.0.0.1:9090&#x27;</span>]</code></pre></div>
 <hr>
 <h2 id="metric-reference">Metric reference</h2>
-<p>All metrics are prefixed with <code>impri_</code>. Labels never contain raw API keys, webhook secrets, bot tokens, action content, email addresses, callback URLs, or any other user-supplied data — only enum values and route patterns.</p>
+<p>All metrics are prefixed with <code>airlock_</code>. Labels never contain raw API keys, webhook secrets, bot tokens, action content, email addresses, callback URLs, or any other user-supplied data — only enum values and route patterns.</p>
 <h3 id="build-and-runtime">Build and runtime</h3>
 <div class="table-wrap"><table>
 <thead>
@@ -211,17 +211,17 @@ METRICS_PORT=9090</code></pre></div>
 </tr>
 </thead>
 <tbody><tr>
-<td><code>impri_build_info{version, node_version}</code></td>
+<td><code>airlock_build_info{version, node_version}</code></td>
 <td>Gauge (always 1)</td>
 <td>Identifies the running build. <code>version</code> from package.json, <code>node_version</code> from <code>process.version</code>. Emitted once per scrape.</td>
 </tr>
 <tr>
-<td><code>impri_uptime_seconds</code></td>
+<td><code>airlock_uptime_seconds</code></td>
 <td>Gauge</td>
 <td><code>process.uptime()</code> at scrape time. Detects unexpected restarts in dashboards.</td>
 </tr>
 <tr>
-<td><code>impri_db_size_bytes</code></td>
+<td><code>airlock_db_size_bytes</code></td>
 <td>Gauge</td>
 <td><code>fs.statSync(DB_PATH).size</code>. SQLite growth indicator — useful for disk-space alerting without external DB monitoring.</td>
 </tr>
@@ -237,12 +237,12 @@ METRICS_PORT=9090</code></pre></div>
 </tr>
 </thead>
 <tbody><tr>
-<td><code>impri_http_requests_total{route, method, status_class}</code></td>
+<td><code>airlock_http_requests_total{route, method, status_class}</code></td>
 <td>Counter</td>
 <td>Request count by route pattern, HTTP method, and status class (<code>2xx</code> / <code>4xx</code> / <code>5xx</code>). <code>route</code> is Fastify&#39;s route pattern (e.g. <code>/v1/actions/:id</code>), never the real URL with actual IDs or tokens.</td>
 </tr>
 <tr>
-<td><code>impri_http_request_duration_seconds{route, method}</code></td>
+<td><code>airlock_http_request_duration_seconds{route, method}</code></td>
 <td>Histogram</td>
 <td>Latency from request start to response send. Buckets: 0.005, 0.01, 0.025, 0.05, 0.1, 0.25, 0.5, 1, 2.5, 5, 10 s.</td>
 </tr>
@@ -259,7 +259,7 @@ METRICS_PORT=9090</code></pre></div>
 </tr>
 </thead>
 <tbody><tr>
-<td><code>impri_rate_limited_total{bucket}</code></td>
+<td><code>airlock_rate_limited_total{bucket}</code></td>
 <td>Counter</td>
 <td>Incremented when a request is rejected by the rate limiter. <code>bucket</code> is the route string used in <code>checkRateLimit()</code> (e.g. <code>actions:create</code>, <code>actions:decide</code>, <code>watchers:create</code>). Labels identify the bucket, not the caller.</td>
 </tr>
@@ -275,27 +275,27 @@ METRICS_PORT=9090</code></pre></div>
 </tr>
 </thead>
 <tbody><tr>
-<td><code>impri_actions_total{status}</code></td>
+<td><code>airlock_actions_total{status}</code></td>
 <td>Gauge</td>
 <td><code>COUNT(*) FROM actions GROUP BY status</code> at scrape time. Labels: <code>pending</code>, <code>approved</code>, <code>rejected</code>, <code>expired</code>, <code>succeeded</code>, <code>failed</code>.</td>
 </tr>
 <tr>
-<td><code>impri_pending_actions</code></td>
+<td><code>airlock_pending_actions</code></td>
 <td>Gauge</td>
 <td><code>COUNT(*) WHERE status = &#39;pending&#39;</code>. Convenience alias; useful as an alert trigger.</td>
 </tr>
 <tr>
-<td><code>impri_action_decisions_total{verdict, channel}</code></td>
+<td><code>airlock_action_decisions_total{verdict, channel}</code></td>
 <td>Counter</td>
 <td>Incremented each time a decision is committed. <code>verdict</code> = <code>approve</code> or <code>reject</code>. <code>channel</code> = <code>api</code> / <code>bulk-api</code> / <code>bulk-web</code> / <code>telegram</code> / <code>slack</code> / <code>discord</code> / <code>auto</code> (rules engine).</td>
 </tr>
 <tr>
-<td><code>impri_action_decision_latency_seconds{verdict}</code></td>
+<td><code>airlock_action_decision_latency_seconds{verdict}</code></td>
 <td>Histogram</td>
 <td>Time from action creation to decision (human response time distribution). Value = <code>decided_at − created_at</code>. Buckets: 1, 10, 60, 300, 1800, 7200, 86400 s.</td>
 </tr>
 <tr>
-<td><code>impri_actions_expired_total</code></td>
+<td><code>airlock_actions_expired_total</code></td>
 <td>Counter</td>
 <td>Incremented once per action that transitions to <code>expired</code>. No PII labels.</td>
 </tr>
@@ -311,32 +311,32 @@ METRICS_PORT=9090</code></pre></div>
 </tr>
 </thead>
 <tbody><tr>
-<td><code>impri_active_watchers</code></td>
+<td><code>airlock_active_watchers</code></td>
 <td>Gauge</td>
 <td><code>COUNT(*) WHERE status = &#39;active&#39;</code> at scrape time.</td>
 </tr>
 <tr>
-<td><code>impri_degraded_watchers</code></td>
+<td><code>airlock_degraded_watchers</code></td>
 <td>Gauge</td>
 <td><code>COUNT(*) WHERE status = &#39;degraded&#39;</code> at scrape time. Alert when non-zero.</td>
 </tr>
 <tr>
-<td><code>impri_watcher_runs_total{kind, result}</code></td>
+<td><code>airlock_watcher_runs_total{kind, result}</code></td>
 <td>Counter</td>
 <td><code>kind</code> = <code>rss</code> / <code>reddit_search</code> / <code>url_diff</code>. <code>result</code> = <code>ok</code> / <code>error</code> / <code>window_skipped</code> (outside schedule window) / <code>baseline</code> (first run, no actions created).</td>
 </tr>
 <tr>
-<td><code>impri_watcher_items_fetched_total{kind}</code></td>
+<td><code>airlock_watcher_items_fetched_total{kind}</code></td>
 <td>Counter</td>
 <td>Total items returned by fetch before dedup/scoring.</td>
 </tr>
 <tr>
-<td><code>impri_watcher_hits_total{kind}</code></td>
+<td><code>airlock_watcher_hits_total{kind}</code></td>
 <td>Counter</td>
 <td>Actions created by watcher runs (items that passed dedup + score filter).</td>
 </tr>
 <tr>
-<td><code>impri_watcher_burst_truncations_total{kind}</code></td>
+<td><code>airlock_watcher_burst_truncations_total{kind}</code></td>
 <td>Counter</td>
 <td>Incremented when burst protection triggers. Useful for detecting runaway feeds.</td>
 </tr>
@@ -352,17 +352,17 @@ METRICS_PORT=9090</code></pre></div>
 </tr>
 </thead>
 <tbody><tr>
-<td><code>impri_webhook_deliveries_total{result}</code></td>
+<td><code>airlock_webhook_deliveries_total{result}</code></td>
 <td>Counter</td>
 <td><code>result</code> = <code>delivered</code> / <code>retry</code> / <code>dlq</code> / <code>gone</code> / <code>ssrf_blocked</code>.</td>
 </tr>
 <tr>
-<td><code>impri_webhook_delivery_duration_seconds</code></td>
+<td><code>airlock_webhook_delivery_duration_seconds</code></td>
 <td>Histogram</td>
 <td>Wall-clock time of the HTTP POST to the callback URL. Buckets: 0.05, 0.1, 0.25, 0.5, 1, 2, 5, 10, 15 s. Helps identify slow receivers.</td>
 </tr>
 <tr>
-<td><code>impri_webhook_dlq_size</code></td>
+<td><code>airlock_webhook_dlq_size</code></td>
 <td>Gauge</td>
 <td><code>COUNT(*) WHERE status = &#39;dlq&#39;</code> at scrape time. Alert when this grows.</td>
 </tr>
@@ -378,17 +378,17 @@ METRICS_PORT=9090</code></pre></div>
 </tr>
 </thead>
 <tbody><tr>
-<td><code>impri_notifications_total{channel_type, result}</code></td>
+<td><code>airlock_notifications_total{channel_type, result}</code></td>
 <td>Counter</td>
 <td><code>channel_type</code> = <code>slack</code> / <code>discord</code> / <code>telegram</code> / <code>ntfy</code> / <code>email</code> / <code>webhook</code>. <code>result</code> = <code>ok</code> / <code>error</code>. No URL, token, or project ID in labels.</td>
 </tr>
 <tr>
-<td><code>impri_notification_digest_flushes_total{channel_type}</code></td>
+<td><code>airlock_notification_digest_flushes_total{channel_type}</code></td>
 <td>Counter</td>
 <td>Incremented on each digest queue flush.</td>
 </tr>
 <tr>
-<td><code>impri_channel_auto_disabled_total{channel_type}</code></td>
+<td><code>airlock_channel_auto_disabled_total{channel_type}</code></td>
 <td>Counter</td>
 <td>Incremented when a channel is auto-disabled after consecutive failures. Alert trigger for broken channels.</td>
 </tr>
@@ -451,10 +451,10 @@ METRICS_PORT=9090</code></pre></div>
   <span class="hljs-attr">failureThreshold:</span> <span class="hljs-number">3</span></code></pre></div>
 <hr>
 <h2 id="structured-logging">Structured logging</h2>
-<p>Impri uses <strong>pino</strong> with JSON output. All logs include <code>level</code>, <code>time</code>, <code>msg</code>, and Fastify&#39;s request fields. The logger redacts <code>Authorization</code> and <code>cookie</code> headers in HTTP logs.</p>
+<p>Airlock uses <strong>pino</strong> with JSON output. All logs include <code>level</code>, <code>time</code>, <code>msg</code>, and Fastify&#39;s request fields. The logger redacts <code>Authorization</code> and <code>cookie</code> headers in HTTP logs.</p>
 <h3 id="request-id-correlation">Request-ID correlation</h3>
 <p>Every response includes an <code>X-Request-Id</code> header matching the <code>reqId</code> field in the server log. This lets you correlate a <code>429</code> or <code>403</code> in an agent&#39;s log with the exact server log line:</p>
-<div class="code-block"><span class="code-lang">bash</span><pre><code class="hljs">curl -sI https://api.impri.dev/v1/actions | grep x-request-id
+<div class="code-block"><span class="code-lang">bash</span><pre><code class="hljs">curl -sI https://api.airlock.dev/v1/actions | grep x-request-id
 <span class="hljs-comment"># x-request-id: req-abc123</span></code></pre></div>
 <p>Search for that ID in your log aggregator to find the full structured log entry.</p>
 <h3 id="background-tick-logging">Background tick logging</h3>
@@ -634,7 +634,7 @@ leaves the process:</p>
 <p>Returns a per-project usage snapshot. Useful for building dashboards, quota warnings, or self-service billing pages in your own tooling.</p>
 <p><strong>Auth:</strong> requires <code>admin</code> scope. Project is derived exclusively from the verified API key — never from a client-supplied parameter.</p>
 <p><strong>Rate limit:</strong> 60 requests per minute per key.</p>
-<div class="code-block"><span class="code-lang">bash</span><pre><code class="hljs">curl -H <span class="hljs-string">&quot;Authorization: Bearer im_...&quot;</span> https://api.impri.dev/v1/usage</code></pre></div>
+<div class="code-block"><span class="code-lang">bash</span><pre><code class="hljs">curl -H <span class="hljs-string">&quot;Authorization: Bearer im_...&quot;</span> https://api.airlock.dev/v1/usage</code></pre></div>
 <p><strong>Response (HTTP 200):</strong></p>
 <div class="code-block"><span class="code-lang">json</span><pre><code class="hljs"><span class="hljs-punctuation">{</span>
   <span class="hljs-attr">&quot;project_id&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;proj_...&quot;</span><span class="hljs-punctuation">,</span>
@@ -830,19 +830,19 @@ leaves the process:</p>
 <footer class="footer">
 <div class="wrap footer-inner">
   <a class="brand" href="/">
-    <span class="mark"><svg viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.5 4.5L19 7.5" stroke="white" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Impri
+    <span class="mark"><svg viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.5 4.5L19 7.5" stroke="white" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Airlock
   </a>
   <div>
-    <a href="https://gitlab.com/sekera.radim/impri">GitLab</a>
+    <a href="https://gitlab.com/sekera.radim/airlock">GitLab</a>
     <a href="/docs">Docs</a>
-    <a href="https://gitlab.com/sekera.radim/impri/-/blob/main/LICENSE">MIT License</a>
-    <a href="https://www.npmjs.com/package/@impri/mcp">@impri/mcp</a>
+    <a href="https://gitlab.com/sekera.radim/airlock/-/blob/main/LICENSE">MIT License</a>
+    <a href="https://www.npmjs.com/package/@airlock/mcp">@airlock/mcp</a>
     <a href="/docs/privacy">Privacy</a>
     <a href="/docs/terms">Terms</a>
     <a href="https://sekera.dev">Contact</a>
   </div>
 </div>
-<div class="wrap" style="margin-top:18px"><span class="muted">© 2026 Impri · The imprimatur for your AI agents · Built by <a href="https://sekera.dev" style="color:inherit">Radim Sekera</a>. Also by the same maker: <a href="https://briefgate.dev/?utm_source=impri.dev&amp;utm_medium=referral" style="color:inherit">BriefGate</a> — client intake for agencies and AI agents.</span></div>
+<div class="wrap" style="margin-top:18px"><span class="muted">© 2026 Airlock · The airlockmatur for your AI agents · Built by <a href="https://sekera.dev" style="color:inherit">Radim Sekera</a>. Also by the same maker: <a href="https://briefgate.dev/?utm_source=airlock.dev&amp;utm_medium=referral" style="color:inherit">BriefGate</a> — client intake for agencies and AI agents.</span></div>
 </footer>
 </body>
 </html>

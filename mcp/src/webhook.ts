@@ -5,11 +5,11 @@ export interface VerifyWebhookSignatureParams {
   secret: string;
   /** Raw request body as a string — do not parse it first. */
   rawBody: string;
-  /** Value of the `X-Impri-Signature` header (e.g. `"sha256=abc123..."`). */
+  /** Value of the `X-Airlock-Signature` header (e.g. `"sha256=abc123..."`). */
   signatureHeader: string;
-  /** Value of the `X-Impri-Timestamp` header (Unix epoch seconds as a string). */
+  /** Value of the `X-Airlock-Timestamp` header (Unix epoch seconds as a string). */
   timestampHeader: string;
-  /** Value of the `X-Impri-Nonce` header (hex string). */
+  /** Value of the `X-Airlock-Nonce` header (hex string). */
   nonceHeader: string;
   /**
    * Maximum allowed age of the request in seconds. Requests older than this
@@ -19,12 +19,12 @@ export interface VerifyWebhookSignatureParams {
 }
 
 /**
- * Verify an Impri webhook delivery.
+ * Verify an Airlock webhook delivery.
  *
- * Impri signs each webhook body using HMAC-SHA256 over the string
+ * Airlock signs each webhook body using HMAC-SHA256 over the string
  * `${timestamp}.${nonce}.${rawBody}` and sends the result in the
- * `X-Impri-Signature` header as `sha256=<hex>`. The timestamp and nonce are
- * sent in `X-Impri-Timestamp` and `X-Impri-Nonce` respectively.
+ * `X-Airlock-Signature` header as `sha256=<hex>`. The timestamp and nonce are
+ * sent in `X-Airlock-Timestamp` and `X-Airlock-Nonce` respectively.
  *
  * This function performs a constant-time comparison and rejects requests whose
  * timestamp falls outside the tolerance window (replay protection).

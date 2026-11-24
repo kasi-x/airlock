@@ -16,10 +16,10 @@ The fix isn't a smarter prompt. It's removing the model's ability to call the re
 
 Instead of registering `sendSlackMessage` as a tool, register `withApproval(sendSlackMessage, { kind: "slack.send" })`. The wrapper:
 
-1. Takes the original arguments, builds an Impri action with a human-readable preview.
+1. Takes the original arguments, builds an Airlock action with a human-readable preview.
 2. Pushes the action and waits for a decision.
 3. Only if `status === "approved"` does it call the wrapped function — with the human-edited `final_preview`, not the model's original draft.
-4. Reports the result back to Impri.
+4. Reports the result back to Airlock.
 
 The model never holds a reference to the real `sendSlackMessage`. That's what makes this a genuine chokepoint rather than a suggestion.
 
@@ -34,9 +34,9 @@ interface ApprovalOptions {
   expiresInS?: number;
 }
 
-const BASE = "https://api.impri.dev";
+const BASE = "https://api.airlock.dev";
 const HEADERS = {
-  Authorization: `Bearer ${process.env.IMPRI_API_KEY}`,
+  Authorization: `Bearer ${process.env.AIRLOCK_API_KEY}`,
   "Content-Type": "application/json",
 };
 

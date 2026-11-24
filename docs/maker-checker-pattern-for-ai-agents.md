@@ -14,10 +14,10 @@ That distinction matters more for an AI agent than it ever did for a human clerk
 
 ## What "maker" and "checker" map to in practice
 
-For an agent wired to Impri, the maker is whatever pushes the pending action:
+For an agent wired to Airlock, the maker is whatever pushes the pending action:
 
 ```bash
-curl -X POST https://api.impri.dev/v1/actions \
+curl -X POST https://api.airlock.dev/v1/actions \
   -H "Authorization: Bearer $AGENT_KEY" \
   -H "Content-Type: application/json" \
   -d '{
@@ -41,16 +41,16 @@ curl -X POST https://api.impri.dev/v1/actions \
 
 ---
 
-## What Impri does *not* enforce
+## What Airlock does *not* enforce
 
-This is the part worth being honest about: Impri doesn't have a separate "propose" scope and "decide" scope. Both `POST /v1/actions` and `POST /v1/actions/:id/decision` check the same `actions` scope. If you hand your agent process a key with that scope and your own code calls the decision endpoint with it, nothing in Impri stops it — the separation has to come from how you wire the agent, not from a permission the API refuses to grant.
+This is the part worth being honest about: Airlock doesn't have a separate "propose" scope and "decide" scope. Both `POST /v1/actions` and `POST /v1/actions/:id/decision` check the same `actions` scope. If you hand your agent process a key with that scope and your own code calls the decision endpoint with it, nothing in Airlock stops it — the separation has to come from how you wire the agent, not from a permission the API refuses to grant.
 
 Two habits make the split real instead of cosmetic:
 
 - **Give the agent a key it is never asked to decide with.** Code the agent to call `POST /v1/actions` and `GET /v1/actions/:id` only. Don't give it a code path to the decision endpoints.
 - **Put the human decision behind a channel the agent doesn't control.** Slack/Discord/Telegram buttons are the cleanest, because the platform — not your key management — authenticates who clicked. A human deciding through the web inbox should log in with their own key, not the agent's.
 
-There's also no quorum feature: `decisions` has a `UNIQUE(action_id)` constraint, so exactly one verdict is recorded per action, first writer wins. If your policy needs two independent humans to sign off, Impri won't do that natively — you'd chain two actions yourself (e.g. treat the first approval as provisional and gate execution behind a second review your own code requests).
+There's also no quorum feature: `decisions` has a `UNIQUE(action_id)` constraint, so exactly one verdict is recorded per action, first writer wins. If your policy needs two independent humans to sign off, Airlock won't do that natively — you'd chain two actions yourself (e.g. treat the first approval as provisional and gate execution behind a second review your own code requests).
 
 ---
 
@@ -59,7 +59,7 @@ There's also no quorum feature: `decisions` has a `UNIQUE(action_id)` constraint
 Because `action.created` and `action.approved`/`action.rejected` are separate audit rows with their own `actor`, you can check — not just assume — that no key approved its own action:
 
 ```bash
-curl -s "https://api.impri.dev/v1/audit?entity_id=act_9f2" \
+curl -s "https://api.airlock.dev/v1/audit?entity_id=act_9f2" \
   -H "Authorization: Bearer $ADMIN_KEY" | jq '.items[] | {event, actor, channel}'
 ```
 

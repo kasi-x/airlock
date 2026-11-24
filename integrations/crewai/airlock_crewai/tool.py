@@ -1,11 +1,11 @@
-"""ImpriApprovalTool — CrewAI BaseTool that gates actions behind human approval.
+"""AirlockApprovalTool — CrewAI BaseTool that gates actions behind human approval.
 
 The agent calls this tool when it wants to perform a sensitive action. The call
-blocks until a human approves or rejects in the Impri inbox.
+blocks until a human approves or rejects in the Airlock inbox.
 
 CrewAI must be installed for the tool class to be available:
     pip install crewai                        # latest
-    pip install "impri-crewai[crewai]"        # via this package's extras
+    pip install "airlock-crewai[crewai]"        # via this package's extras
 
 Without crewai the class exists but raises ImportError on instantiation, so
 code that imports from this module at the top level still works in test
@@ -15,8 +15,8 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Any, List, Optional, Type
 
-from ._client import ImpriClient
-from ._exceptions import ImpriRejected
+from ._client import AirlockClient
+from ._exceptions import AirlockRejected
 
 try:
     from crewai.tools import BaseTool
@@ -30,7 +30,7 @@ except ImportError:
 if _CREWAI_AVAILABLE:
 
     class _ApprovalInput(BaseModel):
-        """Input schema for ImpriApprovalTool.
+        """Input schema for AirlockApprovalTool.
 
         The agent must fill all three fields when invoking the tool.
         """
@@ -55,32 +55,32 @@ if _CREWAI_AVAILABLE:
             description="Format of action_body: 'markdown', 'plain', or 'diff'.",
         )
 
-    class ImpriApprovalTool(BaseTool):
-        """Gate a proposed agent action behind human approval in the Impri inbox.
+    class AirlockApprovalTool(BaseTool):
+        """Gate a proposed agent action behind human approval in the Airlock inbox.
 
         The agent calls this tool before performing any irreversible or high-impact
         action. The tool:
-          1. POSTs the action to Impri (POST /v1/actions).
+          1. POSTs the action to Airlock (POST /v1/actions).
           2. Polls until a human approves or rejects.
           3. On approval: returns the approved content (possibly edited by the human).
-          4. On rejection: raises ImpriRejected, which surfaces to the agent as a
+          4. On rejection: raises AirlockRejected, which surfaces to the agent as a
              tool error so it can handle the situation gracefully.
 
         Args:
-            client:      An ImpriClient instance configured with your API key.
+            client:      An AirlockClient instance configured with your API key.
             action_kind: A dot-namespaced kind string for categorising actions in
                          the inbox (e.g. 'email.send', 'db.exec', 'post.publish').
                          Defaults to 'agent.action'.
             timeout_s:   Seconds to wait for a human decision before raising
-                         ImpriTimeout. Default 300 s (5 minutes).
+                         AirlockTimeout. Default 300 s (5 minutes).
             editable:    Dot-path fields the human may edit before approving
                          (e.g. ['preview.body']). Defaults to ['preview.body']
                          so reviewers can fix the agent's draft.
 
         Example::
 
-            client = ImpriClient(api_key=os.environ["IMPRI_API_KEY"])
-            tool = ImpriApprovalTool(
+            client = AirlockClient(api_key=os.environ["AIRLOCK_API_KEY"])
+            tool = AirlockApprovalTool(
                 client=client,
                 action_kind="email.send",
                 timeout_s=600,
@@ -94,7 +94,7 @@ if _CREWAI_AVAILABLE:
             )
         """
 
-        name: str = "impri_approval_gate"
+        name: str = "airlock_approval_gate"
         description: str = (
             "Submit a proposed action to the human-in-the-loop inbox for approval "
             "before executing it. Use this before any irreversible or high-impact "
@@ -112,11 +112,11 @@ if _CREWAI_AVAILABLE:
         editable: List[str] = ["preview.body"]
 
         # Non-Pydantic client stored as a private attribute.
-        _client: ImpriClient = PrivateAttr(default=None)  # type: ignore[assignment]
+        _client: AirlockClient = PrivateAttr(default=None)  # type: ignore[assignment]
 
         def __init__(
             self,
-            client: ImpriClient,
+            client: AirlockClient,
             *,
             action_kind: str = "agent.action",
             timeout_s: float = 300.0,
@@ -142,7 +142,7 @@ if _CREWAI_AVAILABLE:
             Returns a string the agent can read to confirm approval and retrieve
             the (possibly human-edited) final content.
 
-            Raises ImpriRejected when the human rejects — CrewAI surfaces this
+            Raises AirlockRejected when the human rejects — CrewAI surfaces this
             as a tool error so the agent can handle it appropriately.
             """
             if preview_format not in ("markdown", "plain", "diff"):
@@ -158,7 +158,7 @@ if _CREWAI_AVAILABLE:
             action_id: str = created["id"]
             inbox_url: str = created.get("inbox_url", "")
 
-            # await_decision raises ImpriRejected / ImpriExpired / ImpriTimeout
+            # await_decision raises AirlockRejected / AirlockExpired / AirlockTimeout
             # on non-approval outcomes. Only 'approved' reaches the next line.
             decided = self._client.await_decision(
                 action_id, timeout_s=self.timeout_s
@@ -184,13 +184,13 @@ if _CREWAI_AVAILABLE:
 else:
     # Provide a stub that gives a clear error without crashing at import time.
 
-    class ImpriApprovalTool:  # type: ignore[no-redef]
+    class AirlockApprovalTool:  # type: ignore[no-redef]
         """Stub — crewai is not installed.
 
         Install it with:
             pip install crewai
             # or, via this package's extras:
-            pip install "impri-crewai[crewai]"
+            pip install "airlock-crewai[crewai]"
         """
 
         def __init__(self, *args: Any, **kwargs: Any) -> None:

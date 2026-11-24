@@ -1,22 +1,22 @@
 /**
- * @impri/claude-agent-sdk
+ * @airlock/claude-agent-sdk
  *
- * Human-in-the-loop approval for Claude Agent SDK tool calls via Impri.
+ * Human-in-the-loop approval for Claude Agent SDK tool calls via Airlock.
  *
  * Main exports:
- *   - ImpriClient           — full REST API client
- *   - withImpriApproval     — gate a Claude Agent SDK tool behind Impri approval
+ *   - AirlockClient           — full REST API client
+ *   - withAirlockApproval     — gate a Claude Agent SDK tool behind Airlock approval
  *   - makeToolResult        — build a tool_result message param
- *   - verifyWebhook         — verify an Impri webhook delivery (standalone)
- *   - ImpriError and all subclasses
+ *   - verifyWebhook         — verify an Airlock webhook delivery (standalone)
+ *   - AirlockError and all subclasses
  */
 
 // Client
-export { ImpriClient } from "./client.js";
+export { AirlockClient } from "./client.js";
 export type { RequiresApprovalOpts } from "./client.js";
 
 // Tool wrapper
-export { makeToolResult, withImpriApproval } from "./tool.js";
+export { makeToolResult, withAirlockApproval } from "./tool.js";
 export type {
   AnthropicTool,
   GatedTool,
@@ -31,19 +31,19 @@ export type { VerifyWebhookParams } from "./webhook.js";
 
 // Error classes — export all so callers can narrow catches
 export {
-  ImpriApiError,
-  ImpriConfigError,
-  ImpriConflict,
-  ImpriError,
-  ImpriExpired,
-  ImpriNotFound,
-  ImpriQuotaExceeded,
-  ImpriRateLimited,
-  ImpriRejected,
-  ImpriTimeout,
-  ImpriUnauthorized,
-  ImpriValidationError,
-  ImpriWebhookSignatureError,
+  AirlockApiError,
+  AirlockConfigError,
+  AirlockConflict,
+  AirlockError,
+  AirlockExpired,
+  AirlockNotFound,
+  AirlockQuotaExceeded,
+  AirlockRateLimited,
+  AirlockRejected,
+  AirlockTimeout,
+  AirlockUnauthorized,
+  AirlockValidationError,
+  AirlockWebhookSignatureError,
 } from "./errors.js";
 
 // All API types
@@ -60,7 +60,7 @@ export type {
   DecideParams,
   Decision,
   DecisionResult,
-  ImpriClientConfig,
+  AirlockClientConfig,
   KeyScope,
   ListActionsParams,
   ListWatchersParams,

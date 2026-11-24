@@ -424,7 +424,7 @@ describe('email channel approval link', () => {
     expect(res.statusCode).toBe(201);
     await flushQueuedSends();
 
-    const confirmMail = mails().find(m => m.subject === 'Confirm your email for Impri notifications');
+    const confirmMail = mails().find(m => m.subject === 'Confirm your email for Airlock notifications');
     expect(confirmMail).toBeTruthy();
     const m = /token=([A-Za-z0-9_-]{43})/.exec(confirmMail!.text);
     expect(m).toBeTruthy();
@@ -445,11 +445,11 @@ describe('email channel approval link', () => {
     const actionPromise = createAction(ctx, ctx.adminKey, 'Emailed action');
     // notifyChannels is fire-and-forget; wait for the SMTP mock, not a fixed delay.
     await vi.waitFor(() => {
-      expect(mails().some(m => m.subject.startsWith('[Impri] '))).toBe(true);
+      expect(mails().some(m => m.subject.startsWith('[Airlock] '))).toBe(true);
     });
     const action = await actionPromise;
 
-    const mail = mails().find(m => m.subject.startsWith('[Impri] '));
+    const mail = mails().find(m => m.subject.startsWith('[Airlock] '));
     expect(mail).toBeTruthy();
     const linkMatch = /https:\/\/api\.example\.test\/v1\/approval\?token=([A-Za-z0-9_.-]+)/.exec(mail!.text);
     expect(linkMatch).toBeTruthy();

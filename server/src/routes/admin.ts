@@ -6,7 +6,7 @@ import { hasScope, checkRateLimit } from '../auth.js';
 import type { Tier } from '../billing.js';
 
 // The onboarding "Send a test approval" button (ui/src/components/GettingStarted.vue)
-// and `impri init --demo` (cli/src/commands/init.ts) create actions with kind 'demo' or
+// and `airlock init --demo` (cli/src/commands/init.ts) create actions with kind 'demo' or
 // 'demo.*' — those are not real usage and would inflate "first_action" for every signup
 // that just clicked the onboarding button once. Excluded by pattern since the kind is
 // reliably distinguishable (unlike, say, a watcher-generated action, which has no such tell).
@@ -58,7 +58,7 @@ function computeFunnel(db: Db, operator: string, now: number): Record<string, nu
       operator,
     ),
     // Onboarding "aha" signal, tracked separately (see comment above) — a project that
-    // decided its own "Send a test approval" / `impri init --demo` action, human or not
+    // decided its own "Send a test approval" / `airlock init --demo` action, human or not
     // (deciding a demo action at all, even auto, still means someone ran through onboarding).
     demo_decided: one(
       `SELECT COUNT(DISTINCT a.project_id) AS c

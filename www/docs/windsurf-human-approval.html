@@ -3,21 +3,21 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Add human approval to Windsurf with Impri — Impri Docs</title>
-<meta name="description" content="Gate Windsurf's Cascade agent on real-world side effects — deploys, database writes, outbound messages — behind a human decision in the Impri inbox.">
+<title>Add human approval to Windsurf with Airlock — Airlock Docs</title>
+<meta name="description" content="Gate Windsurf's Cascade agent on real-world side effects — deploys, database writes, outbound messages — behind a human decision in the Airlock inbox.">
 <meta name="theme-color" content="#06070d">
-<meta property="og:title" content="Add human approval to Windsurf with Impri — Impri Docs">
-<meta property="og:description" content="Gate Windsurf's Cascade agent on real-world side effects — deploys, database writes, outbound messages — behind a human decision in the Impri inbox.">
+<meta property="og:title" content="Add human approval to Windsurf with Airlock — Airlock Docs">
+<meta property="og:description" content="Gate Windsurf's Cascade agent on real-world side effects — deploys, database writes, outbound messages — behind a human decision in the Airlock inbox.">
 <meta property="og:type" content="article">
-<meta property="og:url" content="https://impri.dev/docs/windsurf-human-approval">
-<meta property="og:image" content="https://impri.dev/assets/og/og-docs.png">
+<meta property="og:url" content="https://airlock.dev/docs/windsurf-human-approval">
+<meta property="og:image" content="https://airlock.dev/assets/og/og-docs.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
-<meta property="og:image:alt" content="Impri — human-in-the-loop approval inbox for AI agents">
+<meta property="og:image:alt" content="Airlock — human-in-the-loop approval inbox for AI agents">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="https://impri.dev/assets/og/og-docs.png">
-<link rel="canonical" href="https://impri.dev/docs/windsurf-human-approval">
-<script type="application/ld+json">{"@context":"https://schema.org","@type":"TechArticle","headline":"Add human approval to Windsurf with Impri","description":"Gate Windsurf's Cascade agent on real-world side effects — deploys, database writes, outbound messages — behind a human decision in the Impri inbox.","url":"https://impri.dev/docs/windsurf-human-approval","inLanguage":"en","author":{"@type":"Organization","name":"Impri","url":"https://impri.dev"},"publisher":{"@type":"Organization","name":"Impri","url":"https://impri.dev"}}</script>
+<meta name="twitter:image" content="https://airlock.dev/assets/og/og-docs.png">
+<link rel="canonical" href="https://airlock.dev/docs/windsurf-human-approval">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"TechArticle","headline":"Add human approval to Windsurf with Airlock","description":"Gate Windsurf's Cascade agent on real-world side effects — deploys, database writes, outbound messages — behind a human decision in the Airlock inbox.","url":"https://airlock.dev/docs/windsurf-human-approval","inLanguage":"en","author":{"@type":"Organization","name":"Airlock","url":"https://airlock.dev"},"publisher":{"@type":"Organization","name":"Airlock","url":"https://airlock.dev"}}</script>
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <link rel="icon" href="/favicon.ico" sizes="32x32">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='9' fill='%236366f1'/%3E%3Cpath d='M9 16.5l4.5 4.5L23 11' stroke='white' stroke-width='3' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
@@ -132,13 +132,13 @@ pre code.hljs{display:block;overflow-x:auto}
 <div class="wrap nav-inner">
   <a class="brand" href="/">
     <span class="mark"><svg viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.5 4.5L19 7.5" stroke="white" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
-    Impri
+    Airlock
   </a>
   <div class="nav-links">
     <a class="link" href="/#how">How it works</a>
     <a class="link" href="/#pricing">Pricing</a>
     <a class="link active-nav" href="../docs">Docs</a>
-    <a class="btn btn-primary btn-sm" href="https://gitlab.com/sekera.radim/impri">GitLab</a>
+    <a class="btn btn-primary btn-sm" href="https://gitlab.com/sekera.radim/airlock">GitLab</a>
   </div>
 </div>
 </nav>
@@ -150,34 +150,34 @@ pre code.hljs{display:block;overflow-x:auto}
       <span class="bc-sep">/</span>
       <span>Install</span>
       <span class="bc-sep">/</span>
-      <span>Add human approval to Windsurf with Impri</span>
+      <span>Add human approval to Windsurf with Airlock</span>
     </nav>
-    <h1>Add human approval to Windsurf with Impri</h1>
-<p>Gate Windsurf&#39;s Cascade agent on real-world side effects — deploys, database writes, outbound messages — behind a human decision in the Impri inbox.</p>
+    <h1>Add human approval to Windsurf with Airlock</h1>
+<p>Gate Windsurf&#39;s Cascade agent on real-world side effects — deploys, database writes, outbound messages — behind a human decision in the Airlock inbox.</p>
 <h2 id="60-second-install">60-second install</h2>
 <p>Open Windsurf&#39;s MCP config (Windsurf Settings → Cascade → MCP Servers → &quot;View raw config&quot;, which edits <code>~/.codeium/windsurf/mcp_config.json</code>) and add:</p>
 <div class="code-block"><span class="code-lang">json</span><pre><code class="hljs"><span class="hljs-punctuation">{</span>
   <span class="hljs-attr">&quot;mcpServers&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
-    <span class="hljs-attr">&quot;impri&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+    <span class="hljs-attr">&quot;airlock&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
       <span class="hljs-attr">&quot;command&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;npx&quot;</span><span class="hljs-punctuation">,</span>
-      <span class="hljs-attr">&quot;args&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">[</span><span class="hljs-string">&quot;-y&quot;</span><span class="hljs-punctuation">,</span> <span class="hljs-string">&quot;@impri/mcp&quot;</span><span class="hljs-punctuation">]</span><span class="hljs-punctuation">,</span>
+      <span class="hljs-attr">&quot;args&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">[</span><span class="hljs-string">&quot;-y&quot;</span><span class="hljs-punctuation">,</span> <span class="hljs-string">&quot;@airlock/mcp&quot;</span><span class="hljs-punctuation">]</span><span class="hljs-punctuation">,</span>
       <span class="hljs-attr">&quot;env&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
-        <span class="hljs-attr">&quot;IMPRI_API_KEY&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;im_your_key_here&quot;</span><span class="hljs-punctuation">,</span>
-        <span class="hljs-attr">&quot;IMPRI_BASE_URL&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;https://api.impri.dev&quot;</span>
+        <span class="hljs-attr">&quot;AIRLOCK_API_KEY&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;im_your_key_here&quot;</span><span class="hljs-punctuation">,</span>
+        <span class="hljs-attr">&quot;AIRLOCK_BASE_URL&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;https://api.airlock.dev&quot;</span>
       <span class="hljs-punctuation">}</span>
     <span class="hljs-punctuation">}</span>
   <span class="hljs-punctuation">}</span>
 <span class="hljs-punctuation">}</span></code></pre></div>
-<p>Self-hosting? Drop the <code>IMPRI_BASE_URL</code> line entirely — it defaults to <code>http://localhost:8484</code> — or point it at your own server (see <a href="self-hosting">self-hosting</a>); get a cloud key at <a href="https://impri.dev" target="_blank" rel="noopener">impri.dev</a>. Click &quot;Refresh&quot; in the MCP Servers panel and confirm <code>impri</code> shows as connected with 8 tools.</p>
+<p>Self-hosting? Drop the <code>AIRLOCK_BASE_URL</code> line entirely — it defaults to <code>http://localhost:8484</code> — or point it at your own server (see <a href="self-hosting">self-hosting</a>); get a cloud key at <a href="https://airlock.dev" target="_blank" rel="noopener">airlock.dev</a>. Click &quot;Refresh&quot; in the MCP Servers panel and confirm <code>airlock</code> shows as connected with 8 tools.</p>
 <h2 id="tell-cascade-to-use-it">Tell Cascade to use it</h2>
 <p>Add to Windsurf&#39;s global rules or your project&#39;s <code>.windsurfrules</code>:</p>
 <div class="code-block"><span class="code-lang">markdown</span><pre><code class="hljs"><span class="hljs-section">## Human approval</span>
 Before any action with a real side effect (send, deploy, delete, pay, publish), call
-impri<span class="hljs-emphasis">_push_</span>action with a clear preview, then impri<span class="hljs-emphasis">_await_</span>decision before proceeding.</code></pre></div>
+airlock<span class="hljs-emphasis">_push_</span>action with a clear preview, then airlock<span class="hljs-emphasis">_await_</span>decision before proceeding.</code></pre></div>
 <h2 id="what-you-see">What you see</h2>
-<p>Cascade keeps working on the rest of its task while the action sits in your Impri inbox, with the title and preview visible there and, if configured, pushed to Slack/Telegram/ntfy too. Approve, reject, or edit the draft before Cascade acts on the decision.</p>
+<p>Cascade keeps working on the rest of its task while the action sits in your Airlock inbox, with the title and preview visible there and, if configured, pushed to Slack/Telegram/ntfy too. Approve, reject, or edit the draft before Cascade acts on the decision.</p>
 <h2 id="real-example-call">Real example call</h2>
-<div class="code-block"><pre><code class="hljs">impri_push_action({
+<div class="code-block"><pre><code class="hljs">airlock_push_action({
   kind: &quot;infra.terraform_apply&quot;,
   title: &quot;terraform apply: resize db.primary to db.r6g.xlarge&quot;,
   preview: { format: &quot;diff&quot;, body: &quot;Plan: 1 to change, 0 to destroy.\n~ aws_db_instance.primary&quot; },
@@ -187,12 +187,12 @@ impri<span class="hljs-emphasis">_push_</span>action with a clear preview, then 
 <div class="code-block"><span class="code-lang">json</span><pre><code class="hljs"><span class="hljs-punctuation">{</span>
   <span class="hljs-attr">&quot;action_id&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;act_2v7d...&quot;</span><span class="hljs-punctuation">,</span>
   <span class="hljs-attr">&quot;status&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;pending&quot;</span><span class="hljs-punctuation">,</span>
-  <span class="hljs-attr">&quot;inbox_url&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;https://app.impri.dev/inbox/act_2v7d...&quot;</span>
+  <span class="hljs-attr">&quot;inbox_url&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;https://app.airlock.dev/inbox/act_2v7d...&quot;</span>
 <span class="hljs-punctuation">}</span></code></pre></div>
 <h2 id="troubleshooting">Troubleshooting</h2>
 <ul>
-<li><strong><code>impri</code> doesn&#39;t show as connected</strong> — the raw config is JSON; check for a trailing comma or an unescaped path separator on Windows configs.</li>
-<li><strong><code>IMPRI_API_KEY is not set</code> at call time</strong> — the <code>env</code> block only applies inside that <code>mcpServers.impri</code> entry; a key exported elsewhere in your shell isn&#39;t picked up by Windsurf&#39;s own process.</li>
+<li><strong><code>airlock</code> doesn&#39;t show as connected</strong> — the raw config is JSON; check for a trailing comma or an unescaped path separator on Windows configs.</li>
+<li><strong><code>AIRLOCK_API_KEY is not set</code> at call time</strong> — the <code>env</code> block only applies inside that <code>mcpServers.airlock</code> entry; a key exported elsewhere in your shell isn&#39;t picked up by Windsurf&#39;s own process.</li>
 <li><strong>Cascade never calls the approval tool</strong> — the model only calls it when instructed; check that <code>.windsurfrules</code> (or the global rule) is actually active for the workspace.</li>
 </ul>
 <h2 id="next">Next</h2>
@@ -282,19 +282,19 @@ impri<span class="hljs-emphasis">_push_</span>action with a clear preview, then 
 <footer class="footer">
 <div class="wrap footer-inner">
   <a class="brand" href="/">
-    <span class="mark"><svg viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.5 4.5L19 7.5" stroke="white" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Impri
+    <span class="mark"><svg viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.5 4.5L19 7.5" stroke="white" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Airlock
   </a>
   <div>
-    <a href="https://gitlab.com/sekera.radim/impri">GitLab</a>
+    <a href="https://gitlab.com/sekera.radim/airlock">GitLab</a>
     <a href="/docs">Docs</a>
-    <a href="https://gitlab.com/sekera.radim/impri/-/blob/main/LICENSE">MIT License</a>
-    <a href="https://www.npmjs.com/package/@impri/mcp">@impri/mcp</a>
+    <a href="https://gitlab.com/sekera.radim/airlock/-/blob/main/LICENSE">MIT License</a>
+    <a href="https://www.npmjs.com/package/@airlock/mcp">@airlock/mcp</a>
     <a href="/docs/privacy">Privacy</a>
     <a href="/docs/terms">Terms</a>
     <a href="https://sekera.dev">Contact</a>
   </div>
 </div>
-<div class="wrap" style="margin-top:18px"><span class="muted">© 2026 Impri · The imprimatur for your AI agents · Built by <a href="https://sekera.dev" style="color:inherit">Radim Sekera</a>. Also by the same maker: <a href="https://briefgate.dev/?utm_source=impri.dev&amp;utm_medium=referral" style="color:inherit">BriefGate</a> — client intake for agencies and AI agents.</span></div>
+<div class="wrap" style="margin-top:18px"><span class="muted">© 2026 Airlock · The airlockmatur for your AI agents · Built by <a href="https://sekera.dev" style="color:inherit">Radim Sekera</a>. Also by the same maker: <a href="https://briefgate.dev/?utm_source=airlock.dev&amp;utm_medium=referral" style="color:inherit">BriefGate</a> — client intake for agencies and AI agents.</span></div>
 </footer>
 </body>
 </html>

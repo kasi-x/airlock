@@ -19,7 +19,7 @@ configureSentryReporting({
 })
 
 // Restore the user's last theme choice; default to dark.
-const storedTheme = localStorage.getItem('impri-theme')
+const storedTheme = localStorage.getItem('airlock-theme')
 const defaultTheme = storedTheme === 'light' || storedTheme === 'dark' ? storedTheme : 'dark'
 
 const vuetify = createVuetify({

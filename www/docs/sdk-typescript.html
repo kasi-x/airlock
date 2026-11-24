@@ -3,21 +3,21 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>TypeScript SDK — Impri Docs</title>
+<title>TypeScript SDK — Airlock Docs</title>
 <meta name="description" content="Status — v0.1, pre-release. The SDK lives at sdk/typescript/ in this repository. It is not yet published to npm. Install it from the local source while the…">
 <meta name="theme-color" content="#06070d">
-<meta property="og:title" content="TypeScript SDK — Impri Docs">
+<meta property="og:title" content="TypeScript SDK — Airlock Docs">
 <meta property="og:description" content="Status — v0.1, pre-release. The SDK lives at sdk/typescript/ in this repository. It is not yet published to npm. Install it from the local source while the…">
 <meta property="og:type" content="article">
-<meta property="og:url" content="https://impri.dev/docs/sdk-typescript">
-<meta property="og:image" content="https://impri.dev/assets/og/og-docs.png">
+<meta property="og:url" content="https://airlock.dev/docs/sdk-typescript">
+<meta property="og:image" content="https://airlock.dev/assets/og/og-docs.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
-<meta property="og:image:alt" content="Impri — human-in-the-loop approval inbox for AI agents">
+<meta property="og:image:alt" content="Airlock — human-in-the-loop approval inbox for AI agents">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="https://impri.dev/assets/og/og-docs.png">
-<link rel="canonical" href="https://impri.dev/docs/sdk-typescript">
-<script type="application/ld+json">{"@context":"https://schema.org","@type":"TechArticle","headline":"TypeScript SDK","description":"Status — v0.1, pre-release. The SDK lives at sdk/typescript/ in this repository. It is not yet published to npm. Install it from the local source while the…","url":"https://impri.dev/docs/sdk-typescript","inLanguage":"en","author":{"@type":"Organization","name":"Impri","url":"https://impri.dev"},"publisher":{"@type":"Organization","name":"Impri","url":"https://impri.dev"}}</script>
+<meta name="twitter:image" content="https://airlock.dev/assets/og/og-docs.png">
+<link rel="canonical" href="https://airlock.dev/docs/sdk-typescript">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"TechArticle","headline":"TypeScript SDK","description":"Status — v0.1, pre-release. The SDK lives at sdk/typescript/ in this repository. It is not yet published to npm. Install it from the local source while the…","url":"https://airlock.dev/docs/sdk-typescript","inLanguage":"en","author":{"@type":"Organization","name":"Airlock","url":"https://airlock.dev"},"publisher":{"@type":"Organization","name":"Airlock","url":"https://airlock.dev"}}</script>
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <link rel="icon" href="/favicon.ico" sizes="32x32">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='9' fill='%236366f1'/%3E%3Cpath d='M9 16.5l4.5 4.5L23 11' stroke='white' stroke-width='3' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
@@ -132,13 +132,13 @@ pre code.hljs{display:block;overflow-x:auto}
 <div class="wrap nav-inner">
   <a class="brand" href="/">
     <span class="mark"><svg viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.5 4.5L19 7.5" stroke="white" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
-    Impri
+    Airlock
   </a>
   <div class="nav-links">
     <a class="link" href="/#how">How it works</a>
     <a class="link" href="/#pricing">Pricing</a>
     <a class="link active-nav" href="../docs">Docs</a>
-    <a class="btn btn-primary btn-sm" href="https://gitlab.com/sekera.radim/impri">GitLab</a>
+    <a class="btn btn-primary btn-sm" href="https://gitlab.com/sekera.radim/airlock">GitLab</a>
   </div>
 </div>
 </nav>
@@ -154,7 +154,7 @@ pre code.hljs{display:block;overflow-x:auto}
     </nav>
     <h1>TypeScript SDK</h1>
 <blockquote>
-<p><strong>Status — v0.1, pre-release.</strong> The SDK lives at <code>sdk/typescript/</code> in this repository. It is not yet published to npm. Install it from the local source while the package matures. The REST API it wraps is stable and works the same against the hosted cloud (<code>api.impri.dev</code>, early beta) or a self-hosted instance.</p>
+<p><strong>Status — v0.1, pre-release.</strong> The SDK lives at <code>sdk/typescript/</code> in this repository. It is not yet published to npm. Install it from the local source while the package matures. The REST API it wraps is stable and works the same against the hosted cloud (<code>api.airlock.dev</code>, early beta) or a self-hosted instance.</p>
 </blockquote>
 <div class="code-block"><span class="code-lang">bash</span><pre><code class="hljs"><span class="hljs-comment"># From the repo root</span>
 npm install ./sdk/typescript
@@ -162,19 +162,19 @@ npm install ./sdk/typescript
 <p>Requires <strong>Node 18+</strong> (uses native <code>fetch</code>). No runtime dependencies beyond the Node stdlib.</p>
 <hr>
 <h2 id="setup">Setup</h2>
-<div class="code-block"><span class="code-lang">typescript</span><pre><code class="hljs"><span class="hljs-keyword">import</span> { <span class="hljs-title class_">ImpriClient</span> } <span class="hljs-keyword">from</span> <span class="hljs-string">&#x27;@impri/sdk&#x27;</span>
+<div class="code-block"><span class="code-lang">typescript</span><pre><code class="hljs"><span class="hljs-keyword">import</span> { <span class="hljs-title class_">AirlockClient</span> } <span class="hljs-keyword">from</span> <span class="hljs-string">&#x27;@airlock/sdk&#x27;</span>
 
-<span class="hljs-keyword">const</span> client = <span class="hljs-keyword">new</span> <span class="hljs-title class_">ImpriClient</span>({
-  <span class="hljs-attr">apiKey</span>: <span class="hljs-string">&#x27;im_...&#x27;</span>,                    <span class="hljs-comment">// or set IMPRI_API_KEY env var</span>
-  <span class="hljs-attr">baseUrl</span>: <span class="hljs-string">&#x27;http://localhost:8484&#x27;</span>,    <span class="hljs-comment">// or set IMPRI_BASE_URL; default is localhost:8484</span>
+<span class="hljs-keyword">const</span> client = <span class="hljs-keyword">new</span> <span class="hljs-title class_">AirlockClient</span>({
+  <span class="hljs-attr">apiKey</span>: <span class="hljs-string">&#x27;im_...&#x27;</span>,                    <span class="hljs-comment">// or set AIRLOCK_API_KEY env var</span>
+  <span class="hljs-attr">baseUrl</span>: <span class="hljs-string">&#x27;http://localhost:8484&#x27;</span>,    <span class="hljs-comment">// or set AIRLOCK_BASE_URL; default is localhost:8484</span>
 })
 
 <span class="hljs-comment">// Cloud:</span>
-<span class="hljs-comment">// const client = new ImpriClient({ apiKey: &#x27;im_...&#x27;, baseUrl: &#x27;https://api.impri.dev&#x27; })</span></code></pre></div>
-<p>The constructor throws <code>ImpriConfigError</code> if neither <code>apiKey</code> nor <code>IMPRI_API_KEY</code> is set. <code>baseUrl</code> defaults to <code>http://localhost:8484</code> (self-hosted). Trailing slashes are stripped internally. The client appends <code>/v1</code> before every path; callers never include it.</p>
+<span class="hljs-comment">// const client = new AirlockClient({ apiKey: &#x27;im_...&#x27;, baseUrl: &#x27;https://api.airlock.dev&#x27; })</span></code></pre></div>
+<p>The constructor throws <code>AirlockConfigError</code> if neither <code>apiKey</code> nor <code>AIRLOCK_API_KEY</code> is set. <code>baseUrl</code> defaults to <code>http://localhost:8484</code> (self-hosted). Trailing slashes are stripped internally. The client appends <code>/v1</code> before every path; callers never include it.</p>
 <hr>
 <h2 id="types">Types</h2>
-<p>All types are exported from <code>@impri/sdk</code>:</p>
+<p>All types are exported from <code>@airlock/sdk</code>:</p>
 <div class="code-block"><span class="code-lang">typescript</span><pre><code class="hljs"><span class="hljs-keyword">import</span> <span class="hljs-keyword">type</span> {
   <span class="hljs-title class_">Preview</span>,
   <span class="hljs-title class_">ActionStatus</span>,
@@ -194,7 +194,7 @@ npm install ./sdk/typescript
   <span class="hljs-title class_">Project</span>,
   <span class="hljs-title class_">CreateActionParams</span>,
   <span class="hljs-title class_">ApprovedAction</span>,
-} <span class="hljs-keyword">from</span> <span class="hljs-string">&#x27;@impri/sdk&#x27;</span></code></pre></div>
+} <span class="hljs-keyword">from</span> <span class="hljs-string">&#x27;@airlock/sdk&#x27;</span></code></pre></div>
 <p>Key types:</p>
 <div class="code-block"><span class="code-lang">typescript</span><pre><code class="hljs"><span class="hljs-keyword">type</span> <span class="hljs-title class_">Preview</span> = { <span class="hljs-attr">format</span>: <span class="hljs-string">&#x27;markdown&#x27;</span> | <span class="hljs-string">&#x27;plain&#x27;</span> | <span class="hljs-string">&#x27;diff&#x27;</span>; <span class="hljs-attr">body</span>: <span class="hljs-built_in">string</span> }
 <span class="hljs-comment">// body max 256 KB</span>
@@ -254,7 +254,7 @@ npm install ./sdk/typescript
   <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(action.<span class="hljs-property">decision</span>.<span class="hljs-property">final_preview</span>)   <span class="hljs-comment">// use this for execution</span>
   <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(action.<span class="hljs-property">decision</span>.<span class="hljs-property">diff</span>)            <span class="hljs-comment">// present if reviewer edited</span>
 }</code></pre></div>
-<p>Throws <code>ImpriNotFound</code> (404) if unknown or belonging to a different project.</p>
+<p>Throws <code>AirlockNotFound</code> (404) if unknown or belonging to a different project.</p>
 <h3 id="listactions"><code>listActions</code></h3>
 <div class="code-block"><span class="code-lang">typescript</span><pre><code class="hljs"><span class="hljs-keyword">const</span> page = <span class="hljs-keyword">await</span> client.<span class="hljs-title function_">listActions</span>({
   <span class="hljs-attr">status</span>: <span class="hljs-string">&#x27;pending&#x27;</span>,           <span class="hljs-comment">// ActionStatus</span>
@@ -278,7 +278,7 @@ npm install ./sdk/typescript
 <p>Rate-limited to <strong>300 GET/min per key</strong>.</p>
 <h3 id="awaitdecision"><code>awaitDecision</code></h3>
 <p>Push an action and block until decided:</p>
-<div class="code-block"><span class="code-lang">typescript</span><pre><code class="hljs"><span class="hljs-keyword">import</span> { <span class="hljs-title class_">ImpriRejected</span>, <span class="hljs-title class_">ImpriExpired</span>, <span class="hljs-title class_">ImpriTimeout</span> } <span class="hljs-keyword">from</span> <span class="hljs-string">&#x27;@impri/sdk&#x27;</span>
+<div class="code-block"><span class="code-lang">typescript</span><pre><code class="hljs"><span class="hljs-keyword">import</span> { <span class="hljs-title class_">AirlockRejected</span>, <span class="hljs-title class_">AirlockExpired</span>, <span class="hljs-title class_">AirlockTimeout</span> } <span class="hljs-keyword">from</span> <span class="hljs-string">&#x27;@airlock/sdk&#x27;</span>
 
 <span class="hljs-keyword">const</span> created = <span class="hljs-keyword">await</span> client.<span class="hljs-title function_">createAction</span>({
   <span class="hljs-attr">kind</span>: <span class="hljs-string">&#x27;db.exec&#x27;</span>,
@@ -289,20 +289,20 @@ npm install ./sdk/typescript
 
 <span class="hljs-keyword">try</span> {
   <span class="hljs-keyword">const</span> action = <span class="hljs-keyword">await</span> client.<span class="hljs-title function_">awaitDecision</span>(created.<span class="hljs-property">id</span>, {
-    <span class="hljs-attr">timeoutS</span>: <span class="hljs-number">300</span>,          <span class="hljs-comment">// throw ImpriTimeout after this; action stays pending server-side</span>
+    <span class="hljs-attr">timeoutS</span>: <span class="hljs-number">300</span>,          <span class="hljs-comment">// throw AirlockTimeout after this; action stays pending server-side</span>
     <span class="hljs-attr">pollIntervalS</span>: <span class="hljs-number">5</span>,       <span class="hljs-comment">// minimum recommended is 5 s</span>
   })
   <span class="hljs-comment">// action.status === &#x27;approved&#x27;</span>
   <span class="hljs-keyword">const</span> sqlToRun = action.<span class="hljs-property">decision</span>!.<span class="hljs-property">final_preview</span>!.<span class="hljs-property">body</span>
 
 } <span class="hljs-keyword">catch</span> (e) {
-  <span class="hljs-keyword">if</span> (e <span class="hljs-keyword">instanceof</span> <span class="hljs-title class_">ImpriRejected</span>) {
+  <span class="hljs-keyword">if</span> (e <span class="hljs-keyword">instanceof</span> <span class="hljs-title class_">AirlockRejected</span>) {
     <span class="hljs-comment">// Human said no — normal flow, not an error.</span>
     <span class="hljs-comment">// e.actionId, e.decision, e.finalPreview</span>
     <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-string">&#x27;Rejected.&#x27;</span>)
-  } <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (e <span class="hljs-keyword">instanceof</span> <span class="hljs-title class_">ImpriExpired</span>) {
+  } <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (e <span class="hljs-keyword">instanceof</span> <span class="hljs-title class_">AirlockExpired</span>) {
     <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-string">&#x27;Approval window closed.&#x27;</span>)
-  } <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (e <span class="hljs-keyword">instanceof</span> <span class="hljs-title class_">ImpriTimeout</span>) {
+  } <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (e <span class="hljs-keyword">instanceof</span> <span class="hljs-title class_">AirlockTimeout</span>) {
     <span class="hljs-comment">// timeout elapsed; action is still pending server-side</span>
     <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-string">&#x27;Timed out.&#x27;</span>)
   } <span class="hljs-keyword">else</span> {
@@ -316,7 +316,7 @@ npm install ./sdk/typescript
   <span class="hljs-attr">edited</span>: { <span class="hljs-string">&#x27;preview.body&#x27;</span>: <span class="hljs-string">&#x27;Edited copy.&#x27;</span> },  <span class="hljs-comment">// restricted to action.editable</span>
   <span class="hljs-attr">channel</span>: <span class="hljs-string">&#x27;bot-script&#x27;</span>,
 })</code></pre></div>
-<p>Throws <code>ImpriConflict</code> (409) if already decided or two writers race. Only call on pending actions.</p>
+<p>Throws <code>AirlockConflict</code> (409) if already decided or two writers race. Only call on pending actions.</p>
 <h3 id="bulkdecide"><code>bulkDecide</code></h3>
 <p>Approve or reject up to 50 actions in one request.</p>
 <div class="code-block"><span class="code-lang">typescript</span><pre><code class="hljs"><span class="hljs-keyword">const</span> { results, succeeded, failed } = <span class="hljs-keyword">await</span> client.<span class="hljs-title function_">bulkDecide</span>(
@@ -338,11 +338,11 @@ npm install ./sdk/typescript
   <span class="hljs-keyword">await</span> client.<span class="hljs-title function_">reportResult</span>(action.<span class="hljs-property">id</span>, <span class="hljs-string">&#x27;execute_failed&#x27;</span>, { <span class="hljs-attr">detail</span>: <span class="hljs-title class_">String</span>(err) })
   <span class="hljs-keyword">throw</span> err
 }</code></pre></div>
-<p>Throws <code>ImpriConflict</code> (409) if the action is not in <code>approved</code> state.</p>
+<p>Throws <code>AirlockConflict</code> (409) if the action is not in <code>approved</code> state.</p>
 <hr>
 <h2 id="ergonomic-helpers">Ergonomic helpers</h2>
 <h3 id="clientrequiresapproval-higher-order-wrapper"><code>client.requiresApproval</code> higher-order wrapper</h3>
-<p>Wraps an async function so every call is gated through an Impri approval. On rejection it throws <code>ImpriRejected</code> without calling the underlying function.</p>
+<p>Wraps an async function so every call is gated through an Airlock approval. On rejection it throws <code>AirlockRejected</code> without calling the underlying function.</p>
 <div class="code-block"><span class="code-lang">typescript</span><pre><code class="hljs"><span class="hljs-keyword">async</span> <span class="hljs-keyword">function</span> <span class="hljs-title function_">sendEmail</span>(<span class="hljs-params"><span class="hljs-attr">to</span>: <span class="hljs-built_in">string</span>, <span class="hljs-attr">body</span>: <span class="hljs-built_in">string</span></span>): <span class="hljs-title class_">Promise</span>&lt;<span class="hljs-built_in">void</span>&gt; {
   <span class="hljs-keyword">await</span> mailer.<span class="hljs-title function_">send</span>({ to, <span class="hljs-attr">subject</span>: <span class="hljs-string">&#x27;Hello&#x27;</span>, body })
 }
@@ -368,7 +368,7 @@ npm install ./sdk/typescript
   <span class="hljs-attr">timeoutS</span>: <span class="hljs-number">120</span>,
 })
 
-<span class="hljs-comment">// On rejection approvalGate throws ImpriRejected automatically.</span>
+<span class="hljs-comment">// On rejection approvalGate throws AirlockRejected automatically.</span>
 
 <span class="hljs-keyword">try</span> {
   <span class="hljs-keyword">await</span> db.<span class="hljs-title function_">execute</span>(finalPreview.<span class="hljs-property">body</span>)
@@ -383,12 +383,12 @@ npm install ./sdk/typescript
 <p>Monitor external sources and deliver matching items as actions with <code>is_untrusted: true</code>. Requires <code>watch</code> scope.</p>
 <h3 id="createwatcher"><code>createWatcher</code></h3>
 <div class="code-block"><span class="code-lang">typescript</span><pre><code class="hljs"><span class="hljs-keyword">const</span> watcher = <span class="hljs-keyword">await</span> client.<span class="hljs-title function_">createWatcher</span>({
-  <span class="hljs-attr">name</span>: <span class="hljs-string">&#x27;Impri mentions on Reddit&#x27;</span>,
+  <span class="hljs-attr">name</span>: <span class="hljs-string">&#x27;Airlock mentions on Reddit&#x27;</span>,
   <span class="hljs-attr">kind</span>: <span class="hljs-string">&#x27;reddit_search&#x27;</span>,
-  <span class="hljs-attr">config</span>: { <span class="hljs-attr">query</span>: <span class="hljs-string">&#x27;impri approval&#x27;</span>, <span class="hljs-attr">subreddit</span>: <span class="hljs-string">&#x27;selfhosted&#x27;</span> },
+  <span class="hljs-attr">config</span>: { <span class="hljs-attr">query</span>: <span class="hljs-string">&#x27;airlock approval&#x27;</span>, <span class="hljs-attr">subreddit</span>: <span class="hljs-string">&#x27;selfhosted&#x27;</span> },
   <span class="hljs-attr">schedule</span>: { <span class="hljs-attr">every</span>: <span class="hljs-string">&#x27;1h&#x27;</span>, <span class="hljs-attr">window</span>: <span class="hljs-string">&#x27;08:00-22:00&#x27;</span> },
   <span class="hljs-attr">keywords</span>: [
-    { <span class="hljs-attr">pattern</span>: <span class="hljs-string">&#x27;impri&#x27;</span>, <span class="hljs-attr">points</span>: <span class="hljs-number">10</span> },
+    { <span class="hljs-attr">pattern</span>: <span class="hljs-string">&#x27;airlock&#x27;</span>, <span class="hljs-attr">points</span>: <span class="hljs-number">10</span> },
     { <span class="hljs-attr">pattern</span>: <span class="hljs-string">&#x27;human-in-the-loop&#x27;</span>, <span class="hljs-attr">points</span>: <span class="hljs-number">5</span> },
   ],
   <span class="hljs-attr">keywords_none</span>: [<span class="hljs-string">&#x27;spam&#x27;</span>, <span class="hljs-string">&#x27;advertisement&#x27;</span>],
@@ -445,7 +445,7 @@ npm install ./sdk/typescript
   <span class="hljs-string">&#x27;reddit-keyword&#x27;</span>,
   { <span class="hljs-attr">query</span>: <span class="hljs-string">&#x27;self-hosting AI&#x27;</span>, <span class="hljs-attr">subreddit</span>: <span class="hljs-string">&#x27;selfhosted&#x27;</span> },
 )</code></pre></div>
-<p>Applies all standard guards: rate limit, tier watcher-count quota, SSRF validation, minimum schedule interval. Throws <code>ImpriQuotaExceeded</code> (402) when a tier limit would be breached.</p>
+<p>Applies all standard guards: rate limit, tier watcher-count quota, SSRF validation, minimum schedule interval. Throws <code>AirlockQuotaExceeded</code> (402) when a tier limit would be breached.</p>
 <hr>
 <h2 id="api-keys-admin-scope">API keys (admin scope)</h2>
 <div class="code-block"><span class="code-lang">typescript</span><pre><code class="hljs"><span class="hljs-comment">// Create a key</span>
@@ -541,19 +541,19 @@ fs.<span class="hljs-title function_">writeFileSync</span>(<span class="hljs-str
 <p><code>exportAudit</code> is rate-limited to <strong>5 requests/min</strong>. The ip column is never included. See <a href="audit-log">Audit log</a> for all event types.</p>
 <hr>
 <h2 id="webhook-verification">Webhook verification</h2>
-<div class="code-block"><span class="code-lang">typescript</span><pre><code class="hljs"><span class="hljs-keyword">import</span> { verifyWebhook, <span class="hljs-title class_">ImpriWebhookSignatureError</span> } <span class="hljs-keyword">from</span> <span class="hljs-string">&#x27;@impri/sdk&#x27;</span>
+<div class="code-block"><span class="code-lang">typescript</span><pre><code class="hljs"><span class="hljs-keyword">import</span> { verifyWebhook, <span class="hljs-title class_">AirlockWebhookSignatureError</span> } <span class="hljs-keyword">from</span> <span class="hljs-string">&#x27;@airlock/sdk&#x27;</span>
 
 app.<span class="hljs-title function_">post</span>(<span class="hljs-string">&#x27;/webhook&#x27;</span>, <span class="hljs-title function_">async</span> (req, res) =&gt; {
   <span class="hljs-keyword">try</span> {
     <span class="hljs-title function_">verifyWebhook</span>(
       req.<span class="hljs-property">rawBody</span>,                          <span class="hljs-comment">// Buffer | string</span>
       project.<span class="hljs-property">webhook_secret</span>!,
-      req.<span class="hljs-property">headers</span>[<span class="hljs-string">&#x27;x-impri-timestamp&#x27;</span>] <span class="hljs-keyword">as</span> <span class="hljs-built_in">string</span>,
-      req.<span class="hljs-property">headers</span>[<span class="hljs-string">&#x27;x-impri-nonce&#x27;</span>] <span class="hljs-keyword">as</span> <span class="hljs-built_in">string</span>,
-      req.<span class="hljs-property">headers</span>[<span class="hljs-string">&#x27;x-impri-signature&#x27;</span>] <span class="hljs-keyword">as</span> <span class="hljs-built_in">string</span>,
+      req.<span class="hljs-property">headers</span>[<span class="hljs-string">&#x27;x-airlock-timestamp&#x27;</span>] <span class="hljs-keyword">as</span> <span class="hljs-built_in">string</span>,
+      req.<span class="hljs-property">headers</span>[<span class="hljs-string">&#x27;x-airlock-nonce&#x27;</span>] <span class="hljs-keyword">as</span> <span class="hljs-built_in">string</span>,
+      req.<span class="hljs-property">headers</span>[<span class="hljs-string">&#x27;x-airlock-signature&#x27;</span>] <span class="hljs-keyword">as</span> <span class="hljs-built_in">string</span>,
     )
   } <span class="hljs-keyword">catch</span> (e) {
-    <span class="hljs-keyword">if</span> (e <span class="hljs-keyword">instanceof</span> <span class="hljs-title class_">ImpriWebhookSignatureError</span>) <span class="hljs-keyword">return</span> res.<span class="hljs-title function_">status</span>(<span class="hljs-number">400</span>).<span class="hljs-title function_">end</span>()
+    <span class="hljs-keyword">if</span> (e <span class="hljs-keyword">instanceof</span> <span class="hljs-title class_">AirlockWebhookSignatureError</span>) <span class="hljs-keyword">return</span> res.<span class="hljs-title function_">status</span>(<span class="hljs-number">400</span>).<span class="hljs-title function_">end</span>()
     <span class="hljs-keyword">throw</span> e
   }
 
@@ -567,36 +567,36 @@ app.<span class="hljs-title function_">post</span>(<span class="hljs-string">&#x
 <p><code>verifyWebhook</code> is a standalone export — it does not require a client instance and has no side effects. Algorithm: <code>sha256=HMAC-SHA256(secret, &quot;${timestamp}.${nonce}.${rawBody}&quot;)</code>. Requests older than 5 minutes are rejected.</p>
 <hr>
 <h2 id="error-handling">Error handling</h2>
-<p>All typed exceptions extend <code>ImpriError extends Error</code>. Errors from an API response carry <code>statusCode: number | undefined</code> and <code>responseBody: unknown</code>; <code>ImpriConfigError</code> and <code>ImpriWebhookSignatureError</code> are raised locally and carry neither.</p>
+<p>All typed exceptions extend <code>AirlockError extends Error</code>. Errors from an API response carry <code>statusCode: number | undefined</code> and <code>responseBody: unknown</code>; <code>AirlockConfigError</code> and <code>AirlockWebhookSignatureError</code> are raised locally and carry neither.</p>
 <div class="code-block"><span class="code-lang">typescript</span><pre><code class="hljs"><span class="hljs-keyword">import</span> {
-  <span class="hljs-title class_">ImpriError</span>,
-  <span class="hljs-title class_">ImpriConfigError</span>,       <span class="hljs-comment">// missing apiKey at construction</span>
-  <span class="hljs-title class_">ImpriUnauthorized</span>,      <span class="hljs-comment">// 401 / 403 — wrong key or missing scope</span>
-  <span class="hljs-title class_">ImpriNotFound</span>,          <span class="hljs-comment">// 404</span>
-  <span class="hljs-title class_">ImpriConflict</span>,          <span class="hljs-comment">// 409 — already decided; idempotency race</span>
-  <span class="hljs-title class_">ImpriExpired</span>,           <span class="hljs-comment">// 410 — approval window closed</span>
-  <span class="hljs-title class_">ImpriRateLimited</span>,       <span class="hljs-comment">// 429 — rate limit; check .retryAfter (seconds)</span>
-  <span class="hljs-title class_">ImpriQuotaExceeded</span>,     <span class="hljs-comment">// 402 — monthly quota; .limit, .tier</span>
-  <span class="hljs-title class_">ImpriRejected</span>,          <span class="hljs-comment">// not HTTP — thrown by awaitDecision on rejection</span>
-  <span class="hljs-title class_">ImpriTimeout</span>,           <span class="hljs-comment">// not HTTP — thrown by awaitDecision on timeout</span>
-  <span class="hljs-title class_">ImpriValidationError</span>,   <span class="hljs-comment">// 400 / 422 — schema error; .issues[]</span>
-  <span class="hljs-title class_">ImpriApiError</span>,          <span class="hljs-comment">// catch-all for other 4xx / 5xx</span>
-  <span class="hljs-title class_">ImpriWebhookSignatureError</span>,
-} <span class="hljs-keyword">from</span> <span class="hljs-string">&#x27;@impri/sdk&#x27;</span>
+  <span class="hljs-title class_">AirlockError</span>,
+  <span class="hljs-title class_">AirlockConfigError</span>,       <span class="hljs-comment">// missing apiKey at construction</span>
+  <span class="hljs-title class_">AirlockUnauthorized</span>,      <span class="hljs-comment">// 401 / 403 — wrong key or missing scope</span>
+  <span class="hljs-title class_">AirlockNotFound</span>,          <span class="hljs-comment">// 404</span>
+  <span class="hljs-title class_">AirlockConflict</span>,          <span class="hljs-comment">// 409 — already decided; idempotency race</span>
+  <span class="hljs-title class_">AirlockExpired</span>,           <span class="hljs-comment">// 410 — approval window closed</span>
+  <span class="hljs-title class_">AirlockRateLimited</span>,       <span class="hljs-comment">// 429 — rate limit; check .retryAfter (seconds)</span>
+  <span class="hljs-title class_">AirlockQuotaExceeded</span>,     <span class="hljs-comment">// 402 — monthly quota; .limit, .tier</span>
+  <span class="hljs-title class_">AirlockRejected</span>,          <span class="hljs-comment">// not HTTP — thrown by awaitDecision on rejection</span>
+  <span class="hljs-title class_">AirlockTimeout</span>,           <span class="hljs-comment">// not HTTP — thrown by awaitDecision on timeout</span>
+  <span class="hljs-title class_">AirlockValidationError</span>,   <span class="hljs-comment">// 400 / 422 — schema error; .issues[]</span>
+  <span class="hljs-title class_">AirlockApiError</span>,          <span class="hljs-comment">// catch-all for other 4xx / 5xx</span>
+  <span class="hljs-title class_">AirlockWebhookSignatureError</span>,
+} <span class="hljs-keyword">from</span> <span class="hljs-string">&#x27;@airlock/sdk&#x27;</span>
 
 <span class="hljs-keyword">try</span> {
   <span class="hljs-keyword">await</span> client.<span class="hljs-title function_">createAction</span>(...)
 } <span class="hljs-keyword">catch</span> (e) {
-  <span class="hljs-keyword">if</span> (e <span class="hljs-keyword">instanceof</span> <span class="hljs-title class_">ImpriRateLimited</span>) {
+  <span class="hljs-keyword">if</span> (e <span class="hljs-keyword">instanceof</span> <span class="hljs-title class_">AirlockRateLimited</span>) {
     <span class="hljs-keyword">await</span> <span class="hljs-title function_">sleep</span>((e.<span class="hljs-property">retryAfter</span> ?? <span class="hljs-number">1</span>) * <span class="hljs-number">1000</span>)
     <span class="hljs-comment">// retry</span>
-  } <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (e <span class="hljs-keyword">instanceof</span> <span class="hljs-title class_">ImpriRejected</span>) {
+  } <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (e <span class="hljs-keyword">instanceof</span> <span class="hljs-title class_">AirlockRejected</span>) {
     <span class="hljs-comment">// Normal outcome — handle, do not re-throw as an error.</span>
   } <span class="hljs-keyword">else</span> {
     <span class="hljs-keyword">throw</span> e
   }
 }</code></pre></div>
-<p><code>ImpriRejected</code> is not an error to log — it is a valid human outcome and the core value of Impri.</p>
+<p><code>AirlockRejected</code> is not an error to log — it is a valid human outcome and the core value of Airlock.</p>
 <hr>
 <h2 id="untrusted-payload-flag">Untrusted payload flag</h2>
 <p>Actions delivered by a Watcher have <code>action.is_untrusted === true</code>. The ergonomic helpers (<code>requiresApproval</code>, <code>approvalGate</code>) emit a visible warning at runtime when this flag is set and do not inline the preview body into any field an LLM might interpret as an instruction.</p>
@@ -711,19 +711,19 @@ app.<span class="hljs-title function_">post</span>(<span class="hljs-string">&#x
 <footer class="footer">
 <div class="wrap footer-inner">
   <a class="brand" href="/">
-    <span class="mark"><svg viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.5 4.5L19 7.5" stroke="white" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Impri
+    <span class="mark"><svg viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.5 4.5L19 7.5" stroke="white" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Airlock
   </a>
   <div>
-    <a href="https://gitlab.com/sekera.radim/impri">GitLab</a>
+    <a href="https://gitlab.com/sekera.radim/airlock">GitLab</a>
     <a href="/docs">Docs</a>
-    <a href="https://gitlab.com/sekera.radim/impri/-/blob/main/LICENSE">MIT License</a>
-    <a href="https://www.npmjs.com/package/@impri/mcp">@impri/mcp</a>
+    <a href="https://gitlab.com/sekera.radim/airlock/-/blob/main/LICENSE">MIT License</a>
+    <a href="https://www.npmjs.com/package/@airlock/mcp">@airlock/mcp</a>
     <a href="/docs/privacy">Privacy</a>
     <a href="/docs/terms">Terms</a>
     <a href="https://sekera.dev">Contact</a>
   </div>
 </div>
-<div class="wrap" style="margin-top:18px"><span class="muted">© 2026 Impri · The imprimatur for your AI agents · Built by <a href="https://sekera.dev" style="color:inherit">Radim Sekera</a>. Also by the same maker: <a href="https://briefgate.dev/?utm_source=impri.dev&amp;utm_medium=referral" style="color:inherit">BriefGate</a> — client intake for agencies and AI agents.</span></div>
+<div class="wrap" style="margin-top:18px"><span class="muted">© 2026 Airlock · The airlockmatur for your AI agents · Built by <a href="https://sekera.dev" style="color:inherit">Radim Sekera</a>. Also by the same maker: <a href="https://briefgate.dev/?utm_source=airlock.dev&amp;utm_medium=referral" style="color:inherit">BriefGate</a> — client intake for agencies and AI agents.</span></div>
 </footer>
 </body>
 </html>

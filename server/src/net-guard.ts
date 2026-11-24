@@ -10,9 +10,9 @@ import { Agent } from 'undici';
 // (169.254.169.254). See PLAYBOOK A7 / B1.
 //
 // Self-host operators who legitimately watch an intranet URL can opt out with
-// IMPRI_ALLOW_PRIVATE_TARGETS=1.
+// AIRLOCK_ALLOW_PRIVATE_TARGETS=1.
 
-const OPT_OUT_ENV = 'IMPRI_ALLOW_PRIVATE_TARGETS';
+const OPT_OUT_ENV = 'AIRLOCK_ALLOW_PRIVATE_TARGETS';
 
 export function isPrivateIp(ip: string): boolean {
   const family = isIP(ip);
@@ -103,10 +103,10 @@ const guardedDispatcher = new Agent({ connect: { lookup: guardedLookup } });
  * fetch() that refuses private/link-local targets and pins the connection to a
  * validated IP (full DNS-rebinding mitigation). Use for every outbound request
  * to a client-supplied URL (webhooks, watcher sources). Opt out per instance
- * with IMPRI_ALLOW_PRIVATE_TARGETS=1.
+ * with AIRLOCK_ALLOW_PRIVATE_TARGETS=1.
  */
 export async function fetchGuarded(rawUrl: string, init?: RequestInit): Promise<Response> {
-  if (process.env.IMPRI_ALLOW_PRIVATE_TARGETS === '1') return fetch(rawUrl, init);
+  if (process.env.AIRLOCK_ALLOW_PRIVATE_TARGETS === '1') return fetch(rawUrl, init);
 
   const u = new URL(rawUrl);
   if (u.protocol !== 'http:' && u.protocol !== 'https:') {

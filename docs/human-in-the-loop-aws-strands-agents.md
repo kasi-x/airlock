@@ -1,6 +1,6 @@
 # Human-in-the-Loop for AWS Strands Agents
 
-AWS Strands Agents call a `@tool` the moment the model decides to — this shows how to gate one with Impri so it pauses for a human before touching real AWS resources.
+AWS Strands Agents call a `@tool` the moment the model decides to — this shows how to gate one with Airlock so it pauses for a human before touching real AWS resources.
 
 ---
 
@@ -12,17 +12,17 @@ Strands does ship interrupt primitives for pausing mid-run, and AWS's own docs a
 
 ---
 
-## Wrapping a Strands tool with Impri
+## Wrapping a Strands tool with Airlock
 
-The pattern: the tool proposes the action to Impri, waits for a human decision, and only calls the AWS SDK once that decision is `approved`.
+The pattern: the tool proposes the action to Airlock, waits for a human decision, and only calls the AWS SDK once that decision is `approved`.
 
 ```python
 import os, time, boto3, requests
 from strands import Agent, tool
 
-IMPRI = "https://api.impri.dev"
+AIRLOCK = "https://api.airlock.dev"
 HEADERS = {
-    "Authorization": f"Bearer {os.environ['IMPRI_API_KEY']}",
+    "Authorization": f"Bearer {os.environ['AIRLOCK_API_KEY']}",
     "Content-Type": "application/json",
 }
 s3 = boto3.client("s3")
@@ -32,7 +32,7 @@ def apply_lifecycle_rule(bucket: str, prefix: str, expire_after_days: int) -> st
     """Apply an S3 lifecycle rule that expires objects under a prefix after N days."""
     rule_summary = f"Bucket **{bucket}**, prefix `{prefix}`, expire after **{expire_after_days} days**"
 
-    action = requests.post(f"{IMPRI}/v1/actions", headers=HEADERS, json={
+    action = requests.post(f"{AIRLOCK}/v1/actions", headers=HEADERS, json={
         "kind": "aws.s3.lifecycle_rule",
         "title": f"Apply lifecycle rule: {bucket}/{prefix}",
         "preview": {"format": "markdown", "body": rule_summary},
@@ -43,7 +43,7 @@ def apply_lifecycle_rule(bucket: str, prefix: str, expire_after_days: int) -> st
 
     while True:
         time.sleep(10)
-        state = requests.get(f"{IMPRI}/v1/actions/{action['id']}", headers=HEADERS).json()
+        state = requests.get(f"{AIRLOCK}/v1/actions/{action['id']}", headers=HEADERS).json()
         if state["status"] != "pending":
             break
 
@@ -59,7 +59,7 @@ def apply_lifecycle_rule(bucket: str, prefix: str, expire_after_days: int) -> st
             "Expiration": {"Days": expire_after_days},
         }]},
     )
-    requests.post(f"{IMPRI}/v1/actions/{action['id']}/result",
+    requests.post(f"{AIRLOCK}/v1/actions/{action['id']}/result",
                    headers=HEADERS, json={"status": "executed"})
     return "Lifecycle rule applied after human approval."
 
@@ -78,13 +78,13 @@ This only works if `apply_lifecycle_rule` is the agent's *only* route to that AW
 
 ## Unattended agents: don't hold the thread open
 
-The `time.sleep(10)` loop above is fine for a Strands agent you're actively watching run. For a Strands agent triggered by EventBridge or running as a long-lived Lambda-backed process, polling ties up billed compute time for however long the approval takes. Prefer the [MCP server](mcp.md) if the agent runs inside an MCP client, or have a separate Lambda resume the workflow once Impri's decision lands via a webhook instead of polling.
+The `time.sleep(10)` loop above is fine for a Strands agent you're actively watching run. For a Strands agent triggered by EventBridge or running as a long-lived Lambda-backed process, polling ties up billed compute time for however long the approval takes. Prefer the [MCP server](mcp.md) if the agent runs inside an MCP client, or have a separate Lambda resume the workflow once Airlock's decision lands via a webhook instead of polling.
 
 ---
 
-## What Impri does and doesn't do here
+## What Airlock does and doesn't do here
 
-Impri stores the proposed lifecycle change, notifies you, and holds the decision — it has no idea what S3 is, doesn't validate the rule, and doesn't call AWS on your behalf. `apply_lifecycle_rule` still owns the AWS call; Impri only owns the yes/no. For the general propose → approve → execute contract this builds on, see [how to add human approval to an AI agent](how-to-add-human-approval-to-an-ai-agent.md).
+Airlock stores the proposed lifecycle change, notifies you, and holds the decision — it has no idea what S3 is, doesn't validate the rule, and doesn't call AWS on your behalf. `apply_lifecycle_rule` still owns the AWS call; Airlock only owns the yes/no. For the general propose → approve → execute contract this builds on, see [how to add human approval to an AI agent](how-to-add-human-approval-to-an-ai-agent.md).
 
 ---
 

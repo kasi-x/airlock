@@ -1,6 +1,6 @@
 import readline from 'node:readline'
 import { Command } from 'commander'
-import { ImpriError } from '@impri/sdk'
+import { AirlockError } from '@airlock/sdk'
 import { makeClient } from '../client-factory.js'
 import { bold, dim, cyan, green, renderTable, printError, printJson, Column } from '../output.js'
 
@@ -102,7 +102,7 @@ function collectParam(value: string, prev: Record<string, string>): Record<strin
 }
 
 function handleError(err: unknown): never {
-  if (err instanceof ImpriError) {
+  if (err instanceof AirlockError) {
     printError(err.message)
   } else {
     printError(String(err))

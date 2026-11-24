@@ -3,21 +3,21 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Human-in-the-Loop for E-commerce AI Agents — Impri Docs</title>
-<meta name="description" content="Gate AI agent price changes and reorder POs behind a human approval tap in Impri before they touch your store, catching bad scrapes and bad forecasts.">
+<title>Human-in-the-Loop for E-commerce AI Agents — Airlock Docs</title>
+<meta name="description" content="Gate AI agent price changes and reorder POs behind a human approval tap in Airlock before they touch your store, catching bad scrapes and bad forecasts.">
 <meta name="theme-color" content="#06070d">
-<meta property="og:title" content="Human-in-the-Loop for E-commerce AI Agents — Impri Docs">
-<meta property="og:description" content="Gate AI agent price changes and reorder POs behind a human approval tap in Impri before they touch your store, catching bad scrapes and bad forecasts.">
+<meta property="og:title" content="Human-in-the-Loop for E-commerce AI Agents — Airlock Docs">
+<meta property="og:description" content="Gate AI agent price changes and reorder POs behind a human approval tap in Airlock before they touch your store, catching bad scrapes and bad forecasts.">
 <meta property="og:type" content="article">
-<meta property="og:url" content="https://impri.dev/docs/human-in-the-loop-for-ecommerce-ai-agents">
-<meta property="og:image" content="https://impri.dev/assets/og/og-docs.png">
+<meta property="og:url" content="https://airlock.dev/docs/human-in-the-loop-for-ecommerce-ai-agents">
+<meta property="og:image" content="https://airlock.dev/assets/og/og-docs.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
-<meta property="og:image:alt" content="Impri — human-in-the-loop approval inbox for AI agents">
+<meta property="og:image:alt" content="Airlock — human-in-the-loop approval inbox for AI agents">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="https://impri.dev/assets/og/og-docs.png">
-<link rel="canonical" href="https://impri.dev/docs/human-in-the-loop-for-ecommerce-ai-agents">
-<script type="application/ld+json">{"@context":"https://schema.org","@type":"TechArticle","headline":"Human-in-the-Loop for E-commerce AI Agents","description":"Gate AI agent price changes and reorder POs behind a human approval tap in Impri before they touch your store, catching bad scrapes and bad forecasts.","url":"https://impri.dev/docs/human-in-the-loop-for-ecommerce-ai-agents","inLanguage":"en","author":{"@type":"Organization","name":"Impri","url":"https://impri.dev"},"publisher":{"@type":"Organization","name":"Impri","url":"https://impri.dev"}}</script>
+<meta name="twitter:image" content="https://airlock.dev/assets/og/og-docs.png">
+<link rel="canonical" href="https://airlock.dev/docs/human-in-the-loop-for-ecommerce-ai-agents">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"TechArticle","headline":"Human-in-the-Loop for E-commerce AI Agents","description":"Gate AI agent price changes and reorder POs behind a human approval tap in Airlock before they touch your store, catching bad scrapes and bad forecasts.","url":"https://airlock.dev/docs/human-in-the-loop-for-ecommerce-ai-agents","inLanguage":"en","author":{"@type":"Organization","name":"Airlock","url":"https://airlock.dev"},"publisher":{"@type":"Organization","name":"Airlock","url":"https://airlock.dev"}}</script>
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <link rel="icon" href="/favicon.ico" sizes="32x32">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='9' fill='%236366f1'/%3E%3Cpath d='M9 16.5l4.5 4.5L23 11' stroke='white' stroke-width='3' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
@@ -132,13 +132,13 @@ pre code.hljs{display:block;overflow-x:auto}
 <div class="wrap nav-inner">
   <a class="brand" href="/">
     <span class="mark"><svg viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.5 4.5L19 7.5" stroke="white" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
-    Impri
+    Airlock
   </a>
   <div class="nav-links">
     <a class="link" href="/#how">How it works</a>
     <a class="link" href="/#pricing">Pricing</a>
     <a class="link active-nav" href="../docs">Docs</a>
-    <a class="btn btn-primary btn-sm" href="https://gitlab.com/sekera.radim/impri">GitLab</a>
+    <a class="btn btn-primary btn-sm" href="https://gitlab.com/sekera.radim/airlock">GitLab</a>
   </div>
 </div>
 </nav>
@@ -153,18 +153,18 @@ pre code.hljs{display:block;overflow-x:auto}
       <span>Human-in-the-Loop for E-commerce AI Agents</span>
     </nav>
     <h1>Human-in-the-Loop for E-commerce AI Agents</h1>
-<p>Gate AI agent price changes and reorder POs behind a human approval tap in Impri before they touch your store, catching bad scrapes and bad forecasts.</p>
+<p>Gate AI agent price changes and reorder POs behind a human approval tap in Airlock before they touch your store, catching bad scrapes and bad forecasts.</p>
 <hr>
 <h2 id="where-e-commerce-agents-go-wrong-unsupervised">Where e-commerce agents go wrong unsupervised</h2>
 <p>A pricing or inventory agent is usually wired straight into the Shopify (or WooCommerce, BigCommerce) Admin API: it scrapes competitor prices, watches sell-through velocity, and pushes updates directly. That works fine until the scrape returns garbage — a competitor&#39;s page 404s and the scraper reads &quot;$0.00&quot;, or a JSON parse error rounds a $49.99 hoodie down to $4.99 — and the agent happily applies it to 200 live listings before anyone notices. Reorder agents have the same failure mode in the other direction: a demand forecast blip triggers a PO for 5,000 units of something that sells eight a month.</p>
 <p>Neither of these is a hypothetical edge case; they&#39;re the normal failure mode of &quot;agent reads external data, agent acts on external data&quot; with no human between the two steps.</p>
 <h2 id="the-gate-price-changes-and-reorders-as-pending-actions">The gate: price changes and reorders as pending actions</h2>
-<p>The fix isn&#39;t slower automation — it&#39;s an approval gate on exactly two categories of action: <strong>price changes</strong> and <strong>reorder POs above a threshold</strong>. Everything else (updating a product description, tagging inventory, syncing stock counts) can stay fully automated. Impri&#39;s job here is narrow: hold the proposed change, show it to a human, and only let the agent proceed once someone taps approve.</p>
+<p>The fix isn&#39;t slower automation — it&#39;s an approval gate on exactly two categories of action: <strong>price changes</strong> and <strong>reorder POs above a threshold</strong>. Everything else (updating a product description, tagging inventory, syncing stock counts) can stay fully automated. Airlock&#39;s job here is narrow: hold the proposed change, show it to a human, and only let the agent proceed once someone taps approve.</p>
 <h2 id="wiring-it-into-a-shopify-price-and-restock-agent-typescript">Wiring it into a Shopify price-and-restock agent (TypeScript)</h2>
-<p>The agent still does all the analysis — Impri only sits between &quot;decided&quot; and &quot;applied&quot;:</p>
-<div class="code-block"><span class="code-lang">typescript</span><pre><code class="hljs"><span class="hljs-keyword">import</span> { <span class="hljs-title class_">ImpriClient</span>, <span class="hljs-title class_">ImpriRejected</span>, <span class="hljs-title class_">ImpriExpired</span> } <span class="hljs-keyword">from</span> <span class="hljs-string">&quot;@impri/sdk&quot;</span>;
+<p>The agent still does all the analysis — Airlock only sits between &quot;decided&quot; and &quot;applied&quot;:</p>
+<div class="code-block"><span class="code-lang">typescript</span><pre><code class="hljs"><span class="hljs-keyword">import</span> { <span class="hljs-title class_">AirlockClient</span>, <span class="hljs-title class_">AirlockRejected</span>, <span class="hljs-title class_">AirlockExpired</span> } <span class="hljs-keyword">from</span> <span class="hljs-string">&quot;@airlock/sdk&quot;</span>;
 
-<span class="hljs-keyword">const</span> client = <span class="hljs-keyword">new</span> <span class="hljs-title class_">ImpriClient</span>({ <span class="hljs-attr">apiKey</span>: process.<span class="hljs-property">env</span>.<span class="hljs-property">IMPRI_API_KEY</span>! });
+<span class="hljs-keyword">const</span> client = <span class="hljs-keyword">new</span> <span class="hljs-title class_">AirlockClient</span>({ <span class="hljs-attr">apiKey</span>: process.<span class="hljs-property">env</span>.<span class="hljs-property">AIRLOCK_API_KEY</span>! });
 
 <span class="hljs-keyword">interface</span> <span class="hljs-title class_">PriceChange</span> {
   <span class="hljs-attr">sku</span>: <span class="hljs-built_in">string</span>;
@@ -199,7 +199,7 @@ pre code.hljs{display:block;overflow-x:auto}
 
     <span class="hljs-keyword">await</span> client.<span class="hljs-title function_">reportResult</span>(created.<span class="hljs-property">id</span>, <span class="hljs-string">&quot;executed&quot;</span>);
   } <span class="hljs-keyword">catch</span> (e) {
-    <span class="hljs-keyword">if</span> (e <span class="hljs-keyword">instanceof</span> <span class="hljs-title class_">ImpriRejected</span> || e <span class="hljs-keyword">instanceof</span> <span class="hljs-title class_">ImpriExpired</span>) <span class="hljs-keyword">return</span>; <span class="hljs-comment">// never applied</span>
+    <span class="hljs-keyword">if</span> (e <span class="hljs-keyword">instanceof</span> <span class="hljs-title class_">AirlockRejected</span> || e <span class="hljs-keyword">instanceof</span> <span class="hljs-title class_">AirlockExpired</span>) <span class="hljs-keyword">return</span>; <span class="hljs-comment">// never applied</span>
     <span class="hljs-keyword">throw</span> e;
   }
 }</code></pre></div>
@@ -208,16 +208,16 @@ pre code.hljs{display:block;overflow-x:auto}
 <p>The inbox card is a diff, not a wall of JSON: current price, proposed price, and the reason the agent computed it. On mobile that&#39;s a five-second decision — reject the $4.99 hoodie, approve the three legitimate seasonal markdowns sitting next to it. If <code>editable: [&quot;preview.body&quot;]</code> is set, the merchant can fix a typo&#39;d price in the card itself before approving, and <code>decision.final_preview</code> carries that correction back to the agent.</p>
 <h2 id="refunds-are-a-separate-higher-stakes-gate">Refunds are a separate, higher-stakes gate</h2>
 <p>If the same agent also handles customer-facing refunds, treat those as a distinct <code>kind</code> (e.g. <code>shopify.refund</code>) with its own review — refund amounts and reasons need different scrutiny than a catalog price update, and mixing the two in one inbox makes the queue harder to triage. The REST API also accepts an <code>idempotent</code> hint on the action body (set <code>idempotent: false</code> for refunds, which the inbox shows as a warning badge) — again, send it via a direct <code>POST /v1/actions</code> call since the SDK&#39;s <code>createAction</code> doesn&#39;t take that param yet. Either way, approving the same refund action twice should never double-charge a reversal. Discount codes a customer-facing chat bot hands out are a third gate, covered in <a href="human-in-the-loop-for-ai-in-ecommerce">human-in-the-loop AI for e-commerce discounts</a>: one card per conversation, the code issued from a signed webhook.</p>
-<h2 id="what-impri-is-and-isn39t-for-e-commerce">What Impri is and isn&#39;t for e-commerce</h2>
-<p>Impri stores the proposed price change or PO, notifies you, and holds the decision — it does not know what a &quot;reasonable&quot; price move looks like, and it does not talk to Shopify itself. Your agent still owns the pricing logic and the actual API call; Impri only owns the yes/no. And it&#39;s a real gate only if the agent&#39;s Shopify credentials are wrapped so the price-update call cannot run without an approved decision — a credential the agent can use directly bypasses the gate entirely.</p>
+<h2 id="what-airlock-is-and-isn39t-for-e-commerce">What Airlock is and isn&#39;t for e-commerce</h2>
+<p>Airlock stores the proposed price change or PO, notifies you, and holds the decision — it does not know what a &quot;reasonable&quot; price move looks like, and it does not talk to Shopify itself. Your agent still owns the pricing logic and the actual API call; Airlock only owns the yes/no. And it&#39;s a real gate only if the agent&#39;s Shopify credentials are wrapped so the price-update call cannot run without an approved decision — a credential the agent can use directly bypasses the gate entirely.</p>
 <hr>
 <p>Next: see <a href="how-to-add-human-approval-to-an-ai-agent">how to add human approval to an AI agent</a> for the base REST/MCP pattern, <a href="sdk-typescript">the TypeScript SDK</a> for the full client, and <a href="integrations">integrations</a> for wrapping the executor so the gate can&#39;t be routed around.</p>
 
-    <aside class="doc-cta" aria-label="Try Impri">
+    <aside class="doc-cta" aria-label="Try Airlock">
   <p class="doc-cta-title">Add an approval step to your own agent</p>
-  <p>Start on Impri Cloud: the Free tier includes 100 approvals a month. Or self-host the MIT-licensed core with Docker Compose, with no tier limits.</p>
+  <p>Start on Airlock Cloud: the Free tier includes 100 approvals a month. Or self-host the MIT-licensed core with Docker Compose, with no tier limits.</p>
   <div class="doc-cta-actions">
-    <a class="btn btn-primary btn-sm" href="https://app.impri.dev/?signup=1">Start free on Impri Cloud</a>
+    <a class="btn btn-primary btn-sm" href="https://app.airlock.dev/?signup=1">Start free on Airlock Cloud</a>
     <a class="btn btn-ghost btn-sm" href="../docs/quickstart">Quick start</a>
     <a class="btn btn-ghost btn-sm" href="../docs/self-hosting">Self-host guide</a>
   </div>
@@ -305,7 +305,7 @@ pre code.hljs{display:block;overflow-x:auto}
 <li class="ptoc-h2"><a href="#wiring-it-into-a-shopify-price-and-restock-agent-typescript">Wiring it into a Shopify price-and-restock agent (TypeScript)</a></li>
 <li class="ptoc-h2"><a href="#what-the-merchant-sees">What the merchant sees</a></li>
 <li class="ptoc-h2"><a href="#refunds-are-a-separate-higher-stakes-gate">Refunds are a separate, higher-stakes gate</a></li>
-<li class="ptoc-h2"><a href="#what-impri-is-and-isn39t-for-e-commerce">What Impri is and isn't for e-commerce</a></li></ul>
+<li class="ptoc-h2"><a href="#what-airlock-is-and-isn39t-for-e-commerce">What Airlock is and isn't for e-commerce</a></li></ul>
 </nav>
   </aside>
 </div>
@@ -313,19 +313,19 @@ pre code.hljs{display:block;overflow-x:auto}
 <footer class="footer">
 <div class="wrap footer-inner">
   <a class="brand" href="/">
-    <span class="mark"><svg viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.5 4.5L19 7.5" stroke="white" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Impri
+    <span class="mark"><svg viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.5 4.5L19 7.5" stroke="white" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Airlock
   </a>
   <div>
-    <a href="https://gitlab.com/sekera.radim/impri">GitLab</a>
+    <a href="https://gitlab.com/sekera.radim/airlock">GitLab</a>
     <a href="/docs">Docs</a>
-    <a href="https://gitlab.com/sekera.radim/impri/-/blob/main/LICENSE">MIT License</a>
-    <a href="https://www.npmjs.com/package/@impri/mcp">@impri/mcp</a>
+    <a href="https://gitlab.com/sekera.radim/airlock/-/blob/main/LICENSE">MIT License</a>
+    <a href="https://www.npmjs.com/package/@airlock/mcp">@airlock/mcp</a>
     <a href="/docs/privacy">Privacy</a>
     <a href="/docs/terms">Terms</a>
     <a href="https://sekera.dev">Contact</a>
   </div>
 </div>
-<div class="wrap" style="margin-top:18px"><span class="muted">© 2026 Impri · The imprimatur for your AI agents · Built by <a href="https://sekera.dev" style="color:inherit">Radim Sekera</a>. Also by the same maker: <a href="https://briefgate.dev/?utm_source=impri.dev&amp;utm_medium=referral" style="color:inherit">BriefGate</a> — client intake for agencies and AI agents.</span></div>
+<div class="wrap" style="margin-top:18px"><span class="muted">© 2026 Airlock · The airlockmatur for your AI agents · Built by <a href="https://sekera.dev" style="color:inherit">Radim Sekera</a>. Also by the same maker: <a href="https://briefgate.dev/?utm_source=airlock.dev&amp;utm_medium=referral" style="color:inherit">BriefGate</a> — client intake for agencies and AI agents.</span></div>
 </footer>
 </body>
 </html>

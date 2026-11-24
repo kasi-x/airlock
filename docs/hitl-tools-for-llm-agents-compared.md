@@ -13,7 +13,7 @@ Framework interrupts, workflow-engine nodes, general approval software, and dedi
 | Framework-native interrupt | LangGraph `interrupt()`, OpenAI Agents SDK `needs_approval` | Inside your agent process | Pausing a graph/run mid-execution |
 | Workflow-engine node | n8n Wait node, Temporal signals | Inside an orchestration platform | Pausing a broader multi-step workflow |
 | General approval/ticketing software | Jira workflow, generic BPM tools | Separate app, not agent-aware | Human approval processes in general |
-| Dedicated agent approval gate | Impri | Separate service, agent-aware | Agent proposes → human decides → agent executes |
+| Dedicated agent approval gate | Airlock | Separate service, agent-aware | Agent proposes → human decides → agent executes |
 
 ---
 
@@ -42,7 +42,7 @@ This is the tightest integration you can get — no network hop, no separate ser
 
 ## Workflow-engine nodes
 
-If the agent step is one node in a larger n8n or Temporal workflow, the engine's own human-input primitive is usually the right default — n8n's Wait node resumes on a webhook call; Temporal workflows can block on a signal sent by an external approval action. You avoid adding a new service, and the approval step shows up in the same execution history as the rest of the workflow. If that workflow still needs a place where people see and answer the request, [Temporal human-in-the-loop with an approval inbox](human-in-the-loop-temporal-workflows-for-ai-agents.md) wires a Temporal signal to an Impri card.
+If the agent step is one node in a larger n8n or Temporal workflow, the engine's own human-input primitive is usually the right default — n8n's Wait node resumes on a webhook call; Temporal workflows can block on a signal sent by an external approval action. You avoid adding a new service, and the approval step shows up in the same execution history as the rest of the workflow. If that workflow still needs a place where people see and answer the request, [Temporal human-in-the-loop with an approval inbox](human-in-the-loop-temporal-workflows-for-ai-agents.md) wires a Temporal signal to an Airlock card.
 
 The limitation shows up when the approval step needs to be agent-specific: a diff view of what a human edited before approving, a notion of "this draft expired, don't send it," a mobile-first card instead of a generic form. Workflow engines are general-purpose by design; they don't know that this particular wait step is "should this LLM-drafted email go out."
 
@@ -52,12 +52,12 @@ Some teams route agent actions through whatever approval tooling already exists 
 
 ## Dedicated agent approval gates
 
-The fourth category is software built specifically for the agent-proposes → human-decides → agent-executes loop and nothing else. Impri is in this category: an agent pushes a proposed action, a human approves, rejects, or edits it from an inbox (web, Slack, Telegram, Discord, or push notification), and the agent polls or blocks for the decision before doing anything.
+The fourth category is software built specifically for the agent-proposes → human-decides → agent-executes loop and nothing else. Airlock is in this category: an agent pushes a proposed action, a human approves, rejects, or edits it from an inbox (web, Slack, Telegram, Discord, or push notification), and the agent polls or blocks for the decision before doing anything.
 
 ```bash
 # Push a proposed action from any agent, any framework
-curl -X POST https://api.impri.dev/v1/actions \
-  -H "Authorization: Bearer $IMPRI_API_KEY" \
+curl -X POST https://api.airlock.dev/v1/actions \
+  -H "Authorization: Bearer $AIRLOCK_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "kind": "social.post",
@@ -69,7 +69,7 @@ curl -X POST https://api.impri.dev/v1/actions \
 # → { "id": "act_...", "status": "pending", "inbox_url": "..." }
 ```
 
-Because it's agent-agnostic — REST or MCP, no framework required — it composes with any of the other three categories rather than competing with them: trigger the push from inside a LangGraph `interrupt()`, or from an n8n node, and let Impri own the inbox, notification, human-edit, and audit-log surface instead of building that part yourself.
+Because it's agent-agnostic — REST or MCP, no framework required — it composes with any of the other three categories rather than competing with them: trigger the push from inside a LangGraph `interrupt()`, or from an n8n node, and let Airlock own the inbox, notification, human-edit, and audit-log surface instead of building that part yourself.
 
 ---
 

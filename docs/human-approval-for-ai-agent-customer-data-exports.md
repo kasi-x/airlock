@@ -26,8 +26,8 @@ The agent does not export anything. It proposes the export as an action, and the
 ```python
 import os, requests
 
-API = "https://api.impri.dev"
-H = {"Authorization": f"Bearer {os.environ['IMPRI_API_KEY']}"}
+API = "https://api.airlock.dev"
+H = {"Authorization": f"Bearer {os.environ['AIRLOCK_API_KEY']}"}
 
 body = """**Request:** GDPR Art. 15 access request, ticket #4821
 **Data subject:** customer_id 99 (jane@example.com)
@@ -69,7 +69,7 @@ while True:
 if a["status"] == "approved":
     approved_scope = a["decision"]["final_preview"]["body"]
     try:
-        run_export(approved_scope)  # your code, not Impri
+        run_export(approved_scope)  # your code, not Airlock
         status = "executed"
     except Exception:
         status = "execute_failed"
@@ -90,14 +90,14 @@ This only works if the gated call is the agent's **only** path to the data. If t
 | Verifying the requester's identity | Your agent gathers evidence; the human judges it |
 | Deciding what is in scope | Human, via the edited preview |
 | Building and delivering the archive | Your code |
-| Recording who approved what and when | Impri ([audit log](audit-log.md)) |
+| Recording who approved what and when | Airlock ([audit log](audit-log.md)) |
 | Legal deadlines, retention, redaction rules | You and your counsel |
 
 ---
 
-## What Impri does not do
+## What Airlock does not do
 
-Impri is the approval gate only. It stores the proposed action, notifies a reviewer (email, ntfy, web push, or via [Slack](slack-approval.md) and other channels), and holds the decision. It does not find or redact personal data, interpret whether a request is legally valid, or perform the export. It is not a compliance product and does not make you GDPR-compliant; it gives you a human checkpoint and a record of it.
+Airlock is the approval gate only. It stores the proposed action, notifies a reviewer (email, ntfy, web push, or via [Slack](slack-approval.md) and other channels), and holds the decision. It does not find or redact personal data, interpret whether a request is legally valid, or perform the export. It is not a compliance product and does not make you GDPR-compliant; it gives you a human checkpoint and a record of it.
 
 If you handle regulated data, consider [self-hosting](self-hosting.md) so action previews stay on your own infrastructure. Keep the preview to what the reviewer needs: identifiers and scope, not the exported data itself.
 

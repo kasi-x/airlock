@@ -30,7 +30,7 @@ describe('saveConfig / loadConfig (temp dir)', () => {
   let origEnv: NodeJS.ProcessEnv
 
   beforeEach(() => {
-    tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), 'impri-cli-test-'))
+    tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), 'airlock-cli-test-'))
     origEnv = { ...process.env }
     // Override HOME so the config module writes to our temp dir
     // We can't easily override CONFIG_FILE since it's module-level,
@@ -88,7 +88,7 @@ describe('saveConfig / loadConfig (temp dir)', () => {
   })
 
   it('loadConfig parses valid JSON', () => {
-    const cfg = { base_url: 'https://api.impri.dev', api_key: 'im_xyz' }
+    const cfg = { base_url: 'https://api.airlock.dev', api_key: 'im_xyz' }
     vi.mocked(fs.readFileSync).mockReturnValue(JSON.stringify(cfg))
 
     const result = loadConfig()
@@ -117,9 +117,9 @@ describe('resolveCredentials', () => {
     process.env = origEnv
   })
 
-  it('prefers IMPRI_API_KEY env over config file', () => {
-    process.env['IMPRI_API_KEY'] = 'im_envkey'
-    process.env['IMPRI_BASE_URL'] = 'https://env.example.com'
+  it('prefers AIRLOCK_API_KEY env over config file', () => {
+    process.env['AIRLOCK_API_KEY'] = 'im_envkey'
+    process.env['AIRLOCK_BASE_URL'] = 'https://env.example.com'
     vi.mocked(fs.readFileSync).mockReturnValue(
       JSON.stringify({ base_url: 'http://file.example', api_key: 'im_filekey' }),
     )
@@ -131,8 +131,8 @@ describe('resolveCredentials', () => {
   })
 
   it('falls back to config file when env not set', () => {
-    delete process.env['IMPRI_API_KEY']
-    delete process.env['IMPRI_BASE_URL']
+    delete process.env['AIRLOCK_API_KEY']
+    delete process.env['AIRLOCK_BASE_URL']
     vi.mocked(fs.readFileSync).mockReturnValue(
       JSON.stringify({ base_url: 'http://file.example', api_key: 'im_filekey' }),
     )
@@ -144,8 +144,8 @@ describe('resolveCredentials', () => {
   })
 
   it('returns null apiKey when neither env nor file has a key', () => {
-    delete process.env['IMPRI_API_KEY']
-    delete process.env['IMPRI_BASE_URL']
+    delete process.env['AIRLOCK_API_KEY']
+    delete process.env['AIRLOCK_BASE_URL']
     const err = Object.assign(new Error('ENOENT'), { code: 'ENOENT' })
     vi.mocked(fs.readFileSync).mockImplementation(() => { throw err })
 
@@ -155,8 +155,8 @@ describe('resolveCredentials', () => {
   })
 
   it('strips trailing slashes from base URL', () => {
-    delete process.env['IMPRI_API_KEY']
-    delete process.env['IMPRI_BASE_URL']
+    delete process.env['AIRLOCK_API_KEY']
+    delete process.env['AIRLOCK_BASE_URL']
     vi.mocked(fs.readFileSync).mockReturnValue(
       JSON.stringify({ base_url: 'http://localhost:8484/', api_key: 'im_k' }),
     )

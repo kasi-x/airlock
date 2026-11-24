@@ -14,16 +14,16 @@ Telling the agent "ask me first" in the task description does not hold. The mode
 
 ## Wrap the tool, not the crew
 
-The clean place for the gate is the tool itself. Impri provides the gate: your tool proposes the action, blocks until a human decides, and only then runs. Everything else in the crew stays the same.
+The clean place for the gate is the tool itself. Airlock provides the gate: your tool proposes the action, blocks until a human decides, and only then runs. Everything else in the crew stays the same.
 
-Here is a CrewAI custom tool that sends an email, wrapped so the send is unreachable without an approved Impri decision:
+Here is a CrewAI custom tool that sends an email, wrapped so the send is unreachable without an approved Airlock decision:
 
 ```python
 import os, time, requests
 from crewai.tools import BaseTool
 
-IMPRI = "https://api.impri.dev"
-H = {"Authorization": f"Bearer {os.environ['IMPRI_API_KEY']}",
+AIRLOCK = "https://api.airlock.dev"
+H = {"Authorization": f"Bearer {os.environ['AIRLOCK_API_KEY']}",
      "Content-Type": "application/json"}
 
 class ApprovedEmailTool(BaseTool):
@@ -32,7 +32,7 @@ class ApprovedEmailTool(BaseTool):
 
     def _run(self, to: str, subject: str, body: str) -> str:
         # 1. Propose the action — nothing is sent yet.
-        action = requests.post(f"{IMPRI}/v1/actions", headers=H, json={
+        action = requests.post(f"{AIRLOCK}/v1/actions", headers=H, json={
             "kind": "email.send",
             "title": f"Email to {to}: {subject}",
             "preview": {"format": "markdown", "body": body},
@@ -43,7 +43,7 @@ class ApprovedEmailTool(BaseTool):
         # 2. Poll until a human decides.
         while True:
             time.sleep(10)
-            state = requests.get(f"{IMPRI}/v1/actions/{action['id']}", headers=H).json()
+            state = requests.get(f"{AIRLOCK}/v1/actions/{action['id']}", headers=H).json()
             if state["status"] != "pending":
                 break
 
@@ -53,7 +53,7 @@ class ApprovedEmailTool(BaseTool):
         # 3. Execute with the approved (possibly edited) content.
         final = state["decision"]["final_preview"]["body"]
         send_via_your_provider(to, subject, final)   # your real send
-        requests.post(f"{IMPRI}/v1/actions/{action['id']}/result",
+        requests.post(f"{AIRLOCK}/v1/actions/{action['id']}/result",
                       headers=H, json={"status": "executed"})
         return "Sent after human approval."
 ```
@@ -76,7 +76,7 @@ The agent still decides *what* to send and *when* to call the tool. It just cann
 
 ## Why the block belongs in the tool
 
-CrewAI's `_run` is synchronous, so the polling loop holds the tool call open until the decision arrives. The gate is real because `send_via_your_provider(...)` is only reachable after `status == "approved"`. If you leave the raw send available elsewhere in the crew, the agent can route around the gate — Impri is a chokepoint you confine the tool to, not a network-level interceptor of every egress.
+CrewAI's `_run` is synchronous, so the polling loop holds the tool call open until the decision arrives. The gate is real because `send_via_your_provider(...)` is only reachable after `status == "approved"`. If you leave the raw send available elsewhere in the crew, the agent can route around the gate — Airlock is a chokepoint you confine the tool to, not a network-level interceptor of every egress.
 
 A few practical notes:
 
@@ -86,11 +86,11 @@ A few practical notes:
 
 ---
 
-## What Impri does and does not do
+## What Airlock does and does not do
 
-Impri is only the approval gate. It stores the proposed action, notifies you, and holds the decision — it does not run your crew, interpret the email, or send anything itself. That keeps the integration to a single tool wrapper.
+Airlock is only the approval gate. It stores the proposed action, notifies you, and holds the decision — it does not run your crew, interpret the email, or send anything itself. That keeps the integration to a single tool wrapper.
 
-If you need branching, multi-step orchestration, that is CrewAI's job (or a workflow engine); Impri is one gated step inside it.
+If you need branching, multi-step orchestration, that is CrewAI's job (or a workflow engine); Airlock is one gated step inside it.
 
 ---
 

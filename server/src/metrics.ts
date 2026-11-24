@@ -139,54 +139,54 @@ export function resetRegistry(): void {
 // ---------------------------------------------------------------------------
 export function initMetrics(): void {
   // HTTP request metrics
-  defineCounter('impri_http_requests_total',
+  defineCounter('airlock_http_requests_total',
     'Total HTTP requests by route, method, and status class');
-  defineHistogram('impri_http_request_duration_seconds',
+  defineHistogram('airlock_http_request_duration_seconds',
     'HTTP request duration in seconds',
     [0.005, 0.01, 0.025, 0.05, 0.1, 0.25, 0.5, 1, 2.5, 5, 10]);
 
   // Action lifecycle
-  defineCounter('impri_action_decisions_total',
+  defineCounter('airlock_action_decisions_total',
     'Total action decisions committed, by verdict and channel');
-  defineHistogram('impri_action_decision_latency_seconds',
+  defineHistogram('airlock_action_decision_latency_seconds',
     'Time from action creation to decision in seconds',
     [1, 10, 60, 300, 1800, 7200, 86400]);
-  defineCounter('impri_actions_expired_total',
+  defineCounter('airlock_actions_expired_total',
     'Total actions that transitioned to expired status');
 
   // Watcher scheduler
-  defineCounter('impri_watcher_runs_total',
+  defineCounter('airlock_watcher_runs_total',
     'Total watcher runs by kind and result');
-  defineCounter('impri_watcher_items_fetched_total',
+  defineCounter('airlock_watcher_items_fetched_total',
     'Total items returned by fetch before dedup/scoring');
-  defineCounter('impri_watcher_hits_total',
+  defineCounter('airlock_watcher_hits_total',
     'Total actions created by watcher runs');
-  defineCounter('impri_watcher_burst_truncations_total',
+  defineCounter('airlock_watcher_burst_truncations_total',
     'Total watcher runs that triggered burst protection');
-  defineCounter('impri_watcher_quota_skipped_total',
+  defineCounter('airlock_watcher_quota_skipped_total',
     'Total watcher runs where matching items were not published because the monthly approvals quota was reached');
 
   // Webhook delivery
-  defineCounter('impri_webhook_deliveries_total',
+  defineCounter('airlock_webhook_deliveries_total',
     'Total webhook delivery outcomes by result');
-  defineHistogram('impri_webhook_delivery_duration_seconds',
+  defineHistogram('airlock_webhook_delivery_duration_seconds',
     'Wall-clock time of webhook HTTP POST in seconds',
     [0.05, 0.1, 0.25, 0.5, 1, 2, 5, 10, 15]);
 
   // Notification channels
-  defineCounter('impri_notifications_total',
+  defineCounter('airlock_notifications_total',
     'Total notification attempts by channel_type and result');
-  defineCounter('impri_notification_digest_flushes_total',
+  defineCounter('airlock_notification_digest_flushes_total',
     'Total digest flush attempts by channel_type');
-  defineCounter('impri_channel_auto_disabled_total',
+  defineCounter('airlock_channel_auto_disabled_total',
     'Total channels auto-disabled after repeated failures');
 
   // Rate limiting
-  defineCounter('impri_rate_limited_total',
+  defineCounter('airlock_rate_limited_total',
     'Total rate-limited requests by bucket name');
 
   // Hosted MCP endpoint (/mcp)
-  defineCounter('impri_mcp_tool_calls_total',
+  defineCounter('airlock_mcp_tool_calls_total',
     'Total tools/call invocations on the hosted MCP endpoint by tool and result');
 }
 
@@ -208,43 +208,43 @@ function renderDbGauges(db: Db, dbPath: string): string[] {
     out.push('');
   };
 
-  gauge('impri_actions_total', 'Current action counts by status (snapshot)', () => {
+  gauge('airlock_actions_total', 'Current action counts by status (snapshot)', () => {
     const rows = db.prepare('SELECT status, COUNT(*) as cnt FROM actions GROUP BY status').all() as
       { status: string; cnt: number }[];
-    return rows.map(r => `impri_actions_total{status="${escapeLabel(r.status)}"} ${r.cnt}`);
+    return rows.map(r => `airlock_actions_total{status="${escapeLabel(r.status)}"} ${r.cnt}`);
   });
 
-  gauge('impri_active_watchers', 'Active watchers count (snapshot)', () => {
+  gauge('airlock_active_watchers', 'Active watchers count (snapshot)', () => {
     const r = db.prepare("SELECT COUNT(*) as cnt FROM watchers WHERE status = 'active'").get() as { cnt: number };
-    return [`impri_active_watchers ${r.cnt}`];
+    return [`airlock_active_watchers ${r.cnt}`];
   });
 
-  gauge('impri_degraded_watchers', 'Degraded watchers count (snapshot)', () => {
+  gauge('airlock_degraded_watchers', 'Degraded watchers count (snapshot)', () => {
     const r = db.prepare("SELECT COUNT(*) as cnt FROM watchers WHERE status = 'degraded'").get() as { cnt: number };
-    return [`impri_degraded_watchers ${r.cnt}`];
+    return [`airlock_degraded_watchers ${r.cnt}`];
   });
 
-  gauge('impri_pending_actions', 'Pending actions count (snapshot)', () => {
+  gauge('airlock_pending_actions', 'Pending actions count (snapshot)', () => {
     const r = db.prepare("SELECT COUNT(*) as cnt FROM actions WHERE status = 'pending'").get() as { cnt: number };
-    return [`impri_pending_actions ${r.cnt}`];
+    return [`airlock_pending_actions ${r.cnt}`];
   });
 
-  gauge('impri_webhook_dlq_size', 'Webhook deliveries in dead-letter queue (snapshot)', () => {
+  gauge('airlock_webhook_dlq_size', 'Webhook deliveries in dead-letter queue (snapshot)', () => {
     const r = db.prepare("SELECT COUNT(*) as cnt FROM webhook_deliveries WHERE status = 'dlq'").get() as { cnt: number };
-    return [`impri_webhook_dlq_size ${r.cnt}`];
+    return [`airlock_webhook_dlq_size ${r.cnt}`];
   });
 
-  gauge('impri_db_size_bytes', 'SQLite database file size in bytes', () => {
+  gauge('airlock_db_size_bytes', 'SQLite database file size in bytes', () => {
     try {
       const size = statSync(dbPath).size;
-      return [`impri_db_size_bytes ${size}`];
+      return [`airlock_db_size_bytes ${size}`];
     } catch {
-      return ['impri_db_size_bytes 0'];
+      return ['airlock_db_size_bytes 0'];
     }
   });
 
-  gauge('impri_uptime_seconds', 'Process uptime in seconds', () => {
-    return [`impri_uptime_seconds ${process.uptime().toFixed(6)}`];
+  gauge('airlock_uptime_seconds', 'Process uptime in seconds', () => {
+    return [`airlock_uptime_seconds ${process.uptime().toFixed(6)}`];
   });
 
   return out;
@@ -258,9 +258,9 @@ export function renderMetrics(db: Db, version: string, dbPath: string): string {
   const lines: string[] = [];
 
   // Build info — always emitted so dashboards can identify the running build.
-  lines.push('# HELP impri_build_info Build information gauge, always 1');
-  lines.push('# TYPE impri_build_info gauge');
-  lines.push(`impri_build_info{version="${escapeLabel(version)}",node_version="${escapeLabel(process.version)}"} 1`);
+  lines.push('# HELP airlock_build_info Build information gauge, always 1');
+  lines.push('# TYPE airlock_build_info gauge');
+  lines.push(`airlock_build_info{version="${escapeLabel(version)}",node_version="${escapeLabel(process.version)}"} 1`);
   lines.push('');
 
   // In-process counters

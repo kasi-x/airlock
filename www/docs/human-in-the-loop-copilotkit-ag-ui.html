@@ -3,21 +3,21 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Human-in-the-Loop for CopilotKit and AG-UI Agents — Impri Docs</title>
-<meta name="description" content="CopilotKit's AG-UI protocol renders approval prompts inside your app — this shows how to back that with Impri so the decision survives a closed tab or an…">
+<title>Human-in-the-Loop for CopilotKit and AG-UI Agents — Airlock Docs</title>
+<meta name="description" content="CopilotKit's AG-UI protocol renders approval prompts inside your app — this shows how to back that with Airlock so the decision survives a closed tab or an…">
 <meta name="theme-color" content="#06070d">
-<meta property="og:title" content="Human-in-the-Loop for CopilotKit and AG-UI Agents — Impri Docs">
-<meta property="og:description" content="CopilotKit's AG-UI protocol renders approval prompts inside your app — this shows how to back that with Impri so the decision survives a closed tab or an…">
+<meta property="og:title" content="Human-in-the-Loop for CopilotKit and AG-UI Agents — Airlock Docs">
+<meta property="og:description" content="CopilotKit's AG-UI protocol renders approval prompts inside your app — this shows how to back that with Airlock so the decision survives a closed tab or an…">
 <meta property="og:type" content="article">
-<meta property="og:url" content="https://impri.dev/docs/human-in-the-loop-copilotkit-ag-ui">
-<meta property="og:image" content="https://impri.dev/assets/og/og-docs.png">
+<meta property="og:url" content="https://airlock.dev/docs/human-in-the-loop-copilotkit-ag-ui">
+<meta property="og:image" content="https://airlock.dev/assets/og/og-docs.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
-<meta property="og:image:alt" content="Impri — human-in-the-loop approval inbox for AI agents">
+<meta property="og:image:alt" content="Airlock — human-in-the-loop approval inbox for AI agents">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="https://impri.dev/assets/og/og-docs.png">
-<link rel="canonical" href="https://impri.dev/docs/human-in-the-loop-copilotkit-ag-ui">
-<script type="application/ld+json">{"@context":"https://schema.org","@type":"TechArticle","headline":"Human-in-the-Loop for CopilotKit and AG-UI Agents","description":"CopilotKit's AG-UI protocol renders approval prompts inside your app — this shows how to back that with Impri so the decision survives a closed tab or an…","url":"https://impri.dev/docs/human-in-the-loop-copilotkit-ag-ui","inLanguage":"en","author":{"@type":"Organization","name":"Impri","url":"https://impri.dev"},"publisher":{"@type":"Organization","name":"Impri","url":"https://impri.dev"}}</script>
+<meta name="twitter:image" content="https://airlock.dev/assets/og/og-docs.png">
+<link rel="canonical" href="https://airlock.dev/docs/human-in-the-loop-copilotkit-ag-ui">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"TechArticle","headline":"Human-in-the-Loop for CopilotKit and AG-UI Agents","description":"CopilotKit's AG-UI protocol renders approval prompts inside your app — this shows how to back that with Airlock so the decision survives a closed tab or an…","url":"https://airlock.dev/docs/human-in-the-loop-copilotkit-ag-ui","inLanguage":"en","author":{"@type":"Organization","name":"Airlock","url":"https://airlock.dev"},"publisher":{"@type":"Organization","name":"Airlock","url":"https://airlock.dev"}}</script>
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <link rel="icon" href="/favicon.ico" sizes="32x32">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='9' fill='%236366f1'/%3E%3Cpath d='M9 16.5l4.5 4.5L23 11' stroke='white' stroke-width='3' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
@@ -132,13 +132,13 @@ pre code.hljs{display:block;overflow-x:auto}
 <div class="wrap nav-inner">
   <a class="brand" href="/">
     <span class="mark"><svg viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.5 4.5L19 7.5" stroke="white" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
-    Impri
+    Airlock
   </a>
   <div class="nav-links">
     <a class="link" href="/#how">How it works</a>
     <a class="link" href="/#pricing">Pricing</a>
     <a class="link active-nav" href="../docs">Docs</a>
-    <a class="btn btn-primary btn-sm" href="https://gitlab.com/sekera.radim/impri">GitLab</a>
+    <a class="btn btn-primary btn-sm" href="https://gitlab.com/sekera.radim/airlock">GitLab</a>
   </div>
 </div>
 </nav>
@@ -153,28 +153,28 @@ pre code.hljs{display:block;overflow-x:auto}
       <span>Human-in-the-Loop for CopilotKit and AG-UI Agents</span>
     </nav>
     <h1>Human-in-the-Loop for CopilotKit and AG-UI Agents</h1>
-<p>CopilotKit&#39;s AG-UI protocol renders approval prompts inside your app — this shows how to back that with Impri so the decision survives a closed tab or an offline approver.</p>
+<p>CopilotKit&#39;s AG-UI protocol renders approval prompts inside your app — this shows how to back that with Airlock so the decision survives a closed tab or an offline approver.</p>
 <hr>
 <h2 id="two-different-places-to-say-quotare-you-surequot">Two different places to say &quot;are you sure&quot;</h2>
 <p>CopilotKit agents built on the AG-UI protocol can pause mid-run and surface an interrupt — a tool call awaiting approval, rendered as a purpose-built UI element in your app via <code>useHumanInTheLoop</code> or similar. That&#39;s a genuinely good pattern for an admin who&#39;s actively watching the copilot work: the diff, the arguments, the approve/reject buttons are all right there in the product.</p>
 <p>It has one gap: it only works while that browser tab is open and that user is looking at it. An embedded copilot that proposes a CRM update at 11pm, or one whose approver is a manager who isn&#39;t the person driving the chat, has nobody watching the interrupt render. The AG-UI run just sits there.</p>
 <hr>
 <h2 id="backend-tool-not-just-frontend-interrupt">Backend tool, not just frontend interrupt</h2>
-<p>The fix is to have the <em>backend</em> tool — the one AG-UI actually calls — push the proposal to Impri as well as (or instead of) surfacing an in-app interrupt. Impri notifies over email, Slack, Telegram, or push, and the decision persists whether or not anyone has the app open.</p>
-<p>A Next.js API route backing a CopilotKit action that updates a CRM contact, gated on Impri:</p>
+<p>The fix is to have the <em>backend</em> tool — the one AG-UI actually calls — push the proposal to Airlock as well as (or instead of) surfacing an in-app interrupt. Airlock notifies over email, Slack, Telegram, or push, and the decision persists whether or not anyone has the app open.</p>
+<p>A Next.js API route backing a CopilotKit action that updates a CRM contact, gated on Airlock:</p>
 <div class="code-block"><span class="code-lang">typescript</span><pre><code class="hljs"><span class="hljs-comment">// app/api/copilotkit/actions/update-contact/route.ts</span>
 <span class="hljs-keyword">import</span> { <span class="hljs-title class_">NextRequest</span>, <span class="hljs-title class_">NextResponse</span> } <span class="hljs-keyword">from</span> <span class="hljs-string">&quot;next/server&quot;</span>;
 
-<span class="hljs-keyword">const</span> <span class="hljs-variable constant_">IMPRI</span> = <span class="hljs-string">&quot;https://api.impri.dev&quot;</span>;
+<span class="hljs-keyword">const</span> <span class="hljs-variable constant_">AIRLOCK</span> = <span class="hljs-string">&quot;https://api.airlock.dev&quot;</span>;
 <span class="hljs-keyword">const</span> <span class="hljs-variable constant_">HEADERS</span> = {
-  <span class="hljs-title class_">Authorization</span>: <span class="hljs-string">`Bearer <span class="hljs-subst">${process.env.IMPRI_API_KEY}</span>`</span>,
+  <span class="hljs-title class_">Authorization</span>: <span class="hljs-string">`Bearer <span class="hljs-subst">${process.env.AIRLOCK_API_KEY}</span>`</span>,
   <span class="hljs-string">&quot;Content-Type&quot;</span>: <span class="hljs-string">&quot;application/json&quot;</span>,
 };
 
 <span class="hljs-keyword">export</span> <span class="hljs-keyword">async</span> <span class="hljs-keyword">function</span> <span class="hljs-title function_">POST</span>(<span class="hljs-params"><span class="hljs-attr">req</span>: <span class="hljs-title class_">NextRequest</span></span>) {
   <span class="hljs-keyword">const</span> { contactId, field, oldValue, newValue } = <span class="hljs-keyword">await</span> req.<span class="hljs-title function_">json</span>();
 
-  <span class="hljs-keyword">const</span> pushRes = <span class="hljs-keyword">await</span> <span class="hljs-title function_">fetch</span>(<span class="hljs-string">`<span class="hljs-subst">${IMPRI}</span>/v1/actions`</span>, {
+  <span class="hljs-keyword">const</span> pushRes = <span class="hljs-keyword">await</span> <span class="hljs-title function_">fetch</span>(<span class="hljs-string">`<span class="hljs-subst">${AIRLOCK}</span>/v1/actions`</span>, {
     <span class="hljs-attr">method</span>: <span class="hljs-string">&quot;POST&quot;</span>,
     <span class="hljs-attr">headers</span>: <span class="hljs-variable constant_">HEADERS</span>,
     <span class="hljs-attr">body</span>: <span class="hljs-title class_">JSON</span>.<span class="hljs-title function_">stringify</span>({
@@ -197,16 +197,16 @@ pre code.hljs{display:block;overflow-x:auto}
 }</code></pre></div>
 <hr>
 <h2 id="resolving-the-interrupt-from-either-side">Resolving the interrupt from either side</h2>
-<p>Two things can now resolve the AG-UI interrupt: the reviewer clicking approve inside your app&#39;s rendered UI, or the reviewer approving from Impri&#39;s own inbox (on their phone, over lunch, away from the product entirely). Both paths need to converge on the same source of truth. The cleanest way is to make Impri that source: have the in-app &quot;approve&quot; button call your backend, which pushes the decision to Impri via <code>bulk-decision</code> or lets the reviewer decide directly in Impri, and have your AG-UI resume handler poll or subscribe to the Impri action rather than trusting only a same-session click:</p>
+<p>Two things can now resolve the AG-UI interrupt: the reviewer clicking approve inside your app&#39;s rendered UI, or the reviewer approving from Airlock&#39;s own inbox (on their phone, over lunch, away from the product entirely). Both paths need to converge on the same source of truth. The cleanest way is to make Airlock that source: have the in-app &quot;approve&quot; button call your backend, which pushes the decision to Airlock via <code>bulk-decision</code> or lets the reviewer decide directly in Airlock, and have your AG-UI resume handler poll or subscribe to the Airlock action rather than trusting only a same-session click:</p>
 <div class="code-block"><span class="code-lang">typescript</span><pre><code class="hljs"><span class="hljs-comment">// app/api/copilotkit/actions/update-contact/poll.ts</span>
 <span class="hljs-keyword">export</span> <span class="hljs-keyword">async</span> <span class="hljs-keyword">function</span> <span class="hljs-title function_">GET</span>(<span class="hljs-params"><span class="hljs-attr">req</span>: <span class="hljs-title class_">NextRequest</span></span>) {
   <span class="hljs-keyword">const</span> actionId = req.<span class="hljs-property">nextUrl</span>.<span class="hljs-property">searchParams</span>.<span class="hljs-title function_">get</span>(<span class="hljs-string">&quot;actionId&quot;</span>)!;
-  <span class="hljs-keyword">const</span> res = <span class="hljs-keyword">await</span> <span class="hljs-title function_">fetch</span>(<span class="hljs-string">`<span class="hljs-subst">${IMPRI}</span>/v1/actions/<span class="hljs-subst">${actionId}</span>`</span>, { <span class="hljs-attr">headers</span>: <span class="hljs-variable constant_">HEADERS</span> });
+  <span class="hljs-keyword">const</span> res = <span class="hljs-keyword">await</span> <span class="hljs-title function_">fetch</span>(<span class="hljs-string">`<span class="hljs-subst">${AIRLOCK}</span>/v1/actions/<span class="hljs-subst">${actionId}</span>`</span>, { <span class="hljs-attr">headers</span>: <span class="hljs-variable constant_">HEADERS</span> });
   <span class="hljs-keyword">const</span> state = <span class="hljs-keyword">await</span> res.<span class="hljs-title function_">json</span>();
 
   <span class="hljs-keyword">if</span> (state.<span class="hljs-property">status</span> === <span class="hljs-string">&quot;approved&quot;</span>) {
     <span class="hljs-keyword">await</span> crm.<span class="hljs-title function_">updateContact</span>(state.<span class="hljs-property">decision</span>.<span class="hljs-property">final_preview</span>); <span class="hljs-comment">// your real write</span>
-    <span class="hljs-keyword">await</span> <span class="hljs-title function_">fetch</span>(<span class="hljs-string">`<span class="hljs-subst">${IMPRI}</span>/v1/actions/<span class="hljs-subst">${actionId}</span>/result`</span>, {
+    <span class="hljs-keyword">await</span> <span class="hljs-title function_">fetch</span>(<span class="hljs-string">`<span class="hljs-subst">${AIRLOCK}</span>/v1/actions/<span class="hljs-subst">${actionId}</span>/result`</span>, {
       <span class="hljs-attr">method</span>: <span class="hljs-string">&quot;POST&quot;</span>,
       <span class="hljs-attr">headers</span>: <span class="hljs-variable constant_">HEADERS</span>,
       <span class="hljs-attr">body</span>: <span class="hljs-title class_">JSON</span>.<span class="hljs-title function_">stringify</span>({ <span class="hljs-attr">status</span>: <span class="hljs-string">&quot;executed&quot;</span> }),
@@ -214,22 +214,22 @@ pre code.hljs{display:block;overflow-x:auto}
   }
   <span class="hljs-keyword">return</span> <span class="hljs-title class_">NextResponse</span>.<span class="hljs-title function_">json</span>(state);
 }</code></pre></div>
-<p>Your AG-UI frontend can poll this route to resolve its own interrupt state, or you can skip polling entirely and use <a href="webhooks">webhooks</a> to push the resume the moment Impri&#39;s decision lands.</p>
+<p>Your AG-UI frontend can poll this route to resolve its own interrupt state, or you can skip polling entirely and use <a href="webhooks">webhooks</a> to push the resume the moment Airlock&#39;s decision lands.</p>
 <hr>
 <h2 id="what-stays-a-frontend-concern">What stays a frontend concern</h2>
-<p>Not everything belongs in Impri. A quick &quot;pick which of these three drafts&quot; choice, scoped to the person actively in the chat, is exactly what AG-UI&#39;s interrupt UI is for — it&#39;s fast and contextual. Reach for Impri when the action has a real side effect (a write, a send, a spend) and the approver might not be the person at the keyboard, or might not see it for hours. Mixing both is normal: AG-UI for the live chat experience, Impri as the durable record behind any interrupt that actually matters.</p>
+<p>Not everything belongs in Airlock. A quick &quot;pick which of these three drafts&quot; choice, scoped to the person actively in the chat, is exactly what AG-UI&#39;s interrupt UI is for — it&#39;s fast and contextual. Reach for Airlock when the action has a real side effect (a write, a send, a spend) and the approver might not be the person at the keyboard, or might not see it for hours. Mixing both is normal: AG-UI for the live chat experience, Airlock as the durable record behind any interrupt that actually matters.</p>
 <hr>
-<h2 id="what-impri-does-and-doesn39t-do">What Impri does and doesn&#39;t do</h2>
-<p>Impri stores the proposed contact update, notifies whoever needs to see it, and holds the decision. It doesn&#39;t know what CopilotKit or AG-UI are, doesn&#39;t render your interrupt UI, and doesn&#39;t touch your CRM. <code>update-contact/poll.ts</code> above is still the only code path that calls <code>crm.updateContact</code> — if another action or a direct API route can write to the CRM without going through this gate, the gate is decorative. See <a href="how-to-add-human-approval-to-an-ai-agent">how to add human approval to an AI agent</a> for the underlying propose → approve → execute contract this builds on.</p>
+<h2 id="what-airlock-does-and-doesn39t-do">What Airlock does and doesn&#39;t do</h2>
+<p>Airlock stores the proposed contact update, notifies whoever needs to see it, and holds the decision. It doesn&#39;t know what CopilotKit or AG-UI are, doesn&#39;t render your interrupt UI, and doesn&#39;t touch your CRM. <code>update-contact/poll.ts</code> above is still the only code path that calls <code>crm.updateContact</code> — if another action or a direct API route can write to the CRM without going through this gate, the gate is decorative. See <a href="how-to-add-human-approval-to-an-ai-agent">how to add human approval to an AI agent</a> for the underlying propose → approve → execute contract this builds on.</p>
 <hr>
 <h2 id="next-step">Next step</h2>
 <p>Get an API key from the <a href="quickstart">quickstart</a>, then swap the raw <code>fetch</code> calls above for the TypeScript SDK if you&#39;re wiring this into more than one AG-UI action.</p>
 
-    <aside class="doc-cta" aria-label="Try Impri">
+    <aside class="doc-cta" aria-label="Try Airlock">
   <p class="doc-cta-title">Add an approval step to your own agent</p>
-  <p>Start on Impri Cloud: the Free tier includes 100 approvals a month. Or self-host the MIT-licensed core with Docker Compose, with no tier limits.</p>
+  <p>Start on Airlock Cloud: the Free tier includes 100 approvals a month. Or self-host the MIT-licensed core with Docker Compose, with no tier limits.</p>
   <div class="doc-cta-actions">
-    <a class="btn btn-primary btn-sm" href="https://app.impri.dev/?signup=1">Start free on Impri Cloud</a>
+    <a class="btn btn-primary btn-sm" href="https://app.airlock.dev/?signup=1">Start free on Airlock Cloud</a>
     <a class="btn btn-ghost btn-sm" href="../docs/quickstart">Quick start</a>
     <a class="btn btn-ghost btn-sm" href="../docs/self-hosting">Self-host guide</a>
   </div>
@@ -316,7 +316,7 @@ pre code.hljs{display:block;overflow-x:auto}
 <li class="ptoc-h2"><a href="#backend-tool-not-just-frontend-interrupt">Backend tool, not just frontend interrupt</a></li>
 <li class="ptoc-h2"><a href="#resolving-the-interrupt-from-either-side">Resolving the interrupt from either side</a></li>
 <li class="ptoc-h2"><a href="#what-stays-a-frontend-concern">What stays a frontend concern</a></li>
-<li class="ptoc-h2"><a href="#what-impri-does-and-doesn39t-do">What Impri does and doesn't do</a></li>
+<li class="ptoc-h2"><a href="#what-airlock-does-and-doesn39t-do">What Airlock does and doesn't do</a></li>
 <li class="ptoc-h2"><a href="#next-step">Next step</a></li></ul>
 </nav>
   </aside>
@@ -325,19 +325,19 @@ pre code.hljs{display:block;overflow-x:auto}
 <footer class="footer">
 <div class="wrap footer-inner">
   <a class="brand" href="/">
-    <span class="mark"><svg viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.5 4.5L19 7.5" stroke="white" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Impri
+    <span class="mark"><svg viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.5 4.5L19 7.5" stroke="white" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Airlock
   </a>
   <div>
-    <a href="https://gitlab.com/sekera.radim/impri">GitLab</a>
+    <a href="https://gitlab.com/sekera.radim/airlock">GitLab</a>
     <a href="/docs">Docs</a>
-    <a href="https://gitlab.com/sekera.radim/impri/-/blob/main/LICENSE">MIT License</a>
-    <a href="https://www.npmjs.com/package/@impri/mcp">@impri/mcp</a>
+    <a href="https://gitlab.com/sekera.radim/airlock/-/blob/main/LICENSE">MIT License</a>
+    <a href="https://www.npmjs.com/package/@airlock/mcp">@airlock/mcp</a>
     <a href="/docs/privacy">Privacy</a>
     <a href="/docs/terms">Terms</a>
     <a href="https://sekera.dev">Contact</a>
   </div>
 </div>
-<div class="wrap" style="margin-top:18px"><span class="muted">© 2026 Impri · The imprimatur for your AI agents · Built by <a href="https://sekera.dev" style="color:inherit">Radim Sekera</a>. Also by the same maker: <a href="https://briefgate.dev/?utm_source=impri.dev&amp;utm_medium=referral" style="color:inherit">BriefGate</a> — client intake for agencies and AI agents.</span></div>
+<div class="wrap" style="margin-top:18px"><span class="muted">© 2026 Airlock · The airlockmatur for your AI agents · Built by <a href="https://sekera.dev" style="color:inherit">Radim Sekera</a>. Also by the same maker: <a href="https://briefgate.dev/?utm_source=airlock.dev&amp;utm_medium=referral" style="color:inherit">BriefGate</a> — client intake for agencies and AI agents.</span></div>
 </footer>
 </body>
 </html>

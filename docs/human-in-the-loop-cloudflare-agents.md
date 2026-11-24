@@ -16,7 +16,7 @@ A real gate has to sit *outside* the model's process, on the only path to the si
 
 ## Wrapping the tool executor, not the model
 
-The fix is mechanical: instead of letting a tool's `execute` function call the side-effecting code directly, have it push an Impri action and block on the decision. The side-effecting function only ever gets called from inside the `if (status === "approved")` branch — there's no other route to it in the codebase.
+The fix is mechanical: instead of letting a tool's `execute` function call the side-effecting code directly, have it push an Airlock action and block on the decision. The side-effecting function only ever gets called from inside the `if (status === "approved")` branch — there's no other route to it in the codebase.
 
 ```typescript
 // inside your Agent's Durable Object class (agents SDK)
@@ -27,10 +27,10 @@ const postToSlack = tool({
   description: "Post a message to the #eng-updates Slack channel",
   parameters: z.object({ text: z.string() }),
   execute: async ({ text }) => {
-    const push = await fetch("https://api.impri.dev/v1/actions", {
+    const push = await fetch("https://api.airlock.dev/v1/actions", {
       method: "POST",
       headers: {
-        Authorization: `Bearer ${this.env.IMPRI_API_KEY}`,
+        Authorization: `Bearer ${this.env.AIRLOCK_API_KEY}`,
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
@@ -46,8 +46,8 @@ const postToSlack = tool({
     // no separate queue needed. Simplified inline loop shown here.
     let result;
     while (true) {
-      result = await fetch(`https://api.impri.dev/v1/actions/${push.id}`, {
-        headers: { Authorization: `Bearer ${this.env.IMPRI_API_KEY}` },
+      result = await fetch(`https://api.airlock.dev/v1/actions/${push.id}`, {
+        headers: { Authorization: `Bearer ${this.env.AIRLOCK_API_KEY}` },
       }).then((r) => r.json());
       if (result.status !== "pending") break;
       await new Promise((r) => setTimeout(r, 5000));
@@ -58,10 +58,10 @@ const postToSlack = tool({
     }
 
     await slackClient.postMessage(result.decision.final_preview.body);
-    await fetch(`https://api.impri.dev/v1/actions/${push.id}/result`, {
+    await fetch(`https://api.airlock.dev/v1/actions/${push.id}/result`, {
       method: "POST",
       headers: {
-        Authorization: `Bearer ${this.env.IMPRI_API_KEY}`,
+        Authorization: `Bearer ${this.env.AIRLOCK_API_KEY}`,
         "Content-Type": "application/json",
       },
       body: JSON.stringify({ status: "executed" }),
@@ -81,8 +81,8 @@ One thing that's genuinely a good fit here: Cloudflare's Durable Objects support
 
 ---
 
-## What Impri actually gates here
+## What Airlock actually gates here
 
-Impri stores the proposed Slack message, notifies you (email, push, or a Slack/Discord/Telegram approval channel), and holds the decision — it does not know what "posting to Slack" means or verify the message content. The gate is only as real as the wrapping: if some other part of your Durable Object still holds a Slack token and calls `slackClient.postMessage` directly, that path routes around Impri entirely. Confine the credential to the wrapped executor, not just the intended call site, and treat the built-in Agents SDK confirmation UI as a UX nicety layered on top of this — not a substitute for it.
+Airlock stores the proposed Slack message, notifies you (email, push, or a Slack/Discord/Telegram approval channel), and holds the decision — it does not know what "posting to Slack" means or verify the message content. The gate is only as real as the wrapping: if some other part of your Durable Object still holds a Slack token and calls `slackClient.postMessage` directly, that path routes around Airlock entirely. Confine the credential to the wrapped executor, not just the intended call site, and treat the built-in Agents SDK confirmation UI as a UX nicety layered on top of this — not a substitute for it.
 
-For the full three-call pattern this builds on, see [how to add human approval to an AI agent](how-to-add-human-approval-to-an-ai-agent.md). If you're integrating an SDK rather than raw fetch calls, check the [TypeScript SDK](sdk-typescript.md). New to Impri entirely? Start with the [quickstart](quickstart.md).
+For the full three-call pattern this builds on, see [how to add human approval to an AI agent](how-to-add-human-approval-to-an-ai-agent.md). If you're integrating an SDK rather than raw fetch calls, check the [TypeScript SDK](sdk-typescript.md). New to Airlock entirely? Start with the [quickstart](quickstart.md).

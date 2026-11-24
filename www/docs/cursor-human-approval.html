@@ -3,21 +3,21 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Add human approval to Cursor with Impri — Impri Docs</title>
-<meta name="description" content="Have Cursor's agent mode pause on real-world side effects — a push, a deploy, a database write — and wait for a human decision from Impri's inbox.">
+<title>Add human approval to Cursor with Airlock — Airlock Docs</title>
+<meta name="description" content="Have Cursor's agent mode pause on real-world side effects — a push, a deploy, a database write — and wait for a human decision from Airlock's inbox.">
 <meta name="theme-color" content="#06070d">
-<meta property="og:title" content="Add human approval to Cursor with Impri — Impri Docs">
-<meta property="og:description" content="Have Cursor's agent mode pause on real-world side effects — a push, a deploy, a database write — and wait for a human decision from Impri's inbox.">
+<meta property="og:title" content="Add human approval to Cursor with Airlock — Airlock Docs">
+<meta property="og:description" content="Have Cursor's agent mode pause on real-world side effects — a push, a deploy, a database write — and wait for a human decision from Airlock's inbox.">
 <meta property="og:type" content="article">
-<meta property="og:url" content="https://impri.dev/docs/cursor-human-approval">
-<meta property="og:image" content="https://impri.dev/assets/og/og-docs.png">
+<meta property="og:url" content="https://airlock.dev/docs/cursor-human-approval">
+<meta property="og:image" content="https://airlock.dev/assets/og/og-docs.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
-<meta property="og:image:alt" content="Impri — human-in-the-loop approval inbox for AI agents">
+<meta property="og:image:alt" content="Airlock — human-in-the-loop approval inbox for AI agents">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="https://impri.dev/assets/og/og-docs.png">
-<link rel="canonical" href="https://impri.dev/docs/cursor-human-approval">
-<script type="application/ld+json">{"@context":"https://schema.org","@type":"TechArticle","headline":"Add human approval to Cursor with Impri","description":"Have Cursor's agent mode pause on real-world side effects — a push, a deploy, a database write — and wait for a human decision from Impri's inbox.","url":"https://impri.dev/docs/cursor-human-approval","inLanguage":"en","author":{"@type":"Organization","name":"Impri","url":"https://impri.dev"},"publisher":{"@type":"Organization","name":"Impri","url":"https://impri.dev"}}</script>
+<meta name="twitter:image" content="https://airlock.dev/assets/og/og-docs.png">
+<link rel="canonical" href="https://airlock.dev/docs/cursor-human-approval">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"TechArticle","headline":"Add human approval to Cursor with Airlock","description":"Have Cursor's agent mode pause on real-world side effects — a push, a deploy, a database write — and wait for a human decision from Airlock's inbox.","url":"https://airlock.dev/docs/cursor-human-approval","inLanguage":"en","author":{"@type":"Organization","name":"Airlock","url":"https://airlock.dev"},"publisher":{"@type":"Organization","name":"Airlock","url":"https://airlock.dev"}}</script>
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <link rel="icon" href="/favicon.ico" sizes="32x32">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='9' fill='%236366f1'/%3E%3Cpath d='M9 16.5l4.5 4.5L23 11' stroke='white' stroke-width='3' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
@@ -132,13 +132,13 @@ pre code.hljs{display:block;overflow-x:auto}
 <div class="wrap nav-inner">
   <a class="brand" href="/">
     <span class="mark"><svg viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.5 4.5L19 7.5" stroke="white" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
-    Impri
+    Airlock
   </a>
   <div class="nav-links">
     <a class="link" href="/#how">How it works</a>
     <a class="link" href="/#pricing">Pricing</a>
     <a class="link active-nav" href="../docs">Docs</a>
-    <a class="btn btn-primary btn-sm" href="https://gitlab.com/sekera.radim/impri">GitLab</a>
+    <a class="btn btn-primary btn-sm" href="https://gitlab.com/sekera.radim/airlock">GitLab</a>
   </div>
 </div>
 </nav>
@@ -150,35 +150,35 @@ pre code.hljs{display:block;overflow-x:auto}
       <span class="bc-sep">/</span>
       <span>Install</span>
       <span class="bc-sep">/</span>
-      <span>Add human approval to Cursor with Impri</span>
+      <span>Add human approval to Cursor with Airlock</span>
     </nav>
-    <h1>Add human approval to Cursor with Impri</h1>
-<p>Have Cursor&#39;s agent mode pause on real-world side effects — a push, a deploy, a database write — and wait for a human decision from Impri&#39;s inbox.</p>
+    <h1>Add human approval to Cursor with Airlock</h1>
+<p>Have Cursor&#39;s agent mode pause on real-world side effects — a push, a deploy, a database write — and wait for a human decision from Airlock&#39;s inbox.</p>
 <h2 id="60-second-install">60-second install</h2>
 <p>Create <code>.cursor/mcp.json</code> in your project (or <code>~/.cursor/mcp.json</code> for all projects):</p>
 <div class="code-block"><span class="code-lang">json</span><pre><code class="hljs"><span class="hljs-punctuation">{</span>
   <span class="hljs-attr">&quot;mcpServers&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
-    <span class="hljs-attr">&quot;impri&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+    <span class="hljs-attr">&quot;airlock&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
       <span class="hljs-attr">&quot;command&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;npx&quot;</span><span class="hljs-punctuation">,</span>
-      <span class="hljs-attr">&quot;args&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">[</span><span class="hljs-string">&quot;-y&quot;</span><span class="hljs-punctuation">,</span> <span class="hljs-string">&quot;@impri/mcp&quot;</span><span class="hljs-punctuation">]</span><span class="hljs-punctuation">,</span>
+      <span class="hljs-attr">&quot;args&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">[</span><span class="hljs-string">&quot;-y&quot;</span><span class="hljs-punctuation">,</span> <span class="hljs-string">&quot;@airlock/mcp&quot;</span><span class="hljs-punctuation">]</span><span class="hljs-punctuation">,</span>
       <span class="hljs-attr">&quot;env&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
-        <span class="hljs-attr">&quot;IMPRI_API_KEY&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;im_your_key_here&quot;</span><span class="hljs-punctuation">,</span>
-        <span class="hljs-attr">&quot;IMPRI_BASE_URL&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;https://api.impri.dev&quot;</span>
+        <span class="hljs-attr">&quot;AIRLOCK_API_KEY&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;im_your_key_here&quot;</span><span class="hljs-punctuation">,</span>
+        <span class="hljs-attr">&quot;AIRLOCK_BASE_URL&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;https://api.airlock.dev&quot;</span>
       <span class="hljs-punctuation">}</span>
     <span class="hljs-punctuation">}</span>
   <span class="hljs-punctuation">}</span>
 <span class="hljs-punctuation">}</span></code></pre></div>
-<p>Self-hosting instead of the cloud? Drop the <code>IMPRI_BASE_URL</code> line entirely — it defaults to <code>http://localhost:8484</code> — or point it at wherever your instance actually runs (see <a href="self-hosting">self-hosting</a>). Get a cloud key at <a href="https://impri.dev" target="_blank" rel="noopener">impri.dev</a>.</p>
-<p>Reopen Cursor&#39;s MCP settings panel (Settings → MCP) and confirm <code>impri</code> shows a green dot with 8 tools listed.</p>
+<p>Self-hosting instead of the cloud? Drop the <code>AIRLOCK_BASE_URL</code> line entirely — it defaults to <code>http://localhost:8484</code> — or point it at wherever your instance actually runs (see <a href="self-hosting">self-hosting</a>). Get a cloud key at <a href="https://airlock.dev" target="_blank" rel="noopener">airlock.dev</a>.</p>
+<p>Reopen Cursor&#39;s MCP settings panel (Settings → MCP) and confirm <code>airlock</code> shows a green dot with 8 tools listed.</p>
 <h2 id="tell-cursor39s-agent-to-use-it">Tell Cursor&#39;s agent to use it</h2>
 <p>Add to your project&#39;s <code>.cursorrules</code> or Cursor&#39;s custom instructions:</p>
 <div class="code-block"><span class="code-lang">markdown</span><pre><code class="hljs"><span class="hljs-section">## Human approval</span>
 Before any action with a real side effect (send, deploy, delete, pay, publish), call
-impri<span class="hljs-emphasis">_push_</span>action with a clear preview, then impri<span class="hljs-emphasis">_await_</span>decision before proceeding.</code></pre></div>
+airlock<span class="hljs-emphasis">_push_</span>action with a clear preview, then airlock<span class="hljs-emphasis">_await_</span>decision before proceeding.</code></pre></div>
 <h2 id="what-you-see">What you see</h2>
-<p>Cursor keeps working while the action sits in your Impri inbox. You get the title and preview there, plus a push to Slack/Telegram/ntfy if you&#39;ve wired one up — approve, reject, or edit the draft before Cursor&#39;s agent acts on it.</p>
+<p>Cursor keeps working while the action sits in your Airlock inbox. You get the title and preview there, plus a push to Slack/Telegram/ntfy if you&#39;ve wired one up — approve, reject, or edit the draft before Cursor&#39;s agent acts on it.</p>
 <h2 id="real-example-call">Real example call</h2>
-<div class="code-block"><pre><code class="hljs">impri_push_action({
+<div class="code-block"><pre><code class="hljs">airlock_push_action({
   kind: &quot;content.publish&quot;,
   title: &quot;Publish blog post: \&quot;5 lessons from our Q3 outage\&quot;&quot;,
   preview: { format: &quot;markdown&quot;, body: &quot;# 5 lessons from our Q3 outage\n\nOn August 14th...&quot; },
@@ -188,12 +188,12 @@ impri<span class="hljs-emphasis">_push_</span>action with a clear preview, then 
 <div class="code-block"><span class="code-lang">json</span><pre><code class="hljs"><span class="hljs-punctuation">{</span>
   <span class="hljs-attr">&quot;action_id&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;act_3kx0...&quot;</span><span class="hljs-punctuation">,</span>
   <span class="hljs-attr">&quot;status&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;pending&quot;</span><span class="hljs-punctuation">,</span>
-  <span class="hljs-attr">&quot;inbox_url&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;https://app.impri.dev/inbox/act_3kx0...&quot;</span>
+  <span class="hljs-attr">&quot;inbox_url&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;https://app.airlock.dev/inbox/act_3kx0...&quot;</span>
 <span class="hljs-punctuation">}</span></code></pre></div>
 <h2 id="troubleshooting">Troubleshooting</h2>
 <ul>
-<li><strong><code>impri</code> doesn&#39;t appear in Cursor&#39;s MCP panel</strong> — <code>.cursor/mcp.json</code> must be valid JSON; a trailing comma is the usual culprit. Check Cursor&#39;s MCP logs panel for the exact parse error.</li>
-<li><strong>Server shows connected but tool calls fail</strong> — usually <code>IMPRI_API_KEY</code> is missing or wrong; the error message from the tool call itself will say so directly.</li>
+<li><strong><code>airlock</code> doesn&#39;t appear in Cursor&#39;s MCP panel</strong> — <code>.cursor/mcp.json</code> must be valid JSON; a trailing comma is the usual culprit. Check Cursor&#39;s MCP logs panel for the exact parse error.</li>
+<li><strong>Server shows connected but tool calls fail</strong> — usually <code>AIRLOCK_API_KEY</code> is missing or wrong; the error message from the tool call itself will say so directly.</li>
 <li><strong>Works locally but not for teammates</strong> — <code>.cursor/mcp.json</code> at the project root is typically gitignored (it may contain a key); share the file without the key and have each teammate fill in their own, or use a per-project scoped key.</li>
 </ul>
 <h2 id="next">Next</h2>
@@ -283,19 +283,19 @@ impri<span class="hljs-emphasis">_push_</span>action with a clear preview, then 
 <footer class="footer">
 <div class="wrap footer-inner">
   <a class="brand" href="/">
-    <span class="mark"><svg viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.5 4.5L19 7.5" stroke="white" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Impri
+    <span class="mark"><svg viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.5 4.5L19 7.5" stroke="white" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Airlock
   </a>
   <div>
-    <a href="https://gitlab.com/sekera.radim/impri">GitLab</a>
+    <a href="https://gitlab.com/sekera.radim/airlock">GitLab</a>
     <a href="/docs">Docs</a>
-    <a href="https://gitlab.com/sekera.radim/impri/-/blob/main/LICENSE">MIT License</a>
-    <a href="https://www.npmjs.com/package/@impri/mcp">@impri/mcp</a>
+    <a href="https://gitlab.com/sekera.radim/airlock/-/blob/main/LICENSE">MIT License</a>
+    <a href="https://www.npmjs.com/package/@airlock/mcp">@airlock/mcp</a>
     <a href="/docs/privacy">Privacy</a>
     <a href="/docs/terms">Terms</a>
     <a href="https://sekera.dev">Contact</a>
   </div>
 </div>
-<div class="wrap" style="margin-top:18px"><span class="muted">© 2026 Impri · The imprimatur for your AI agents · Built by <a href="https://sekera.dev" style="color:inherit">Radim Sekera</a>. Also by the same maker: <a href="https://briefgate.dev/?utm_source=impri.dev&amp;utm_medium=referral" style="color:inherit">BriefGate</a> — client intake for agencies and AI agents.</span></div>
+<div class="wrap" style="margin-top:18px"><span class="muted">© 2026 Airlock · The airlockmatur for your AI agents · Built by <a href="https://sekera.dev" style="color:inherit">Radim Sekera</a>. Also by the same maker: <a href="https://briefgate.dev/?utm_source=airlock.dev&amp;utm_medium=referral" style="color:inherit">BriefGate</a> — client intake for agencies and AI agents.</span></div>
 </footer>
 </body>
 </html>

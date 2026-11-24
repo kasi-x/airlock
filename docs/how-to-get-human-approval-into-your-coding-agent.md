@@ -1,13 +1,13 @@
 # How to get human approval into your coding agent
 
-Every coding agent that can call MCP tools can be wired to pause on risky actions and wait for a human decision through Impri, with a one-line install per agent.
+Every coding agent that can call MCP tools can be wired to pause on risky actions and wait for a human decision through Airlock, with a one-line install per agent.
 
-The pattern underneath is the same everywhere: the agent calls `impri_push_action` with a preview, then `impri_await_decision`, and only acts on `approved`.
+The pattern underneath is the same everywhere: the agent calls `airlock_push_action` with a preview, then `airlock_await_decision`, and only acts on `approved`.
 
 Pick your agent:
 
-- [Claude Code](claude-code-human-approval.md) — `claude mcp add impri -e IMPRI_API_KEY=... -e IMPRI_BASE_URL=https://api.impri.dev -- npx @impri/mcp`
-- [OpenAI Codex](codex-human-approval.md) — `codex mcp add impri --env IMPRI_API_KEY=... --env IMPRI_BASE_URL=https://api.impri.dev -- npx -y @impri/mcp`
+- [Claude Code](claude-code-human-approval.md) — `claude mcp add airlock -e AIRLOCK_API_KEY=... -e AIRLOCK_BASE_URL=https://api.airlock.dev -- npx @airlock/mcp`
+- [OpenAI Codex](codex-human-approval.md) — `codex mcp add airlock --env AIRLOCK_API_KEY=... --env AIRLOCK_BASE_URL=https://api.airlock.dev -- npx -y @airlock/mcp`
 - [Cursor](cursor-human-approval.md) — `.cursor/mcp.json`
 - [Windsurf](windsurf-human-approval.md) — `~/.codeium/windsurf/mcp_config.json`
 
@@ -15,10 +15,10 @@ Any other MCP-compatible client works the same way — see the [MCP server refer
 
 ## The pattern, in short
 
-1. Get an API key at [impri.dev](https://impri.dev) or self-host with `docker compose up` (see [self-hosting](self-hosting.md)).
-2. Register the `@impri/mcp` server with your agent's CLI or config file (links above) — set `IMPRI_BASE_URL` to `https://api.impri.dev` for the cloud, or leave it unset for self-hosted (it defaults to `http://localhost:8484`).
-3. Add a short instruction to your agent's system prompt or rules file: before any action with a real side effect, call `impri_push_action`, then `impri_await_decision`, and only proceed on `approved`.
-4. Decide from the web inbox at [app.impri.dev](https://app.impri.dev), or from your phone if you've set up [notifications](notifications.md) (Slack, Discord, Telegram, ntfy, or web push).
+1. Get an API key at [airlock.dev](https://airlock.dev) or self-host with `docker compose up` (see [self-hosting](self-hosting.md)).
+2. Register the `@airlock/mcp` server with your agent's CLI or config file (links above) — set `AIRLOCK_BASE_URL` to `https://api.airlock.dev` for the cloud, or leave it unset for self-hosted (it defaults to `http://localhost:8484`).
+3. Add a short instruction to your agent's system prompt or rules file: before any action with a real side effect, call `airlock_push_action`, then `airlock_await_decision`, and only proceed on `approved`.
+4. Decide from the web inbox at [app.airlock.dev](https://app.airlock.dev), or from your phone if you've set up [notifications](notifications.md) (Slack, Discord, Telegram, ntfy, or web push).
 
 ## Where to go deeper
 

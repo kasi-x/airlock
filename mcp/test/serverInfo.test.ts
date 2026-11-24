@@ -22,18 +22,18 @@ describe("serverInfo", () => {
   });
 
   it("SERVER_NAME/SERVER_TITLE are set", () => {
-    expect(SERVER_NAME).toBe("@impri/mcp");
-    expect(SERVER_TITLE).toBe("Impri");
+    expect(SERVER_NAME).toBe("@airlock/mcp");
+    expect(SERVER_TITLE).toBe("Airlock");
   });
 
   it("INSTRUCTIONS covers the push/await/report flow and watchers, and is a reasonable size", () => {
     expect(INSTRUCTIONS.length).toBeGreaterThan(400);
     expect(INSTRUCTIONS.length).toBeLessThan(1200);
     for (const tool of [
-      "impri_push_action",
-      "impri_await_decision",
-      "impri_report_result",
-      "impri_create_watcher",
+      "airlock_push_action",
+      "airlock_await_decision",
+      "airlock_report_result",
+      "airlock_create_watcher",
     ]) {
       expect(INSTRUCTIONS).toContain(tool);
     }

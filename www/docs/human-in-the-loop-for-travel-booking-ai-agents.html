@@ -3,21 +3,21 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Human-in-the-Loop for Travel Booking AI Agents — Impri Docs</title>
-<meta name="description" content="A travel-booking AI agent that can search flights and hotels but not pay for them on its own — this guide wires an Impri approval gate in Python before any…">
+<title>Human-in-the-Loop for Travel Booking AI Agents — Airlock Docs</title>
+<meta name="description" content="A travel-booking AI agent that can search flights and hotels but not pay for them on its own — this guide wires an Airlock approval gate in Python before any…">
 <meta name="theme-color" content="#06070d">
-<meta property="og:title" content="Human-in-the-Loop for Travel Booking AI Agents — Impri Docs">
-<meta property="og:description" content="A travel-booking AI agent that can search flights and hotels but not pay for them on its own — this guide wires an Impri approval gate in Python before any…">
+<meta property="og:title" content="Human-in-the-Loop for Travel Booking AI Agents — Airlock Docs">
+<meta property="og:description" content="A travel-booking AI agent that can search flights and hotels but not pay for them on its own — this guide wires an Airlock approval gate in Python before any…">
 <meta property="og:type" content="article">
-<meta property="og:url" content="https://impri.dev/docs/human-in-the-loop-for-travel-booking-ai-agents">
-<meta property="og:image" content="https://impri.dev/assets/og/og-docs.png">
+<meta property="og:url" content="https://airlock.dev/docs/human-in-the-loop-for-travel-booking-ai-agents">
+<meta property="og:image" content="https://airlock.dev/assets/og/og-docs.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
-<meta property="og:image:alt" content="Impri — human-in-the-loop approval inbox for AI agents">
+<meta property="og:image:alt" content="Airlock — human-in-the-loop approval inbox for AI agents">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="https://impri.dev/assets/og/og-docs.png">
-<link rel="canonical" href="https://impri.dev/docs/human-in-the-loop-for-travel-booking-ai-agents">
-<script type="application/ld+json">{"@context":"https://schema.org","@type":"TechArticle","headline":"Human-in-the-Loop for Travel Booking AI Agents","description":"A travel-booking AI agent that can search flights and hotels but not pay for them on its own — this guide wires an Impri approval gate in Python before any…","url":"https://impri.dev/docs/human-in-the-loop-for-travel-booking-ai-agents","inLanguage":"en","author":{"@type":"Organization","name":"Impri","url":"https://impri.dev"},"publisher":{"@type":"Organization","name":"Impri","url":"https://impri.dev"}}</script>
+<meta name="twitter:image" content="https://airlock.dev/assets/og/og-docs.png">
+<link rel="canonical" href="https://airlock.dev/docs/human-in-the-loop-for-travel-booking-ai-agents">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"TechArticle","headline":"Human-in-the-Loop for Travel Booking AI Agents","description":"A travel-booking AI agent that can search flights and hotels but not pay for them on its own — this guide wires an Airlock approval gate in Python before any…","url":"https://airlock.dev/docs/human-in-the-loop-for-travel-booking-ai-agents","inLanguage":"en","author":{"@type":"Organization","name":"Airlock","url":"https://airlock.dev"},"publisher":{"@type":"Organization","name":"Airlock","url":"https://airlock.dev"}}</script>
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <link rel="icon" href="/favicon.ico" sizes="32x32">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='9' fill='%236366f1'/%3E%3Cpath d='M9 16.5l4.5 4.5L23 11' stroke='white' stroke-width='3' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
@@ -132,13 +132,13 @@ pre code.hljs{display:block;overflow-x:auto}
 <div class="wrap nav-inner">
   <a class="brand" href="/">
     <span class="mark"><svg viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.5 4.5L19 7.5" stroke="white" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
-    Impri
+    Airlock
   </a>
   <div class="nav-links">
     <a class="link" href="/#how">How it works</a>
     <a class="link" href="/#pricing">Pricing</a>
     <a class="link active-nav" href="../docs">Docs</a>
-    <a class="btn btn-primary btn-sm" href="https://gitlab.com/sekera.radim/impri">GitLab</a>
+    <a class="btn btn-primary btn-sm" href="https://gitlab.com/sekera.radim/airlock">GitLab</a>
   </div>
 </div>
 </nav>
@@ -153,18 +153,18 @@ pre code.hljs{display:block;overflow-x:auto}
       <span>Human-in-the-Loop for Travel Booking AI Agents</span>
     </nav>
     <h1>Human-in-the-Loop for Travel Booking AI Agents</h1>
-<p>A travel-booking AI agent that can search flights and hotels but not pay for them on its own — this guide wires an Impri approval gate in Python before any booking charges a card.</p>
+<p>A travel-booking AI agent that can search flights and hotels but not pay for them on its own — this guide wires an Airlock approval gate in Python before any booking charges a card.</p>
 <hr>
 <h2 id="why-travel-bookings-are-a-bad-place-for-full-autonomy">Why travel bookings are a bad place for full autonomy</h2>
 <p>A travel agent that only searches and compares is low-risk: wrong results cost a re-query. A travel agent that also books is a different category of risk — a booked flight charges a real card, and cancellation policies vary by fare class, so &quot;just cancel it&quot; is not always true or free. Add ambiguity in the source request (&quot;book the earlier one&quot; when the itinerary has three legs) and the failure mode is a nonrefundable ticket for the wrong day.</p>
-<p>This is exactly the shape of action Impri is built for: the agent can search and shortlist freely, but the specific booking call needs a human to look at the itinerary and price once before it&#39;s confirmed.</p>
+<p>This is exactly the shape of action Airlock is built for: the agent can search and shortlist freely, but the specific booking call needs a human to look at the itinerary and price once before it&#39;s confirmed.</p>
 <h2 id="pushing-the-booking-as-a-pending-action">Pushing the booking as a pending action</h2>
 <p>Once the agent has narrowed the search to one flight (or hotel room) it wants to book, it pushes the booking as an action instead of calling the airline/OTA API directly:</p>
 <div class="code-block"><span class="code-lang">python</span><pre><code class="hljs"><span class="hljs-keyword">import</span> os
 <span class="hljs-keyword">import</span> requests
 
-IMPRI_API_KEY = os.environ[<span class="hljs-string">&quot;IMPRI_API_KEY&quot;</span>]
-BASE = <span class="hljs-string">&quot;https://api.impri.dev&quot;</span>
+AIRLOCK_API_KEY = os.environ[<span class="hljs-string">&quot;AIRLOCK_API_KEY&quot;</span>]
+BASE = <span class="hljs-string">&quot;https://api.airlock.dev&quot;</span>
 
 <span class="hljs-keyword">def</span> <span class="hljs-title function_">propose_booking</span>(<span class="hljs-params">itinerary, price_usd, fare_class</span>):
     body = {
@@ -189,7 +189,7 @@ BASE = <span class="hljs-string">&quot;https://api.impri.dev&quot;</span>
     }
     res = requests.post(
         <span class="hljs-string">f&quot;<span class="hljs-subst">{BASE}</span>/v1/actions&quot;</span>,
-        headers={<span class="hljs-string">&quot;Authorization&quot;</span>: <span class="hljs-string">f&quot;Bearer <span class="hljs-subst">{IMPRI_API_KEY}</span>&quot;</span>},
+        headers={<span class="hljs-string">&quot;Authorization&quot;</span>: <span class="hljs-string">f&quot;Bearer <span class="hljs-subst">{AIRLOCK_API_KEY}</span>&quot;</span>},
         json=body,
     )
     res.raise_for_status()
@@ -203,7 +203,7 @@ BASE = <span class="hljs-string">&quot;https://api.impri.dev&quot;</span>
     <span class="hljs-keyword">while</span> time.time() &lt; deadline:
         res = requests.get(
             <span class="hljs-string">f&quot;<span class="hljs-subst">{BASE}</span>/v1/actions/<span class="hljs-subst">{action_id}</span>&quot;</span>,
-            headers={<span class="hljs-string">&quot;Authorization&quot;</span>: <span class="hljs-string">f&quot;Bearer <span class="hljs-subst">{IMPRI_API_KEY}</span>&quot;</span>},
+            headers={<span class="hljs-string">&quot;Authorization&quot;</span>: <span class="hljs-string">f&quot;Bearer <span class="hljs-subst">{AIRLOCK_API_KEY}</span>&quot;</span>},
         )
         status = res.json()[<span class="hljs-string">&quot;status&quot;</span>]
         <span class="hljs-keyword">if</span> status != <span class="hljs-string">&quot;pending&quot;</span>:
@@ -217,24 +217,24 @@ decision = await_decision(action_id)
     confirmation = airline_api.book(itinerary)  <span class="hljs-comment"># your real booking call</span>
     requests.post(
         <span class="hljs-string">f&quot;<span class="hljs-subst">{BASE}</span>/v1/actions/<span class="hljs-subst">{action_id}</span>/result&quot;</span>,
-        headers={<span class="hljs-string">&quot;Authorization&quot;</span>: <span class="hljs-string">f&quot;Bearer <span class="hljs-subst">{IMPRI_API_KEY}</span>&quot;</span>},
+        headers={<span class="hljs-string">&quot;Authorization&quot;</span>: <span class="hljs-string">f&quot;Bearer <span class="hljs-subst">{AIRLOCK_API_KEY}</span>&quot;</span>},
         json={<span class="hljs-string">&quot;status&quot;</span>: <span class="hljs-string">&quot;executed&quot;</span>, <span class="hljs-string">&quot;payload&quot;</span>: {<span class="hljs-string">&quot;confirmation_code&quot;</span>: confirmation.code}},
     )
 <span class="hljs-keyword">else</span>:
     <span class="hljs-comment"># rejected or expired — do not book, surface it back to the traveler</span>
     notify_user(<span class="hljs-string">f&quot;Booking not confirmed: <span class="hljs-subst">{decision[<span class="hljs-string">&#x27;status&#x27;</span>]}</span>&quot;</span>)</code></pre></div>
-<p>The 30-minute <code>expires_in</code> above matters more here than in most Impri use cases: airline fares reprice, and a booking approved against a price quoted an hour ago may no longer be bookable at that price. Treat <code>expired</code> as &quot;re-quote and ask again,&quot; not just &quot;give up.&quot;</p>
+<p>The 30-minute <code>expires_in</code> above matters more here than in most Airlock use cases: airline fares reprice, and a booking approved against a price quoted an hour ago may no longer be bookable at that price. Treat <code>expired</code> as &quot;re-quote and ask again,&quot; not just &quot;give up.&quot;</p>
 <h2 id="multi-leg-trips-one-action-per-leg-not-one-for-the-whole-trip">Multi-leg trips: one action per leg, not one for the whole trip</h2>
 <p>For a multi-city itinerary, push a separate action per leg rather than one action covering the whole trip. A reviewer can then approve the outbound flight while rejecting a bad connection on the return, and the <code>undo</code> field can describe each leg&#39;s specific cancellation terms instead of an averaged, less accurate summary.</p>
 <h2 id="prompt-injection-from-booking-sources">Prompt injection from booking sources</h2>
-<p>If the agent reads flight or hotel data scraped from a third-party site or an email forward (&quot;book whatever&#39;s cheapest&quot;), treat that content as data, not instruction — a page claiming a fake &quot;government fee due now&quot; should not make it into <code>preview.body</code> as if it were a legitimate line item. Impri displays exactly what the agent sends; it does not verify prices or itineraries against the airline.</p>
+<p>If the agent reads flight or hotel data scraped from a third-party site or an email forward (&quot;book whatever&#39;s cheapest&quot;), treat that content as data, not instruction — a page claiming a fake &quot;government fee due now&quot; should not make it into <code>preview.body</code> as if it were a legitimate line item. Airlock displays exactly what the agent sends; it does not verify prices or itineraries against the airline.</p>
 <p>Next: see the <a href="mcp">MCP integration</a> if your travel agent runs inside Claude Code or another MCP client, or start with the <a href="quickstart">quickstart</a> to get an API key.</p>
 
-    <aside class="doc-cta" aria-label="Try Impri">
+    <aside class="doc-cta" aria-label="Try Airlock">
   <p class="doc-cta-title">Add an approval step to your own agent</p>
-  <p>Start on Impri Cloud: the Free tier includes 100 approvals a month. Or self-host the MIT-licensed core with Docker Compose, with no tier limits.</p>
+  <p>Start on Airlock Cloud: the Free tier includes 100 approvals a month. Or self-host the MIT-licensed core with Docker Compose, with no tier limits.</p>
   <div class="doc-cta-actions">
-    <a class="btn btn-primary btn-sm" href="https://app.impri.dev/?signup=1">Start free on Impri Cloud</a>
+    <a class="btn btn-primary btn-sm" href="https://app.airlock.dev/?signup=1">Start free on Airlock Cloud</a>
     <a class="btn btn-ghost btn-sm" href="../docs/quickstart">Quick start</a>
     <a class="btn btn-ghost btn-sm" href="../docs/self-hosting">Self-host guide</a>
   </div>
@@ -329,19 +329,19 @@ decision = await_decision(action_id)
 <footer class="footer">
 <div class="wrap footer-inner">
   <a class="brand" href="/">
-    <span class="mark"><svg viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.5 4.5L19 7.5" stroke="white" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Impri
+    <span class="mark"><svg viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.5 4.5L19 7.5" stroke="white" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Airlock
   </a>
   <div>
-    <a href="https://gitlab.com/sekera.radim/impri">GitLab</a>
+    <a href="https://gitlab.com/sekera.radim/airlock">GitLab</a>
     <a href="/docs">Docs</a>
-    <a href="https://gitlab.com/sekera.radim/impri/-/blob/main/LICENSE">MIT License</a>
-    <a href="https://www.npmjs.com/package/@impri/mcp">@impri/mcp</a>
+    <a href="https://gitlab.com/sekera.radim/airlock/-/blob/main/LICENSE">MIT License</a>
+    <a href="https://www.npmjs.com/package/@airlock/mcp">@airlock/mcp</a>
     <a href="/docs/privacy">Privacy</a>
     <a href="/docs/terms">Terms</a>
     <a href="https://sekera.dev">Contact</a>
   </div>
 </div>
-<div class="wrap" style="margin-top:18px"><span class="muted">© 2026 Impri · The imprimatur for your AI agents · Built by <a href="https://sekera.dev" style="color:inherit">Radim Sekera</a>. Also by the same maker: <a href="https://briefgate.dev/?utm_source=impri.dev&amp;utm_medium=referral" style="color:inherit">BriefGate</a> — client intake for agencies and AI agents.</span></div>
+<div class="wrap" style="margin-top:18px"><span class="muted">© 2026 Airlock · The airlockmatur for your AI agents · Built by <a href="https://sekera.dev" style="color:inherit">Radim Sekera</a>. Also by the same maker: <a href="https://briefgate.dev/?utm_source=airlock.dev&amp;utm_medium=referral" style="color:inherit">BriefGate</a> — client intake for agencies and AI agents.</span></div>
 </footer>
 </body>
 </html>

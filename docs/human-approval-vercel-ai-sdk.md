@@ -22,15 +22,15 @@ import { openai } from '@ai-sdk/openai'
 import { z } from 'zod'
 import Stripe from 'stripe'
 
-const IMPRI_API_KEY = process.env.IMPRI_API_KEY!
-const IMPRI_BASE = 'https://api.impri.dev'
+const AIRLOCK_API_KEY = process.env.AIRLOCK_API_KEY!
+const AIRLOCK_BASE = 'https://api.airlock.dev'
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!)
 
 async function pushAndAwait(kind: string, title: string, body: string) {
-  const created = await fetch(`${IMPRI_BASE}/v1/actions`, {
+  const created = await fetch(`${AIRLOCK_BASE}/v1/actions`, {
     method: 'POST',
     headers: {
-      Authorization: `Bearer ${IMPRI_API_KEY}`,
+      Authorization: `Bearer ${AIRLOCK_API_KEY}`,
       'Content-Type': 'application/json',
     },
     body: JSON.stringify({
@@ -43,8 +43,8 @@ async function pushAndAwait(kind: string, title: string, body: string) {
   }).then((r) => r.json())
 
   while (true) {
-    const poll = await fetch(`${IMPRI_BASE}/v1/actions/${created.id}`, {
-      headers: { Authorization: `Bearer ${IMPRI_API_KEY}` },
+    const poll = await fetch(`${AIRLOCK_BASE}/v1/actions/${created.id}`, {
+      headers: { Authorization: `Bearer ${AIRLOCK_API_KEY}` },
     }).then((r) => r.json())
 
     if (poll.status !== 'pending') return { actionId: created.id, poll }
@@ -74,9 +74,9 @@ const issueRefund = tool({
     // decision.final_preview carries any edits the reviewer made to the reason/amount note
     const refund = await stripe.refunds.create({ charge: chargeId, amount: amountCents })
 
-    await fetch(`${IMPRI_BASE}/v1/actions/${actionId}/result`, {
+    await fetch(`${AIRLOCK_BASE}/v1/actions/${actionId}/result`, {
       method: 'POST',
-      headers: { Authorization: `Bearer ${IMPRI_API_KEY}`, 'Content-Type': 'application/json' },
+      headers: { Authorization: `Bearer ${AIRLOCK_API_KEY}`, 'Content-Type': 'application/json' },
       body: JSON.stringify({ status: 'executed' }),
     })
 
@@ -108,7 +108,7 @@ This only holds as long as `issueRefund` is the agent's sole path to `stripe.ref
 
 ## Multi-step loops and `stopWhen`
 
-`stopWhen: stepCountIs(5)` caps how many tool-call rounds the model can take in one `generateText` call. Each poll inside `execute` can take anywhere from seconds to the full `expires_in` window, so a single gated tool call can dominate the run's wall-clock time — that's expected, not a bug. If the agent runs inside a request handler with its own timeout (a Vercel serverless function, for instance), a long-pending approval will hit that timeout before Impri's. For approvals that can sit for hours, run the agent from a durable worker or queue consumer instead of an HTTP handler, so the wait doesn't get killed by an unrelated timeout.
+`stopWhen: stepCountIs(5)` caps how many tool-call rounds the model can take in one `generateText` call. Each poll inside `execute` can take anywhere from seconds to the full `expires_in` window, so a single gated tool call can dominate the run's wall-clock time — that's expected, not a bug. If the agent runs inside a request handler with its own timeout (a Vercel serverless function, for instance), a long-pending approval will hit that timeout before Airlock's. For approvals that can sit for hours, run the agent from a durable worker or queue consumer instead of an HTTP handler, so the wait doesn't get killed by an unrelated timeout.
 
 ---
 

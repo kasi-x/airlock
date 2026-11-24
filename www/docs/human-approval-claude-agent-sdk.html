@@ -3,21 +3,21 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Claude Agent SDK Human Approval: canUseTool and defer — Impri Docs</title>
-<meta name="description" content="The Claude Agent SDK asks your canUseTool callback before a risky tool call, or ends the turn when a hook defers it. Send either to Impri and a person decides.">
+<title>Claude Agent SDK Human Approval: canUseTool and defer — Airlock Docs</title>
+<meta name="description" content="The Claude Agent SDK asks your canUseTool callback before a risky tool call, or ends the turn when a hook defers it. Send either to Airlock and a person decides.">
 <meta name="theme-color" content="#06070d">
-<meta property="og:title" content="Claude Agent SDK Human Approval: canUseTool and defer — Impri Docs">
-<meta property="og:description" content="The Claude Agent SDK asks your canUseTool callback before a risky tool call, or ends the turn when a hook defers it. Send either to Impri and a person decides.">
+<meta property="og:title" content="Claude Agent SDK Human Approval: canUseTool and defer — Airlock Docs">
+<meta property="og:description" content="The Claude Agent SDK asks your canUseTool callback before a risky tool call, or ends the turn when a hook defers it. Send either to Airlock and a person decides.">
 <meta property="og:type" content="article">
-<meta property="og:url" content="https://impri.dev/docs/human-approval-claude-agent-sdk">
-<meta property="og:image" content="https://impri.dev/assets/og/og-docs.png">
+<meta property="og:url" content="https://airlock.dev/docs/human-approval-claude-agent-sdk">
+<meta property="og:image" content="https://airlock.dev/assets/og/og-docs.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
-<meta property="og:image:alt" content="Impri — human-in-the-loop approval inbox for AI agents">
+<meta property="og:image:alt" content="Airlock — human-in-the-loop approval inbox for AI agents">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="https://impri.dev/assets/og/og-docs.png">
-<link rel="canonical" href="https://impri.dev/docs/human-approval-claude-agent-sdk">
-<script type="application/ld+json">{"@context":"https://schema.org","@type":"TechArticle","headline":"Claude Agent SDK Human Approval: canUseTool and defer","description":"The Claude Agent SDK asks your canUseTool callback before a risky tool call, or ends the turn when a hook defers it. Send either to Impri and a person decides.","url":"https://impri.dev/docs/human-approval-claude-agent-sdk","inLanguage":"en","author":{"@type":"Organization","name":"Impri","url":"https://impri.dev"},"publisher":{"@type":"Organization","name":"Impri","url":"https://impri.dev"}}</script>
+<meta name="twitter:image" content="https://airlock.dev/assets/og/og-docs.png">
+<link rel="canonical" href="https://airlock.dev/docs/human-approval-claude-agent-sdk">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"TechArticle","headline":"Claude Agent SDK Human Approval: canUseTool and defer","description":"The Claude Agent SDK asks your canUseTool callback before a risky tool call, or ends the turn when a hook defers it. Send either to Airlock and a person decides.","url":"https://airlock.dev/docs/human-approval-claude-agent-sdk","inLanguage":"en","author":{"@type":"Organization","name":"Airlock","url":"https://airlock.dev"},"publisher":{"@type":"Organization","name":"Airlock","url":"https://airlock.dev"}}</script>
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <link rel="icon" href="/favicon.ico" sizes="32x32">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='9' fill='%236366f1'/%3E%3Cpath d='M9 16.5l4.5 4.5L23 11' stroke='white' stroke-width='3' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
@@ -132,13 +132,13 @@ pre code.hljs{display:block;overflow-x:auto}
 <div class="wrap nav-inner">
   <a class="brand" href="/">
     <span class="mark"><svg viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.5 4.5L19 7.5" stroke="white" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
-    Impri
+    Airlock
   </a>
   <div class="nav-links">
     <a class="link" href="/#how">How it works</a>
     <a class="link" href="/#pricing">Pricing</a>
     <a class="link active-nav" href="../docs">Docs</a>
-    <a class="btn btn-primary btn-sm" href="https://gitlab.com/sekera.radim/impri">GitLab</a>
+    <a class="btn btn-primary btn-sm" href="https://gitlab.com/sekera.radim/airlock">GitLab</a>
   </div>
 </div>
 </nav>
@@ -153,27 +153,27 @@ pre code.hljs{display:block;overflow-x:auto}
       <span>Claude Agent SDK Human Approval: canUseTool and defer</span>
     </nav>
     <h1>Claude Agent SDK Human Approval: canUseTool and defer</h1>
-<p>The Claude Agent SDK asks your canUseTool callback before a risky tool call, or ends the turn when a hook defers it. Send either to Impri and a person decides.</p>
+<p>The Claude Agent SDK asks your canUseTool callback before a risky tool call, or ends the turn when a hook defers it. Send either to Airlock and a person decides.</p>
 <hr>
 <h2 id="where-the-sdk-asks-for-permission">Where the SDK asks for permission</h2>
 <p>When Claude wants a tool, Claude Code checks the call in a fixed order: <code>PreToolUse</code> hooks, deny rules, ask rules, the permission mode, allow rules, and only then your <code>canUseTool</code> callback (<a href="https://code.claude.com/docs/en/agent-sdk/permissions" target="_blank" rel="noopener">permissions docs</a>). A call settled earlier never reaches the callback: a bare tool name in <code>allowedTools</code> such as <code>&quot;Bash&quot;</code>, file edits under <code>acceptEdits</code>, nearly everything under <code>bypassPermissions</code>, and read-only commands like <code>ls</code>. List routine commands as scoped rules (<code>&quot;Bash(npm test *)&quot;</code>) and let the callback see the rest. Which of the two places below fits depends on whether your process can wait.</p>
 <h2 id="option-1-wait-inside-canusetool">Option 1: wait inside <code>canUseTool</code></h2>
 <div class="code-block"><span class="code-lang">typescript</span><pre><code class="hljs"><span class="hljs-keyword">import</span> { query, <span class="hljs-keyword">type</span> <span class="hljs-title class_">CanUseTool</span>, <span class="hljs-keyword">type</span> <span class="hljs-title class_">HookCallback</span> } <span class="hljs-keyword">from</span> <span class="hljs-string">&quot;@anthropic-ai/claude-agent-sdk&quot;</span>;
 
-<span class="hljs-keyword">const</span> <span class="hljs-variable constant_">IMPRI</span> = process.<span class="hljs-property">env</span>.<span class="hljs-property">IMPRI_BASE_URL</span> ?? <span class="hljs-string">&quot;https://api.impri.dev&quot;</span>;
+<span class="hljs-keyword">const</span> <span class="hljs-variable constant_">AIRLOCK</span> = process.<span class="hljs-property">env</span>.<span class="hljs-property">AIRLOCK_BASE_URL</span> ?? <span class="hljs-string">&quot;https://api.airlock.dev&quot;</span>;
 <span class="hljs-keyword">const</span> headers = {
-  <span class="hljs-title class_">Authorization</span>: <span class="hljs-string">`Bearer <span class="hljs-subst">${process.env.IMPRI_API_KEY}</span>`</span>,
+  <span class="hljs-title class_">Authorization</span>: <span class="hljs-string">`Bearer <span class="hljs-subst">${process.env.AIRLOCK_API_KEY}</span>`</span>,
   <span class="hljs-string">&quot;Content-Type&quot;</span>: <span class="hljs-string">&quot;application/json&quot;</span>,
 };
 <span class="hljs-keyword">const</span> <span class="hljs-title function_">sleep</span> = (<span class="hljs-params"><span class="hljs-attr">ms</span>: <span class="hljs-built_in">number</span></span>) =&gt; <span class="hljs-keyword">new</span> <span class="hljs-title class_">Promise</span>(<span class="hljs-function">(<span class="hljs-params">r</span>) =&gt;</span> <span class="hljs-built_in">setTimeout</span>(r, ms));
-<span class="hljs-keyword">const</span> cards = <span class="hljs-keyword">new</span> <span class="hljs-title class_">Map</span>&lt;<span class="hljs-built_in">string</span>, <span class="hljs-built_in">string</span>&gt;(); <span class="hljs-comment">// tool_use id -&gt; Impri action id</span>
+<span class="hljs-keyword">const</span> cards = <span class="hljs-keyword">new</span> <span class="hljs-title class_">Map</span>&lt;<span class="hljs-built_in">string</span>, <span class="hljs-built_in">string</span>&gt;(); <span class="hljs-comment">// tool_use id -&gt; Airlock action id</span>
 
-<span class="hljs-keyword">const</span> <span class="hljs-attr">askImpri</span>: <span class="hljs-title class_">CanUseTool</span> = <span class="hljs-title function_">async</span> (toolName, input, { signal, toolUseID }) =&gt; {
+<span class="hljs-keyword">const</span> <span class="hljs-attr">askAirlock</span>: <span class="hljs-title class_">CanUseTool</span> = <span class="hljs-title function_">async</span> (toolName, input, { signal, toolUseID }) =&gt; {
   <span class="hljs-keyword">if</span> (toolName !== <span class="hljs-string">&quot;Bash&quot;</span>) {
     <span class="hljs-keyword">return</span> { <span class="hljs-attr">behavior</span>: <span class="hljs-string">&quot;deny&quot;</span>, <span class="hljs-attr">message</span>: <span class="hljs-string">`<span class="hljs-subst">${toolName}</span> is not enabled for this agent.`</span> };
   }
   <span class="hljs-keyword">const</span> command = <span class="hljs-title class_">String</span>(input.<span class="hljs-property">command</span>);
-  <span class="hljs-keyword">const</span> res = <span class="hljs-keyword">await</span> <span class="hljs-title function_">fetch</span>(<span class="hljs-string">`<span class="hljs-subst">${IMPRI}</span>/v1/actions`</span>, {
+  <span class="hljs-keyword">const</span> res = <span class="hljs-keyword">await</span> <span class="hljs-title function_">fetch</span>(<span class="hljs-string">`<span class="hljs-subst">${AIRLOCK}</span>/v1/actions`</span>, {
     <span class="hljs-attr">method</span>: <span class="hljs-string">&quot;POST&quot;</span>, headers, signal,
     <span class="hljs-attr">body</span>: <span class="hljs-title class_">JSON</span>.<span class="hljs-title function_">stringify</span>({
       <span class="hljs-attr">kind</span>: <span class="hljs-string">&quot;shell.exec&quot;</span>,
@@ -189,7 +189,7 @@ pre code.hljs{display:block;overflow-x:auto}
   cards.<span class="hljs-title function_">set</span>(toolUseID, id);
 
   <span class="hljs-keyword">for</span> (;;) {
-    <span class="hljs-keyword">const</span> action = <span class="hljs-title function_">await</span> (<span class="hljs-keyword">await</span> <span class="hljs-title function_">fetch</span>(<span class="hljs-string">`<span class="hljs-subst">${IMPRI}</span>/v1/actions/<span class="hljs-subst">${id}</span>`</span>, { headers, signal })).<span class="hljs-title function_">json</span>();
+    <span class="hljs-keyword">const</span> action = <span class="hljs-title function_">await</span> (<span class="hljs-keyword">await</span> <span class="hljs-title function_">fetch</span>(<span class="hljs-string">`<span class="hljs-subst">${AIRLOCK}</span>/v1/actions/<span class="hljs-subst">${id}</span>`</span>, { headers, signal })).<span class="hljs-title function_">json</span>();
     <span class="hljs-keyword">if</span> (action.<span class="hljs-property">status</span> === <span class="hljs-string">&quot;approved&quot;</span>) {
       <span class="hljs-comment">// The reviewer may have edited the command before approving.</span>
       <span class="hljs-keyword">return</span> { <span class="hljs-attr">behavior</span>: <span class="hljs-string">&quot;allow&quot;</span>, <span class="hljs-attr">updatedInput</span>: { ...input, <span class="hljs-attr">command</span>: action.<span class="hljs-property">decision</span>.<span class="hljs-property">final_preview</span>.<span class="hljs-property">body</span> } };
@@ -205,7 +205,7 @@ pre code.hljs{display:block;overflow-x:auto}
 <span class="hljs-keyword">const</span> <span class="hljs-attr">report</span>: <span class="hljs-title class_">HookCallback</span> = <span class="hljs-title function_">async</span> (input, toolUseID) =&gt; {
   <span class="hljs-keyword">const</span> id = toolUseID &amp;&amp; cards.<span class="hljs-title function_">get</span>(toolUseID);
   <span class="hljs-keyword">if</span> (id &amp;&amp; input.<span class="hljs-property">hook_event_name</span> === <span class="hljs-string">&quot;PostToolUse&quot;</span>) {
-    <span class="hljs-keyword">await</span> <span class="hljs-title function_">fetch</span>(<span class="hljs-string">`<span class="hljs-subst">${IMPRI}</span>/v1/actions/<span class="hljs-subst">${id}</span>/result`</span>, {
+    <span class="hljs-keyword">await</span> <span class="hljs-title function_">fetch</span>(<span class="hljs-string">`<span class="hljs-subst">${AIRLOCK}</span>/v1/actions/<span class="hljs-subst">${id}</span>/result`</span>, {
       <span class="hljs-attr">method</span>: <span class="hljs-string">&quot;POST&quot;</span>, headers,
       <span class="hljs-attr">body</span>: <span class="hljs-title class_">JSON</span>.<span class="hljs-title function_">stringify</span>({ <span class="hljs-attr">status</span>: <span class="hljs-string">&quot;executed&quot;</span>, <span class="hljs-attr">detail</span>: <span class="hljs-title class_">JSON</span>.<span class="hljs-title function_">stringify</span>(input.<span class="hljs-property">tool_response</span>).<span class="hljs-title function_">slice</span>(<span class="hljs-number">0</span>, <span class="hljs-number">2000</span>) }),
     });
@@ -216,18 +216,18 @@ pre code.hljs{display:block;overflow-x:auto}
 <span class="hljs-keyword">for</span> <span class="hljs-title function_">await</span> (<span class="hljs-keyword">const</span> message <span class="hljs-keyword">of</span> <span class="hljs-title function_">query</span>({
   <span class="hljs-attr">prompt</span>: <span class="hljs-string">&quot;Tag the release and deploy it to staging.&quot;</span>,
   <span class="hljs-attr">options</span>: {
-    <span class="hljs-attr">canUseTool</span>: askImpri,
+    <span class="hljs-attr">canUseTool</span>: askAirlock,
     <span class="hljs-attr">allowedTools</span>: [<span class="hljs-string">&quot;Bash(npm test *)&quot;</span>], <span class="hljs-comment">// routine commands skip the inbox</span>
     <span class="hljs-attr">hooks</span>: { <span class="hljs-title class_">PostToolUse</span>: [{ <span class="hljs-attr">matcher</span>: <span class="hljs-string">&quot;Bash&quot;</span>, <span class="hljs-attr">hooks</span>: [report] }] },
   },
 })) {
   <span class="hljs-keyword">if</span> (message.<span class="hljs-property">type</span> === <span class="hljs-string">&quot;result&quot;</span>) <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(message.<span class="hljs-property">subtype</span>, message.<span class="hljs-property">stop_reason</span>);
 }</code></pre></div>
-<p>Each call that needs permission becomes a card in Impri with the exact command as an editable preview. The tool use ID is the idempotency key, so a retried request finds the same card. The callback polls until someone answers:</p>
+<p>Each call that needs permission becomes a card in Airlock with the exact command as an editable preview. The tool use ID is the idempotency key, so a retried request finds the same card. The callback polls until someone answers:</p>
 <ul>
 <li><strong>Approved</strong>: the callback returns <code>allow</code> with <code>updatedInput</code>. If the reviewer edited the command, the edited one runs. Claude isn&#39;t told it changed; it only sees the output.</li>
 <li><strong>Rejected or expired</strong>: <code>deny</code> with a message, which Claude reads as the tool&#39;s error.</li>
-<li><strong>Impri unreachable</strong>: a denial. The SDK also turned an error thrown inside the callback into a denial.</li>
+<li><strong>Airlock unreachable</strong>: a denial. The SDK also turned an error thrown inside the callback into a denial.</li>
 </ul>
 <p>The <code>PostToolUse</code> hook reports <code>executed</code>, so the card shows what ran. The callback may stay pending as long as it needs. Python works the same way with <code>can_use_tool</code> and <code>PermissionResultAllow(updated_input=...)</code>, but needs streaming input and a dummy <code>PreToolUse</code> hook that keeps the stream open (<a href="https://code.claude.com/docs/en/agent-sdk/user-input" target="_blank" rel="noopener">user input docs</a>).</p>
 <h2 id="option-2-let-the-process-exit-with-defer">Option 2: let the process exit with <code>defer</code></h2>
@@ -235,9 +235,9 @@ pre code.hljs{display:block;overflow-x:auto}
 <div class="code-block"><span class="code-lang">typescript</span><pre><code class="hljs"><span class="hljs-keyword">import</span> { query, <span class="hljs-keyword">type</span> <span class="hljs-title class_">HookCallback</span>, <span class="hljs-keyword">type</span> <span class="hljs-title class_">SDKUserMessage</span> } <span class="hljs-keyword">from</span> <span class="hljs-string">&quot;@anthropic-ai/claude-agent-sdk&quot;</span>;
 <span class="hljs-keyword">import</span> { readFileSync, rmSync, writeFileSync } <span class="hljs-keyword">from</span> <span class="hljs-string">&quot;node:fs&quot;</span>;
 
-<span class="hljs-keyword">const</span> <span class="hljs-variable constant_">IMPRI</span> = process.<span class="hljs-property">env</span>.<span class="hljs-property">IMPRI_BASE_URL</span> ?? <span class="hljs-string">&quot;https://api.impri.dev&quot;</span>;
+<span class="hljs-keyword">const</span> <span class="hljs-variable constant_">AIRLOCK</span> = process.<span class="hljs-property">env</span>.<span class="hljs-property">AIRLOCK_BASE_URL</span> ?? <span class="hljs-string">&quot;https://api.airlock.dev&quot;</span>;
 <span class="hljs-keyword">const</span> headers = {
-  <span class="hljs-title class_">Authorization</span>: <span class="hljs-string">`Bearer <span class="hljs-subst">${process.env.IMPRI_API_KEY}</span>`</span>,
+  <span class="hljs-title class_">Authorization</span>: <span class="hljs-string">`Bearer <span class="hljs-subst">${process.env.AIRLOCK_API_KEY}</span>`</span>,
   <span class="hljs-string">&quot;Content-Type&quot;</span>: <span class="hljs-string">&quot;application/json&quot;</span>,
 };
 <span class="hljs-keyword">const</span> <span class="hljs-variable constant_">RISKY</span> = <span class="hljs-regexp">/^\s*(git push|kubectl|terraform apply|helm|\.\/deploy)/</span>;
@@ -259,7 +259,7 @@ pre code.hljs{display:block;overflow-x:auto}
   <span class="hljs-keyword">try</span> {
     <span class="hljs-comment">// The resumed session replays the same tool call, so the same idempotency</span>
     <span class="hljs-comment">// key finds the same card instead of creating a second one.</span>
-    <span class="hljs-keyword">const</span> created = <span class="hljs-keyword">await</span> <span class="hljs-title function_">fetch</span>(<span class="hljs-string">`<span class="hljs-subst">${IMPRI}</span>/v1/actions`</span>, {
+    <span class="hljs-keyword">const</span> created = <span class="hljs-keyword">await</span> <span class="hljs-title function_">fetch</span>(<span class="hljs-string">`<span class="hljs-subst">${AIRLOCK}</span>/v1/actions`</span>, {
       <span class="hljs-attr">method</span>: <span class="hljs-string">&quot;POST&quot;</span>, headers,
       <span class="hljs-attr">body</span>: <span class="hljs-title class_">JSON</span>.<span class="hljs-title function_">stringify</span>({
         <span class="hljs-attr">kind</span>: <span class="hljs-string">&quot;shell.exec&quot;</span>,
@@ -272,7 +272,7 @@ pre code.hljs{display:block;overflow-x:auto}
     });
     <span class="hljs-keyword">if</span> (!created.<span class="hljs-property">ok</span>) <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">Error</span>(<span class="hljs-string">`HTTP <span class="hljs-subst">${created.status}</span>`</span>);
     <span class="hljs-keyword">const</span> { id } = <span class="hljs-keyword">await</span> created.<span class="hljs-title function_">json</span>();
-    <span class="hljs-keyword">const</span> action = <span class="hljs-title function_">await</span> (<span class="hljs-keyword">await</span> <span class="hljs-title function_">fetch</span>(<span class="hljs-string">`<span class="hljs-subst">${IMPRI}</span>/v1/actions/<span class="hljs-subst">${id}</span>`</span>, { headers })).<span class="hljs-title function_">json</span>();
+    <span class="hljs-keyword">const</span> action = <span class="hljs-title function_">await</span> (<span class="hljs-keyword">await</span> <span class="hljs-title function_">fetch</span>(<span class="hljs-string">`<span class="hljs-subst">${AIRLOCK}</span>/v1/actions/<span class="hljs-subst">${id}</span>`</span>, { headers })).<span class="hljs-title function_">json</span>();
 
     <span class="hljs-keyword">if</span> (action.<span class="hljs-property">status</span> === <span class="hljs-string">&quot;pending&quot;</span>) <span class="hljs-keyword">return</span> <span class="hljs-title function_">decide</span>(<span class="hljs-string">&quot;defer&quot;</span>);
     busy = <span class="hljs-literal">false</span>;
@@ -305,15 +305,15 @@ pre code.hljs{display:block;overflow-x:auto}
   <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(message.<span class="hljs-property">subtype</span>, message.<span class="hljs-property">stop_reason</span>);
   <span class="hljs-title function_">done</span>();
 }</code></pre></div>
-<p>Run <code>start</code> from your job and <code>resume</code> once the card is decided, for example from Impri&#39;s webhook: add a <code>callback_url</code> and Impri posts to it on approval, rejection or expiry (<a href="webhooks">webhooks</a>). Three details come from runs that went wrong:</p>
+<p>Run <code>start</code> from your job and <code>resume</code> once the card is decided, for example from Airlock&#39;s webhook: add a <code>callback_url</code> and Airlock posts to it on approval, rejection or expiry (<a href="webhooks">webhooks</a>). Three details come from runs that went wrong:</p>
 <ul>
 <li><strong>Resume with no new message, and keep the input open until the result.</strong> With <code>prompt: &quot;&quot;</code>, or an empty input stream that closed at once, the pending call got an error result (&quot;The user doesn&#39;t want to take this action right now&quot;) without the hook being called, and the call was gone. With the input held open, Claude Code ran the hook again for the same tool use ID.</li>
 <li><strong>One pending call per turn.</strong> The hooks docs say <code>defer</code> is honored only for a single tool call in a turn and ignored otherwise. In our run it wasn&#39;t ignored: two risky calls in one assistant message both got cards and the turn ended deferred, but after we approved both, only one ran and the other disappeared from the transcript without a result. The <code>busy</code> flag denies the second call with a reason Claude can act on.</li>
-<li><strong>Fail closed in the hook.</strong> A hook that throws makes no decision. In the default mode the call was then denied, but under <code>bypassPermissions</code>, with Impri stopped, the deploy ran. The <code>catch</code> makes any error a denial.</li>
+<li><strong>Fail closed in the hook.</strong> A hook that throws makes no decision. In the default mode the call was then denied, but under <code>bypassPermissions</code>, with Airlock stopped, the deploy ran. The <code>catch</code> makes any error a denial.</li>
 </ul>
 <p>Pass the same options on every resume: Claude Code doesn&#39;t restore a stored permission mode.</p>
 <h2 id="what-we-ran">What we ran</h2>
-<p>On 2026-11-19, with <code>@anthropic-ai/claude-agent-sdk</code> 0.3.328 (Claude Code 2.1.328) against a local Impri server. The model was a local stand-in for the Messages API returning scripted <code>Bash</code> calls; the SDK, Claude Code and its permission flow were real. Every <code>start</code> and <code>resume</code> was a separate process.</p>
+<p>On 2026-11-19, with <code>@anthropic-ai/claude-agent-sdk</code> 0.3.328 (Claude Code 2.1.328) against a local Airlock server. The model was a local stand-in for the Messages API returning scripted <code>Bash</code> calls; the SDK, Claude Code and its permission flow were real. Every <code>start</code> and <code>resume</code> was a separate process.</p>
 <div class="table-wrap"><table>
 <thead>
 <tr>
@@ -360,7 +360,7 @@ pre code.hljs{display:block;overflow-x:auto}
 <td><code>rejected</code></td>
 </tr>
 <tr>
-<td>Impri unreachable, either option</td>
+<td>Airlock unreachable, either option</td>
 <td>nothing</td>
 <td>a denial</td>
 <td>none</td>
@@ -369,15 +369,15 @@ pre code.hljs{display:block;overflow-x:auto}
 </div>
 <p>Option 2 leaves the card at <code>approved</code>; add the <code>PostToolUse</code> report from Option 1 to mark it <code>executed</code>.</p>
 <h2 id="which-one-to-use">Which one to use</h2>
-<p>Option 1 when the agent&#39;s process stays up during the review. Option 2 for jobs, serverless functions and anything that restarts: nothing waits in memory, and the reviewer can answer the next morning. An agent key needs only the <code>actions</code> scope; <code>POST /v1/actions</code> allows 60 requests per minute per key. Impri holds the decision and never runs the command: Claude Code does, and the gate covers only calls that reach your callback or hook.</p>
+<p>Option 1 when the agent&#39;s process stays up during the review. Option 2 for jobs, serverless functions and anything that restarts: nothing waits in memory, and the reviewer can answer the next morning. An agent key needs only the <code>actions</code> scope; <code>POST /v1/actions</code> allows 60 requests per minute per key. Airlock holds the decision and never runs the command: Claude Code does, and the gate covers only calls that reach your callback or hook.</p>
 <h2 id="next-step">Next step</h2>
-<p><a href="https://app.impri.dev/?signup=1" target="_blank" rel="noopener">Start free on Impri Cloud</a>, create an API key and run Option 1 with a harmless command: the card appears in your inbox. To keep everything on your own machine, follow <a href="self-hosting">Self-hosting</a> and set <code>IMPRI_BASE_URL=http://localhost:8484</code>. On the Anthropic Messages API with your own tool loop instead of the Agent SDK? The <a href="claude-agent-sdk">tool_use wrapper</a> gates each call there.</p>
+<p><a href="https://app.airlock.dev/?signup=1" target="_blank" rel="noopener">Start free on Airlock Cloud</a>, create an API key and run Option 1 with a harmless command: the card appears in your inbox. To keep everything on your own machine, follow <a href="self-hosting">Self-hosting</a> and set <code>AIRLOCK_BASE_URL=http://localhost:8484</code>. On the Anthropic Messages API with your own tool loop instead of the Agent SDK? The <a href="claude-agent-sdk">tool_use wrapper</a> gates each call there.</p>
 
-    <aside class="doc-cta" aria-label="Try Impri">
+    <aside class="doc-cta" aria-label="Try Airlock">
   <p class="doc-cta-title">Add an approval step to your own agent</p>
-  <p>Start on Impri Cloud: the Free tier includes 100 approvals a month. Or self-host the MIT-licensed core with Docker Compose, with no tier limits.</p>
+  <p>Start on Airlock Cloud: the Free tier includes 100 approvals a month. Or self-host the MIT-licensed core with Docker Compose, with no tier limits.</p>
   <div class="doc-cta-actions">
-    <a class="btn btn-primary btn-sm" href="https://app.impri.dev/?signup=1">Start free on Impri Cloud</a>
+    <a class="btn btn-primary btn-sm" href="https://app.airlock.dev/?signup=1">Start free on Airlock Cloud</a>
     <a class="btn btn-ghost btn-sm" href="../docs/quickstart">Quick start</a>
     <a class="btn btn-ghost btn-sm" href="../docs/self-hosting">Self-host guide</a>
   </div>
@@ -473,19 +473,19 @@ pre code.hljs{display:block;overflow-x:auto}
 <footer class="footer">
 <div class="wrap footer-inner">
   <a class="brand" href="/">
-    <span class="mark"><svg viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.5 4.5L19 7.5" stroke="white" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Impri
+    <span class="mark"><svg viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.5 4.5L19 7.5" stroke="white" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Airlock
   </a>
   <div>
-    <a href="https://gitlab.com/sekera.radim/impri">GitLab</a>
+    <a href="https://gitlab.com/sekera.radim/airlock">GitLab</a>
     <a href="/docs">Docs</a>
-    <a href="https://gitlab.com/sekera.radim/impri/-/blob/main/LICENSE">MIT License</a>
-    <a href="https://www.npmjs.com/package/@impri/mcp">@impri/mcp</a>
+    <a href="https://gitlab.com/sekera.radim/airlock/-/blob/main/LICENSE">MIT License</a>
+    <a href="https://www.npmjs.com/package/@airlock/mcp">@airlock/mcp</a>
     <a href="/docs/privacy">Privacy</a>
     <a href="/docs/terms">Terms</a>
     <a href="https://sekera.dev">Contact</a>
   </div>
 </div>
-<div class="wrap" style="margin-top:18px"><span class="muted">© 2026 Impri · The imprimatur for your AI agents · Built by <a href="https://sekera.dev" style="color:inherit">Radim Sekera</a>. Also by the same maker: <a href="https://briefgate.dev/?utm_source=impri.dev&amp;utm_medium=referral" style="color:inherit">BriefGate</a> — client intake for agencies and AI agents.</span></div>
+<div class="wrap" style="margin-top:18px"><span class="muted">© 2026 Airlock · The airlockmatur for your AI agents · Built by <a href="https://sekera.dev" style="color:inherit">Radim Sekera</a>. Also by the same maker: <a href="https://briefgate.dev/?utm_source=airlock.dev&amp;utm_medium=referral" style="color:inherit">BriefGate</a> — client intake for agencies and AI agents.</span></div>
 </footer>
 </body>
 </html>

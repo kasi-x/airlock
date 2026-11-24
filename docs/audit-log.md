@@ -1,6 +1,6 @@
 # Audit Log
 
-Impri keeps an append-only audit trail of every significant action taken on a
+Airlock keeps an append-only audit trail of every significant action taken on a
 project. The log is designed for compliance review, incident investigation, and
 change accountability. It covers the approval lifecycle, key management,
 watcher operations, rule changes, notification channel changes, and GDPR

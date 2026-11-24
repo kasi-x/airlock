@@ -3,20 +3,20 @@ startCommand:
   configSchema:
     type: object
     required:
-      - impriApiKey
+      - airlockApiKey
     properties:
-      impriApiKey:
+      airlockApiKey:
         type: string
-        description: "Impri API key (im_...). Get one at impri.dev or from your self-hosted server's first-run logs."
-      impriBaseUrl:
+        description: "Airlock API key (im_...). Get one at airlock.dev or from your self-hosted server's first-run logs."
+      airlockBaseUrl:
         type: string
-        description: "Base URL of a self-hosted Impri server (e.g. http://localhost:8484). Defaults to the hosted cloud."
+        description: "Base URL of a self-hosted Airlock server (e.g. http://localhost:8484). Defaults to the hosted cloud."
   commandFunction: |-
     (config) => ({
       command: "npx",
-      args: ["-y", "@impri/mcp"],
+      args: ["-y", "@airlock/mcp"],
       env: {
-        IMPRI_API_KEY: config.impriApiKey,
-        ...(config.impriBaseUrl ? { IMPRI_BASE_URL: config.impriBaseUrl } : {})
+        AIRLOCK_API_KEY: config.airlockApiKey,
+        ...(config.airlockBaseUrl ? { AIRLOCK_BASE_URL: config.airlockBaseUrl } : {})
       }
     })

@@ -6,7 +6,7 @@ import hashlib
 import time
 import unittest
 
-from impri import verify_webhook, ImpriWebhookSignatureError
+from airlock import verify_webhook, AirlockWebhookSignatureError
 
 
 def _make_signature(secret: str, timestamp: str, nonce: str, raw_body: bytes) -> str:
@@ -38,23 +38,23 @@ class TestVerifyWebhook(unittest.TestCase):
 
     def test_raises_on_wrong_secret(self):
         sig = _make_signature("wrong_secret", self.TIMESTAMP, self.NONCE, self.BODY)
-        with self.assertRaises(ImpriWebhookSignatureError):
+        with self.assertRaises(AirlockWebhookSignatureError):
             verify_webhook(self.BODY, self.SECRET, self.TIMESTAMP, self.NONCE, sig)
 
     def test_raises_on_tampered_body(self):
         sig = self._valid_sig()
         tampered = b'{"id":"act_1","status":"hacked"}'
-        with self.assertRaises(ImpriWebhookSignatureError):
+        with self.assertRaises(AirlockWebhookSignatureError):
             verify_webhook(tampered, self.SECRET, self.TIMESTAMP, self.NONCE, sig)
 
     def test_raises_on_wrong_timestamp(self):
         sig = _make_signature(self.SECRET, "0000000000", self.NONCE, self.BODY)
-        with self.assertRaises(ImpriWebhookSignatureError):
+        with self.assertRaises(AirlockWebhookSignatureError):
             verify_webhook(self.BODY, self.SECRET, self.TIMESTAMP, self.NONCE, sig)
 
     def test_raises_on_wrong_nonce(self):
         sig = _make_signature(self.SECRET, self.TIMESTAMP, "wrongnonce", self.BODY)
-        with self.assertRaises(ImpriWebhookSignatureError):
+        with self.assertRaises(AirlockWebhookSignatureError):
             verify_webhook(self.BODY, self.SECRET, self.TIMESTAMP, self.NONCE, sig)
 
     def test_raises_on_missing_sha256_prefix(self):
@@ -64,7 +64,7 @@ class TestVerifyWebhook(unittest.TestCase):
             hashlib.sha256,
         ).hexdigest()
         # Missing "sha256=" prefix — compare_digest will mismatch
-        with self.assertRaises(ImpriWebhookSignatureError):
+        with self.assertRaises(AirlockWebhookSignatureError):
             verify_webhook(self.BODY, self.SECRET, self.TIMESTAMP, self.NONCE, raw_digest)
 
     def test_empty_body_accepted(self):

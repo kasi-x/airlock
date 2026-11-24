@@ -36,12 +36,12 @@ The pattern: read-only and locally-contained actions run free. Anything that cha
 
 ## Implementing the gate
 
-Once you've drawn the line, the mechanism is the same regardless of where you draw it: the agent proposes the action, a human decides, and the agent's execution code only runs after an approval comes back. Here's the merge-and-deploy step from the CI/CD agent above, using Impri as the gate:
+Once you've drawn the line, the mechanism is the same regardless of where you draw it: the agent proposes the action, a human decides, and the agent's execution code only runs after an approval comes back. Here's the merge-and-deploy step from the CI/CD agent above, using Airlock as the gate:
 
 ```typescript
-const BASE = "https://api.impri.dev";
+const BASE = "https://api.airlock.dev";
 const headers = {
-  Authorization: `Bearer ${process.env.IMPRI_API_KEY}`,
+  Authorization: `Bearer ${process.env.AIRLOCK_API_KEY}`,
   "Content-Type": "application/json",
 };
 
@@ -80,7 +80,7 @@ async function proposeDeploy(prNumber: number, diffSummary: string) {
 }
 ```
 
-The `npm test` and draft-PR steps upstream of this don't call Impri at all — they run unattended, because a wrong test run or an unmerged PR costs nothing. Only the step with no cheap undo waits for a person.
+The `npm test` and draft-PR steps upstream of this don't call Airlock at all — they run unattended, because a wrong test run or an unmerged PR costs nothing. Only the step with no cheap undo waits for a person.
 
 ---
 

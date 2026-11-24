@@ -3,21 +3,21 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Claude Tool Use Approval for the Anthropic SDK — Impri Docs</title>
+<title>Claude Tool Use Approval for the Anthropic SDK — Airlock Docs</title>
 <meta name="description" content="The integrations/claude-agent-sdk/ package provides a TypeScript integration for adding human-approval gates to Claude-powered agents built with the Anthropic…">
 <meta name="theme-color" content="#06070d">
-<meta property="og:title" content="Claude Tool Use Approval for the Anthropic SDK — Impri Docs">
+<meta property="og:title" content="Claude Tool Use Approval for the Anthropic SDK — Airlock Docs">
 <meta property="og:description" content="The integrations/claude-agent-sdk/ package provides a TypeScript integration for adding human-approval gates to Claude-powered agents built with the Anthropic…">
 <meta property="og:type" content="article">
-<meta property="og:url" content="https://impri.dev/docs/claude-agent-sdk">
-<meta property="og:image" content="https://impri.dev/assets/og/og-docs.png">
+<meta property="og:url" content="https://airlock.dev/docs/claude-agent-sdk">
+<meta property="og:image" content="https://airlock.dev/assets/og/og-docs.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
-<meta property="og:image:alt" content="Impri — human-in-the-loop approval inbox for AI agents">
+<meta property="og:image:alt" content="Airlock — human-in-the-loop approval inbox for AI agents">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="https://impri.dev/assets/og/og-docs.png">
-<link rel="canonical" href="https://impri.dev/docs/claude-agent-sdk">
-<script type="application/ld+json">{"@context":"https://schema.org","@type":"TechArticle","headline":"Claude Tool Use Approval for the Anthropic SDK","description":"The integrations/claude-agent-sdk/ package provides a TypeScript integration for adding human-approval gates to Claude-powered agents built with the Anthropic…","url":"https://impri.dev/docs/claude-agent-sdk","inLanguage":"en","author":{"@type":"Organization","name":"Impri","url":"https://impri.dev"},"publisher":{"@type":"Organization","name":"Impri","url":"https://impri.dev"}}</script>
+<meta name="twitter:image" content="https://airlock.dev/assets/og/og-docs.png">
+<link rel="canonical" href="https://airlock.dev/docs/claude-agent-sdk">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"TechArticle","headline":"Claude Tool Use Approval for the Anthropic SDK","description":"The integrations/claude-agent-sdk/ package provides a TypeScript integration for adding human-approval gates to Claude-powered agents built with the Anthropic…","url":"https://airlock.dev/docs/claude-agent-sdk","inLanguage":"en","author":{"@type":"Organization","name":"Airlock","url":"https://airlock.dev"},"publisher":{"@type":"Organization","name":"Airlock","url":"https://airlock.dev"}}</script>
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <link rel="icon" href="/favicon.ico" sizes="32x32">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='9' fill='%236366f1'/%3E%3Cpath d='M9 16.5l4.5 4.5L23 11' stroke='white' stroke-width='3' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
@@ -132,13 +132,13 @@ pre code.hljs{display:block;overflow-x:auto}
 <div class="wrap nav-inner">
   <a class="brand" href="/">
     <span class="mark"><svg viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.5 4.5L19 7.5" stroke="white" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
-    Impri
+    Airlock
   </a>
   <div class="nav-links">
     <a class="link" href="/#how">How it works</a>
     <a class="link" href="/#pricing">Pricing</a>
     <a class="link active-nav" href="../docs">Docs</a>
-    <a class="btn btn-primary btn-sm" href="https://gitlab.com/sekera.radim/impri">GitLab</a>
+    <a class="btn btn-primary btn-sm" href="https://gitlab.com/sekera.radim/airlock">GitLab</a>
   </div>
 </div>
 </nav>
@@ -154,7 +154,7 @@ pre code.hljs{display:block;overflow-x:auto}
     </nav>
     <h1>Claude Tool Use Approval for the Anthropic SDK</h1>
 <p>The <code>integrations/claude-agent-sdk/</code> package provides a TypeScript integration for adding human-approval gates to Claude-powered agents built with the Anthropic SDK (<code>@anthropic-ai/sdk</code>).</p>
-<p>It works by intercepting <code>tool_use</code> content blocks before they are executed — the agent proposes a tool call, a human approves or rejects it in the Impri inbox, and only then is the tool executor called.</p>
+<p>It works by intercepting <code>tool_use</code> content blocks before they are executed — the agent proposes a tool call, a human approves or rejects it in the Airlock inbox, and only then is the tool executor called.</p>
 <blockquote>
 <p><strong>Building on Anthropic&#39;s Claude Agent SDK</strong> (<code>@anthropic-ai/claude-agent-sdk</code>, <code>query()</code> with built-in tools)? This package isn&#39;t for it: it works on the <code>tool_use</code> blocks of a Messages API loop you run yourself, while the Agent SDK runs its own tool loop. Gate Agent SDK tool calls with its <code>canUseTool</code> callback or a <code>PreToolUse</code> hook: see <a href="human-approval-claude-agent-sdk">Claude Agent SDK human approval</a>.</p>
 </blockquote>
@@ -162,10 +162,10 @@ pre code.hljs{display:block;overflow-x:auto}
 <h2 id="how-it-works">How it works</h2>
 <ol>
 <li>You define a tool normally with an Anthropic-compatible schema (<code>AnthropicTool</code>).</li>
-<li>You wrap it with <code>withImpriApproval(...)</code> to get a <code>GatedTool</code>.</li>
+<li>You wrap it with <code>withAirlockApproval(...)</code> to get a <code>GatedTool</code>.</li>
 <li>Pass <code>gatedTool.toolDef</code> to Claude — it is identical to the original, so Claude behaves normally.</li>
 <li>In your agent loop, when Claude returns a <code>tool_use</code> block for this tool, call <code>gatedTool.handle(block)</code> instead of executing directly.</li>
-<li><code>handle()</code> submits the proposed call to Impri, blocks until a human decides, then either executes or returns a rejection message.</li>
+<li><code>handle()</code> submits the proposed call to Airlock, blocks until a human decides, then either executes or returns a rejection message.</li>
 <li>The return value of <code>handle()</code> is the <code>tool_result</code> content to feed back to Claude.</li>
 </ol>
 <hr>
@@ -175,14 +175,14 @@ npm install ./integrations/claude-agent-sdk</code></pre></div>
 <hr>
 <h2 id="quick-start">Quick start</h2>
 <div class="code-block"><span class="code-lang">typescript</span><pre><code class="hljs"><span class="hljs-keyword">import</span> <span class="hljs-title class_">Anthropic</span> <span class="hljs-keyword">from</span> <span class="hljs-string">&#x27;@anthropic-ai/sdk&#x27;</span>
-<span class="hljs-keyword">import</span> { <span class="hljs-title class_">ImpriClient</span> } <span class="hljs-keyword">from</span> <span class="hljs-string">&#x27;@impri/sdk&#x27;</span>
-<span class="hljs-keyword">import</span> { withImpriApproval } <span class="hljs-keyword">from</span> <span class="hljs-string">&#x27;@impri/claude-agent-sdk&#x27;</span>
+<span class="hljs-keyword">import</span> { <span class="hljs-title class_">AirlockClient</span> } <span class="hljs-keyword">from</span> <span class="hljs-string">&#x27;@airlock/sdk&#x27;</span>
+<span class="hljs-keyword">import</span> { withAirlockApproval } <span class="hljs-keyword">from</span> <span class="hljs-string">&#x27;@airlock/claude-agent-sdk&#x27;</span>
 
 <span class="hljs-keyword">const</span> anthropic = <span class="hljs-keyword">new</span> <span class="hljs-title class_">Anthropic</span>()
-<span class="hljs-keyword">const</span> impri = <span class="hljs-keyword">new</span> <span class="hljs-title class_">ImpriClient</span>({ <span class="hljs-attr">apiKey</span>: process.<span class="hljs-property">env</span>.<span class="hljs-property">IMPRI_API_KEY</span>! })
+<span class="hljs-keyword">const</span> airlock = <span class="hljs-keyword">new</span> <span class="hljs-title class_">AirlockClient</span>({ <span class="hljs-attr">apiKey</span>: process.<span class="hljs-property">env</span>.<span class="hljs-property">AIRLOCK_API_KEY</span>! })
 
 <span class="hljs-comment">// Define the gated tool</span>
-<span class="hljs-keyword">const</span> sendEmailGated = <span class="hljs-title function_">withImpriApproval</span>({
+<span class="hljs-keyword">const</span> sendEmailGated = <span class="hljs-title function_">withAirlockApproval</span>({
   <span class="hljs-comment">// Tool definition — passed to Claude unchanged</span>
   <span class="hljs-attr">toolDef</span>: {
     <span class="hljs-attr">name</span>: <span class="hljs-string">&#x27;send_email&#x27;</span>,
@@ -203,8 +203,8 @@ npm install ./integrations/claude-agent-sdk</code></pre></div>
     <span class="hljs-keyword">return</span> <span class="hljs-string">`Email sent to <span class="hljs-subst">${to}</span>.`</span>
   },
 
-  <span class="hljs-comment">// Impri configuration</span>
-  <span class="hljs-attr">impriClient</span>: impri,
+  <span class="hljs-comment">// Airlock configuration</span>
+  <span class="hljs-attr">airlockClient</span>: airlock,
   <span class="hljs-attr">kind</span>: <span class="hljs-string">&#x27;email.send&#x27;</span>,
 
   <span class="hljs-comment">// What the human sees in the approval inbox</span>
@@ -241,7 +241,7 @@ npm install ./integrations/claude-agent-sdk</code></pre></div>
     <span class="hljs-keyword">const</span> <span class="hljs-attr">toolResults</span>: <span class="hljs-title class_">Anthropic</span>.<span class="hljs-property">ToolResultBlockParam</span>[] = []
     <span class="hljs-keyword">for</span> (<span class="hljs-keyword">const</span> block <span class="hljs-keyword">of</span> response.<span class="hljs-property">content</span>) {
       <span class="hljs-keyword">if</span> (block.<span class="hljs-property">type</span> === <span class="hljs-string">&#x27;tool_use&#x27;</span> &amp;&amp; block.<span class="hljs-property">name</span> === <span class="hljs-string">&#x27;send_email&#x27;</span>) {
-        <span class="hljs-comment">// handle() submits to Impri, waits for human approval, then executes</span>
+        <span class="hljs-comment">// handle() submits to Airlock, waits for human approval, then executes</span>
         <span class="hljs-keyword">const</span> result = <span class="hljs-keyword">await</span> sendEmailGated.<span class="hljs-title function_">handle</span>(block)
         toolResults.<span class="hljs-title function_">push</span>({ <span class="hljs-attr">type</span>: <span class="hljs-string">&#x27;tool_result&#x27;</span>, <span class="hljs-attr">tool_use_id</span>: block.<span class="hljs-property">id</span>, <span class="hljs-attr">content</span>: result })
       }
@@ -254,7 +254,7 @@ npm install ./integrations/claude-agent-sdk</code></pre></div>
 }</code></pre></div>
 <hr>
 <h2 id="api-reference">API reference</h2>
-<h3 id="withimpriapprovaloptions-gatedtool"><code>withImpriApproval(options)</code> → <code>GatedTool</code></h3>
+<h3 id="withairlockapprovaloptions-gatedtool"><code>withAirlockApproval(options)</code> → <code>GatedTool</code></h3>
 <p>Creates a gated tool wrapper.</p>
 <h4>Options</h4>
 <div class="table-wrap"><table>
@@ -279,10 +279,10 @@ npm install ./integrations/claude-agent-sdk</code></pre></div>
 <td>Executor called after approval; receives the (possibly human-edited) input</td>
 </tr>
 <tr>
-<td><code>impriClient</code></td>
-<td><code>ImpriClient</code></td>
+<td><code>airlockClient</code></td>
+<td><code>AirlockClient</code></td>
 <td>Yes</td>
-<td>Initialized Impri client</td>
+<td>Initialized Airlock client</td>
 </tr>
 <tr>
 <td><code>kind</code></td>
@@ -316,7 +316,7 @@ npm install ./integrations/claude-agent-sdk</code></pre></div>
 </tr>
 <tr>
 <td><code>onRejected</code></td>
-<td><code>(err: ImpriRejected) =&gt; string</code></td>
+<td><code>(err: AirlockRejected) =&gt; string</code></td>
 <td>No</td>
 <td>Called when the human rejects; return value is sent back to Claude as the tool result</td>
 </tr>
@@ -352,18 +352,18 @@ npm install ./integrations/claude-agent-sdk</code></pre></div>
 <p><code>handle()</code> performs these steps in order:</p>
 <ol>
 <li>Resolves <code>title</code> and <code>preview</code> (calling them as functions if needed).</li>
-<li>Calls <code>impriClient.createAction(...)</code> with the resolved title, preview, and the full tool input as <code>payload</code>.</li>
-<li>Waits for a human decision via <code>impriClient.awaitDecision(...)</code>.</li>
+<li>Calls <code>airlockClient.createAction(...)</code> with the resolved title, preview, and the full tool input as <code>payload</code>.</li>
+<li>Waits for a human decision via <code>airlockClient.awaitDecision(...)</code>.</li>
 <li>If <strong>approved</strong>: calls <code>execute()</code> with the (possibly human-edited) input. If the reviewer changed <code>preview.body</code> and the tool input has a <code>body</code> field, the edited body replaces the original.</li>
-<li>Reports the result to Impri (<code>reportResult(&quot;executed&quot;)</code> or <code>reportResult(&quot;execute_failed&quot;, { detail })</code>).</li>
+<li>Reports the result to Airlock (<code>reportResult(&quot;executed&quot;)</code> or <code>reportResult(&quot;execute_failed&quot;, { detail })</code>).</li>
 <li>Returns the execution output as a string.</li>
 <li>If <strong>rejected</strong>: calls <code>onRejected()</code> and returns its output without calling <code>execute()</code>.</li>
 </ol>
-<p>Errors from <code>ImpriTimeout</code> or <code>ImpriExpired</code> propagate to the caller.</p>
+<p>Errors from <code>AirlockTimeout</code> or <code>AirlockExpired</code> propagate to the caller.</p>
 <hr>
 <h2 id="maketoolresult-helper"><code>makeToolResult</code> helper</h2>
 <p>Convenience function to construct an Anthropic <code>tool_result</code> message param:</p>
-<div class="code-block"><span class="code-lang">typescript</span><pre><code class="hljs"><span class="hljs-keyword">import</span> { makeToolResult } <span class="hljs-keyword">from</span> <span class="hljs-string">&#x27;@impri/claude-agent-sdk&#x27;</span>
+<div class="code-block"><span class="code-lang">typescript</span><pre><code class="hljs"><span class="hljs-keyword">import</span> { makeToolResult } <span class="hljs-keyword">from</span> <span class="hljs-string">&#x27;@airlock/claude-agent-sdk&#x27;</span>
 
 <span class="hljs-keyword">const</span> toolResult = <span class="hljs-title function_">makeToolResult</span>(block.<span class="hljs-property">id</span>, <span class="hljs-string">&#x27;Email sent successfully.&#x27;</span>)
 <span class="hljs-comment">// { type: &#x27;tool_result&#x27;, tool_use_id: &#x27;toolu_...&#x27;, content: &#x27;Email sent successfully.&#x27; }</span></code></pre></div>
@@ -389,7 +389,7 @@ npm install ./integrations/claude-agent-sdk</code></pre></div>
 <p>Specifically: if <code>input.body</code> exists and the reviewer changed <code>preview.body</code>, the <code>execute()</code> function receives <code>{ ...input, body: editedBody }</code>. For other field layouts, read the <code>finalPreview</code> directly from <code>approvalGate</code> instead.</p>
 <hr>
 <h2 id="security-notes-on-untrusted-content">Security notes on untrusted content</h2>
-<p>If an action&#39;s <code>payload.untrusted</code> is <code>true</code> (e.g. from a watcher-triage flow), do not forward the preview body as an instruction to Claude. The <code>withImpriApproval</code> wrapper does not apply the <code>&lt;untrusted-external-content&gt;</code> tag that the MCP server uses — in the Claude Agent SDK integration, you are responsible for wrapping untrusted content before forwarding it in the <code>tool_result</code>.</p>
+<p>If an action&#39;s <code>payload.untrusted</code> is <code>true</code> (e.g. from a watcher-triage flow), do not forward the preview body as an instruction to Claude. The <code>withAirlockApproval</code> wrapper does not apply the <code>&lt;untrusted-external-content&gt;</code> tag that the MCP server uses — in the Claude Agent SDK integration, you are responsible for wrapping untrusted content before forwarding it in the <code>tool_result</code>.</p>
 <p>Check <code>action.is_untrusted</code> (from <code>awaitDecision</code>) before treating the preview body as trusted data.</p>
 
     
@@ -467,7 +467,7 @@ npm install ./integrations/claude-agent-sdk</code></pre></div>
 <li class="ptoc-h2"><a href="#installation">Installation</a></li>
 <li class="ptoc-h2"><a href="#quick-start">Quick start</a></li>
 <li class="ptoc-h2"><a href="#api-reference">API reference</a></li>
-<li class="ptoc-h3"><a href="#withimpriapprovaloptions-gatedtool">withImpriApproval(options) → GatedTool</a></li>
+<li class="ptoc-h3"><a href="#withairlockapprovaloptions-gatedtool">withAirlockApproval(options) → GatedTool</a></li>
 <li class="ptoc-h3"><a href="#handleblock-details">handle(block) details</a></li>
 <li class="ptoc-h2"><a href="#maketoolresult-helper">makeToolResult helper</a></li>
 <li class="ptoc-h2"><a href="#multiple-gated-tools">Multiple gated tools</a></li>
@@ -480,19 +480,19 @@ npm install ./integrations/claude-agent-sdk</code></pre></div>
 <footer class="footer">
 <div class="wrap footer-inner">
   <a class="brand" href="/">
-    <span class="mark"><svg viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.5 4.5L19 7.5" stroke="white" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Impri
+    <span class="mark"><svg viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.5 4.5L19 7.5" stroke="white" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Airlock
   </a>
   <div>
-    <a href="https://gitlab.com/sekera.radim/impri">GitLab</a>
+    <a href="https://gitlab.com/sekera.radim/airlock">GitLab</a>
     <a href="/docs">Docs</a>
-    <a href="https://gitlab.com/sekera.radim/impri/-/blob/main/LICENSE">MIT License</a>
-    <a href="https://www.npmjs.com/package/@impri/mcp">@impri/mcp</a>
+    <a href="https://gitlab.com/sekera.radim/airlock/-/blob/main/LICENSE">MIT License</a>
+    <a href="https://www.npmjs.com/package/@airlock/mcp">@airlock/mcp</a>
     <a href="/docs/privacy">Privacy</a>
     <a href="/docs/terms">Terms</a>
     <a href="https://sekera.dev">Contact</a>
   </div>
 </div>
-<div class="wrap" style="margin-top:18px"><span class="muted">© 2026 Impri · The imprimatur for your AI agents · Built by <a href="https://sekera.dev" style="color:inherit">Radim Sekera</a>. Also by the same maker: <a href="https://briefgate.dev/?utm_source=impri.dev&amp;utm_medium=referral" style="color:inherit">BriefGate</a> — client intake for agencies and AI agents.</span></div>
+<div class="wrap" style="margin-top:18px"><span class="muted">© 2026 Airlock · The airlockmatur for your AI agents · Built by <a href="https://sekera.dev" style="color:inherit">Radim Sekera</a>. Also by the same maker: <a href="https://briefgate.dev/?utm_source=airlock.dev&amp;utm_medium=referral" style="color:inherit">BriefGate</a> — client intake for agencies and AI agents.</span></div>
 </footer>
 </body>
 </html>

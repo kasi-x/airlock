@@ -1,9 +1,9 @@
 {
   "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
   "name": "io.github.sekera-radim/impri",
-  "title": "Impri",
-  "description": "Impri MCP server — human-in-the-loop approval inbox for AI agents",
-  "websiteUrl": "https://impri.dev",
+  "title": "Airlock",
+  "description": "Airlock MCP server — human-in-the-loop approval inbox for AI agents",
+  "websiteUrl": "https://airlock.dev",
   "repository": {
     "url": "https://github.com/sekera-radim/impri",
     "source": "github",
@@ -13,17 +13,17 @@
   "remotes": [
     {
       "type": "streamable-http",
-      "url": "https://api.impri.dev/mcp",
+      "url": "https://api.airlock.dev/mcp",
       "headers": [
         {
           "name": "Authorization",
-          "description": "Impri API key as a Bearer token. Get one at impri.dev.",
+          "description": "Airlock API key as a Bearer token. Get one at airlock.dev.",
           "isRequired": true,
           "isSecret": true,
           "value": "Bearer {api_key}",
           "variables": {
             "api_key": {
-              "description": "Impri API key (im_...)",
+              "description": "Airlock API key (im_...)",
               "isRequired": true,
               "isSecret": true
             }
@@ -36,21 +36,21 @@
     {
       "registryType": "npm",
       "registryBaseUrl": "https://registry.npmjs.org",
-      "identifier": "@impri/mcp",
+      "identifier": "@airlock/mcp",
       "version": "0.1.3",
       "transport": {
         "type": "stdio"
       },
       "environmentVariables": [
         {
-          "name": "IMPRI_API_KEY",
-          "description": "Impri API key (im_...). Get one at impri.dev or from your self-hosted server's first-run logs.",
+          "name": "AIRLOCK_API_KEY",
+          "description": "Airlock API key (im_...). Get one at airlock.dev or from your self-hosted server's first-run logs.",
           "isRequired": true,
           "isSecret": true
         },
         {
-          "name": "IMPRI_BASE_URL",
-          "description": "Base URL of a self-hosted Impri server (e.g. http://localhost:8484). Defaults to the hosted cloud.",
+          "name": "AIRLOCK_BASE_URL",
+          "description": "Base URL of a self-hosted Airlock server (e.g. http://localhost:8484). Defaults to the hosted cloud.",
           "isRequired": false,
           "isSecret": false
         }

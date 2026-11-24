@@ -17,10 +17,10 @@ export function buildOpenApiDocument(baseUrl = 'http://localhost:8484'): unknown
   return {
     openapi: '3.1.0',
     info: {
-      title: 'Impri API',
+      title: 'Airlock API',
       version: 'v1',
       description:
-        'Human-in-the-loop approval API for AI agents. POST an action, get a decision back via webhook or polling. The imprimatur for your AI agents.',
+        'Human-in-the-loop approval API for AI agents. POST an action, get a decision back via webhook or polling. The airlockmatur for your AI agents.',
     },
     servers: [{ url: `${baseUrl}/v1`, description: 'API v1' }],
     security: [{ bearerAuth: [] }],

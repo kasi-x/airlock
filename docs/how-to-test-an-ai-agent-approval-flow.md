@@ -1,6 +1,6 @@
 # How to Test an AI Agent's Approval Flow
 
-How to test an AI agent's approval flow: drive the approve, reject, edit and conflict paths against a local Impri instance with plain HTTP calls in pytest.
+How to test an AI agent's approval flow: drive the approve, reject, edit and conflict paths against a local Airlock instance with plain HTTP calls in pytest.
 
 ---
 
@@ -15,7 +15,7 @@ An approval gate has one job: the side effect must not run unless a human said y
 | `rejected` | Never reach the executor |
 | `expired` | Same as rejected |
 
-Everything below tests *your* agent code. Impri only holds the decision; it does not interpret the action, so there is nothing about the content to test on its side.
+Everything below tests *your* agent code. Airlock only holds the decision; it does not interpret the action, so there is nothing about the content to test on its side.
 
 ---
 
@@ -32,8 +32,8 @@ The decision endpoint, `POST /v1/actions/:id/decision`, accepts a key with the `
 ```python
 import os, time, requests
 
-BASE = os.environ.get("IMPRI_BASE_URL", "http://localhost:8484")
-H = {"Authorization": f"Bearer {os.environ['IMPRI_API_KEY']}"}
+BASE = os.environ.get("AIRLOCK_BASE_URL", "http://localhost:8484")
+H = {"Authorization": f"Bearer {os.environ['AIRLOCK_API_KEY']}"}
 
 def propose(body="Hi Sarah, draft v1", **extra):
     r = requests.post(f"{BASE}/v1/actions", headers=H, json={
@@ -112,6 +112,6 @@ If your project has a rule with the `auto_approve` outcome ([rules](rules.md)), 
 
 ## What this does not prove
 
-A passing suite shows your agent honours the decision. It does not show the gate cannot be bypassed: if the agent also holds the raw credential for the target service, it can route around Impri. Add one test that the executor function is unreachable without an approved decision, and keep the real credential out of the agent's reach. Impri is only the approval gate; it never executes anything itself.
+A passing suite shows your agent honours the decision. It does not show the gate cannot be bypassed: if the agent also holds the raw credential for the target service, it can route around Airlock. Add one test that the executor function is unreachable without an approved decision, and keep the real credential out of the agent's reach. Airlock is only the approval gate; it never executes anything itself.
 
-Next: [Quickstart](quickstart.md) to get a key, or the [CLI](cli.md) to approve test actions by hand with `impri approve`.
+Next: [Quickstart](quickstart.md) to get a key, or the [CLI](cli.md) to approve test actions by hand with `airlock approve`.

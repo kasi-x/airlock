@@ -3,21 +3,21 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Approve AI Agent Actions From Telegram — Impri Docs</title>
+<title>Approve AI Agent Actions From Telegram — Airlock Docs</title>
 <meta name="description" content="Approve AI agent actions from Telegram: each pending action arrives as a message with inline Approve and Reject buttons, so you can decide from your phone.">
 <meta name="theme-color" content="#06070d">
-<meta property="og:title" content="Approve AI Agent Actions From Telegram — Impri Docs">
+<meta property="og:title" content="Approve AI Agent Actions From Telegram — Airlock Docs">
 <meta property="og:description" content="Approve AI agent actions from Telegram: each pending action arrives as a message with inline Approve and Reject buttons, so you can decide from your phone.">
 <meta property="og:type" content="article">
-<meta property="og:url" content="https://impri.dev/docs/approve-ai-agent-actions-from-telegram">
-<meta property="og:image" content="https://impri.dev/assets/og/og-docs.png">
+<meta property="og:url" content="https://airlock.dev/docs/approve-ai-agent-actions-from-telegram">
+<meta property="og:image" content="https://airlock.dev/assets/og/og-docs.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
-<meta property="og:image:alt" content="Impri — human-in-the-loop approval inbox for AI agents">
+<meta property="og:image:alt" content="Airlock — human-in-the-loop approval inbox for AI agents">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="https://impri.dev/assets/og/og-docs.png">
-<link rel="canonical" href="https://impri.dev/docs/approve-ai-agent-actions-from-telegram">
-<script type="application/ld+json">{"@context":"https://schema.org","@type":"TechArticle","headline":"Approve AI Agent Actions From Telegram","description":"Approve AI agent actions from Telegram: each pending action arrives as a message with inline Approve and Reject buttons, so you can decide from your phone.","url":"https://impri.dev/docs/approve-ai-agent-actions-from-telegram","inLanguage":"en","author":{"@type":"Organization","name":"Impri","url":"https://impri.dev"},"publisher":{"@type":"Organization","name":"Impri","url":"https://impri.dev"}}</script>
+<meta name="twitter:image" content="https://airlock.dev/assets/og/og-docs.png">
+<link rel="canonical" href="https://airlock.dev/docs/approve-ai-agent-actions-from-telegram">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"TechArticle","headline":"Approve AI Agent Actions From Telegram","description":"Approve AI agent actions from Telegram: each pending action arrives as a message with inline Approve and Reject buttons, so you can decide from your phone.","url":"https://airlock.dev/docs/approve-ai-agent-actions-from-telegram","inLanguage":"en","author":{"@type":"Organization","name":"Airlock","url":"https://airlock.dev"},"publisher":{"@type":"Organization","name":"Airlock","url":"https://airlock.dev"}}</script>
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <link rel="icon" href="/favicon.ico" sizes="32x32">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='9' fill='%236366f1'/%3E%3Cpath d='M9 16.5l4.5 4.5L23 11' stroke='white' stroke-width='3' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
@@ -132,13 +132,13 @@ pre code.hljs{display:block;overflow-x:auto}
 <div class="wrap nav-inner">
   <a class="brand" href="/">
     <span class="mark"><svg viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.5 4.5L19 7.5" stroke="white" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
-    Impri
+    Airlock
   </a>
   <div class="nav-links">
     <a class="link" href="/#how">How it works</a>
     <a class="link" href="/#pricing">Pricing</a>
     <a class="link active-nav" href="../docs">Docs</a>
-    <a class="btn btn-primary btn-sm" href="https://gitlab.com/sekera.radim/impri">GitLab</a>
+    <a class="btn btn-primary btn-sm" href="https://gitlab.com/sekera.radim/airlock">GitLab</a>
   </div>
 </div>
 </nav>
@@ -158,7 +158,7 @@ pre code.hljs{display:block;overflow-x:auto}
 <h2 id="who-this-is-for">Who this is for</h2>
 <p>If you&#39;re running an agent solo — handling customer refunds, drafting support replies, posting to your company&#39;s social accounts — you&#39;re probably not sitting at a desk with an inbox tab open all day. Telegram&#39;s push notifications land on your phone the moment an action needs a decision, and the inline keyboard lets you approve or reject without opening a browser or unlocking a separate app. This page covers wiring a Python agent to push actions that show up as Telegram approval prompts.</p>
 <h2 id="does-this-replace-the-web-inbox">Does this replace the web inbox?</h2>
-<p>No — every action pushed to Impri still shows up in the <a href="inbox">web inbox</a> with full detail and audit history. Telegram (like <a href="discord-approval">Discord</a> and <a href="slack-approval">Slack</a>) is one more place the <em>notification</em> and <em>decision</em> can happen; the record lives in Impri either way. Turning on Telegram approvals doesn&#39;t turn off anything else.</p>
+<p>No — every action pushed to Airlock still shows up in the <a href="inbox">web inbox</a> with full detail and audit history. Telegram (like <a href="discord-approval">Discord</a> and <a href="slack-approval">Slack</a>) is one more place the <em>notification</em> and <em>decision</em> can happen; the record lives in Airlock either way. Turning on Telegram approvals doesn&#39;t turn off anything else.</p>
 <h2 id="how-fast-is-it-really">How fast is it, really?</h2>
 <div class="table-wrap"><table>
 <thead>
@@ -194,8 +194,8 @@ pre code.hljs{display:block;overflow-x:auto}
 <span class="hljs-keyword">import</span> time
 <span class="hljs-keyword">import</span> requests
 
-API = <span class="hljs-string">&quot;https://api.impri.dev&quot;</span>
-HEADERS = {<span class="hljs-string">&quot;Authorization&quot;</span>: <span class="hljs-string">f&quot;Bearer <span class="hljs-subst">{os.environ[<span class="hljs-string">&#x27;IMPRI_API_KEY&#x27;</span>]}</span>&quot;</span>}
+API = <span class="hljs-string">&quot;https://api.airlock.dev&quot;</span>
+HEADERS = {<span class="hljs-string">&quot;Authorization&quot;</span>: <span class="hljs-string">f&quot;Bearer <span class="hljs-subst">{os.environ[<span class="hljs-string">&#x27;AIRLOCK_API_KEY&#x27;</span>]}</span>&quot;</span>}
 
 
 <span class="hljs-keyword">def</span> <span class="hljs-title function_">propose_refund</span>(<span class="hljs-params">ticket_id: <span class="hljs-built_in">str</span>, customer: <span class="hljs-built_in">str</span>, amount_usd: <span class="hljs-built_in">float</span>, reason: <span class="hljs-built_in">str</span></span>) -&gt; <span class="hljs-built_in">str</span>:
@@ -242,17 +242,17 @@ HEADERS = {<span class="hljs-string">&quot;Authorization&quot;</span>: <span cla
         headers=HEADERS,
         json={<span class="hljs-string">&quot;status&quot;</span>: <span class="hljs-string">&quot;executed&quot;</span>},
     )</code></pre></div>
-<p>Because <code>idempotent</code> is set to <code>false</code>, the card in the <a href="inbox">web inbox</a> shows a &quot;Not idempotent — retrying may duplicate this action&quot; badge. The Telegram message itself shows only the action&#39;s title and kind next to the buttons, which is why the <code>title</code> above carries the amount, the customer and the ticket: that line is everything you see on your phone before you tap. Tapping Approve twice because the button felt slow is harmless, since Impri keeps the first decision and ignores the rest. What <code>idempotent: false</code> warns about is your own code calling <code>issue_refund()</code> twice for one action.</p>
+<p>Because <code>idempotent</code> is set to <code>false</code>, the card in the <a href="inbox">web inbox</a> shows a &quot;Not idempotent — retrying may duplicate this action&quot; badge. The Telegram message itself shows only the action&#39;s title and kind next to the buttons, which is why the <code>title</code> above carries the amount, the customer and the ticket: that line is everything you see on your phone before you tap. Tapping Approve twice because the button felt slow is harmless, since Airlock keeps the first decision and ignores the rest. What <code>idempotent: false</code> warns about is your own code calling <code>issue_refund()</code> twice for one action.</p>
 <h2 id="what-you39re-actually-gating">What you&#39;re actually gating</h2>
-<p>Tapping Approve in Telegram does not touch your payment processor. It only flips the action&#39;s status to <code>approved</code> inside Impri. <code>issue_refund()</code> above still has to run — the gate only works if that function is unreachable except through this exact path. If some other part of your codebase can call your payment processor directly with the same credentials, an agent (or a bug) can bypass the approval entirely. See <a href="how-to-add-human-approval-to-an-ai-agent">the integration guide</a> for the chokepoint pattern in more depth.</p>
+<p>Tapping Approve in Telegram does not touch your payment processor. It only flips the action&#39;s status to <code>approved</code> inside Airlock. <code>issue_refund()</code> above still has to run — the gate only works if that function is unreachable except through this exact path. If some other part of your codebase can call your payment processor directly with the same credentials, an agent (or a bug) can bypass the approval entirely. See <a href="how-to-add-human-approval-to-an-ai-agent">the integration guide</a> for the chokepoint pattern in more depth.</p>
 <h2 id="next-step">Next step</h2>
-<p>New to Impri? Start with the <a href="quickstart">quickstart</a> to get an API key, then set up <a href="telegram-approval">Telegram Approval Bot</a> for the inline buttons described here.</p>
+<p>New to Airlock? Start with the <a href="quickstart">quickstart</a> to get an API key, then set up <a href="telegram-approval">Telegram Approval Bot</a> for the inline buttons described here.</p>
 
-    <aside class="doc-cta" aria-label="Try Impri">
+    <aside class="doc-cta" aria-label="Try Airlock">
   <p class="doc-cta-title">Add an approval step to your own agent</p>
-  <p>Start on Impri Cloud: the Free tier includes 100 approvals a month. Or self-host the MIT-licensed core with Docker Compose, with no tier limits.</p>
+  <p>Start on Airlock Cloud: the Free tier includes 100 approvals a month. Or self-host the MIT-licensed core with Docker Compose, with no tier limits.</p>
   <div class="doc-cta-actions">
-    <a class="btn btn-primary btn-sm" href="https://app.impri.dev/?signup=1">Start free on Impri Cloud</a>
+    <a class="btn btn-primary btn-sm" href="https://app.airlock.dev/?signup=1">Start free on Airlock Cloud</a>
     <a class="btn btn-ghost btn-sm" href="../docs/quickstart">Quick start</a>
     <a class="btn btn-ghost btn-sm" href="../docs/self-hosting">Self-host guide</a>
   </div>
@@ -349,19 +349,19 @@ HEADERS = {<span class="hljs-string">&quot;Authorization&quot;</span>: <span cla
 <footer class="footer">
 <div class="wrap footer-inner">
   <a class="brand" href="/">
-    <span class="mark"><svg viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.5 4.5L19 7.5" stroke="white" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Impri
+    <span class="mark"><svg viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.5 4.5L19 7.5" stroke="white" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Airlock
   </a>
   <div>
-    <a href="https://gitlab.com/sekera.radim/impri">GitLab</a>
+    <a href="https://gitlab.com/sekera.radim/airlock">GitLab</a>
     <a href="/docs">Docs</a>
-    <a href="https://gitlab.com/sekera.radim/impri/-/blob/main/LICENSE">MIT License</a>
-    <a href="https://www.npmjs.com/package/@impri/mcp">@impri/mcp</a>
+    <a href="https://gitlab.com/sekera.radim/airlock/-/blob/main/LICENSE">MIT License</a>
+    <a href="https://www.npmjs.com/package/@airlock/mcp">@airlock/mcp</a>
     <a href="/docs/privacy">Privacy</a>
     <a href="/docs/terms">Terms</a>
     <a href="https://sekera.dev">Contact</a>
   </div>
 </div>
-<div class="wrap" style="margin-top:18px"><span class="muted">© 2026 Impri · The imprimatur for your AI agents · Built by <a href="https://sekera.dev" style="color:inherit">Radim Sekera</a>. Also by the same maker: <a href="https://briefgate.dev/?utm_source=impri.dev&amp;utm_medium=referral" style="color:inherit">BriefGate</a> — client intake for agencies and AI agents.</span></div>
+<div class="wrap" style="margin-top:18px"><span class="muted">© 2026 Airlock · The airlockmatur for your AI agents · Built by <a href="https://sekera.dev" style="color:inherit">Radim Sekera</a>. Also by the same maker: <a href="https://briefgate.dev/?utm_source=airlock.dev&amp;utm_medium=referral" style="color:inherit">BriefGate</a> — client intake for agencies and AI agents.</span></div>
 </footer>
 </body>
 </html>

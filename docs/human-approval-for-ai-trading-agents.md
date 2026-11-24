@@ -14,16 +14,16 @@ The fix isn't slowing the agent's reasoning down — it's putting a stop between
 
 ## Gate the broker call, not the strategy loop
 
-The pattern is the same three calls as any other Impri integration: push the proposed order as an action, wait for a decision, then call the broker's API only if approved. The strategy code that decides *what* to trade never talks to the broker directly — a thin wrapper does, and that wrapper refuses to run without an `approved` status.
+The pattern is the same three calls as any other Airlock integration: push the proposed order as an action, wait for a decision, then call the broker's API only if approved. The strategy code that decides *what* to trade never talks to the broker directly — a thin wrapper does, and that wrapper refuses to run without an `approved` status.
 
 ```python
 import os
 import time
 import requests
 
-IMPRI_KEY = os.environ["IMPRI_API_KEY"]
-BASE = "https://api.impri.dev"
-HEADERS = {"Authorization": f"Bearer {IMPRI_KEY}"}
+AIRLOCK_KEY = os.environ["AIRLOCK_API_KEY"]
+BASE = "https://api.airlock.dev"
+HEADERS = {"Authorization": f"Bearer {AIRLOCK_KEY}"}
 
 def propose_order(symbol, side, qty, est_price):
     body = {
@@ -91,8 +91,8 @@ Keep `preview.body` short and numeric. A reviewer approving from their phone bet
 
 ---
 
-## What Impri does not do here
+## What Airlock does not do here
 
-Impri does not evaluate the trade, check it against a risk model, or know what a "reasonable" position size is for your account — it stores the proposal, notifies you, and holds the decision until you act on it. Your strategy code still owns risk limits, position sizing, and market-data validity; Impri only owns the question of whether a human said yes before the broker call fired. And it's a real gate only if the strategy process holds no broker credential capable of placing orders outside this path — see [wrapping a tool with a human approval step](wrapping-a-tool-with-a-human-approval-step.md) for how to structure that boundary. For the general shape of the fintech vertical beyond trading specifically (payments, transfers, refunds), see [human approval for fintech AI agents](human-approval-for-fintech-ai-agents.md).
+Airlock does not evaluate the trade, check it against a risk model, or know what a "reasonable" position size is for your account — it stores the proposal, notifies you, and holds the decision until you act on it. Your strategy code still owns risk limits, position sizing, and market-data validity; Airlock only owns the question of whether a human said yes before the broker call fired. And it's a real gate only if the strategy process holds no broker credential capable of placing orders outside this path — see [wrapping a tool with a human approval step](wrapping-a-tool-with-a-human-approval-step.md) for how to structure that boundary. For the general shape of the fintech vertical beyond trading specifically (payments, transfers, refunds), see [human approval for fintech AI agents](human-approval-for-fintech-ai-agents.md).
 
 **Next step:** [quickstart](quickstart.md) to get an API key, then adapt the wrapper above with the [Python SDK](sdk-python.md) instead of raw `requests` calls.

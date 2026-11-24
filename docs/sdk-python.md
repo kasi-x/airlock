@@ -1,6 +1,6 @@
 # Python SDK
 
-> **Status — v0.1, pre-release.** The SDK lives at `sdk/python/` in this repository. It is not yet published to PyPI. Install it from the local source while the package matures. The REST API it wraps is stable and works the same against the hosted cloud (`api.impri.dev`, early beta) or a self-hosted instance.
+> **Status — v0.1, pre-release.** The SDK lives at `sdk/python/` in this repository. It is not yet published to PyPI. Install it from the local source while the package matures. The REST API it wraps is stable and works the same against the hosted cloud (`api.airlock.dev`, early beta) or a self-hosted instance.
 
 ```bash
 # From the repo root
@@ -12,17 +12,17 @@ pip install -e sdk/python
 ## Setup
 
 ```python
-from impri import ImpriClient
+from airlock import AirlockClient
 
-client = ImpriClient(
-    api_key="im_...",            # or set IMPRI_API_KEY env var
-    base_url="http://localhost:8484",  # or set IMPRI_BASE_URL; default is localhost:8484
+client = AirlockClient(
+    api_key="im_...",            # or set AIRLOCK_API_KEY env var
+    base_url="http://localhost:8484",  # or set AIRLOCK_BASE_URL; default is localhost:8484
 )
 # Cloud:
-# client = ImpriClient(api_key="im_...", base_url="https://api.impri.dev")
+# client = AirlockClient(api_key="im_...", base_url="https://api.airlock.dev")
 ```
 
-The client raises `ImpriConfigError` at construction time if neither the argument nor the environment variable is set. `base_url` defaults to `http://localhost:8484` (self-hosted). Strip any trailing slash from the value you pass — the SDK does this internally, but it is cleaner to be explicit. The client appends `/v1` internally; callers never include it.
+The client raises `AirlockConfigError` at construction time if neither the argument nor the environment variable is set. `base_url` defaults to `http://localhost:8484` (self-hosted). Strip any trailing slash from the value you pass — the SDK does this internally, but it is cleaner to be explicit. The client appends `/v1` internally; callers never include it.
 
 ---
 
@@ -36,7 +36,7 @@ Every request carries `Authorization: Bearer im_<key>`. Key scopes are enforced 
 | `watch` | Create, list, get, update, delete watchers |
 | `admin` | Keys CRUD, project read/write, export/erase, rotate secret — implies `actions` + `watch` |
 
-A 403 response means the key exists but lacks the required scope. A 401 means the key is wrong or revoked. Both raise `ImpriUnauthorized`.
+A 403 response means the key exists but lacks the required scope. A 401 means the key is wrong or revoked. Both raise `AirlockUnauthorized`.
 
 ---
 
@@ -72,7 +72,7 @@ action = await client.get_action("act_abc123")
 # action.status, action.decision (present after a human decides), action.webhook_delivery
 ```
 
-Returns `ImpriNotFound` (404) if the id is unknown or belongs to a different project.
+Returns `AirlockNotFound` (404) if the id is unknown or belongs to a different project.
 
 `action.decision` is `None` while the action is pending and populated once a human has acted:
 
@@ -117,7 +117,7 @@ Rate-limited to **300 GET/min per key**.
 The most common pattern — push an action then block until a human decides:
 
 ```python
-from impri import ImpriRejected, ImpriExpired, ImpriTimeout
+from airlock import AirlockRejected, AirlockExpired, AirlockTimeout
 
 action_created = await client.create_action(
     kind="db.exec",
@@ -129,21 +129,21 @@ action_created = await client.create_action(
 try:
     action = await client.await_decision(
         action_created.id,
-        timeout_s=300,         # raise ImpriTimeout after this; action stays pending server-side
+        timeout_s=300,         # raise AirlockTimeout after this; action stays pending server-side
         poll_interval_s=5,     # minimum recommended is 5 s
     )
     # action.status == "approved"
     sql_to_run = action.decision.final_preview["body"]
 
-except ImpriRejected as e:
+except AirlockRejected as e:
     # Human said no — this is normal flow, not an error.
     # e.action_id, e.decision, e.final_preview
     print("Rejected — doing nothing.")
 
-except ImpriExpired:
+except AirlockExpired:
     print("Approval window closed before a decision was made.")
 
-except ImpriTimeout:
+except AirlockTimeout:
     # timeout_s elapsed; action is still pending server-side.
     # You can call await_decision again, or poll manually.
     print("Timed out waiting for approval.")
@@ -164,7 +164,7 @@ result = await client.decide(
 )
 ```
 
-Returns `ImpriConflict` (409) if the action is already decided or two writers race. Only call on pending actions.
+Returns `AirlockConflict` (409) if the action is already decided or two writers race. Only call on pending actions.
 
 ### `bulk_decide`
 
@@ -201,7 +201,7 @@ except Exception as exc:
     raise
 ```
 
-Returns `ImpriConflict` (409) if the action is not in `approved` state — only call after a confirmed approval.
+Returns `AirlockConflict` (409) if the action is not in `approved` state — only call after a confirmed approval.
 
 ---
 
@@ -209,7 +209,7 @@ Returns `ImpriConflict` (409) if the action is not in `approved` state — only 
 
 ### `@client.requires_approval` decorator
 
-Gates a function through an Impri approval. Every call pushes an action, blocks until decided, and invokes the original function only on approval. On rejection it raises `ImpriRejected` without calling the function.
+Gates a function through an Airlock approval. Every call pushes an action, blocks until decided, and invokes the original function only on approval. On rejection it raises `AirlockRejected` without calling the function.
 
 ```python
 @client.requires_approval(
@@ -247,7 +247,7 @@ async with client.approval_gate(
     # On exception __aexit__ calls report_result("execute_failed", detail=str(exc)).
 ```
 
-`__aexit__` takes care of `report_result` so you never forget to close the loop. `ImpriRejected` is raised on exit from the `async with` block if the human rejected — you do not need to handle cleanup because the action was never executed.
+`__aexit__` takes care of `report_result` so you never forget to close the loop. `AirlockRejected` is raised on exit from the `async with` block if the human rejected — you do not need to handle cleanup because the action was never executed.
 
 ---
 
@@ -259,12 +259,12 @@ Watchers monitor external sources (RSS feeds, Reddit searches, URL content) and 
 
 ```python
 watcher = await client.create_watcher(
-    name="Impri mentions on Reddit",
+    name="Airlock mentions on Reddit",
     kind="reddit_search",               # rss | reddit_search | url_diff
-    config={"query": "impri approval", "subreddit": "selfhosted"},
+    config={"query": "airlock approval", "subreddit": "selfhosted"},
     schedule={"every": "1h", "window": "08:00-22:00"},  # window uses project timezone
     keywords=[
-        {"pattern": "impri", "points": 10},
+        {"pattern": "airlock", "points": 10},
         {"pattern": "human-in-the-loop", "points": 5},
     ],
     keywords_none=["spam", "advertisement"],
@@ -361,7 +361,7 @@ watcher = client.create_watcher_from_preset(
 )
 ```
 
-Applies all standard guards: rate limit, tier watcher-count quota, SSRF validation, minimum schedule interval. Raises `ImpriQuotaExceeded` (402) when a tier limit would be breached.
+Applies all standard guards: rate limit, tier watcher-count quota, SSRF validation, minimum schedule interval. Raises `AirlockQuotaExceeded` (402) when a tier limit would be breached.
 
 ---
 
@@ -495,17 +495,17 @@ Audit filter params: `type` (exact event name or dot-prefix), `actor` (key ID), 
 Verify incoming webhook signatures without instantiating a client:
 
 ```python
-import impri
+import airlock
 
 try:
-    impri.verify_webhook(
+    airlock.verify_webhook(
         raw_body=request.body,         # bytes
         secret=project.webhook_secret,
-        timestamp=request.headers["X-Impri-Timestamp"],
-        nonce=request.headers["X-Impri-Nonce"],
-        signature=request.headers["X-Impri-Signature"],
+        timestamp=request.headers["X-Airlock-Timestamp"],
+        nonce=request.headers["X-Airlock-Nonce"],
+        signature=request.headers["X-Airlock-Signature"],
     )
-except impri.ImpriWebhookSignatureError:
+except airlock.AirlockWebhookSignatureError:
     return 400  # bad signature
 
 # Process the webhook
@@ -517,37 +517,37 @@ Algorithm: `sha256=HMAC-SHA256(secret, f"{timestamp}.{nonce}.{raw_body}")`. The 
 
 ## Error handling
 
-All typed exceptions inherit from `ImpriError`. Every exception carries `response: httpx.Response | None` for introspection.
+All typed exceptions inherit from `AirlockError`. Every exception carries `response: httpx.Response | None` for introspection.
 
 ```python
-from impri import (
-    ImpriError,
-    ImpriConfigError,       # missing api_key at construction time
-    ImpriUnauthorized,      # 401 / 403 — wrong key or missing scope
-    ImpriNotFound,          # 404 — action or watcher not found
-    ImpriConflict,          # 409 — already decided; idempotency race
-    ImpriExpired,           # 410 — approval window closed
-    ImpriRateLimited,       # 429 — hit per-key rate limit; check .retry_after
-    ImpriQuotaExceeded,     # 402 — monthly quota exhausted; .limit, .tier
-    ImpriRejected,          # not HTTP — raised by await_decision on rejection
-    ImpriTimeout,           # not HTTP — raised by await_decision when timeout_s elapses
-    ImpriValidationError,   # 400 / 422 — schema error; check .issues
-    ImpriApiError,          # catch-all for other 4xx / 5xx
-    ImpriWebhookSignatureError,  # bad webhook signature
+from airlock import (
+    AirlockError,
+    AirlockConfigError,       # missing api_key at construction time
+    AirlockUnauthorized,      # 401 / 403 — wrong key or missing scope
+    AirlockNotFound,          # 404 — action or watcher not found
+    AirlockConflict,          # 409 — already decided; idempotency race
+    AirlockExpired,           # 410 — approval window closed
+    AirlockRateLimited,       # 429 — hit per-key rate limit; check .retry_after
+    AirlockQuotaExceeded,     # 402 — monthly quota exhausted; .limit, .tier
+    AirlockRejected,          # not HTTP — raised by await_decision on rejection
+    AirlockTimeout,           # not HTTP — raised by await_decision when timeout_s elapses
+    AirlockValidationError,   # 400 / 422 — schema error; check .issues
+    AirlockApiError,          # catch-all for other 4xx / 5xx
+    AirlockWebhookSignatureError,  # bad webhook signature
 )
 
 try:
     action = await client.create_action(...)
-except ImpriRateLimited as e:
+except AirlockRateLimited as e:
     time.sleep(e.retry_after or 1)
     action = await client.create_action(...)
-except ImpriQuotaExceeded as e:
+except AirlockQuotaExceeded as e:
     print(f"Quota ({e.limit}) exhausted on tier {e.tier}.")
-except ImpriRejected:
+except AirlockRejected:
     pass  # Human said no — handle as normal flow, not an error
 ```
 
-`ImpriRejected` is not an error to log — the human exercising their veto is the whole point of Impri.
+`AirlockRejected` is not an error to log — the human exercising their veto is the whole point of Airlock.
 
 ---
 
@@ -587,4 +587,4 @@ When an action has `payload.untrusted == True` (delivered by a Watcher), the SDK
 
 ## Reference
 
-Full method signatures live in `sdk/python/impri/__init__.py`. The REST API contract is in `docs/llms.txt` and `server/src/openapi.ts`. The MCP client at `mcp/src/client.ts` is the reference implementation of the HTTP layer and the `await_decision` polling loop.
+Full method signatures live in `sdk/python/airlock/__init__.py`. The REST API contract is in `docs/llms.txt` and `server/src/openapi.ts`. The MCP client at `mcp/src/client.ts` is the reference implementation of the HTTP layer and the `await_decision` polling loop.

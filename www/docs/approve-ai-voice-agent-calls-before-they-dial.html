@@ -3,21 +3,21 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Approve AI Voice Agent Calls Before They Dial — Impri Docs</title>
+<title>Approve AI Voice Agent Calls Before They Dial — Airlock Docs</title>
 <meta name="description" content="Give a human the last word before your voice agent places an outbound call — approve the script and number from your phone, then let the dialer run.">
 <meta name="theme-color" content="#06070d">
-<meta property="og:title" content="Approve AI Voice Agent Calls Before They Dial — Impri Docs">
+<meta property="og:title" content="Approve AI Voice Agent Calls Before They Dial — Airlock Docs">
 <meta property="og:description" content="Give a human the last word before your voice agent places an outbound call — approve the script and number from your phone, then let the dialer run.">
 <meta property="og:type" content="article">
-<meta property="og:url" content="https://impri.dev/docs/approve-ai-voice-agent-calls-before-they-dial">
-<meta property="og:image" content="https://impri.dev/assets/og/og-docs.png">
+<meta property="og:url" content="https://airlock.dev/docs/approve-ai-voice-agent-calls-before-they-dial">
+<meta property="og:image" content="https://airlock.dev/assets/og/og-docs.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
-<meta property="og:image:alt" content="Impri — human-in-the-loop approval inbox for AI agents">
+<meta property="og:image:alt" content="Airlock — human-in-the-loop approval inbox for AI agents">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="https://impri.dev/assets/og/og-docs.png">
-<link rel="canonical" href="https://impri.dev/docs/approve-ai-voice-agent-calls-before-they-dial">
-<script type="application/ld+json">{"@context":"https://schema.org","@type":"TechArticle","headline":"Approve AI Voice Agent Calls Before They Dial","description":"Give a human the last word before your voice agent places an outbound call — approve the script and number from your phone, then let the dialer run.","url":"https://impri.dev/docs/approve-ai-voice-agent-calls-before-they-dial","inLanguage":"en","author":{"@type":"Organization","name":"Impri","url":"https://impri.dev"},"publisher":{"@type":"Organization","name":"Impri","url":"https://impri.dev"}}</script>
+<meta name="twitter:image" content="https://airlock.dev/assets/og/og-docs.png">
+<link rel="canonical" href="https://airlock.dev/docs/approve-ai-voice-agent-calls-before-they-dial">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"TechArticle","headline":"Approve AI Voice Agent Calls Before They Dial","description":"Give a human the last word before your voice agent places an outbound call — approve the script and number from your phone, then let the dialer run.","url":"https://airlock.dev/docs/approve-ai-voice-agent-calls-before-they-dial","inLanguage":"en","author":{"@type":"Organization","name":"Airlock","url":"https://airlock.dev"},"publisher":{"@type":"Organization","name":"Airlock","url":"https://airlock.dev"}}</script>
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <link rel="icon" href="/favicon.ico" sizes="32x32">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='9' fill='%236366f1'/%3E%3Cpath d='M9 16.5l4.5 4.5L23 11' stroke='white' stroke-width='3' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
@@ -132,13 +132,13 @@ pre code.hljs{display:block;overflow-x:auto}
 <div class="wrap nav-inner">
   <a class="brand" href="/">
     <span class="mark"><svg viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.5 4.5L19 7.5" stroke="white" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
-    Impri
+    Airlock
   </a>
   <div class="nav-links">
     <a class="link" href="/#how">How it works</a>
     <a class="link" href="/#pricing">Pricing</a>
     <a class="link active-nav" href="../docs">Docs</a>
-    <a class="btn btn-primary btn-sm" href="https://gitlab.com/sekera.radim/impri">GitLab</a>
+    <a class="btn btn-primary btn-sm" href="https://gitlab.com/sekera.radim/airlock">GitLab</a>
   </div>
 </div>
 </nav>
@@ -160,12 +160,12 @@ pre code.hljs{display:block;overflow-x:auto}
 <p>The fix is the same pattern used for email or publishing: the agent proposes the call — who it&#39;s calling, what it plans to say — and a human approves or rejects before the dialer function ever runs.</p>
 <hr>
 <h2 id="wiring-the-gate-into-a-python-dial-function">Wiring the gate into a Python dial function</h2>
-<p>Say your agent decides to call a lead back with a follow-up script. Instead of handing the script straight to your <code>dial()</code> function, push it to Impri first and only call once you get <code>approved</code> back.</p>
+<p>Say your agent decides to call a lead back with a follow-up script. Instead of handing the script straight to your <code>dial()</code> function, push it to Airlock first and only call once you get <code>approved</code> back.</p>
 <div class="code-block"><span class="code-lang">python</span><pre><code class="hljs"><span class="hljs-keyword">import</span> time
 <span class="hljs-keyword">import</span> requests
 
-API = <span class="hljs-string">&quot;https://api.impri.dev/v1/actions&quot;</span>
-HEADERS = {<span class="hljs-string">&quot;Authorization&quot;</span>: <span class="hljs-string">f&quot;Bearer <span class="hljs-subst">{IMPRI_API_KEY}</span>&quot;</span>}
+API = <span class="hljs-string">&quot;https://api.airlock.dev/v1/actions&quot;</span>
+HEADERS = {<span class="hljs-string">&quot;Authorization&quot;</span>: <span class="hljs-string">f&quot;Bearer <span class="hljs-subst">{AIRLOCK_API_KEY}</span>&quot;</span>}
 
 <span class="hljs-keyword">def</span> <span class="hljs-title function_">request_call_approval</span>(<span class="hljs-params">phone_number: <span class="hljs-built_in">str</span>, opening_line: <span class="hljs-built_in">str</span>, call_notes: <span class="hljs-built_in">str</span></span>) -&gt; <span class="hljs-built_in">dict</span>:
     resp = requests.post(API, headers=HEADERS, json={
@@ -204,17 +204,17 @@ HEADERS = {<span class="hljs-string">&quot;Authorization&quot;</span>: <span cla
 <p>A short <code>expires_in</code> (30 minutes above) matters here specifically: a call script approved yesterday is a call script about yesterday&#39;s context.</p>
 <hr>
 <h2 id="where-this-fits-with-voice-agent-frameworks">Where this fits with voice agent frameworks</h2>
-<p>Impri doesn&#39;t touch your telephony stack — it doesn&#39;t know Twilio from Vapi, and it never places the call itself. It sits one layer above: your agent&#39;s decision logic calls <code>request_call_approval()</code> before it calls whatever your framework&#39;s <code>create_call()</code> method is. The gate only holds if the agent has no other way to reach the phone line — if it also holds a raw Twilio API key it can call directly, route the credential through the same wrapper function that does the approval check, not through the agent&#39;s general toolset.</p>
+<p>Airlock doesn&#39;t touch your telephony stack — it doesn&#39;t know Twilio from Vapi, and it never places the call itself. It sits one layer above: your agent&#39;s decision logic calls <code>request_call_approval()</code> before it calls whatever your framework&#39;s <code>create_call()</code> method is. The gate only holds if the agent has no other way to reach the phone line — if it also holds a raw Twilio API key it can call directly, route the credential through the same wrapper function that does the approval check, not through the agent&#39;s general toolset.</p>
 <p>For approving calls from your phone rather than a browser tab, pair this with <a href="telegram-approval">Telegram approvals</a> — a call script fits comfortably in a chat message.</p>
 <hr>
 <h2 id="next-step">Next step</h2>
 <p>New to the three-call pattern (push, poll, execute)? Start with <a href="how-to-add-human-approval-to-an-ai-agent">how to add human approval to an AI agent</a>, or jump straight to the <a href="sdk-python">Python SDK</a> to skip writing the <code>requests</code> calls by hand. If you&#39;re setting up your first API key, the <a href="quickstart">quickstart</a> covers both cloud and self-hosted setup.</p>
 
-    <aside class="doc-cta" aria-label="Try Impri">
+    <aside class="doc-cta" aria-label="Try Airlock">
   <p class="doc-cta-title">Add an approval step to your own agent</p>
-  <p>Start on Impri Cloud: the Free tier includes 100 approvals a month. Or self-host the MIT-licensed core with Docker Compose, with no tier limits.</p>
+  <p>Start on Airlock Cloud: the Free tier includes 100 approvals a month. Or self-host the MIT-licensed core with Docker Compose, with no tier limits.</p>
   <div class="doc-cta-actions">
-    <a class="btn btn-primary btn-sm" href="https://app.impri.dev/?signup=1">Start free on Impri Cloud</a>
+    <a class="btn btn-primary btn-sm" href="https://app.airlock.dev/?signup=1">Start free on Airlock Cloud</a>
     <a class="btn btn-ghost btn-sm" href="../docs/quickstart">Quick start</a>
     <a class="btn btn-ghost btn-sm" href="../docs/self-hosting">Self-host guide</a>
   </div>
@@ -309,19 +309,19 @@ HEADERS = {<span class="hljs-string">&quot;Authorization&quot;</span>: <span cla
 <footer class="footer">
 <div class="wrap footer-inner">
   <a class="brand" href="/">
-    <span class="mark"><svg viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.5 4.5L19 7.5" stroke="white" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Impri
+    <span class="mark"><svg viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.5 4.5L19 7.5" stroke="white" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Airlock
   </a>
   <div>
-    <a href="https://gitlab.com/sekera.radim/impri">GitLab</a>
+    <a href="https://gitlab.com/sekera.radim/airlock">GitLab</a>
     <a href="/docs">Docs</a>
-    <a href="https://gitlab.com/sekera.radim/impri/-/blob/main/LICENSE">MIT License</a>
-    <a href="https://www.npmjs.com/package/@impri/mcp">@impri/mcp</a>
+    <a href="https://gitlab.com/sekera.radim/airlock/-/blob/main/LICENSE">MIT License</a>
+    <a href="https://www.npmjs.com/package/@airlock/mcp">@airlock/mcp</a>
     <a href="/docs/privacy">Privacy</a>
     <a href="/docs/terms">Terms</a>
     <a href="https://sekera.dev">Contact</a>
   </div>
 </div>
-<div class="wrap" style="margin-top:18px"><span class="muted">© 2026 Impri · The imprimatur for your AI agents · Built by <a href="https://sekera.dev" style="color:inherit">Radim Sekera</a>. Also by the same maker: <a href="https://briefgate.dev/?utm_source=impri.dev&amp;utm_medium=referral" style="color:inherit">BriefGate</a> — client intake for agencies and AI agents.</span></div>
+<div class="wrap" style="margin-top:18px"><span class="muted">© 2026 Airlock · The airlockmatur for your AI agents · Built by <a href="https://sekera.dev" style="color:inherit">Radim Sekera</a>. Also by the same maker: <a href="https://briefgate.dev/?utm_source=airlock.dev&amp;utm_medium=referral" style="color:inherit">BriefGate</a> — client intake for agencies and AI agents.</span></div>
 </footer>
 </body>
 </html>

@@ -17,9 +17,9 @@ A gate before the change is applied turns "the agent wasted 2,000 overnight" int
 The approval is only as good as what the human can see. Put the numbers in the preview, not just a summary sentence: current value, proposed value, the delta, the scope, and the agent's stated reason. A markdown table renders well in the card.
 
 ```typescript
-const IMPRI = "https://api.impri.dev";
+const AIRLOCK = "https://api.airlock.dev";
 const headers = {
-  Authorization: `Bearer ${process.env.IMPRI_API_KEY}`,
+  Authorization: `Bearer ${process.env.AIRLOCK_API_KEY}`,
   "Content-Type": "application/json",
 };
 
@@ -33,7 +33,7 @@ type BudgetChange = {
 export async function proposeBudgetChange(c: BudgetChange): Promise<boolean> {
   const delta = ((c.proposedDaily - c.currentDaily) / c.currentDaily) * 100;
 
-  const res = await fetch(`${IMPRI}/v1/actions`, {
+  const res = await fetch(`${AIRLOCK}/v1/actions`, {
     method: "POST",
     headers,
     body: JSON.stringify({
@@ -59,15 +59,15 @@ export async function proposeBudgetChange(c: BudgetChange): Promise<boolean> {
   let action: any;
   do {
     await new Promise((r) => setTimeout(r, 15_000));
-    action = await (await fetch(`${IMPRI}/v1/actions/${id}`, { headers })).json();
+    action = await (await fetch(`${AIRLOCK}/v1/actions/${id}`, { headers })).json();
   } while (action.status === "pending");
 
   if (action.status !== "approved") return false;
 
-  // Your own function that calls the ad platform; Impri never touches it.
+  // Your own function that calls the ad platform; Airlock never touches it.
   const applied = await applyBudgetToPlatform(c.campaign, action.decision.final_preview.body);
 
-  await fetch(`${IMPRI}/v1/actions/${id}/result`, {
+  await fetch(`${AIRLOCK}/v1/actions/${id}/result`, {
     method: "POST",
     headers,
     body: JSON.stringify({ status: applied ? "executed" : "execute_failed" }),
@@ -82,17 +82,17 @@ Note the edit path. If you set `editable: ["preview.body"]`, the reviewer can ch
 
 ## Layering your own limits
 
-Impri does not know what a sensible budget is. Keep hard limits in code as well as in the human gate:
+Airlock does not know what a sensible budget is. Keep hard limits in code as well as in the human gate:
 
 - **Cap outside the agent.** Enforce a maximum per-campaign and per-day figure in the executor, so an approval cannot push past a ceiling you set on purpose.
-- **Split by risk.** Send small nudges (a few percent) straight through and route only changes above a threshold to the inbox. Deciding the threshold is your logic, not Impri's.
+- **Split by risk.** Send small nudges (a few percent) straight through and route only changes above a threshold to the inbox. Deciding the threshold is your logic, not Airlock's.
 - **Distinct `kind` values** such as `ads.budget_change`, `ads.pause`, `ads.creative_launch` keep the [inbox](inbox.md) sortable and let you filter the [audit log](audit-log.md) when finance asks who approved a change.
 
 ---
 
 ## Boundaries
 
-Impri is only the approval gate. It stores the proposal, notifies the reviewer, and records the decision. It does not analyze performance, decide whether a budget is reasonable, or talk to Google Ads, Meta, or any other platform.
+Airlock is only the approval gate. It stores the proposal, notifies the reviewer, and records the decision. It does not analyze performance, decide whether a budget is reasonable, or talk to Google Ads, Meta, or any other platform.
 
 It is a real control only when the ad-platform credential lives in the executor that runs after approval. If the agent also holds a token that can change budgets directly, it can bypass the gate. Confine it by wrapping the platform call, as covered in [the integrations guide](integrations.md).
 

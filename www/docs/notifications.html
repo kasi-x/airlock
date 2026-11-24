@@ -3,21 +3,21 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Notification Channels — Impri Docs</title>
-<meta name="description" content="Impri can push a notification to your team's tools the moment an action lands in the inbox. Notification channels are per-project, configurable via the…">
+<title>Notification Channels — Airlock Docs</title>
+<meta name="description" content="Airlock can push a notification to your team's tools the moment an action lands in the inbox. Notification channels are per-project, configurable via the…">
 <meta name="theme-color" content="#06070d">
-<meta property="og:title" content="Notification Channels — Impri Docs">
-<meta property="og:description" content="Impri can push a notification to your team's tools the moment an action lands in the inbox. Notification channels are per-project, configurable via the…">
+<meta property="og:title" content="Notification Channels — Airlock Docs">
+<meta property="og:description" content="Airlock can push a notification to your team's tools the moment an action lands in the inbox. Notification channels are per-project, configurable via the…">
 <meta property="og:type" content="article">
-<meta property="og:url" content="https://impri.dev/docs/notifications">
-<meta property="og:image" content="https://impri.dev/assets/og/og-docs.png">
+<meta property="og:url" content="https://airlock.dev/docs/notifications">
+<meta property="og:image" content="https://airlock.dev/assets/og/og-docs.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
-<meta property="og:image:alt" content="Impri — human-in-the-loop approval inbox for AI agents">
+<meta property="og:image:alt" content="Airlock — human-in-the-loop approval inbox for AI agents">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="https://impri.dev/assets/og/og-docs.png">
-<link rel="canonical" href="https://impri.dev/docs/notifications">
-<script type="application/ld+json">{"@context":"https://schema.org","@type":"TechArticle","headline":"Notification Channels","description":"Impri can push a notification to your team's tools the moment an action lands in the inbox. Notification channels are per-project, configurable via the…","url":"https://impri.dev/docs/notifications","inLanguage":"en","author":{"@type":"Organization","name":"Impri","url":"https://impri.dev"},"publisher":{"@type":"Organization","name":"Impri","url":"https://impri.dev"}}</script>
+<meta name="twitter:image" content="https://airlock.dev/assets/og/og-docs.png">
+<link rel="canonical" href="https://airlock.dev/docs/notifications">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"TechArticle","headline":"Notification Channels","description":"Airlock can push a notification to your team's tools the moment an action lands in the inbox. Notification channels are per-project, configurable via the…","url":"https://airlock.dev/docs/notifications","inLanguage":"en","author":{"@type":"Organization","name":"Airlock","url":"https://airlock.dev"},"publisher":{"@type":"Organization","name":"Airlock","url":"https://airlock.dev"}}</script>
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <link rel="icon" href="/favicon.ico" sizes="32x32">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='9' fill='%236366f1'/%3E%3Cpath d='M9 16.5l4.5 4.5L23 11' stroke='white' stroke-width='3' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
@@ -132,13 +132,13 @@ pre code.hljs{display:block;overflow-x:auto}
 <div class="wrap nav-inner">
   <a class="brand" href="/">
     <span class="mark"><svg viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.5 4.5L19 7.5" stroke="white" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
-    Impri
+    Airlock
   </a>
   <div class="nav-links">
     <a class="link" href="/#how">How it works</a>
     <a class="link" href="/#pricing">Pricing</a>
     <a class="link active-nav" href="../docs">Docs</a>
-    <a class="btn btn-primary btn-sm" href="https://gitlab.com/sekera.radim/impri">GitLab</a>
+    <a class="btn btn-primary btn-sm" href="https://gitlab.com/sekera.radim/airlock">GitLab</a>
   </div>
 </div>
 </nav>
@@ -153,7 +153,7 @@ pre code.hljs{display:block;overflow-x:auto}
       <span>Notification Channels</span>
     </nav>
     <h1>Notification Channels</h1>
-<p>Impri can push a notification to your team&#39;s tools the moment an action
+<p>Airlock can push a notification to your team&#39;s tools the moment an action
 lands in the inbox. Notification channels are per-project, configurable
 via the Settings screen in the web inbox or via the REST API, and require
 an <strong>admin-scope</strong> API key.</p>
@@ -305,7 +305,7 @@ your team can decide without opening the web inbox:</p>
 </tr>
 </tbody></table>
 </div>
-<p>When <code>approval_mode</code> is <code>true</code>, Impri receives interaction payloads at:</p>
+<p>When <code>approval_mode</code> is <code>true</code>, Airlock receives interaction payloads at:</p>
 <div class="code-block"><pre><code class="hljs">POST /v1/integrations/slack/interactions/:channelId</code></pre></div>
 <p>Decisions recorded via this endpoint are equivalent to decisions made
 through the web inbox: they run the same database transaction, fire
@@ -391,10 +391,10 @@ your team can decide without opening the web inbox:</p>
 </tr>
 </tbody></table>
 </div>
-<p>When <code>approval_mode</code> is <code>true</code>, Impri receives interaction payloads at:</p>
+<p>When <code>approval_mode</code> is <code>true</code>, Airlock receives interaction payloads at:</p>
 <div class="code-block"><pre><code class="hljs">POST /v1/integrations/discord/interactions/:channelId</code></pre></div>
 <p>Discord uses Ed25519 asymmetric signatures — the platform holds the
-private key; Impri verifies using <code>public_key</code> only. Decisions recorded
+private key; Airlock verifies using <code>public_key</code> only. Decisions recorded
 via this endpoint appear in the audit log with
 <code>decided_by = &quot;dc:{discord_user_id}&quot;</code>.</p>
 <p>See <a href="discord-approval">docs/discord-approval.md</a> for full setup
@@ -464,7 +464,7 @@ buttons</strong> so your team can decide without opening the web inbox:</p>
 </tbody></table>
 </div>
 <p>When <code>approval_mode</code> is <code>true</code> and <code>BASE_URL</code> is a publicly reachable
-URL, Impri automatically registers a Telegram webhook at:</p>
+URL, Airlock automatically registers a Telegram webhook at:</p>
 <div class="code-block"><pre><code class="hljs">POST /v1/integrations/telegram/webhook/:channelId</code></pre></div>
 <p>Decisions recorded via this endpoint are equivalent to decisions made
 through the web inbox: they run the same database transaction, fire
@@ -478,7 +478,7 @@ instructions, config reference, security model, and troubleshooting.</p>
   <span class="hljs-attr">&quot;type&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;ntfy&quot;</span><span class="hljs-punctuation">,</span>
   <span class="hljs-attr">&quot;config&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
     <span class="hljs-attr">&quot;url&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;https://ntfy.sh&quot;</span><span class="hljs-punctuation">,</span>
-    <span class="hljs-attr">&quot;topic&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;my-impri-alerts&quot;</span>
+    <span class="hljs-attr">&quot;topic&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;my-airlock-alerts&quot;</span>
   <span class="hljs-punctuation">}</span>
 <span class="hljs-punctuation">}</span></code></pre></div>
 <p>Sends a notification to <code>{url}/{topic}</code> on any ntfy-compatible server.
@@ -501,7 +501,7 @@ headers — identical to the global ntfy adapter in <code>notify.ts</code>.</p>
 <p>Sends a plain-text email using the SMTP transport configured via
 environment variables (<code>SMTP_HOST</code>, <code>SMTP_PORT</code>, <code>SMTP_SECURE</code>,
 <code>SMTP_USER</code>, <code>SMTP_PASS</code>, <code>SMTP_FROM</code>). On the hosted cloud this is
-already set up; mail comes from <code>notifications@impri.dev</code>.</p>
+already set up; mail comes from <code>notifications@airlock.dev</code>.</p>
 <p>Without <code>SMTP_HOST</code>, creating an email channel (or changing its address)
 returns <code>400 Email delivery is not configured on this server</code>, and a
 send through an existing email channel fails with that error — the
@@ -509,15 +509,15 @@ send through an existing email channel fails with that error — the
 email went out.</p>
 <p><code>address</code> is validated as an e-mail address by Zod. It is not a secret
 and is returned as-is in API responses. <strong>The address must be confirmed
-before Impri sends it anything but the confirmation email</strong> — see
+before Airlock sends it anything but the confirmation email</strong> — see
 <a href="#email-address-confirmation">Email address confirmation</a>.</p>
-<p>The email subject is <code>[Impri] {title}</code> with CR/LF stripped (header
+<p>The email subject is <code>[Airlock] {title}</code> with CR/LF stripped (header
 injection guard). The body is plain text only — no HTML — to avoid
 template injection surface. It contains the action title, kind and a
 link into the inbox, plus a footer saying why the email arrives and how
 to stop it (disable or delete the channel).</p>
 <h3 id="email-address-confirmation">Email address confirmation</h3>
-<p>An Impri project does not need an email address, so an email channel&#39;s
+<p>An Airlock project does not need an email address, so an email channel&#39;s
 address is unverified input. Creating an email channel therefore sends
 one <strong>confirmation email</strong> (fixed text, nothing from your project in it)
 with a link that is valid for 7 days. The limits below are checked
@@ -572,7 +572,7 @@ Returns <code>{ &quot;ok&quot;: true, &quot;channel&quot;: {…} }</code>, <code
 </tbody></table>
 </div>
 <p><strong>Daily cap on notification emails:</strong> a project sends at most
-<code>IMPRI_EMAIL_DAILY_CAP</code> notification emails (default 100, test sends
+<code>AIRLOCK_EMAIL_DAILY_CAP</code> notification emails (default 100, test sends
 included) per rolling 24 h. When the cap is reached, notifications stay
 queued in the channel&#39;s digest and go out once the window frees up;
 this does not count as a delivery failure and never auto-disables the
@@ -590,7 +590,7 @@ resume once the link is opened.</p>
 <div class="code-block"><span class="code-lang">json</span><pre><code class="hljs"><span class="hljs-punctuation">{</span>
   <span class="hljs-attr">&quot;type&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;webhook&quot;</span><span class="hljs-punctuation">,</span>
   <span class="hljs-attr">&quot;config&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
-    <span class="hljs-attr">&quot;url&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;https://your-service.example.com/impri-hook&quot;</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">&quot;url&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;https://your-service.example.com/airlock-hook&quot;</span><span class="hljs-punctuation">,</span>
     <span class="hljs-attr">&quot;hmac_secret&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;optional-signing-secret-min-16-chars&quot;</span>
   <span class="hljs-punctuation">}</span>
 <span class="hljs-punctuation">}</span></code></pre></div>
@@ -600,7 +600,7 @@ resume once the link is opened.</p>
   <span class="hljs-attr">&quot;action_id&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;act_...&quot;</span><span class="hljs-punctuation">,</span>
   <span class="hljs-attr">&quot;title&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;...&quot;</span><span class="hljs-punctuation">,</span>
   <span class="hljs-attr">&quot;kind&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;...&quot;</span><span class="hljs-punctuation">,</span>
-  <span class="hljs-attr">&quot;inbox_url&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;https://app.impri.dev/inbox/act_...&quot;</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">&quot;inbox_url&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;https://app.airlock.dev/inbox/act_...&quot;</span><span class="hljs-punctuation">,</span>
   <span class="hljs-attr">&quot;triggered_at&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">1720003600</span><span class="hljs-punctuation">,</span>
   <span class="hljs-attr">&quot;escalate&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-literal"><span class="hljs-keyword">false</span></span>
 <span class="hljs-punctuation">}</span></code></pre></div>
@@ -610,9 +610,9 @@ notifications from ordinary ones.</p>
 <p>When <code>hmac_secret</code> is provided, the outbound request carries the same
 HMAC-SHA256 signature headers used by the existing webhook delivery
 system:</p>
-<div class="code-block"><pre><code class="hljs">X-Impri-Signature: sha256={sig}
-X-Impri-Timestamp: {unix-sec}
-X-Impri-Nonce: {hex}</code></pre></div>
+<div class="code-block"><pre><code class="hljs">X-Airlock-Signature: sha256={sig}
+X-Airlock-Timestamp: {unix-sec}
+X-Airlock-Nonce: {hex}</code></pre></div>
 <p>Signature is computed over <code>{timestamp}.{nonce}.{rawBody}</code> using
 <code>signWebhookBody()</code> from <code>webhooks.ts</code> — so receivers can share the
 same verification logic as for action-decision webhooks.</p>
@@ -694,7 +694,7 @@ channel from silently absorbing notification attempts.</p>
 and then re-enable (<code>&quot;enabled&quot;: true</code> in the same or a separate PATCH).
 Updating the config resets <code>fail_count</code> to 0 automatically.</p>
 <p>The threshold (default 5) will be configurable via
-<code>IMPRI_CHANNEL_MAX_FAILS</code> in a future release.</p>
+<code>AIRLOCK_CHANNEL_MAX_FAILS</code> in a future release.</p>
 <hr>
 <h2 id="secrets-and-masking">Secrets and masking</h2>
 <p>All fields that contain credentials are <strong>masked</strong> in every API response
@@ -810,7 +810,7 @@ creation. Masking rules:</p>
 <p>Secrets are stored as plaintext JSON in the SQLite <code>config</code> column. The
 column is only reachable via admin-scope API keys. A future hardening
 step will encrypt the config column at rest using AES-256-GCM with a
-key from <code>IMPRI_CONFIG_KEY</code>.</p>
+key from <code>AIRLOCK_CONFIG_KEY</code>.</p>
 <p>Secrets are never interpolated into log messages. Structured error logs
 record only <code>channelId</code>, <code>type</code>, <code>projectId</code>, and a sanitised error
 message string.</p>
@@ -828,8 +828,8 @@ address between validation and the actual connection.</li>
 <p>Zod validation at write time provides an additional early-rejection
 layer: private IP literals and invalid protocols are rejected before any
 value reaches the database.</p>
-<p>The <code>IMPRI_ALLOW_PRIVATE_TARGETS=1</code> opt-out (used by operators running
-Impri on a private network) disables SSRF checks for all outbound
+<p>The <code>AIRLOCK_ALLOW_PRIVATE_TARGETS=1</code> opt-out (used by operators running
+Airlock on a private network) disables SSRF checks for all outbound
 requests, including channel delivery.</p>
 <hr>
 <h2 id="database-schema">Database schema</h2>
@@ -876,7 +876,7 @@ notifications client. Use the REST API directly with an admin-scope key.</p>
 <div class="code-block"><span class="code-lang">python</span><pre><code class="hljs"><span class="hljs-keyword">import</span> httpx
 
 headers = {<span class="hljs-string">&quot;Authorization&quot;</span>: <span class="hljs-string">&quot;Bearer im_...&quot;</span>}
-base = <span class="hljs-string">&quot;https://api.impri.dev/v1&quot;</span>  <span class="hljs-comment"># or &quot;http://localhost:8484/v1&quot; self-hosted</span>
+base = <span class="hljs-string">&quot;https://api.airlock.dev/v1&quot;</span>  <span class="hljs-comment"># or &quot;http://localhost:8484/v1&quot; self-hosted</span>
 
 <span class="hljs-comment"># Create a Slack channel</span>
 r = httpx.post(<span class="hljs-string">f&quot;<span class="hljs-subst">{base}</span>/notification-channels&quot;</span>, headers=headers, json={
@@ -942,18 +942,18 @@ in the database.</p>
 </tr>
 <tr>
 <td><code>SMTP_FROM</code></td>
-<td>From address used in outbound emails (default <code>impri@localhost</code>).</td>
+<td>From address used in outbound emails (default <code>airlock@localhost</code>).</td>
 </tr>
 <tr>
 <td><code>BASE_URL</code></td>
 <td>Public API URL; the confirmation link points to <code>${BASE_URL}/v1/notification-channels/verify</code>.</td>
 </tr>
 <tr>
-<td><code>IMPRI_EMAIL_DAILY_CAP</code></td>
+<td><code>AIRLOCK_EMAIL_DAILY_CAP</code></td>
 <td>Notification emails a project may send per rolling 24 h (default 100).</td>
 </tr>
 <tr>
-<td><code>IMPRI_ALLOW_PRIVATE_TARGETS</code></td>
+<td><code>AIRLOCK_ALLOW_PRIVATE_TARGETS</code></td>
 <td>Set to <code>&quot;1&quot;</code> to allow channel URLs that resolve to private/RFC1918 addresses (intranet use). Off by default.</td>
 </tr>
 </tbody></table>
@@ -1076,19 +1076,19 @@ in-channel Approve / Reject buttons using Discord&#39;s Interactions API
 <footer class="footer">
 <div class="wrap footer-inner">
   <a class="brand" href="/">
-    <span class="mark"><svg viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.5 4.5L19 7.5" stroke="white" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Impri
+    <span class="mark"><svg viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.5 4.5L19 7.5" stroke="white" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Airlock
   </a>
   <div>
-    <a href="https://gitlab.com/sekera.radim/impri">GitLab</a>
+    <a href="https://gitlab.com/sekera.radim/airlock">GitLab</a>
     <a href="/docs">Docs</a>
-    <a href="https://gitlab.com/sekera.radim/impri/-/blob/main/LICENSE">MIT License</a>
-    <a href="https://www.npmjs.com/package/@impri/mcp">@impri/mcp</a>
+    <a href="https://gitlab.com/sekera.radim/airlock/-/blob/main/LICENSE">MIT License</a>
+    <a href="https://www.npmjs.com/package/@airlock/mcp">@airlock/mcp</a>
     <a href="/docs/privacy">Privacy</a>
     <a href="/docs/terms">Terms</a>
     <a href="https://sekera.dev">Contact</a>
   </div>
 </div>
-<div class="wrap" style="margin-top:18px"><span class="muted">© 2026 Impri · The imprimatur for your AI agents · Built by <a href="https://sekera.dev" style="color:inherit">Radim Sekera</a>. Also by the same maker: <a href="https://briefgate.dev/?utm_source=impri.dev&amp;utm_medium=referral" style="color:inherit">BriefGate</a> — client intake for agencies and AI agents.</span></div>
+<div class="wrap" style="margin-top:18px"><span class="muted">© 2026 Airlock · The airlockmatur for your AI agents · Built by <a href="https://sekera.dev" style="color:inherit">Radim Sekera</a>. Also by the same maker: <a href="https://briefgate.dev/?utm_source=airlock.dev&amp;utm_medium=referral" style="color:inherit">BriefGate</a> — client intake for agencies and AI agents.</span></div>
 </footer>
 </body>
 </html>

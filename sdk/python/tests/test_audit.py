@@ -1,4 +1,4 @@
-"""Unit tests for audit-log ImpriClient methods.
+"""Unit tests for audit-log AirlockClient methods.
 
 Tests cover list_audit(), iter_audit(), and export_audit().
 All HTTP calls go through MockTransport — no real network required.
@@ -7,12 +7,12 @@ from __future__ import annotations
 
 import unittest
 
-from impri import (
-    ImpriClient,
+from airlock import (
+    AirlockClient,
     AuditEvent,
     AuditPage,
-    ImpriRateLimited,
-    ImpriUnauthorized,
+    AirlockRateLimited,
+    AirlockUnauthorized,
 )
 from .mock_transport import MockTransport
 
@@ -63,7 +63,7 @@ AUDIT_PAGE_SECOND = {
 
 def make_client(*responses):
     transport = MockTransport(list(responses))
-    return ImpriClient(api_key=API_KEY, _transport=transport), transport
+    return AirlockClient(api_key=API_KEY, _transport=transport), transport
 
 
 # ---------------------------------------------------------------------------
@@ -162,12 +162,12 @@ class TestListAudit(unittest.TestCase):
 
     def test_raises_unauthorized_on_403(self):
         client, _ = make_client((403, {"error": "Forbidden", "message": "Scope 'admin' required"}))
-        with self.assertRaises(ImpriUnauthorized):
+        with self.assertRaises(AirlockUnauthorized):
             client.list_audit()
 
     def test_raises_rate_limited_on_429(self):
         client, _ = make_client((429, {"error": "Too Many Requests", "retry_after": 5}))
-        with self.assertRaises(ImpriRateLimited):
+        with self.assertRaises(AirlockRateLimited):
             client.list_audit()
 
     def test_empty_page_no_items(self):
@@ -334,12 +334,12 @@ class TestExportAudit(unittest.TestCase):
 
     def test_raises_unauthorized_on_403(self):
         client, _ = make_client((403, {"error": "Forbidden", "message": "Scope 'admin' required"}))
-        with self.assertRaises(ImpriUnauthorized):
+        with self.assertRaises(AirlockUnauthorized):
             client.export_audit()
 
     def test_raises_rate_limited_on_429(self):
         client, _ = make_client((429, {"error": "Too Many Requests", "retry_after": 12}))
-        with self.assertRaises(ImpriRateLimited):
+        with self.assertRaises(AirlockRateLimited):
             client.export_audit()
 
     def test_all_filter_params_combined(self):

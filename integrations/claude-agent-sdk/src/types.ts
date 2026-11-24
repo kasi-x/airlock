@@ -1,5 +1,5 @@
 /**
- * TypeScript types mirroring the Impri REST API contract.
+ * TypeScript types mirroring the Airlock REST API contract.
  * These match the types in docs/llms.txt and the OpenAPI spec.
  */
 
@@ -257,13 +257,13 @@ export interface ProjectExport {
 
 // ─── Client config ────────────────────────────────────────────────────────────
 
-export interface ImpriClientConfig {
-  /** Bearer token (im_...). Defaults to IMPRI_API_KEY env var. */
+export interface AirlockClientConfig {
+  /** Bearer token (im_...). Defaults to AIRLOCK_API_KEY env var. */
   apiKey?: string;
   /**
    * Base URL without a trailing slash and without /v1.
-   * Defaults to IMPRI_BASE_URL env var, then http://localhost:8484.
-   * Cloud: https://api.impri.dev
+   * Defaults to AIRLOCK_BASE_URL env var, then http://localhost:8484.
+   * Cloud: https://api.airlock.dev
    */
   baseUrl?: string;
 }
@@ -275,7 +275,7 @@ export interface ApprovalGateOpts {
   title: string;
   preview: Preview;
   editable?: string[];
-  /** Seconds to wait before raising ImpriTimeout. Default 300. */
+  /** Seconds to wait before raising AirlockTimeout. Default 300. */
   timeoutS?: number;
   /** Override any CreateActionParams field (payload, target_url, etc.). */
   [key: string]: unknown;

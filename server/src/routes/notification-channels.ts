@@ -122,7 +122,7 @@ const VERIFY_TOKEN_RE = /^[A-Za-z0-9_-]{43}$/;
 const sendVerifyPage = sendHtmlPage;
 
 const RESEND_HINT =
-  '<p>You can request a new confirmation email in Impri under Settings &gt; Notifications.</p>';
+  '<p>You can request a new confirmation email in Airlock under Settings &gt; Notifications.</p>';
 
 function sendTokenProblemPage(reply: FastifyReply, state: Exclude<TokenState, 'valid'>) {
   if (state === 'expired') {
@@ -557,7 +557,7 @@ export function registerNotificationChannelRoutes(app: FastifyInstance, db: Db):
       await dispatchChannelType(
         channel.type,
         rawConfig,
-        'Test notification from Impri',
+        'Test notification from Airlock',
         'test',
         inboxUrl,
         'test_action_id',
@@ -642,7 +642,7 @@ export function registerNotificationChannelRoutes(app: FastifyInstance, db: Db):
       reply,
       200,
       'Confirm your email address',
-      '<p>Confirm that this address should receive Impri notifications when an AI agent is waiting for your approval.</p>' +
+      '<p>Confirm that this address should receive Airlock notifications when an AI agent is waiting for your approval.</p>' +
         '<form method="post" action="/v1/notification-channels/verify">' +
         `<input type="hidden" name="token" value="${htmlEscape(token)}">` +
         '<p><button type="submit">Confirm email address</button></p>' +
@@ -669,8 +669,8 @@ export function registerNotificationChannelRoutes(app: FastifyInstance, db: Db):
       reply,
       200,
       'Email confirmed',
-      '<p>Impri notifications will now be delivered to this address. You can close this page.</p>' +
-        (appUrl ? `<p><a href="${htmlEscape(appUrl)}">Open Impri</a></p>` : ''),
+      '<p>Airlock notifications will now be delivered to this address. You can close this page.</p>' +
+        (appUrl ? `<p><a href="${htmlEscape(appUrl)}">Open Airlock</a></p>` : ''),
     );
   });
 

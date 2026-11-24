@@ -8,7 +8,7 @@ Give a human a single tap to approve or reject what an AI agent wants to do — 
 
 Say you have an agent that reads incoming support tickets and drafts replies. Most drafts are fine. Some aren't — a misread ticket, a wrong refund amount, a tone that doesn't fit an angry customer. You don't want to review every reply in a web dashboard between other work; you want a push notification that shows the draft and lets you tap **Approve** or **Reject** and move on.
 
-That's the entire feature Impri is built around: the agent pushes a proposed action, a human gets notified wherever they already look (phone lock screen, Telegram, Slack), and one tap resolves it. No typing, no dashboard, unless something actually needs a closer look.
+That's the entire feature Airlock is built around: the agent pushes a proposed action, a human gets notified wherever they already look (phone lock screen, Telegram, Slack), and one tap resolves it. No typing, no dashboard, unless something actually needs a closer look.
 
 ---
 
@@ -19,8 +19,8 @@ Three calls. The agent doesn't need to know which channel the human taps from �
 ```python
 import os, time, requests
 
-API = "https://api.impri.dev"
-HEADERS = {"Authorization": f"Bearer {os.environ['IMPRI_API_KEY']}"}
+API = "https://api.airlock.dev"
+HEADERS = {"Authorization": f"Bearer {os.environ['AIRLOCK_API_KEY']}"}
 
 def request_approval(ticket_id: str, reply_body: str) -> dict:
     resp = requests.post(f"{API}/v1/actions", headers=HEADERS, json={
@@ -70,7 +70,7 @@ See [notifications](notifications.md) for setup, or [Telegram approval](telegram
 
 ## What "one tap" does and doesn't guarantee
 
-The tap resolves `status` to `approved` or `rejected` — that's the whole contract. It does not mean Impri checked the content is correct; it means a specific human looked at the title and preview and made a call. The gate only holds if the agent has no other way to send the reply — if it also holds a raw API key to the helpdesk and can call it directly, a human tapping "reject" here doesn't stop that path. Wrap the actual send function so the approved decision is the only way in; see [the MCP server](mcp.md) for a pattern that does this without writing the polling loop yourself.
+The tap resolves `status` to `approved` or `rejected` — that's the whole contract. It does not mean Airlock checked the content is correct; it means a specific human looked at the title and preview and made a call. The gate only holds if the agent has no other way to send the reply — if it also holds a raw API key to the helpdesk and can call it directly, a human tapping "reject" here doesn't stop that path. Wrap the actual send function so the approved decision is the only way in; see [the MCP server](mcp.md) for a pattern that does this without writing the polling loop yourself.
 
 ---
 

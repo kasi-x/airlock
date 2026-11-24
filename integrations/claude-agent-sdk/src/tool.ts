@@ -1,7 +1,7 @@
 /**
  * Claude Agent SDK tool wrapper.
  *
- * Gates a Claude Agent SDK tool_use block behind an Impri human-approval step.
+ * Gates a Claude Agent SDK tool_use block behind an Airlock human-approval step.
  * When Claude calls a tool, the agent intercepts the tool_use block and passes
  * it through this wrapper before executing any side-effecting code.
  *
@@ -10,8 +10,8 @@
  * for these types — they are structurally compatible.
  */
 
-import type { ImpriClient } from "./client.js";
-import { ImpriRejected } from "./errors.js";
+import type { AirlockClient } from "./client.js";
+import { AirlockRejected } from "./errors.js";
 import type { Preview } from "./types.js";
 
 // ─── Minimal Anthropic SDK type shapes (structurally compatible) ──────────────
@@ -45,8 +45,8 @@ export interface GatedToolOptions<T = unknown> {
   toolDef: AnthropicTool;
   /** Function that executes the tool after approval — receives (possibly edited) input. */
   execute: ToolExecutor<T>;
-  /** Impri client instance. */
-  impriClient: ImpriClient;
+  /** Airlock client instance. */
+  airlockClient: AirlockClient;
   /** Free-form kind label for the inbox (e.g. 'email.send', 'db.exec'). */
   kind: string;
   /**
@@ -69,7 +69,7 @@ export interface GatedToolOptions<T = unknown> {
    * Return a string to feed back to Claude as the tool result.
    * Default: returns a clear rejection message.
    */
-  onRejected?: (err: ImpriRejected) => string;
+  onRejected?: (err: AirlockRejected) => string;
 }
 
 export interface GatedTool<T = unknown> {
@@ -82,10 +82,10 @@ export interface GatedTool<T = unknown> {
    * Call this for each tool_use block whose name matches this tool.
    *
    * Internally it:
-   *   1. Submits the proposed call to Impri for approval.
+   *   1. Submits the proposed call to Airlock for approval.
    *   2. Waits for a human decision (blocks until approved, rejected, or timed out).
    *   3. On approval: calls execute(input) with possibly human-edited input.
-   *   4. Reports the result to Impri.
+   *   4. Reports the result to Airlock.
    *   5. On rejection: returns the rejection message without calling execute.
    *
    * Returns a string suitable for use as tool_result content to feed back to Claude.
@@ -96,10 +96,10 @@ export interface GatedTool<T = unknown> {
 }
 
 /**
- * Wrap a Claude Agent SDK tool with an Impri human-approval gate.
+ * Wrap a Claude Agent SDK tool with an Airlock human-approval gate.
  *
  * @example
- * const sendEmailGated = withImpriApproval({
+ * const sendEmailGated = withAirlockApproval({
  *   toolDef: {
  *     name: 'send_email',
  *     description: 'Send an email to a recipient.',
@@ -116,7 +116,7 @@ export interface GatedTool<T = unknown> {
  *     await emailService.send({ to: String(to), body: String(body) });
  *     return `Email sent to ${to}`;
  *   },
- *   impriClient: impri,
+ *   airlockClient: airlock,
  *   kind: 'email.send',
  *   title: ({ to }) => `Send email to ${to}`,
  *   preview: ({ body }) => ({ format: 'plain', body: String(body) }),
@@ -126,13 +126,13 @@ export interface GatedTool<T = unknown> {
  * // In your agent loop:
  * const toolResultContent = await sendEmailGated.handle(toolUseBlock);
  */
-export function withImpriApproval<T = unknown>(
+export function withAirlockApproval<T = unknown>(
   opts: GatedToolOptions<T>,
 ): GatedTool<T> {
   const {
     toolDef,
     execute,
-    impriClient,
+    airlockClient,
     kind,
     title,
     preview,
@@ -156,7 +156,7 @@ export function withImpriApproval<T = unknown>(
 
     let approved;
     try {
-      const created = await impriClient.createAction({
+      const created = await airlockClient.createAction({
         kind,
         title: resolvedTitle,
         preview: resolvedPreview,
@@ -164,16 +164,16 @@ export function withImpriApproval<T = unknown>(
         ...(editable && { editable }),
       });
 
-      approved = await impriClient.awaitDecision(created.id, { timeoutS });
+      approved = await airlockClient.awaitDecision(created.id, { timeoutS });
     } catch (err) {
-      if (err instanceof ImpriRejected) {
+      if (err instanceof AirlockRejected) {
         const handler =
           onRejected ??
-          ((e: ImpriRejected) =>
+          ((e: AirlockRejected) =>
             `Action rejected by human reviewer (action ${e.actionId}). The tool was not executed.`);
         return handler(err);
       }
-      // ImpriTimeout, ImpriExpired, network errors — surface to the caller.
+      // AirlockTimeout, AirlockExpired, network errors — surface to the caller.
       throw err;
     }
 
@@ -187,10 +187,10 @@ export function withImpriApproval<T = unknown>(
         typeof output === "string"
           ? output
           : JSON.stringify(output, null, 2);
-      await impriClient.reportResult(approved.actionId, { status: "executed" });
+      await airlockClient.reportResult(approved.actionId, { status: "executed" });
     } catch (err) {
       const detail = err instanceof Error ? err.message : String(err);
-      await impriClient.reportResult(approved.actionId, {
+      await airlockClient.reportResult(approved.actionId, {
         status: "execute_failed",
         detail,
       });

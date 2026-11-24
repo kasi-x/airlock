@@ -4,15 +4,15 @@ import type { Db } from '../db.js';
 import { checkRateLimit, mintInternalAuthToken } from '../auth.js';
 import { incCounter } from '../metrics.js';
 import { buildServerCard } from '../mcp/serverCard.js';
-import { TOOLS } from '@impri/mcp/toolDefs';
-import { callTool } from '@impri/mcp/dispatch';
-import type { ImpriConfig, Transport } from '@impri/mcp/client';
-import { INSTRUCTIONS, SERVER_NAME, SERVER_TITLE, VERSION } from '@impri/mcp/serverInfo';
+import { TOOLS } from '@airlock/mcp/toolDefs';
+import { callTool } from '@airlock/mcp/dispatch';
+import type { AirlockConfig, Transport } from '@airlock/mcp/client';
+import { INSTRUCTIONS, SERVER_NAME, SERVER_TITLE, VERSION } from '@airlock/mcp/serverInfo';
 
 const PROTOCOL_VERSION = '2025-06-18';
 
 // Fly's edge proxy and most MCP clients assume a tool call resolves well
-// under a minute. impri_await_decision normally polls for up to 300s — here
+// under a minute. airlock_await_decision normally polls for up to 300s — here
 // we clamp the per-request wait so a single POST /mcp never holds the
 // connection open longer than this, no matter what the caller asked for.
 // The tool's own "still pending, call me again" guidance (see
@@ -61,7 +61,7 @@ function makeInjectTransport(app: FastifyInstance, keyId: string): Transport {
       method: method as 'GET' | 'POST' | 'PATCH' | 'DELETE',
       url: `/v1${path}`,
       headers: {
-        'x-impri-internal-auth': mintInternalAuthToken(keyId),
+        'x-airlock-internal-auth': mintInternalAuthToken(keyId),
         'content-type': 'application/json',
       },
       payload: body !== undefined ? JSON.stringify(body) : undefined,
@@ -107,7 +107,7 @@ export function registerMcpRoutes(app: FastifyInstance, db: Db): void {
 
   // POST /mcp — the one real entry point. bodyLimit is tighter than the
   // Fastify-wide 1 MiB default: JSON-RPC envelopes here are small (the
-  // largest legitimate payload is impri_push_action's args, and that body
+  // largest legitimate payload is airlock_push_action's args, and that body
   // is separately capped at 256 KB by POST /v1/actions itself).
   app.post('/mcp', { bodyLimit: 512 * 1024 }, async (request, reply) => {
     const key = request.apiKey;
@@ -181,13 +181,13 @@ export function registerMcpRoutes(app: FastifyInstance, db: Db): void {
         if (!key) {
           return reply
             .status(401)
-            .header('WWW-Authenticate', 'Bearer realm="impri"')
+            .header('WWW-Authenticate', 'Bearer realm="airlock"')
             .send(rpcError(
               id,
               -32001,
               // No hosted signup URL here on purpose: this fork has no cloud,
               // so point at the local endpoints that always exist instead.
-              'Impri API key required: pass Authorization: Bearer im_… — create one via POST /v1/signup (when ALLOW_SIGNUP=1) or use the bootstrap admin key from the server logs',
+              'Airlock API key required: pass Authorization: Bearer im_… — create one via POST /v1/signup (when ALLOW_SIGNUP=1) or use the bootstrap admin key from the server logs',
             ));
         }
 
@@ -199,19 +199,19 @@ export function registerMcpRoutes(app: FastifyInstance, db: Db): void {
           return reply.status(200).send(rpcError(id, -32602, `Unknown tool: ${toolName}`));
         }
 
-        if (toolName === 'impri_await_decision') {
+        if (toolName === 'airlock_await_decision') {
           const requested = typeof rawArgs['timeout_s'] === 'number' ? (rawArgs['timeout_s'] as number) : 300;
           rawArgs['timeout_s'] = Math.max(1, Math.min(requested, awaitDecisionMaxS()));
         }
 
-        const config: ImpriConfig = {
+        const config: AirlockConfig = {
           apiKey: '', // unused: the transport below forwards the real header
           baseUrl: '',
           transport: makeInjectTransport(app, key.keyId),
         };
 
         const result = await callTool(config, toolName, rawArgs);
-        incCounter('impri_mcp_tool_calls_total', { tool: toolName, result: result.isError ? 'error' : 'ok' });
+        incCounter('airlock_mcp_tool_calls_total', { tool: toolName, result: result.isError ? 'error' : 'ok' });
         return rpcResult(id, result);
       }
 

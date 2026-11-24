@@ -30,13 +30,13 @@ If your agent action is a step inside a larger orchestrated workflow, the workfl
 
 ## Dedicated approval-gate services
 
-The alternative is a small service whose only job is holding the decision — framework-agnostic, callable from a bash script, a Python agent, a TypeScript MCP tool, or a cron job, all the same way. Impri is one (MIT-licensed self-hostable core, hosted option at impri.dev): it stores the proposed action, notifies a human across email/Slack/Telegram/Discord/push, and returns a decision your agent polls for. No framework dependency, no workflow engine required.
+The alternative is a small service whose only job is holding the decision — framework-agnostic, callable from a bash script, a Python agent, a TypeScript MCP tool, or a cron job, all the same way. Airlock is one (MIT-licensed self-hostable core, hosted option at airlock.dev): it stores the proposed action, notifies a human across email/Slack/Telegram/Discord/push, and returns a decision your agent polls for. No framework dependency, no workflow engine required.
 
 ```python
 import os, time, requests
 
-BASE = os.environ.get("IMPRI_BASE_URL", "http://localhost:8484")
-HEADERS = {"Authorization": f"Bearer {os.environ['IMPRI_API_KEY']}"}
+BASE = os.environ.get("AIRLOCK_BASE_URL", "http://localhost:8484")
+HEADERS = {"Authorization": f"Bearer {os.environ['AIRLOCK_API_KEY']}"}
 
 def propose_action(kind, title, body):
     resp = requests.post(f"{BASE}/v1/actions", headers=HEADERS, json={
@@ -73,7 +73,7 @@ Running the base URL against `localhost:8484` means this is the self-hosted core
 | CrewAI human input | Pause within a crew task | Yes (it's your app) | No — tied to CrewAI |
 | AutoGen user proxy | Human as a conversation participant | Yes (it's your app) | No — tied to AutoGen |
 | n8n HITL node | Approval step inside an n8n workflow | Yes | Only as an n8n node |
-| Impri | Dedicated approval gate | Yes (MIT core) | Yes — REST/MCP, any language |
+| Airlock | Dedicated approval gate | Yes (MIT core) | Yes — REST/MCP, any language |
 
 ---
 

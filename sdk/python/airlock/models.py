@@ -1,7 +1,7 @@
-"""Impri SDK response models.
+"""Airlock SDK response models.
 
 All models are TypedDicts (stdlib typing, zero runtime deps). They describe the
-JSON shapes returned by the Impri API. Fields marked optional (total=False
+JSON shapes returned by the Airlock API. Fields marked optional (total=False
 subclass) may be absent on some responses.
 
 The dataclass ApprovedAction is the only class that is not a TypedDict — it is

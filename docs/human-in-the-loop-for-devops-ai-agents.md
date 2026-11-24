@@ -8,11 +8,11 @@ Let a DevOps AI agent read freely, and send every infra write (terraform apply, 
 
 A support agent that sends a bad email is embarrassing. A DevOps agent that runs `kubectl scale deployment/api --replicas=0` or applies a plan with a destroy step is an outage, and a retry after a half-finished run can make it worse. So the reviewer needs two facts besides the command: is it safe to run twice, and how do you undo it.
 
-Impri's REST API takes both on the action: `idempotent` (the inbox card then warns "Not idempotent — retrying may duplicate this action") and `undo` (plain text shown on the card). The TypeScript and Python SDKs and the MCP tool don't pass these two fields yet, so a CI job sends them with a direct `POST /v1/actions`:
+Airlock's REST API takes both on the action: `idempotent` (the inbox card then warns "Not idempotent — retrying may duplicate this action") and `undo` (plain text shown on the card). The TypeScript and Python SDKs and the MCP tool don't pass these two fields yet, so a CI job sends them with a direct `POST /v1/actions`:
 
 ```bash
-curl -X POST https://api.impri.dev/v1/actions \
-  -H "Authorization: Bearer $IMPRI_API_KEY" -H "Content-Type: application/json" \
+curl -X POST https://api.airlock.dev/v1/actions \
+  -H "Authorization: Bearer $AIRLOCK_API_KEY" -H "Content-Type: application/json" \
   -d '{
     "kind": "terraform.apply",
     "title": "Apply: drop legacy queue, resize db-main",
@@ -38,20 +38,20 @@ read_only = true   # only tools annotated readOnlyHint=true are registered
 
 Its configuration reference calls this a best-effort guardrail: it hides tools but doesn't change the cluster permissions of the identity the server runs as, and read tools can still read Secrets. Give that identity a read-only RBAC role as well. The same server has `confirmation_rules`, but they ask the person at the MCP client, and when the client can't ask, the default `confirmation_fallback` is `"allow"`. A headless on-call agent has nobody to ask, so the approval has to happen somewhere else.
 
-**2. The agent proposes through Impri.** Add Impri's MCP server next to it:
-`claude mcp add --transport http impri https://api.impri.dev/mcp --header "Authorization: Bearer $IMPRI_API_KEY"`
-(self-hosted: `npx @impri/mcp` with `IMPRI_BASE_URL`, see [MCP](mcp.md)). The agent calls `impri_push_action` with a `kind` of `k8s.rollout_restart`, `k8s.scale` or `k8s.rollout_undo`, the exact command as `preview.body` (`kubectl scale deployment/api -n shop --replicas=4`) and the target as `payload` (`{"namespace": "shop", "deployment": "api", "replicas": 4}`).
+**2. The agent proposes through Airlock.** Add Airlock's MCP server next to it:
+`claude mcp add --transport http airlock https://api.airlock.dev/mcp --header "Authorization: Bearer $AIRLOCK_API_KEY"`
+(self-hosted: `npx @airlock/mcp` with `AIRLOCK_BASE_URL`, see [MCP](mcp.md)). The agent calls `airlock_push_action` with a `kind` of `k8s.rollout_restart`, `k8s.scale` or `k8s.rollout_undo`, the exact command as `preview.body` (`kubectl scale deployment/api -n shop --replicas=4`) and the target as `payload` (`{"namespace": "shop", "deployment": "api", "replicas": 4}`).
 
 **3. An executor with its own credentials runs only what a human approved.**
 
 ```typescript
 import { execFile } from "node:child_process";
 import { promisify } from "node:util";
-import { ImpriClient } from "@impri/sdk";
+import { AirlockClient } from "@airlock/sdk";
 
 const run = promisify(execFile);
-// Reads IMPRI_BASE_URL: https://api.impri.dev for the cloud, your server when self-hosted.
-const impri = new ImpriClient({ apiKey: process.env.IMPRI_API_KEY! });
+// Reads AIRLOCK_BASE_URL: https://api.airlock.dev for the cloud, your server when self-hosted.
+const airlock = new AirlockClient({ apiKey: process.env.AIRLOCK_API_KEY! });
 
 type Target = { namespace: string; deployment: string; replicas?: number; revision?: number };
 const NAME = /^[a-z0-9]([-a-z0-9]{0,61}[a-z0-9])?$/; // Kubernetes object name
@@ -69,7 +69,7 @@ function kubectlArgs(kind: string, t: Target): string[] {
 
 // Run every 30 s (cron, a loop, a CronJob): execute what a human approved, nothing else.
 for (const kind of ["k8s.rollout_restart", "k8s.scale", "k8s.rollout_undo"]) {
-  const { items } = await impri.listActions({ status: "approved", kind, autoPaginate: true });
+  const { items } = await airlock.listActions({ status: "approved", kind, autoPaginate: true });
   for (const action of items) {
     let status: "executed" | "execute_failed" = "execute_failed";
     let detail = "";
@@ -83,7 +83,7 @@ for (const kind of ["k8s.rollout_restart", "k8s.scale", "k8s.rollout_undo"]) {
       detail = String(e);
     }
     // A failed report leaves the action approved, so the next pass repeats it.
-    await impri.reportResult(action.id, status, { detail }).catch((e) => console.error(action.id, e));
+    await airlock.reportResult(action.id, status, { detail }).catch((e) => console.error(action.id, e));
   }
 }
 ```
@@ -109,8 +109,8 @@ A [rule](rules.md) (created with an admin-scope key, `POST /v1/rules`) approves 
 
 An auto-approved action sends no notification; the [audit log](audit-log.md) records which rule approved it, and the executor still checks the preview.
 
-## What Impri does not do here
+## What Airlock does not do here
 
-It doesn't check that a plan or command is correct: it shows it to a person. It isn't a policy engine: "never touch IAM, whoever approves" belongs in OPA or Sentinel before Impri. It never runs kubectl or terraform: your executor does, with credentials the agent never sees. Related: [agentic AI safety patterns](agentic-ai-safety-patterns.md) and [incident response agents](human-in-the-loop-for-ai-agent-incident-response.md).
+It doesn't check that a plan or command is correct: it shows it to a person. It isn't a policy engine: "never touch IAM, whoever approves" belongs in OPA or Sentinel before Airlock. It never runs kubectl or terraform: your executor does, with credentials the agent never sees. Related: [agentic AI safety patterns](agentic-ai-safety-patterns.md) and [incident response agents](human-in-the-loop-for-ai-agent-incident-response.md).
 
-Next: run the inbox next to your cluster with [self-hosting](self-hosting.md) (`docker compose`, MIT core), or [start free on the cloud](https://app.impri.dev/?signup=1) and point the executor at `https://api.impri.dev`.
+Next: run the inbox next to your cluster with [self-hosting](self-hosting.md) (`docker compose`, MIT core), or [start free on the cloud](https://app.airlock.dev/?signup=1) and point the executor at `https://api.airlock.dev`.

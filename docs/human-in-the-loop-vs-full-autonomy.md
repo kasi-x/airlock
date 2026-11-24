@@ -29,9 +29,9 @@ The point of a framework is that it's checkable in code, not just written in a d
 
 ```python
 import os
-from impri import ImpriClient, ImpriExpired, ImpriRejected, ImpriTimeout
+from airlock import AirlockClient, AirlockExpired, AirlockRejected, AirlockTimeout
 
-impri = ImpriClient(api_key=os.environ["IMPRI_API_KEY"])
+airlock = AirlockClient(api_key=os.environ["AIRLOCK_API_KEY"])
 
 # Tier lookup keyed by action kind — the actual policy, in one place
 GATE_REQUIRED = {
@@ -47,7 +47,7 @@ def run_action(kind: str, title: str, preview_body: str, execute_fn):
     if not GATE_REQUIRED.get(kind, True):  # unknown kinds default to gated
         return execute_fn(preview_body)
 
-    created = impri.create_action(
+    created = airlock.create_action(
         kind=kind,
         title=title,
         preview={"format": "markdown", "body": preview_body},
@@ -55,14 +55,14 @@ def run_action(kind: str, title: str, preview_body: str, execute_fn):
         expires_in=3600,
     )
     try:
-        action = impri.await_decision(created["id"], timeout_s=1800)
-    except (ImpriRejected, ImpriExpired, ImpriTimeout):
+        action = airlock.await_decision(created["id"], timeout_s=1800)
+    except (AirlockRejected, AirlockExpired, AirlockTimeout):
         return None  # rejected, expired, or timed out — never executed
 
     decision = action.get("decision") or {}
     final_body = (decision.get("final_preview") or action["preview"])["body"]
     result = execute_fn(final_body)
-    impri.report_result(action["id"], "executed")
+    airlock.report_result(action["id"], "executed")
     return result
 ```
 
@@ -70,7 +70,7 @@ The default (`True` for unknown kinds) matters more than the table: a new action
 
 ## Where full autonomy still needs a leash
 
-Even low-risk actions benefit from a ceiling, not because any single one is dangerous, but because volume changes the risk profile. A hundred read-only lookups a minute is fine; a hundred emails a minute from an agent stuck in a loop is not, no matter how each individual email looked. Rate limiting the write path — Impri caps `POST /v1/actions` at 60/minute per key — catches exactly this failure mode even for tiers you've decided don't need per-action review. See [guardrails for real-world agent actions](ai-agent-guardrails-for-real-world-actions.md) for the broader pattern.
+Even low-risk actions benefit from a ceiling, not because any single one is dangerous, but because volume changes the risk profile. A hundred read-only lookups a minute is fine; a hundred emails a minute from an agent stuck in a loop is not, no matter how each individual email looked. Rate limiting the write path — Airlock caps `POST /v1/actions` at 60/minute per key — catches exactly this failure mode even for tiers you've decided don't need per-action review. See [guardrails for real-world agent actions](ai-agent-guardrails-for-real-world-actions.md) for the broader pattern.
 
 ## Where human-in-the-loop is non-negotiable
 
@@ -78,7 +78,7 @@ Two conditions make the gate mandatory rather than a judgment call: the action i
 
 ## What this framework doesn't solve
 
-Choosing the right tier is still a judgment call, and Impri doesn't make that call for you — it holds the decision once you've decided an action needs one. It also doesn't rewrite the table when your product changes; a `crm.field_update` that seemed low-risk becomes high-risk the day that field starts triggering an automated billing change downstream. Revisit the table when the *consequences* of an action change, not just when the action itself changes.
+Choosing the right tier is still a judgment call, and Airlock doesn't make that call for you — it holds the decision once you've decided an action needs one. It also doesn't rewrite the table when your product changes; a `crm.field_update` that seemed low-risk becomes high-risk the day that field starts triggering an automated billing change downstream. Revisit the table when the *consequences* of an action change, not just when the action itself changes.
 
 For the mechanics of defining these tiers as enforced rules rather than an inline dictionary, see [rules](rules.md).
 

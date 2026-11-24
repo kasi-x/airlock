@@ -3,21 +3,21 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Human Approval for Amazon Bedrock AgentCore Agents — Impri Docs</title>
+<title>Human Approval for Amazon Bedrock AgentCore Agents — Airlock Docs</title>
 <meta name="description" content="Bedrock AgentCore agents can call real AWS APIs on their own schedule — this shows how to put an actual human decision, not just an AWS trace log, between an…">
 <meta name="theme-color" content="#06070d">
-<meta property="og:title" content="Human Approval for Amazon Bedrock AgentCore Agents — Impri Docs">
+<meta property="og:title" content="Human Approval for Amazon Bedrock AgentCore Agents — Airlock Docs">
 <meta property="og:description" content="Bedrock AgentCore agents can call real AWS APIs on their own schedule — this shows how to put an actual human decision, not just an AWS trace log, between an…">
 <meta property="og:type" content="article">
-<meta property="og:url" content="https://impri.dev/docs/human-approval-amazon-bedrock-agentcore">
-<meta property="og:image" content="https://impri.dev/assets/og/og-docs.png">
+<meta property="og:url" content="https://airlock.dev/docs/human-approval-amazon-bedrock-agentcore">
+<meta property="og:image" content="https://airlock.dev/assets/og/og-docs.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
-<meta property="og:image:alt" content="Impri — human-in-the-loop approval inbox for AI agents">
+<meta property="og:image:alt" content="Airlock — human-in-the-loop approval inbox for AI agents">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="https://impri.dev/assets/og/og-docs.png">
-<link rel="canonical" href="https://impri.dev/docs/human-approval-amazon-bedrock-agentcore">
-<script type="application/ld+json">{"@context":"https://schema.org","@type":"TechArticle","headline":"Human Approval for Amazon Bedrock AgentCore Agents","description":"Bedrock AgentCore agents can call real AWS APIs on their own schedule — this shows how to put an actual human decision, not just an AWS trace log, between an…","url":"https://impri.dev/docs/human-approval-amazon-bedrock-agentcore","inLanguage":"en","author":{"@type":"Organization","name":"Impri","url":"https://impri.dev"},"publisher":{"@type":"Organization","name":"Impri","url":"https://impri.dev"}}</script>
+<meta name="twitter:image" content="https://airlock.dev/assets/og/og-docs.png">
+<link rel="canonical" href="https://airlock.dev/docs/human-approval-amazon-bedrock-agentcore">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"TechArticle","headline":"Human Approval for Amazon Bedrock AgentCore Agents","description":"Bedrock AgentCore agents can call real AWS APIs on their own schedule — this shows how to put an actual human decision, not just an AWS trace log, between an…","url":"https://airlock.dev/docs/human-approval-amazon-bedrock-agentcore","inLanguage":"en","author":{"@type":"Organization","name":"Airlock","url":"https://airlock.dev"},"publisher":{"@type":"Organization","name":"Airlock","url":"https://airlock.dev"}}</script>
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <link rel="icon" href="/favicon.ico" sizes="32x32">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='9' fill='%236366f1'/%3E%3Cpath d='M9 16.5l4.5 4.5L23 11' stroke='white' stroke-width='3' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
@@ -132,13 +132,13 @@ pre code.hljs{display:block;overflow-x:auto}
 <div class="wrap nav-inner">
   <a class="brand" href="/">
     <span class="mark"><svg viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.5 4.5L19 7.5" stroke="white" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
-    Impri
+    Airlock
   </a>
   <div class="nav-links">
     <a class="link" href="/#how">How it works</a>
     <a class="link" href="/#pricing">Pricing</a>
     <a class="link active-nav" href="../docs">Docs</a>
-    <a class="btn btn-primary btn-sm" href="https://gitlab.com/sekera.radim/impri">GitLab</a>
+    <a class="btn btn-primary btn-sm" href="https://gitlab.com/sekera.radim/airlock">GitLab</a>
   </div>
 </div>
 </nav>
@@ -157,18 +157,18 @@ pre code.hljs{display:block;overflow-x:auto}
 <hr>
 <h2 id="agentcore39s-tracing-isn39t-the-same-as-someone-saying-yes">AgentCore&#39;s tracing isn&#39;t the same as someone saying yes</h2>
 <p>AgentCore Runtime gives you session isolation, a gateway for tool invocation, and a governance layer for rolling agents out incrementally. That&#39;s infrastructure for running the agent safely — it is not the same as a person looking at <em>this specific claim, this specific payout, this specific customer</em> and deciding it&#39;s correct before it goes out. A trace you can review after the fact tells you what happened. A gate tells you before it happens, and lets someone stop it.</p>
-<p>The pattern below wraps a single AgentCore tool function so the side effect it triggers cannot run without an approved decision coming back from Impri.</p>
+<p>The pattern below wraps a single AgentCore tool function so the side effect it triggers cannot run without an approved decision coming back from Airlock.</p>
 <hr>
 <h2 id="the-gate-three-calls-around-your-agentcore-tool">The gate: three calls around your AgentCore tool</h2>
 <p>This is a claims-payout tool exposed to the agent. The tool itself is the chokepoint — the agent has no other path to <code>issue_payout</code>.</p>
 <div class="code-block"><span class="code-lang">python</span><pre><code class="hljs"><span class="hljs-keyword">import</span> os, time, requests
 
-IMPRI = <span class="hljs-string">&quot;https://api.impri.dev&quot;</span>
-HEADERS = {<span class="hljs-string">&quot;Authorization&quot;</span>: <span class="hljs-string">f&quot;Bearer <span class="hljs-subst">{os.environ[<span class="hljs-string">&#x27;IMPRI_API_KEY&#x27;</span>]}</span>&quot;</span>}
+AIRLOCK = <span class="hljs-string">&quot;https://api.airlock.dev&quot;</span>
+HEADERS = {<span class="hljs-string">&quot;Authorization&quot;</span>: <span class="hljs-string">f&quot;Bearer <span class="hljs-subst">{os.environ[<span class="hljs-string">&#x27;AIRLOCK_API_KEY&#x27;</span>]}</span>&quot;</span>}
 
 <span class="hljs-keyword">def</span> <span class="hljs-title function_">close_insurance_claim</span>(<span class="hljs-params">claim_id: <span class="hljs-built_in">str</span>, payout_usd: <span class="hljs-built_in">float</span>, summary: <span class="hljs-built_in">str</span></span>) -&gt; <span class="hljs-built_in">dict</span>:
     <span class="hljs-string">&quot;&quot;&quot;Tool exposed to the AgentCore agent via the Gateway.&quot;&quot;&quot;</span>
-    action = requests.post(<span class="hljs-string">f&quot;<span class="hljs-subst">{IMPRI}</span>/v1/actions&quot;</span>, headers=HEADERS, json={
+    action = requests.post(<span class="hljs-string">f&quot;<span class="hljs-subst">{AIRLOCK}</span>/v1/actions&quot;</span>, headers=HEADERS, json={
         <span class="hljs-string">&quot;kind&quot;</span>: <span class="hljs-string">&quot;claim.payout&quot;</span>,
         <span class="hljs-string">&quot;title&quot;</span>: <span class="hljs-string">f&quot;Approve payout $<span class="hljs-subst">{payout_usd:,<span class="hljs-number">.2</span>f}</span> for claim <span class="hljs-subst">{claim_id}</span>&quot;</span>,
         <span class="hljs-string">&quot;preview&quot;</span>: {<span class="hljs-string">&quot;format&quot;</span>: <span class="hljs-string">&quot;markdown&quot;</span>, <span class="hljs-string">&quot;body&quot;</span>: summary},
@@ -178,7 +178,7 @@ HEADERS = {<span class="hljs-string">&quot;Authorization&quot;</span>: <span cla
     }).json()
 
     <span class="hljs-keyword">while</span> <span class="hljs-literal">True</span>:
-        result = requests.get(<span class="hljs-string">f&quot;<span class="hljs-subst">{IMPRI}</span>/v1/actions/<span class="hljs-subst">{action[<span class="hljs-string">&#x27;id&#x27;</span>]}</span>&quot;</span>, headers=HEADERS).json()
+        result = requests.get(<span class="hljs-string">f&quot;<span class="hljs-subst">{AIRLOCK}</span>/v1/actions/<span class="hljs-subst">{action[<span class="hljs-string">&#x27;id&#x27;</span>]}</span>&quot;</span>, headers=HEADERS).json()
         <span class="hljs-keyword">if</span> result[<span class="hljs-string">&quot;status&quot;</span>] != <span class="hljs-string">&quot;pending&quot;</span>:
             <span class="hljs-keyword">break</span>
         time.sleep(<span class="hljs-number">10</span>)
@@ -187,7 +187,7 @@ HEADERS = {<span class="hljs-string">&quot;Authorization&quot;</span>: <span cla
         <span class="hljs-keyword">return</span> {<span class="hljs-string">&quot;status&quot;</span>: result[<span class="hljs-string">&quot;status&quot;</span>], <span class="hljs-string">&quot;executed&quot;</span>: <span class="hljs-literal">False</span>}
 
     payout_id = issue_payout(claim_id, payout_usd)  <span class="hljs-comment"># your actual AWS-side call</span>
-    requests.post(<span class="hljs-string">f&quot;<span class="hljs-subst">{IMPRI}</span>/v1/actions/<span class="hljs-subst">{action[<span class="hljs-string">&#x27;id&#x27;</span>]}</span>/result&quot;</span>, headers=HEADERS,
+    requests.post(<span class="hljs-string">f&quot;<span class="hljs-subst">{AIRLOCK}</span>/v1/actions/<span class="hljs-subst">{action[<span class="hljs-string">&#x27;id&#x27;</span>]}</span>/result&quot;</span>, headers=HEADERS,
                   json={<span class="hljs-string">&quot;status&quot;</span>: <span class="hljs-string">&quot;executed&quot;</span>, <span class="hljs-string">&quot;payload&quot;</span>: {<span class="hljs-string">&quot;payout_id&quot;</span>: payout_id}})
     <span class="hljs-keyword">return</span> {<span class="hljs-string">&quot;status&quot;</span>: <span class="hljs-string">&quot;approved&quot;</span>, <span class="hljs-string">&quot;executed&quot;</span>: <span class="hljs-literal">True</span>, <span class="hljs-string">&quot;payout_id&quot;</span>: payout_id}</code></pre></div>
 <p><code>issue_payout</code> — wherever it lives, Lambda, Step Functions, a direct SDK call — only runs after <code>result[&quot;status&quot;] == &quot;approved&quot;</code>. There&#39;s no branch in this function that reaches it otherwise.</p>
@@ -195,7 +195,7 @@ HEADERS = {<span class="hljs-string">&quot;Authorization&quot;</span>: <span cla
 <h2 id="don39t-block-a-runtime-session-past-its-budget">Don&#39;t block a Runtime session past its budget</h2>
 <p>Bedrock AgentCore Runtime sessions run for a bounded duration, and a claim payout might sit unreviewed for hours, not seconds. If your approval SLA is longer than a session can afford to hold open, don&#39;t poll synchronously inside the tool call. Instead:</p>
 <ol>
-<li>The tool pushes the Impri action and returns immediately with <code>{&quot;status&quot;: &quot;pending&quot;, &quot;action_id&quot;: ...}</code>.</li>
+<li>The tool pushes the Airlock action and returns immediately with <code>{&quot;status&quot;: &quot;pending&quot;, &quot;action_id&quot;: ...}</code>.</li>
 <li>A separate process — an EventBridge-scheduled Lambda, or a small worker outside AgentCore — polls <code>GET /v1/actions/:id</code> on its own cadence.</li>
 <li>Once <code>status != &quot;pending&quot;</code>, that worker calls <code>issue_payout</code> and posts the result, then notifies the requester (Slack, email, whatever your stack already uses) that the claim was closed.</li>
 </ol>
@@ -219,11 +219,11 @@ HEADERS = {<span class="hljs-string">&quot;Authorization&quot;</span>: <span cla
 </tr>
 <tr>
 <td>Whether <em>this</em> payout is correct</td>
-<td>A human, via the Impri inbox card</td>
+<td>A human, via the Airlock inbox card</td>
 </tr>
 <tr>
 <td>Storing the decision and the audit trail of who approved what</td>
-<td>Impri</td>
+<td>Airlock</td>
 </tr>
 <tr>
 <td>Actually moving the money</td>
@@ -231,18 +231,18 @@ HEADERS = {<span class="hljs-string">&quot;Authorization&quot;</span>: <span cla
 </tr>
 </tbody></table>
 </div>
-<p>Impri doesn&#39;t know what a valid insurance claim looks like, and it doesn&#39;t touch AWS. It stores the proposed action, shows it to a person, and hands back a decision your code has to act on.</p>
+<p>Airlock doesn&#39;t know what a valid insurance claim looks like, and it doesn&#39;t touch AWS. It stores the proposed action, shows it to a person, and hands back a decision your code has to act on.</p>
 <hr>
 <h2 id="what-this-doesn39t-protect-against">What this doesn&#39;t protect against</h2>
-<p>If the agent (or something impersonating it) has the AWS credentials to call the payout API directly, wrapping one tool function doesn&#39;t stop that path — Impri is only a gate on the code that calls it. Keep the payout credential scoped to the wrapped tool, not handed to the agent&#39;s general-purpose execution environment. And treat any claim summary sourced from an external form or email as data, not instructions, before it lands in <code>preview.body</code> — AgentCore doesn&#39;t sanitize that for you either.</p>
+<p>If the agent (or something impersonating it) has the AWS credentials to call the payout API directly, wrapping one tool function doesn&#39;t stop that path — Airlock is only a gate on the code that calls it. Keep the payout credential scoped to the wrapped tool, not handed to the agent&#39;s general-purpose execution environment. And treat any claim summary sourced from an external form or email as data, not instructions, before it lands in <code>preview.body</code> — AgentCore doesn&#39;t sanitize that for you either.</p>
 <hr>
 <p>Next: the <a href="quickstart">quickstart</a> covers getting an API key for cloud or self-host, the <a href="sdk-python">Python SDK</a> wraps these three calls if you&#39;d rather not hand-roll the polling loop, and <a href="audit-log">audit log</a> covers what&#39;s retained for compliance review after a payout is approved.</p>
 
-    <aside class="doc-cta" aria-label="Try Impri">
+    <aside class="doc-cta" aria-label="Try Airlock">
   <p class="doc-cta-title">Add an approval step to your own agent</p>
-  <p>Start on Impri Cloud: the Free tier includes 100 approvals a month. Or self-host the MIT-licensed core with Docker Compose, with no tier limits.</p>
+  <p>Start on Airlock Cloud: the Free tier includes 100 approvals a month. Or self-host the MIT-licensed core with Docker Compose, with no tier limits.</p>
   <div class="doc-cta-actions">
-    <a class="btn btn-primary btn-sm" href="https://app.impri.dev/?signup=1">Start free on Impri Cloud</a>
+    <a class="btn btn-primary btn-sm" href="https://app.airlock.dev/?signup=1">Start free on Airlock Cloud</a>
     <a class="btn btn-ghost btn-sm" href="../docs/quickstart">Quick start</a>
     <a class="btn btn-ghost btn-sm" href="../docs/self-hosting">Self-host guide</a>
   </div>
@@ -337,19 +337,19 @@ HEADERS = {<span class="hljs-string">&quot;Authorization&quot;</span>: <span cla
 <footer class="footer">
 <div class="wrap footer-inner">
   <a class="brand" href="/">
-    <span class="mark"><svg viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.5 4.5L19 7.5" stroke="white" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Impri
+    <span class="mark"><svg viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.5 4.5L19 7.5" stroke="white" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Airlock
   </a>
   <div>
-    <a href="https://gitlab.com/sekera.radim/impri">GitLab</a>
+    <a href="https://gitlab.com/sekera.radim/airlock">GitLab</a>
     <a href="/docs">Docs</a>
-    <a href="https://gitlab.com/sekera.radim/impri/-/blob/main/LICENSE">MIT License</a>
-    <a href="https://www.npmjs.com/package/@impri/mcp">@impri/mcp</a>
+    <a href="https://gitlab.com/sekera.radim/airlock/-/blob/main/LICENSE">MIT License</a>
+    <a href="https://www.npmjs.com/package/@airlock/mcp">@airlock/mcp</a>
     <a href="/docs/privacy">Privacy</a>
     <a href="/docs/terms">Terms</a>
     <a href="https://sekera.dev">Contact</a>
   </div>
 </div>
-<div class="wrap" style="margin-top:18px"><span class="muted">© 2026 Impri · The imprimatur for your AI agents · Built by <a href="https://sekera.dev" style="color:inherit">Radim Sekera</a>. Also by the same maker: <a href="https://briefgate.dev/?utm_source=impri.dev&amp;utm_medium=referral" style="color:inherit">BriefGate</a> — client intake for agencies and AI agents.</span></div>
+<div class="wrap" style="margin-top:18px"><span class="muted">© 2026 Airlock · The airlockmatur for your AI agents · Built by <a href="https://sekera.dev" style="color:inherit">Radim Sekera</a>. Also by the same maker: <a href="https://briefgate.dev/?utm_source=airlock.dev&amp;utm_medium=referral" style="color:inherit">BriefGate</a> — client intake for agencies and AI agents.</span></div>
 </footer>
 </body>
 </html>

@@ -19,13 +19,13 @@ Two layers, not one:
 1. In your system prompt and context construction, be explicit that RSS content, scraped pages, emails, and support tickets are data to summarize, not commands to follow. This helps, and costs nothing.
 2. Assume layer 1 fails sometimes, and put a human between any tool call with a real-world effect and its execution. This is the layer that actually holds under adversarial input, because it doesn't rely on the model correctly classifying text as safe or unsafe.
 
-Here's a support-agent refund tool wrapped with Impri as that second layer, in TypeScript:
+Here's a support-agent refund tool wrapped with Airlock as that second layer, in TypeScript:
 
 ```typescript
 import fetch from "node-fetch";
 
-const BASE = process.env.IMPRI_BASE_URL ?? "https://api.impri.dev";
-const KEY = process.env.IMPRI_API_KEY!;
+const BASE = process.env.AIRLOCK_BASE_URL ?? "https://api.airlock.dev";
+const KEY = process.env.AIRLOCK_API_KEY!;
 
 async function guardedRefund(accountId: string, amountCents: number, reason: string) {
   // reason may contain attacker-controlled text lifted from the ticket —
@@ -85,7 +85,7 @@ If your agent is fed by an automated poller — an RSS feed, a Reddit search, a 
 
 ## What this does and doesn't fix
 
-Gating the action doesn't fix the injection — the model still gets fooled into *proposing* the refund, the email, the post. What it fixes is the part that matters: the proposal can't become a real side effect without a human confirming it's legitimate, no matter how convincing the injected text was. Impri specifically only handles that gate — it stores the proposed action and holds the decision, it doesn't scan content for injection attempts or make the call on whether the refund is legitimate. That judgment stays with the human reading the card.
+Gating the action doesn't fix the injection — the model still gets fooled into *proposing* the refund, the email, the post. What it fixes is the part that matters: the proposal can't become a real side effect without a human confirming it's legitimate, no matter how convincing the injected text was. Airlock specifically only handles that gate — it stores the proposed action and holds the decision, it doesn't scan content for injection attempts or make the call on whether the refund is legitimate. That judgment stays with the human reading the card.
 
 For the full three-call integration (REST and MCP) this example builds on, see [how to add human approval to an AI agent](how-to-add-human-approval-to-an-ai-agent.md). If the agent is polling external sources on a schedule rather than reacting to live chat, [watcher presets](watcher-presets.md) covers wiring RSS/Reddit/page-diff pollers into the same approval flow.
 

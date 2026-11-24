@@ -19,8 +19,8 @@ import os
 import time
 import requests
 
-IMPRI_BASE = "https://api.impri.dev"
-HEADERS = {"Authorization": f"Bearer {os.environ['IMPRI_API_KEY']}"}
+AIRLOCK_BASE = "https://api.airlock.dev"
+HEADERS = {"Authorization": f"Bearer {os.environ['AIRLOCK_API_KEY']}"}
 
 def propose_purchase_order(vendor, items, total_usd):
     body = {
@@ -40,12 +40,12 @@ def propose_purchase_order(vendor, items, total_usd):
         "idempotent": False,  # submitting the same PO twice creates a duplicate order
         "undo": "Cancel PO via ERP > Purchase Orders > Cancel (before vendor acknowledges)",
     }
-    resp = requests.post(f"{IMPRI_BASE}/v1/actions", headers=HEADERS, json=body)
+    resp = requests.post(f"{AIRLOCK_BASE}/v1/actions", headers=HEADERS, json=body)
     return resp.json()["id"]
 
 def wait_for_decision(action_id, poll_seconds=15):
     while True:
-        resp = requests.get(f"{IMPRI_BASE}/v1/actions/{action_id}", headers=HEADERS)
+        resp = requests.get(f"{AIRLOCK_BASE}/v1/actions/{action_id}", headers=HEADERS)
         data = resp.json()
         if data["status"] != "pending":
             return data
@@ -61,7 +61,7 @@ decision = wait_for_decision(action_id)
 if decision["status"] == "approved":
     final_body = decision["decision"]["final_preview"]["body"]
     # submit_po_to_erp(final_body) — your actual ERP call
-    requests.post(f"{IMPRI_BASE}/v1/actions/{action_id}/result", headers=HEADERS,
+    requests.post(f"{AIRLOCK_BASE}/v1/actions/{action_id}/result", headers=HEADERS,
                   json={"status": "executed", "payload": {"erp_po_number": "PO-88213"}})
 else:
     print(f"PO not submitted — decision was {decision['status']}")
@@ -79,12 +79,12 @@ Procurement drafts often need a small correction — a quantity typo, a unit pri
 
 ## Audit trail for finance and compliance
 
-Every procurement approval Impri holds becomes a queryable record: who approved it, when, and what the final approved content was versus what the agent originally proposed. For a finance or compliance review, that's the artifact that answers "why did this vendor get paid" without anyone having to reconstruct it from Slack messages or email threads. See [the audit log docs](audit-log.md) for what's retained and for how long.
+Every procurement approval Airlock holds becomes a queryable record: who approved it, when, and what the final approved content was versus what the agent originally proposed. For a finance or compliance review, that's the artifact that answers "why did this vendor get paid" without anyone having to reconstruct it from Slack messages or email threads. See [the audit log docs](audit-log.md) for what's retained and for how long.
 
 ---
 
-## What Impri does not do here
+## What Airlock does not do here
 
-Impri does not talk to your ERP, does not check the PO against a budget, and does not validate that the vendor and pricing are legitimate — all of that is the agent's job before the action is ever created. Impri's only responsibility is holding the "submit or don't" decision and making sure the ERP call in your code is unreachable without an `approved` status. If the agent still holds a credential that can call the ERP directly, wrap that credential so the approved decision is genuinely the only path — see [SDK integrations](sdk-python.md) for how to structure that wrapper.
+Airlock does not talk to your ERP, does not check the PO against a budget, and does not validate that the vendor and pricing are legitimate — all of that is the agent's job before the action is ever created. Airlock's only responsibility is holding the "submit or don't" decision and making sure the ERP call in your code is unreachable without an `approved` status. If the agent still holds a credential that can call the ERP directly, wrap that credential so the approved decision is genuinely the only path — see [SDK integrations](sdk-python.md) for how to structure that wrapper.
 
-Next step: if this is your first Impri integration, start with the [quickstart](quickstart.md) to get an API key, then come back and adapt the code above to your ERP.
+Next step: if this is your first Airlock integration, start with the [quickstart](quickstart.md) to get an API key, then come back and adapt the code above to your ERP.

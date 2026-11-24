@@ -1,14 +1,14 @@
 # GDPR & Data Management
 
-Impri provides two GDPR-compliant data management endpoints under your project's admin scope: a full data export and a hard erasure. Both are project-scoped — cross-project data access is impossible regardless of the key used.
+Airlock provides two GDPR-compliant data management endpoints under your project's admin scope: a full data export and a hard erasure. Both are project-scoped — cross-project data access is impossible regardless of the key used.
 
 ---
 
 ## Data controller & contact
 
-**Self-hosted:** you run the server, so **you are the data controller**. Impri sends no telemetry and nothing phones home; all data stays on your machine or VPS.
+**Self-hosted:** you run the server, so **you are the data controller**. Airlock sends no telemetry and nothing phones home; all data stays on your machine or VPS.
 
-**Hosted cloud** (`app.impri.dev` / `api.impri.dev`): the data controller is **Radim Sekera**. Data is stored in the EU (Fly.io, Frankfurt). To exercise your data-subject rights (access, rectification, erasure, portability) you can use the self-service `GET /v1/project/export` and `DELETE /v1/project/data` endpoints below, or reach out:
+**Hosted cloud** (`app.airlock.dev` / `api.airlock.dev`): the data controller is **Radim Sekera**. Data is stored in the EU (Fly.io, Frankfurt). To exercise your data-subject rights (access, rectification, erasure, portability) you can use the self-service `GET /v1/project/export` and `DELETE /v1/project/data` endpoints below, or reach out:
 
 - **Contact:** [sekera.dev](https://sekera.dev)
 
@@ -62,7 +62,7 @@ A `gdpr.export` audit event is written before the response is returned.
 ```bash
 # Save the export to a file
 curl -H "Authorization: Bearer im_..." \
-     https://api.impri.dev/v1/project/export \
+     https://api.airlock.dev/v1/project/export \
      -o export-$(date +%Y%m%d).json
 
 # Or with the SDK:
@@ -127,7 +127,7 @@ console.log(`Erased ${actions} actions and ${watchers} watchers`)
 
 ---
 
-## What data Impri stores
+## What data Airlock stores
 
 | Data | Where | Erasable |
 |------|-------|----------|

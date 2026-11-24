@@ -55,7 +55,7 @@ export async function checkRateLimit(db: Db, keyId: string, route: string, limit
       const count = await r.incr(rkey);
       if (count === 1) await r.expire(rkey, 120);
       if (count > limitPerMin) {
-        incCounter('impri_rate_limited_total', { bucket: route });
+        incCounter('airlock_rate_limited_total', { bucket: route });
         return false;
       }
       return true;
@@ -65,7 +65,7 @@ export async function checkRateLimit(db: Db, keyId: string, route: string, limit
   }
 
   const allowed = checkRateLimitSqlite(db, keyId, route, windowStart, limitPerMin);
-  if (!allowed) incCounter('impri_rate_limited_total', { bucket: route });
+  if (!allowed) incCounter('airlock_rate_limited_total', { bucket: route });
   return allowed;
 }
 

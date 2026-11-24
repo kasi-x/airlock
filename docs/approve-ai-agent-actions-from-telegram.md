@@ -10,7 +10,7 @@ If you're running an agent solo — handling customer refunds, drafting support 
 
 ## Does this replace the web inbox?
 
-No — every action pushed to Impri still shows up in the [web inbox](inbox.md) with full detail and audit history. Telegram (like [Discord](discord-approval.md) and [Slack](slack-approval.md)) is one more place the *notification* and *decision* can happen; the record lives in Impri either way. Turning on Telegram approvals doesn't turn off anything else.
+No — every action pushed to Airlock still shows up in the [web inbox](inbox.md) with full detail and audit history. Telegram (like [Discord](discord-approval.md) and [Slack](slack-approval.md)) is one more place the *notification* and *decision* can happen; the record lives in Airlock either way. Turning on Telegram approvals doesn't turn off anything else.
 
 ## How fast is it, really?
 
@@ -35,8 +35,8 @@ import os
 import time
 import requests
 
-API = "https://api.impri.dev"
-HEADERS = {"Authorization": f"Bearer {os.environ['IMPRI_API_KEY']}"}
+API = "https://api.airlock.dev"
+HEADERS = {"Authorization": f"Bearer {os.environ['AIRLOCK_API_KEY']}"}
 
 
 def propose_refund(ticket_id: str, customer: str, amount_usd: float, reason: str) -> str:
@@ -85,12 +85,12 @@ def handle_ticket(ticket_id, customer, amount_usd, reason):
     )
 ```
 
-Because `idempotent` is set to `false`, the card in the [web inbox](inbox.md) shows a "Not idempotent — retrying may duplicate this action" badge. The Telegram message itself shows only the action's title and kind next to the buttons, which is why the `title` above carries the amount, the customer and the ticket: that line is everything you see on your phone before you tap. Tapping Approve twice because the button felt slow is harmless, since Impri keeps the first decision and ignores the rest. What `idempotent: false` warns about is your own code calling `issue_refund()` twice for one action.
+Because `idempotent` is set to `false`, the card in the [web inbox](inbox.md) shows a "Not idempotent — retrying may duplicate this action" badge. The Telegram message itself shows only the action's title and kind next to the buttons, which is why the `title` above carries the amount, the customer and the ticket: that line is everything you see on your phone before you tap. Tapping Approve twice because the button felt slow is harmless, since Airlock keeps the first decision and ignores the rest. What `idempotent: false` warns about is your own code calling `issue_refund()` twice for one action.
 
 ## What you're actually gating
 
-Tapping Approve in Telegram does not touch your payment processor. It only flips the action's status to `approved` inside Impri. `issue_refund()` above still has to run — the gate only works if that function is unreachable except through this exact path. If some other part of your codebase can call your payment processor directly with the same credentials, an agent (or a bug) can bypass the approval entirely. See [the integration guide](how-to-add-human-approval-to-an-ai-agent.md) for the chokepoint pattern in more depth.
+Tapping Approve in Telegram does not touch your payment processor. It only flips the action's status to `approved` inside Airlock. `issue_refund()` above still has to run — the gate only works if that function is unreachable except through this exact path. If some other part of your codebase can call your payment processor directly with the same credentials, an agent (or a bug) can bypass the approval entirely. See [the integration guide](how-to-add-human-approval-to-an-ai-agent.md) for the chokepoint pattern in more depth.
 
 ## Next step
 
-New to Impri? Start with the [quickstart](quickstart.md) to get an API key, then set up [Telegram Approval Bot](telegram-approval.md) for the inline buttons described here.
+New to Airlock? Start with the [quickstart](quickstart.md) to get an API key, then set up [Telegram Approval Bot](telegram-approval.md) for the inline buttons described here.

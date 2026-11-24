@@ -11,7 +11,7 @@ from typing import Any, Dict, List, Optional, Tuple
 
 
 class MockTransport:
-    """Injectable transport for ImpriClient.
+    """Injectable transport for AirlockClient.
 
     Usage::
 
@@ -19,7 +19,7 @@ class MockTransport:
             (201, {"id": "act_1", "status": "pending", ...}),
             (200, {"id": "act_1", "status": "approved", "decision": {...}}),
         ])
-        client = ImpriClient(api_key="im_test", _transport=transport)
+        client = AirlockClient(api_key="im_test", _transport=transport)
         created = client.create_action(...)   # consumes response 0
         action  = client.get_action(...)      # consumes response 1
 

@@ -1,4 +1,4 @@
-"""Impri REST client — stdlib only (no dependency on sdk/python).
+"""Airlock REST client — stdlib only (no dependency on sdk/python).
 
 Covers the action lifecycle and the await_decision polling loop that every
 CrewAI integration needs. Watcher and admin endpoints are omitted here; use
@@ -6,7 +6,7 @@ the full Python SDK if you need them.
 
 Configuration (priority order):
   1. Constructor keyword arguments api_key / base_url
-  2. Environment variables IMPRI_API_KEY / IMPRI_BASE_URL
+  2. Environment variables AIRLOCK_API_KEY / AIRLOCK_BASE_URL
   3. Default base_url: http://localhost:8484 (self-hosted)
 """
 from __future__ import annotations
@@ -20,18 +20,18 @@ import urllib.parse
 from typing import Any, Dict, List, Literal, Optional, Tuple
 
 from ._exceptions import (
-    ImpriApiError,
-    ImpriConfigError,
-    ImpriConflict,
-    ImpriExpired,
-    ImpriNotFound,
-    ImpriQuotaExceeded,
-    ImpriRateLimited,
-    ImpriRejected,
-    ImpriTimeout,
-    ImpriUnauthorized,
-    ImpriValidationError,
-    ImpriWebhookSignatureError,
+    AirlockApiError,
+    AirlockConfigError,
+    AirlockConflict,
+    AirlockExpired,
+    AirlockNotFound,
+    AirlockQuotaExceeded,
+    AirlockRateLimited,
+    AirlockRejected,
+    AirlockTimeout,
+    AirlockUnauthorized,
+    AirlockValidationError,
+    AirlockWebhookSignatureError,
 )
 from ._transport import Transport, urllib_transport
 
@@ -39,12 +39,12 @@ _DEFAULT_BASE_URL = "http://localhost:8484"
 _MIN_POLL_INTERVAL = 5.0  # seconds — floor recommended by the API spec
 
 
-class ImpriClient:
-    """Minimal Impri HTTP client covering the action lifecycle.
+class AirlockClient:
+    """Minimal Airlock HTTP client covering the action lifecycle.
 
     Args:
-        api_key:    Impri API key (im_...). Falls back to IMPRI_API_KEY env var.
-        base_url:   Base URL without /v1. Falls back to IMPRI_BASE_URL, then
+        api_key:    Airlock API key (im_...). Falls back to AIRLOCK_API_KEY env var.
+        base_url:   Base URL without /v1. Falls back to AIRLOCK_BASE_URL, then
                     http://localhost:8484. Trailing slash is tolerated.
         _transport: Injectable transport callable for testing. Signature:
                     (method, url, headers, body_bytes) → (status_code, body_bytes).
@@ -58,16 +58,16 @@ class ImpriClient:
         base_url: Optional[str] = None,
         _transport: Optional[Transport] = None,
     ) -> None:
-        key = api_key or os.environ.get("IMPRI_API_KEY")
+        key = api_key or os.environ.get("AIRLOCK_API_KEY")
         if not key:
-            raise ImpriConfigError(
-                "No API key provided. Pass api_key= or set IMPRI_API_KEY."
+            raise AirlockConfigError(
+                "No API key provided. Pass api_key= or set AIRLOCK_API_KEY."
             )
         self._api_key = key
 
         raw_base = (
             base_url
-            or os.environ.get("IMPRI_BASE_URL")
+            or os.environ.get("AIRLOCK_BASE_URL")
             or _DEFAULT_BASE_URL
         )
         self._base_url = raw_base.rstrip("/")
@@ -113,39 +113,39 @@ class ImpriClient:
             quota_tier = None
 
         if status in (401, 403):
-            raise ImpriUnauthorized(
-                "Authentication failed — verify IMPRI_API_KEY is correct "
+            raise AirlockUnauthorized(
+                "Authentication failed — verify AIRLOCK_API_KEY is correct "
                 "and has the required scope (needs 'actions').",
                 status_code=status,
             )
         if status == 402:
-            raise ImpriQuotaExceeded(
+            raise AirlockQuotaExceeded(
                 detail or "Monthly quota or watcher count limit reached.",
                 limit=quota_limit,
                 tier=quota_tier,
             )
         if status == 404:
-            raise ImpriNotFound(
+            raise AirlockNotFound(
                 "Resource not found — verify the action_id belongs to this project."
             )
         if status == 409:
-            raise ImpriConflict(
+            raise AirlockConflict(
                 "Conflict — action already decided or idempotency race."
             )
         if status == 410:
-            raise ImpriExpired(
+            raise AirlockExpired(
                 "Action expired — the approval window has closed."
             )
         if status in (400, 422):
-            raise ImpriValidationError(
+            raise AirlockValidationError(
                 f"Invalid request: {detail or 'check the parameters.'}",
                 issues=issues,
             )
         if status == 429:
-            raise ImpriRateLimited(
+            raise AirlockRateLimited(
                 "Rate limit reached — wait a moment and retry."
             )
-        raise ImpriApiError(status, detail or "unexpected server error")
+        raise AirlockApiError(status, detail or "unexpected server error")
 
     # ------------------------------------------------------------------ #
     # Actions                                                              #
@@ -223,7 +223,7 @@ class ImpriClient:
         """POST /v1/actions/:id/result — report execution outcome.
 
         Call this after executing an approved action. Only valid when the
-        action is in 'approved' state; raises ImpriConflict otherwise.
+        action is in 'approved' state; raises AirlockConflict otherwise.
         """
         body: Dict[str, Any] = {"status": status}
         if detail is not None:
@@ -244,9 +244,9 @@ class ImpriClient:
         """Poll GET /v1/actions/:id until the action leaves 'pending'.
 
         Returns the full Action dict on approval.
-        Raises ImpriRejected when the human rejects (not an error — handle it).
-        Raises ImpriExpired when the approval window closes.
-        Raises ImpriTimeout when timeout_s elapses with action still pending.
+        Raises AirlockRejected when the human rejects (not an error — handle it).
+        Raises AirlockExpired when the approval window closes.
+        Raises AirlockTimeout when timeout_s elapses with action still pending.
 
         The polling floor is 5 s per the API spec (rate limit: 300 GET/min).
         """
@@ -262,15 +262,15 @@ class ImpriClient:
             if action_status == "rejected":
                 decision = action.get("decision") or {}
                 final_preview = decision.get("final_preview") or action.get("preview") or {}
-                raise ImpriRejected(action_id, decision, final_preview)
+                raise AirlockRejected(action_id, decision, final_preview)
             if action_status == "expired":
-                raise ImpriExpired(
+                raise AirlockExpired(
                     f"Action {action_id!r} expired before a human could decide."
                 )
 
             remaining = deadline - time.monotonic()
             if remaining <= 0:
-                raise ImpriTimeout(action_id)
+                raise AirlockTimeout(action_id)
 
             time.sleep(min(interval, remaining))
 
@@ -287,33 +287,33 @@ def verify_webhook(
     signature: str,
     tolerance_sec: int = 300,
 ) -> None:
-    """Verify an Impri webhook X-Impri-Signature header.
+    """Verify an Airlock webhook X-Airlock-Signature header.
 
     Algorithm: sha256=HMAC-SHA256(secret, f'{timestamp}.{nonce}.{rawBody}')
 
     Args:
         raw_body:      The unread request body bytes (do not decode first).
         secret:        The webhook_secret from GET /v1/project.
-        timestamp:     Value of the X-Impri-Timestamp request header.
-        nonce:         Value of the X-Impri-Nonce request header.
-        signature:     Value of the X-Impri-Signature request header.
+        timestamp:     Value of the X-Airlock-Timestamp request header.
+        nonce:         Value of the X-Airlock-Nonce request header.
+        signature:     Value of the X-Airlock-Signature request header.
         tolerance_sec: Maximum age of the webhook in seconds (default 300).
                        Deliveries older than this window are rejected as
                        potential replays.
 
     Raises:
-        ImpriWebhookSignatureError: If the computed digest does not match or
+        AirlockWebhookSignatureError: If the computed digest does not match or
             the timestamp is outside the tolerance window.
     """
     # Replay-protection: reject deliveries outside the tolerance window.
     try:
         ts = int(timestamp)
     except (ValueError, TypeError):
-        raise ImpriWebhookSignatureError(
-            "X-Impri-Timestamp is missing or not a valid integer."
+        raise AirlockWebhookSignatureError(
+            "X-Airlock-Timestamp is missing or not a valid integer."
         )
     if abs(time.time() - ts) > tolerance_sec:
-        raise ImpriWebhookSignatureError(
+        raise AirlockWebhookSignatureError(
             f"Webhook timestamp is outside the {tolerance_sec}s tolerance window "
             "(replay protection). Ensure your server clock is synced."
         )
@@ -323,7 +323,7 @@ def verify_webhook(
         secret.encode(), message, hashlib.sha256
     ).hexdigest()
     if not hmac.compare_digest(expected, signature):
-        raise ImpriWebhookSignatureError(
+        raise AirlockWebhookSignatureError(
             "Webhook signature mismatch — check your webhook_secret and "
             "that you are passing the raw (un-decoded) request body."
         )
